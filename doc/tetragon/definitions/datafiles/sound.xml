@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	SOUND DEFINITION FILE
+	A sound defines a single sound and properties that describe how the sound should
+	be played.
+	===========================================================================================
+	audioResourceID			ID of the audio resource that is associated with the sound.
+	nameID					(Optional) An optional ID to the name string for the sound
+							for displaying in-game.
+	volume					(Optional) Volume of the sound, a value from 0.0 to 1.0.
+							Default: 1.0.
+	pan						(Optional) Panning of the sound, a value from -1.0 to 1.0.
+							Default: 0.0.
+	startOffset				(Optional) Start offset in ms.
+	loops					(Optional) Nr. of times to loop the sound. 0 is one-shot, -1
+							is endless. Default: 0.
+	loopStartOffset			(Optional) Start offset in ms. at which the loop starts.
+	loopEndOffset			(Optional) End offset in ms. at which the loop ends.
+	fadeInDuration			(Optional) Duration in seconds that the sound takes to reach
+							full volume.
+	fadeOutDuration			(Optional) Duration in seconds that the sound takes to reach
+							muted volume.
+	===========================================================================================
+-->
+<data>
+	
+	<sound id="exampleSound">
+		<audioResourceID>exampleAudio</audioResourceID>
+		<nameID>textSounds/nameExampleSound</nameID>
+		<volume>1.0</volume>
+		<pan>0.0</pan>
+		<startOffset>0</startOffset>
+		<loops>0</loops>
+		<loopStartOffset>0</loopStartOffset>
+		<loopEndOffset>0</loopEndOffset>
+		<fadeInDuration>0</fadeInDuration>
+		<fadeOutDuration>0</fadeOutDuration>
+	</sound>
+	
+</data>

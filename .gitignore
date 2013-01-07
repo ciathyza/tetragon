@@ -1,0 +1,16 @@
+.settings/*
+.svn/*
+bin/*
+.idea/dictionaries/*
+.idea/uiDesigner.xml
+.idea/workspace.xml
+.actionScriptProperties
+.flexProperties
+.flexLibProperties
+.FlexUnitSettings
+.project
+Thumbs.db
+.DS_Store
+.~$lock
+*.tmp
+RECOVER_*.fla

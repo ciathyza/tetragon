@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	DATA FILE
+	Defines example data definitions.
+	=====================================================================================
+	A data definition file can contain one or more data definitions. A data definition
+	is a custom definition that is typically used to define media-supporting formats
+	like TileMaps, TileSets and SpriteSets or meta data objects like for example
+	factions or abilities in a role-playing game. Every data definition requires it's
+	own dedicated parser that knows how to translate the data into game-ready objects.
+	=====================================================================================
+-->
+<data>
+	
+	<!-- Example data definition that defines a faction for a role-playing game -->
+	<faction id="exampleFaction">
+		<properties>
+			<nameID>textFactions/nameExampleFaction</nameID>
+			<descriptionID>textFactions/descExampleFaction</descriptionID>
+		</properties>
+		<ranks>
+			<rank titleMaleID="" titleFemaleID="" perkTextID=""/>
+			<rank titleMaleID="" titleFemaleID="" perkTextID=""/>
+		</ranks>
+		<dispositions>
+				<disposition targetID="" modifier="" combatRelation="neutral"/>
+				<disposition targetID="" modifier="" combatRelation="neutral"/>
+		</dispositions>
+		<flags
+			hidden="false"
+			outlaw="false"
+		/>
+	</faction>
+	
+</data>

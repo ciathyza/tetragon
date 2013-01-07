@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	RESOURCE INDEX FILE
+	
+	The resource index file acts as a table of contents for all resources that are
+	available to the engine.
+	=====================================================================================
+-->
+<resources>
+	
+	<!-- ======================================================================================
+	HEADER
+	
+	Header data that describes the resource index file format.
+	
+	signature		File signature.
+	version			Version of the resource index file format.
+	entriesCount	Number of total defined entries in the index. reserved for content
+					creation kits.
+	author			Optional author name of who created the index.
+	description		Optional description for the index.
+	======================================================================================= -->
+	<header>
+		<signature>tetragon1</signature>
+		<version>1.1</version>
+		<entriesCount></entriesCount>
+		<author></author>
+		<description></description>
+	</header>
+	
+	
+	<!-- ======================================================================================
+	PACKAGE FILE DEFINITIONS
+	
+	List of package files in that resources are packed. Used for AIR builds only.
+	The engine supports multiple package files but the build process only uses one file
+	currently.
+	
+	file.id			Unique ID of the package file.
+	file.path		The path of the package file.
+	======================================================================================= -->
+	<packageFiles>
+		<file id="resourcePackage" path="resources.pak"/>
+	</packageFiles>
+	
+	
+	<!-- ======================================================================================
+	DATA FILE DEFINITIONS
+	
+	List of data file definitions. Data files are files in that data-, datalist- and entity
+	items are defined in. Every data-, datalist- or entity definition in the resource index
+	must refer to one of the files here that contains it.
+	
+	dataFiles.id			The unique ID of the data file.
+	dataFiles.path			The path of the data file.
+	dataFilespackageID		The ID of the package file in that the data file is stored
+							(only used by AIR builds).
+	======================================================================================= -->
+	<dataFiles>
+		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
+		<file id="dataFile1" path="data/data1.xml" packageID="resourcePackage"/>
+		<file id="dataFile2" path="data/data2.xml" packageID="resourcePackage"/>
+		<file id="dataFile3" path="data/data3.xml" packageID="resourcePackage"/>
+		<file id="dataFile4" path="data/data4.xml" packageID="resourcePackage"/>
+		<file id="dataListsFile" path="data/datalists.xml" packageID="resourcePackage"/>
+		<file id="entitiesFile" path="data/entities.xml" packageID="resourcePackage"/>
+	</dataFiles>
+	
+	
+	<!-- ======================================================================================
+	MEDIA DEFINITIONS
+	
+	This sections defines all media resource files. Resources of the media family generally
+	contain binary data, for example image files, audio files, shaders and custom binary data.
+	
+	resource.id				The unique resource ID of the media file.
+	resource.path			The path of the media file.
+	resource.packageID		The ID of the package file in that the media file is stored
+							(only used by AIR builds).
+	======================================================================================= -->
+	<media>
+		<image>
+			<resource id="image1" path="images/image1.jpg" packageID="resourcePackage"/>
+			<resource id="image2" path="images/image2.jpg" packageID="resourcePackage"/>
+			<resource id="skybox" path="images/skyboxes/skybox.jpg" packageID="resourcePackage"/>
+			<resource id="grass" path="images/textures/grass.jpg" packageID="resourcePackage"/>
+		</image>
+		<!-- Exampe of a media resource collection. -->
+		<image id="imageCollection">
+			<resource id="image3" path="images/image3.jpg" packageID="resourcePackage"/>
+			<resource id="image4" path="images/image4.jpg" packageID="resourcePackage"/>
+			<resource id="image5" path="images/image5.jpg" packageID="resourcePackage"/>
+			<resource id="image6" path="images/image6.jpg" packageID="resourcePackage"/>
+		</image>
+		<image32>
+			<resource id="image7" path="images/image7.jpg" packageID="resourcePackage"/>
+			<resource id="image8" path="images/image8.jpg" packageID="resourcePackage"/>
+		</image32>
+		<swf>
+			<resource id="exampleSWF1" path="swf/example1.swf" packageID="resourcePackage"/>
+			<resource id="exampleSWF2" path="swf/example2.swf" packageID="resourcePackage"/>
+		</swf>
+		<shader>
+			<resource id="shaderScanlines" path="shaders/scanlines.pbj" packageID="resourcePackage"/>
+			<resource id="exampleShader" path="shaders/example.pbj" packageID="resourcePackage"/>
+		</shader>
+		<audioMP3>
+			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
+			<resource id="exampleAudio1" path="audio/example1.mp3" packageID="resourcePackage"/>
+			<resource id="exampleAudio2" path="audio/example2.mp3" packageID="resourcePackage"/>
+			<resource id="exampleAudio3" path="audio/example3.mp3" packageID="resourcePackage"/>
+		</audioMP3>
+		<audioModule>
+		</audioModule>
+		<binary>
+			<resource id="exampleBinary1" path="geometry/example1.obj" packageID="resourcePackage"/>
+			<resource id="exampleBinary2" path="geometry/example2.obj" packageID="resourcePackage"/>
+			<resource id="exampleBinary3" path="geometry/example3.obj" packageID="resourcePackage"/>
+		</binary>
+	</media>
+	
+	
+	<!-- ======================================================================================
+	DATA DEFINITIONS
+	
+	This section is used to define any engine-native and custom data definitions. Any
+	data object defined in a data XML file must be presented here with it's unique ID.
+	Each group tag represents a specific data type and all data definitions for this
+	data type must be within such a group. The group tag can have the following
+	attributes:
+	
+	group.type			(Mandatory) The data type that the group represents, The data type
+						parser class must be mapped in the Class Registry with this string.
+	group.fileID		(Optional) If all data definitions represented in the group are
+						part of the same data file, the data file ID can be specified with
+						this attribute instead of each entry need to have a data file ID.
+	group.id			(Optional) By specifying an ID for the group it becomes a resource
+						collection whose data definitions can be loaded with one call
+						instead of having to load every single item in the group.
+	
+	resource.id			The ID of the data definition as specified in it's data file.
+	resource.fileID		The ID of the data file in which the item is defined in. If
+						group.fileID is set, this attribute can be omitted.
+	======================================================================================= -->
+	<data>
+		<!-- Data type group for native data type of Settings. -->
+		<group type="Settings">
+			<resource id="settings" fileID="settingsFile"/>
+		</group>
+		<!-- Custom data type group with definitions that are in different files. -->
+		<group type="ExampleDataType">
+			<resource id="dataItem1" fileID="dataFile1"/>
+			<resource id="dataItem2" fileID="dataFile2"/>
+			<resource id="dataItem3" fileID="dataFile2"/>
+		</group>
+		<!-- Custom data type group with definitions that are in one file. -->
+		<group type="AnotherDataType" fileID="dataFile3">
+			<resource id="dataItem4"/>
+			<resource id="dataItem5"/>
+			<resource id="dataItem6"/>
+		</group>
+		<!-- Custom data type group that is defined as a collection with ID "examples". -->
+		<group type="ExampleDataType" id="examples" fileID="dataFile4">
+			<resource id="dataItem7"/>
+			<resource id="dataItem8"/>
+			<resource id="dataItem9"/>
+		</group>
+	</data>
+	
+	
+	<!-- ======================================================================================
+	DATALIST DEFINITIONS
+	
+	Datalist definitions follow the same rules and attributes like data definitions.
+	======================================================================================= -->
+	<lists>
+		<group type="ExampleDataList" fileID="dataListsFile">
+			<resource id="dataList1"/>
+			<resource id="dataList2"/>
+		</group>
+	</lists>
+	
+	
+	<!-- ======================================================================================
+	ENTITY DEFINITIONS
+	
+	Entity definitions follow the same rules and attributes like data definitions.
+	======================================================================================= -->
+	<entities>
+		<group type="ExampleEntity" fileID="entitiesFile">
+			<resource id="entity1"/>
+			<resource id="entity2"/>
+			<resource id="entity3"/>
+		</group>
+	</entities>
+	
+	
+	<!-- ======================================================================================
+	XML FILE DEFINITIONS
+	
+	Definitions for XML file entries that contain XML data that should not be parsed by
+	the engine directly.
+	
+	resource.id				Unique resource ID for the XML data.
+	resource.path			Path of the XML file.
+	resource.packageID		ID of the resource package that the XML file is in.
+	======================================================================================= -->
+	<xml>
+		<resource id="rawXMLData1" path="xml/xmldata1.xml" packageID="resourcePackage"/>
+		<resource id="rawXMLData2" path="xml/xmldata2.xml" packageID="resourcePackage"/>
+	</xml>
+	
+	
+	<!-- ======================================================================================
+	TEXT RESOURCE DEFINITIONS
+	
+	Definitions for multi-locale text resources. A single text resource can consist of
+	multiple locale entries, each representing the same text content in a different language.
+	If a required locale is not defined for a text resource the engine will fall back on
+	using the default (first-defined) locale of the text resource. The following example
+	entries define two text resources "textUI" and "textDialogues" which both define a
+	default, English locale "en". The locale entries for "de" and "jp" are not defined so
+	the engine will use English even if "de" or "jp" are selected as the current locale.
+	
+	resource.id			The unique resource ID of the text resource.
+	locale.lang			The language identifier of the text resource's locale entry.
+	locale.path			The file path of the respective locale entry.
+	locale.packageID	ID of the resource package that the locale file is in.
+	======================================================================================= -->
+	<text>
+		<resource id="textUI">
+			<locale lang="en" path="text/en/ui_text.xml" packageID="resourcePackage"/>
+			<locale lang="de"/>
+			<locale lang="jp"/>
+		</resource>
+		<resource id="textDialogues">
+			<locale lang="en" path="text/en/dialogue_text.xml" packageID="resourcePackage"/>
+			<locale lang="de"/>
+			<locale lang="jp"/>
+		</resource>
+	</text>
+	
+	
+	<!-- ======================================================================================
+	PRELOAD LIST
+	
+	List of resources that are being preloaded by the engine. Preloaded resources are being
+	loaded during the engine startup phase, even before the first screen is opened. This
+	functionality can be used to preload resources that should be available by default or
+	as early as possible.
+	
+	resource.id			The ID of any resource definition that should be preloaded.
+	======================================================================================= -->
+	<preload>
+		<resource id="textUI"/>
+	</preload>
+	
+</resources>

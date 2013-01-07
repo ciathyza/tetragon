@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	SPRITESET FILE
+	Defines example spriteset definitions.
+	=====================================================================================
+	A spriteset definition file can contain one or more spriteset definitions. A
+	spriteset definition is a Tetragon-native data format that can be used to define
+	a set of sprites (or tiles). Spritesets are used to provide a collection of sprite
+	objects that can have one or more sprite sequences defined where every sequence can
+	consist of one or more single frames. The single frames are taken from a Spritesheet
+	definition.
+	
+	Spritesets can also define a set of property definitions that act as a pool to that
+	any defined sprite can refer by having it's own defined sprite properties. A
+	spriteset may also have a set of global properties which are properties that apply
+	to all sprites in the spriteset.
+	=====================================================================================
+-->
+<data>
+	
+	<spriteSet
+		id="exampleSpriteSet"
+		spriteSheetID="exampleSpriteSheet">
+		<!-- ======================================================================== -->
+		<propertyDefinitions>
+			<propertyDef id="0" name="isSolid" defaultValue="false"/>
+			<propertyDef id="1" name="isPortal" defaultValue="false"/>
+			<propertyDef id="2" name="activatorID" defaultValue=""/>
+			<propertyDef id="3" name="visible" defaultValue="false"/>
+			<propertyDef id="4" name="scoreValue" defaultValue="1000"/>
+			<propertyDef id="5" name="isActorSprite" defaultValue="false"/>
+		</propertyDefinitions>
+		<!-- ======================================================================== -->
+		<globalProperties>
+			<property id="3" value="true"/>
+			<property id="4" value="500"/>
+		</globalProperties>
+		<!-- ======================================================================== -->
+		<sprites>
+			
+			<!-- If a sprite has a frameID attribute and doesn't define any sequences, it -->
+			<!-- will receive a sequence automatically that only consists of one frame.   -->
+			<sprite id="sprite0" frameID="frame0">
+				<properties>
+					<property id="0" value="true"/>
+					<property id="2" value="testActivator"/>
+				</properties>
+			</sprite>
+			
+			<!-- A sprite can use a frame from a different spritesheet by explicitly  -->
+			<!-- refering to the sheet. otherwise it uses frames from the spritesheet -->
+			<!-- that is defined by the tileset.                                      -->
+			<sprite id="sprite1" spriteSheetID="anotherSpriteSheet" frameID="frame1">
+				<properties>
+					<property id="0" value="false"/>
+					<property id="1" value="true"/>
+					<property id="2" value="testActivator17"/>
+				</properties>
+			</sprite>
+			
+			<!-- A sprite can be a copy of another defined sprite. Any existing -->
+			<!-- properties are overriden.                                      -->
+			<sprite id="sprite2" copyOf="sprite1">
+				<properties>
+					<property id="0" value="true"/>
+					<property id="2" value="testActivator18"/>
+				</properties>
+			</sprite>
+			
+			<!-- Sprite sequences contain several sequence attributes and define an -->
+			<!-- array of one or more frame IDs.                                    -->
+			<sprite id="sprite3">
+				<properties>
+					<property id="0" value="true"/>
+					<property id="4" value="5400"/>
+				</properties>
+				<sequences>
+					<sequence id="default" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">frame2</frameIDs>
+					</sequence>
+					<sequence id="focussed" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">frame3, frame4, frame5</frameIDs>
+					</sequence>
+				</sequences>
+			</sprite>
+			
+			<sprite id="spriteMaleChar">
+				<properties>
+					<property id="5" value="true"/>
+				</properties>
+				<sequences>
+					<sequence name="default" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">maleIdleFrame</frameIDs>
+					</sequence>
+					<sequence name="walkSide" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">maleWalkSide1Frame, maleWalkSide2Frame, maleWalkSide3Frame</frameIDs>
+					</sequence>
+					<sequence name="walkDown" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">maleWalkDown1Frame, maleWalkDown2Frame, maleWalkDown3Frame</frameIDs>
+					</sequence>
+					<sequence name="walkUp" loops="0" playMode="forward" followSequence="" followDelay="0">
+						<frameIDs ctype="Array">maleWalkUp1Frame, maleWalkUp2Frame, maleWalkUp3Frame</frameIDs>
+					</sequence>
+				</sequences>
+			</sprite>
+			
+		</sprites>
+		
+		<!-- Sprite Groups are several sprites bound together to a group. These can then -->
+		<!-- be used as one object. -->
+		<groups>
+			<group id="group0">
+				<properties>
+					<property id="0" value="true"/>
+				</properties>
+				<sprites>
+					<sprite id="sprite0" x="0" y="0"/>
+					<sprite id="sprite1" x="16" y="0"/>
+					<sprite id="sprite0" x="0" y="16"/>
+					<sprite id="sprite1" x="16" y="16"/>
+				</sprites>
+			</group>
+		</groups>
+		
+	</spriteSet>
+	
+</data>

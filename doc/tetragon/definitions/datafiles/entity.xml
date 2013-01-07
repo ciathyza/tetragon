@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	ENTITY DEFINITION FILE
+	Defines example tetragon entity definitions.
+	=====================================================================================
+	An entity definition file can define one or more entities. It is a prototype object
+	for entity reference objects that are used in a game. Every entity definition is
+	defined by it's <entity> tag and may contain one or more <component> tags that
+	describe which entity components are used for an entity.
+	=====================================================================================
+	entity.id				The unique ID of the entity definition.
+	component.classID		The unique ID of the component class that is used for the
+							specific component description.
+	=====================================================================================
+-->
+<data>
+	
+	<!-- Example entity definition for a turn-based strategy game infantry unit -->
+	<entity id="unitInfantry">
+		<components>
+			<component classID="tbsUnitPropertiesComponent">
+				<nameID></nameID>
+				<nameShortID></nameShortID>
+				<designationID>textUnits/nameInfantryUnit</designationID>
+				<designationShortID>textUnits/nameShortInfantryUnit</designationShortID>
+				<descriptionID>textUnits/descInfantryUnit</descriptionID>
+				<movementTypeID>movementTypes/movementTypeInfantry</movementTypeID>
+				<price>1000</price>
+			</component>
+			<component classID="tbsUnitStatsComponent">
+				<movementPoints>2</movementPoints>
+				<mobility>3</mobility>
+				<vision>2</vision>
+				<strength>6</strength>
+				<fuel>-1</fuel>
+				<xp>0</xp>
+				<xpValueAttack>3</xpValueAttack>
+				<xpValueDefense>3</xpValueDefense>
+			</component>
+			<component classID="tbsUnitWeaponComponent">
+				<primaryWeaponID></primaryWeaponID>
+				<secondaryWeaponID>weaponAssaultRifle</secondaryWeaponID>
+			</component>
+			<component classID="TBSUnitArmor">
+				<armorID>armorInfantry</armorID>
+			</component>
+			<component classID="TBSUnitAbilities">
+			</component>
+			<component classID="TBSUnitAI">
+				<combatAIID>aiInfantry</combatAIID>
+			</component>
+			<component classID="TBSPrerequisites">
+				<technologyID>testTechnology</technologyID>
+				<resourceID>testResource</resourceID>
+			</component>
+			<component classID="TBSUnitFlags">
+				<canCaptureUnits>true</canCaptureUnits>
+				<canCaptureFacilities>true</canCaptureFacilities>
+				<canPillage>true</canPillage>
+				<canFortify>true</canFortify>
+				<canRebase>false</canRebase>
+			</component>
+			<component classID="TBSUnitArt">
+			</component>
+		</components>
+	</entity>
+	
+	<!-- Example entity definition for a turn-based strategy game light tank unit -->
+	<entity id="unitLightTank">
+		<components>
+			<component classID="tbsUnitPropertiesComponent">
+				<nameID></nameID>
+				<nameShortID></nameShortID>
+				<designationID>textUnits/nameLightTankUnit</designationID>
+				<designationShortID>textUnits/nameShortLightTankUnit</designationShortID>
+				<descriptionID>textUnits/descLightTankUnit</descriptionID>
+				<movementTypeID>movementTypes/movementTypeTread</movementTypeID>
+				<price>2400</price>
+			</component>
+			<component classID="tbsUnitStatsComponent">
+				<movementPoints>2</movementPoints>
+				<mobility>3</mobility>
+				<vision>2</vision>
+				<strength>6</strength>
+				<fuel>-1</fuel>
+				<xp>0</xp>
+				<xpValueAttack>3</xpValueAttack>
+				<xpValueDefense>3</xpValueDefense>
+			</component>
+			<component classID="tbsUnitWeaponComponent">
+				<primaryWeaponID>weaponCanon</primaryWeaponID>
+				<secondaryWeaponID>weaponMachineGun</secondaryWeaponID>
+			</component>
+			<component classID="TBSUnitArmor">
+				<armorID>armorLightTank</armorID>
+			</component>
+			<component classID="TBSUnitAbilities">
+			</component>
+			<component classID="TBSUnitAI">
+				<combatAIID>aiTank</combatAIID>
+			</component>
+			<component classID="TBSPrerequisites">
+				<technologyID>testTechnology</technologyID>
+				<resourceID>testResource</resourceID>
+			</component>
+			<component classID="TBSUnitFlags">
+				<canCaptureUnits>true</canCaptureUnits>
+				<canCaptureFacilities>false</canCaptureFacilities>
+				<canPillage>true</canPillage>
+				<canFortify>true</canFortify>
+				<canRebase>false</canRebase>
+			</component>
+			<component classID="TBSUnitArt">
+			</component>
+		</components>
+	</entity>
+	
+	<!-- An example entity definition, using a complex type (ctype) property reference -->
+	<entity id="exampleEntity">
+		<components>
+			<component classID="spacial2DComponent">
+				<position ctype="Point2D">x: 50, y: 100</position>
+				<rotation>0.0</rotation>
+				<scale>1.0</scale>
+			</component>
+		</components>
+	</entity>
+
+	<!-- An example entity definition for a particle emitter -->
+	<entity id="exampleParticleEmitter">
+		<components>
+			<component classID="particleEmitterComponent">
+				<position ctype="Point2D">x: 50, y: 100</position>
+				<particleDefinitionID>exampleParticle</particleDefinitionID>
+			</component>
+		</components>
+	</entity>
+	
+	<!-- An example entity definition for a particle -->
+	<entity id="exampleParticle">
+		<components>
+			<component classID="graphicsComponent">
+				<graphicID>particleSymbol</graphicID>
+			</component>
+			<component classID="gravityComponent">
+				<force ctype="Vector2D">x: 0, y: 0</force>
+			</component>
+			<component classID="physics2DComponent">
+				<velocity ctype="Vector2D">x: 0, y: 0</velocity>
+			</component>
+			<component classID="spacial2DComponent">
+				<position ctype="Vector2D">x: 0, y: 0</position>
+				<rotation>0</rotation>
+			</component>
+		</components>
+	</entity>
+	
+</data>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	SOUNDGROUP DEFINITION FILE
+	A sound group defines a collection of sound objects that are played in a linear
+	or random order.
+	===========================================================================================
+	soundIDs				A list of all Sound IDs that are part of the sound group.
+	loops					(Optional) The number of times the whole sound group should loop.
+							0 is one-shot, -1 is endless. Default: 0.
+	playMode				(Optional) Playback mode of the sound group. One of the following:
+							"forward", "backward", "pingpong", "random" or "triggered". Sounds
+							in the group are played according to the order that they are placed
+							in the group and the specified play mode.
+	pauseMinDuration		(Optional) This property together with pauseMaxDuration can be used
+							to determine a pause between sounds played in the group. If both min
+							and max are 0, no pause occurs, if both values are different, a
+							random value will be calculated between min and max duration.
+	pauseMaxDuration		(Optional) This property together with pauseMinDuration can be used
+							to determine a pause between sounds played in the group. If both min
+							and max are 0, no pause occurs, if both values are different, a
+							random value will be calculated between min and max duration.
+	allowRandomRepeats		(Optional) If playmode is "random" this value can be set to false
+							to prevent a random sound from being played twice successively.
+							Default: true.
+	===========================================================================================
+-->
+<data>
+	
+	<soundGroup id="exampleSound">
+		<soundIDs ctype="Array">sound1, sound2, sound3</soundIDs>
+		<loops>0</loops>
+		<playMode>forward</playMode>
+		<pauseMinDuration>0.0</pauseMinDuration>
+		<pauseMaxDuration>0.0</pauseMaxDuration>
+		<allowRandomRepeats>true</allowRandomRepeats>
+	</soundGroup>
+	
+</data>

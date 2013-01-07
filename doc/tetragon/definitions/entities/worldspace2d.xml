@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	WORLDSPACE2D ENTITY DEFINITION FILE
+	===========================================================================================
+	Defines a worldspace for use in a 2D game. The worldspace acts as a container for
+	any number of Cell2D objects that should be part of the worldspace.
+	===========================================================================================
+	worldSpace2DComponent:
+		nameID					(Optional) String ID of the worldspace name.
+		descriptionID			(Optional) String ID of the worldspace description.
+		parentWorldSpaceID		(Optional) ID of the parent worldspace.
+		mapID					(Optional) ID of the map (image) used to represent this
+								worldspace.
+		musicID					(Optional) ID of a SoundGroup that represents the music
+								played while the player is in this worldspace.
+		locationID				(Optional) ID of a Location used for the entire worldspace.
+		encounterZoneID			(Optional) ID of an EncounterZone used for the entire
+								worldspace.
+		allowFastTravel			Flag that determines whether the player can fast travel
+								from this worldspace, default: true.
+		allowWait				Flag that determines whether the player is allowed to wait
+								while in this worldspace, default: true.
+	===========================================================================================
+-->
+<data>
+	
+	<entity id="exampleWorldSpace2D">
+		<components>
+			<component classID="worldSpace2DComponent">
+				<nameID>textWorldSpaces/nameExampleWorldSpace2D</nameID>
+				<descriptionID>textWorldSpaces/descExampleWorldSpace2D</descriptionID>
+				<parentWorldSpaceID></parentWorldSpaceID>
+				<mapID></mapID>
+				<musicID></musicID>
+				<locationID></locationID>
+				<encounterZoneID></encounterZoneID>
+				<allowFastTravel>true</allowFastTravel>
+				<allowWait>true</allowWait>
+			</component>
+		</components>
+	</entity>
+	
+</data>

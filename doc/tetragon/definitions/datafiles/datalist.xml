@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	DATALIST FILE
+	Defines example datalists.
+	=====================================================================================
+	A datalist file can define one or more datalists. A datalist contains items
+	which in turn contain several datalist item properties and may contain one or more
+	datalist item sets (wrapped in the <sets> tag). Datalist item sets can contain a
+	list of key-value pairs.
+	=====================================================================================
+	list.id					The unique ID of the datalist.
+	item.id					The unique ID of an item in the datalist.
+	=====================================================================================
+-->
+<data>
+	
+	<!-- Example datalist that defines a list of movement types for units in a turn-based -->
+	<!-- strategy game. -->
+	<list id="movementTypes">
+		<item id="movementTypeInfantry">
+			<properties>
+				<nameID>textLists/nameMovementTypeInfantry</nameID>
+				<domainID>domainTypes/domainGround</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainGrassland>0</terrainGrassland>
+					<terrainPlains>0</terrainPlains>
+					<terrainTundra>0</terrainTundra>
+					<terrainDesert>0</terrainDesert>
+					<terrainHills>0</terrainHills>
+					<terrainMountains>-3</terrainMountains>
+					<terrainSnow>-1</terrainSnow>
+					<terrainIce>-1</terrainIce>
+					<terrainForest>-1</terrainForest>
+					<terrainJungle>-1</terrainJungle>
+					<terrainMarsh>-1</terrainMarsh>
+					<terrainSwamp>-2</terrainSwamp>
+					<terrainUrban>0</terrainUrban>
+					<terrainRuins>0</terrainRuins>
+					<terrainRoad>0</terrainRoad>
+					<terrainBridge>0</terrainBridge>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>-1</weatherHeavyRain>
+					<weatherHail>-1</weatherHail>
+					<weatherSnow>0</weatherSnow>
+					<weatherBlizzard>-3</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>0</weatherThunderstorm>
+					<weatherSandstorm>-3</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-3</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+		<item id="movementTypeTires">
+			<properties>
+				<nameID>textLists/nameMovementTypeTires</nameID>
+				<domainID>domainTypes/domainGround</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainGrassland>0</terrainGrassland>
+					<terrainPlains>0</terrainPlains>
+					<terrainTundra>0</terrainTundra>
+					<terrainDesert>0</terrainDesert>
+					<terrainHills>-1</terrainHills>
+					<terrainMountains>-10</terrainMountains>
+					<terrainSnow>0</terrainSnow>
+					<terrainIce>-2</terrainIce>
+					<terrainForest>-2</terrainForest>
+					<terrainJungle>-3</terrainJungle>
+					<terrainMarsh>-2</terrainMarsh>
+					<terrainSwamp>-3</terrainSwamp>
+					<terrainUrban>1</terrainUrban>
+					<terrainRuins>-1</terrainRuins>
+					<terrainRoad>2</terrainRoad>
+					<terrainBridge>2</terrainBridge>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>0</weatherHeavyRain>
+					<weatherHail>0</weatherHail>
+					<weatherSnow>-1</weatherSnow>
+					<weatherBlizzard>-2</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>0</weatherThunderstorm>
+					<weatherSandstorm>-2</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-2</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+		<item id="movementTypeTread">
+			<properties>
+				<nameID>textLists/nameMovementTypeTread</nameID>
+				<domainID>domainTypes/domainGround</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainGrassland>1</terrainGrassland>
+					<terrainPlains>1</terrainPlains>
+					<terrainTundra>1</terrainTundra>
+					<terrainDesert>0</terrainDesert>
+					<terrainHills>0</terrainHills>
+					<terrainMountains>-8</terrainMountains>
+					<terrainSnow>0</terrainSnow>
+					<terrainIce>0</terrainIce>
+					<terrainForest>-1</terrainForest>
+					<terrainJungle>-2</terrainJungle>
+					<terrainMarsh>-1</terrainMarsh>
+					<terrainSwamp>-2</terrainSwamp>
+					<terrainUrban>1</terrainUrban>
+					<terrainRuins>0</terrainRuins>
+					<terrainRoad>2</terrainRoad>
+					<terrainBridge>2</terrainBridge>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>0</weatherHeavyRain>
+					<weatherHail>0</weatherHail>
+					<weatherSnow>0</weatherSnow>
+					<weatherBlizzard>0</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>0</weatherThunderstorm>
+					<weatherSandstorm>0</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-1</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+		<item id="movementTypeSea">
+			<properties>
+				<nameID>textLists/nameMovementTypeSea</nameID>
+				<domainID>domainTypes/domainSea</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainBridge>0</terrainBridge>
+					<terrainCoast>0</terrainCoast>
+					<terrainSeaShallow>0</terrainSeaShallow>
+					<terrainSeaDeep>0</terrainSeaDeep>
+					<terrainSeaRough>-1</terrainSeaRough>
+					<terrainReef>0</terrainReef>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>0</weatherHeavyRain>
+					<weatherHail>0</weatherHail>
+					<weatherSnow>0</weatherSnow>
+					<weatherBlizzard>-1</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>0</weatherThunderstorm>
+					<weatherSandstorm>0</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-1</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+		<item id="movementTypeHover">
+			<properties>
+				<nameID>textLists/nameMovementTypeHover</nameID>
+				<domainID>domainTypes/domainGroundSea</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainGrassland>0</terrainGrassland>
+					<terrainPlains>0</terrainPlains>
+					<terrainTundra>0</terrainTundra>
+					<terrainDesert>0</terrainDesert>
+					<terrainHills>-1</terrainHills>
+					<terrainMountains>-10</terrainMountains>
+					<terrainSnow>0</terrainSnow>
+					<terrainIce>0</terrainIce>
+					<terrainForest>-2</terrainForest>
+					<terrainJungle>-3</terrainJungle>
+					<terrainMarsh>1</terrainMarsh>
+					<terrainSwamp>1</terrainSwamp>
+					<terrainUrban>0</terrainUrban>
+					<terrainRuins>-1</terrainRuins>
+					<terrainRoad>0</terrainRoad>
+					<terrainBridge>0</terrainBridge>
+					<terrainCoast>0</terrainCoast>
+					<terrainSeaShallow>0</terrainSeaShallow>
+					<terrainSeaDeep>0</terrainSeaDeep>
+					<terrainSeaRough>-2</terrainSeaRough>
+					<terrainReef>0</terrainReef>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>0</weatherHeavyRain>
+					<weatherHail>0</weatherHail>
+					<weatherSnow>0</weatherSnow>
+					<weatherBlizzard>-1</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>0</weatherThunderstorm>
+					<weatherSandstorm>-2</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-2</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+		<item id="movementTypeAir">
+			<properties>
+				<nameID>textLists/nameMovementTypeAir</nameID>
+				<domainID>domainTypes/domainAir</domainID>
+			</properties>
+			<sets>
+				<terrainModifiers>
+					<terrainGrassland>0</terrainGrassland>
+					<terrainPlains>0</terrainPlains>
+					<terrainTundra>0</terrainTundra>
+					<terrainDesert>0</terrainDesert>
+					<terrainHills>0</terrainHills>
+					<terrainMountains>0</terrainMountains>
+					<terrainSnow>0</terrainSnow>
+					<terrainIce>0</terrainIce>
+					<terrainForest>0</terrainForest>
+					<terrainJungle>0</terrainJungle>
+					<terrainMarsh>0</terrainMarsh>
+					<terrainSwamp>0</terrainSwamp>
+					<terrainUrban>0</terrainUrban>
+					<terrainRuins>0</terrainRuins>
+					<terrainRoad>0</terrainRoad>
+					<terrainBridge>0</terrainBridge>
+					<terrainCoast>0</terrainCoast>
+					<terrainSeaShallow>0</terrainSeaShallow>
+					<terrainSeaDeep>0</terrainSeaDeep>
+					<terrainSeaRough>0</terrainSeaRough>
+					<terrainReef>0</terrainReef>
+				</terrainModifiers>
+				<weatherModifiers>
+					<weatherFair>0</weatherFair>
+					<weatherOvercast>0</weatherOvercast>
+					<weatherRain>0</weatherRain>
+					<weatherHeavyRain>-1</weatherHeavyRain>
+					<weatherHail>-1</weatherHail>
+					<weatherSnow>-1</weatherSnow>
+					<weatherBlizzard>-2</weatherBlizzard>
+					<weatherFog>0</weatherFog>
+					<weatherThunderstorm>-1</weatherThunderstorm>
+					<weatherSandstorm>-1</weatherSandstorm>
+					<weatherHeatWave>0</weatherHeatWave>
+					<weatherFallout>-1</weatherFallout>
+				</weatherModifiers>
+			</sets>
+		</item>
+	</list>
+	
+	<!-- Example datalist that defines a list of terrain types for tiles in a turn-based -->
+	<!-- strategy game. -->
+	<list id="terrainTypes">
+		<item id="terrainGrassland">
+			<properties>
+				<nameID>textLists/nameTerrainGrassland</nameID>
+				<descriptionID>textLists/descTerrainGrassland</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-20</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainPlains">
+			<properties>
+				<nameID>textLists/nameTerrainPlains</nameID>
+				<descriptionID>textLists/descTerrainPlains</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainTundra">
+			<properties>
+				<nameID>textLists/nameTerrainTundra</nameID>
+				<descriptionID>textLists/descTerrainTundra</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainDesert">
+			<properties>
+				<nameID>textLists/nameTerrainDesert</nameID>
+				<descriptionID>textLists/descTerrainDesert</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-33</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainHills">
+			<properties>
+				<nameID>textLists/nameTerrainHills</nameID>
+				<descriptionID>textLists/descTerrainHills</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>20</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainMountains">
+			<properties>
+				<nameID>textLists/nameTerrainMountains</nameID>
+				<descriptionID>textLists/descTerrainMountains</descriptionID>
+				<movementCost>4</movementCost>
+				<combatModifier>25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainSnow">
+			<properties>
+				<nameID>textLists/nameTerrainSnow</nameID>
+				<descriptionID>textLists/descTerrainSnow</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-20</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainIce">
+			<properties>
+				<nameID>textLists/nameTerrainIce</nameID>
+				<descriptionID>textLists/descTerrainIce</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>-25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainForest">
+			<properties>
+				<nameID>textLists/nameTerrainForest</nameID>
+				<descriptionID>textLists/descTerrainForest</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainJungle">
+			<properties>
+				<nameID>textLists/nameTerrainJungle</nameID>
+				<descriptionID>textLists/descTerrainJungle</descriptionID>
+				<movementCost>3</movementCost>
+				<combatModifier>25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainMarsh">
+			<properties>
+				<nameID>textLists/nameTerrainMarsh</nameID>
+				<descriptionID>textLists/descTerrainMarsh</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>-20</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainSwamp">
+			<properties>
+				<nameID>textLists/nameTerrainSwamp</nameID>
+				<descriptionID>textLists/descTerrainSwamp</descriptionID>
+				<movementCost>3</movementCost>
+				<combatModifier>-20</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainUrban">
+			<properties>
+				<nameID>textLists/nameTerrainUrban</nameID>
+				<descriptionID>textLists/descTerrainUrban</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>33</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainRuins">
+			<properties>
+				<nameID>textLists/nameTerrainRuins</nameID>
+				<descriptionID>textLists/descTerrainRuins</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainRoad">
+			<properties>
+				<nameID>textLists/nameTerrainRoad</nameID>
+				<descriptionID>textLists/descTerrainRoad</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-25</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainBridge">
+			<properties>
+				<nameID>textLists/nameTerrainBridge</nameID>
+				<descriptionID>textLists/descTerrainBridge</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>-33</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainCoast">
+			<properties>
+				<nameID>textLists/nameTerrainCoast</nameID>
+				<descriptionID>textLists/descTerrainCoast</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>0</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainSeaShallow">
+			<properties>
+				<nameID>textLists/nameTerrainSeaShallow</nameID>
+				<descriptionID>textLists/descTerrainSeaShallow</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>0</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainSeaDeep">
+			<properties>
+				<nameID>textLists/nameTerrainSeaDeep</nameID>
+				<descriptionID>textLists/descTerrainSeaDeep</descriptionID>
+				<movementCost>1</movementCost>
+				<combatModifier>0</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainSeaRough">
+			<properties>
+				<nameID>textLists/nameTerrainSeaRough</nameID>
+				<descriptionID>textLists/descTerrainSeaRough</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>15</combatModifier>
+			</properties>
+		</item>
+		<item id="terrainReef">
+			<properties>
+				<nameID>textLists/nameTerrainReef</nameID>
+				<descriptionID>textLists/descTerrainReef</descriptionID>
+				<movementCost>2</movementCost>
+				<combatModifier>20</combatModifier>
+			</properties>
+		</item>
+	</list>
+	
+</data>

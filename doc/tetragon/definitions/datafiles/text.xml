@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	TEXT FILE
+	Defines example text definitions.
+	=====================================================================================
+	A text file is a file that defines a number of strings that are used to represent
+	text referenced by any data-, datalist- or entity definitions or anywhere else in
+	the application, for example for UI text.
+	
+	Text strings are mapped by a unique ID and should be wrapped into CDATA tags for
+	maximum XML compability. They can be as short or long as needed, any linebreaks are
+	ignored when the text is parsed. For special formatting use basic HTML tags inside
+	the text.
+	
+	Text files may contain text in specific languages but different languages should
+	not be mixed into the same text file, instead use different text files for different
+	languages.
+	=====================================================================================
+-->
+<text>
+	<string id="exampleText1"><![CDATA[Lorem ipsum dolor sit amet]]></string>
+	<string id="exampleText2">
+		<![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquam, ligula
+		sed pellentesque porta, justo nisi scelerisque elit, placerat consectetur felis ante id
+		ligula. Donec et elit justo. Morbi iaculis placerat nunc fermentum fermentum. Aliquam
+		tincidunt sagittis nisl nec volutpat. Morbi eget nibh lectus. Cum sociis natoque penatibus
+		et magnis dis parturient montes, nascetur ridiculus mus. Mauris consequat ultrices
+		eleifend. Mauris imperdiet urna eu lectus ornare nec hendrerit odio scelerisque.]]>
+	</string>
+	<string id="exampleText3">
+		<![CDATA[Lorem ipsum dolor sit amet, consectetur adipiscing elit.]]>
+	</string>
+	<string id="exampleText4">
+		<![CDATA[Suspendisse eros massa, euismod vehicula facilisis feugiat, volutpat a felis.
+		Vestibulum ante ipsum primis.]]>
+	</string>
+</text>

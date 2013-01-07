@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	LAYOUT DEFINITION FILE
+	===========================================================================================
+	
+	===========================================================================================
+-->
+<data>
+	
+	<layout id="exampleLayout">
+		
+		<element id="element0" sourceType="swf" resourceID="exampleLayoutAssets" name="greetingDialog">
+			<position mode="manual" x="20" y="20"/>
+			<size width="200" height="120"/>
+		</element>
+		
+	</layout>
+	
+</data>

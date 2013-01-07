@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	TILEMAP FILE
+	Defines example tilemap definitions.
+	=====================================================================================
+	
+	=====================================================================================
+-->
+<data>
+	
+	<tileMap
+		id="tileMap0"
+		type="grid"
+		width="10"
+		height="10"
+		margin="0"
+		edgeMode="halt"
+		backgroundColor="0xFF000000"
+		mergeLayers="true"
+		spriteSetID="exampleSpriteSet"
+		factoryID="tileMapFactory">
+		
+		<properties>
+			<property id="" value=""/>
+			<property id="" value=""/>
+			<property id="" value=""/>
+		</properties>
+		
+		<layers>
+			<layer
+				id="randomLayer"
+				transparent="false"
+				fillColor="0x000000"
+				autoScroll="none"
+				autoScrollSpeed="0"
+				autoGroup="4"
+				layoutGeneration="random">
+				<properties>
+					<property id="" value=""/>
+				</properties>
+				<layout>
+				</layout>
+			</layer>
+			<layer
+				id="gridLayer"
+				transparent="true"
+				fillColor="0x00000000"
+				autoScroll="none"
+				autoScrollSpeed="0"
+				autoGroup="0"
+				layoutGeneration="">
+				<properties>
+					<property id="" value=""/>
+				</properties>
+				<layout>
+					<group id="group0"/>
+					<group id="group1"/>
+					<group id="group2"/>
+					<group id="group3"/>
+				</layout>
+			</layer>
+			<!-- Freeform layer, can only be used with map type "free". Groups/Sprites need to -->
+			<!-- have an explicitly defined coordinate. -->
+			<layer
+				id="freeFormLayer"
+				transparent="true"
+				fillColor="0x00000000"
+				autoScroll="none"
+				autoScrollSpeed="0"
+				autoGroup="0"
+				layoutGeneration="">
+				<properties>
+					<property id="" value=""/>
+				</properties>
+				<layout>
+					<group id="group0" x="14" y="245"/>
+					<group id="group1" x="144" y="27"/>
+				</layout>
+			</layer>
+		</layers>
+		
+	</tileMap>
+	
+</data>

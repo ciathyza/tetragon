@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	SETTINGS FILE
+	Defines example game settings.
+	=====================================================================================
+	A settings file is a special data file that defines setting properties specific to
+	a game (not to be confused with the engine config). The file contains several
+	default settings that the engine supports (some of them required) but it can
+	be extended with custom settings as a game may require it. Setting properties
+	are simple key-value pairs and support complex types (ctype).
+	=====================================================================================
+-->
+<settings>
+	
+	<!-- ================================================================================
+	BASE SETTINGS
+	================================================================================= -->
+	<!-- The frame rate at which the engine's game loop runs. -->
+	<frameRate>60</frameRate>
+	<!-- The factor that screens are globally scaled with. -->
+	<screenScale>1.0</screenScale>
+	<!-- The ID of the first-opening screen. If the splash screen is defined and
+	enabled, it will open before the initial screen opens. -->
+	<initialScreenID>demoScreen</initialScreenID>
+	<!-- The ID of the used UI theme. -->
+	<themeID>default</themeID>
+	
+	<!-- ================================================================================
+	SPLASH SCREEN SETTINGS
+	================================================================================= -->
+	<!-- The ID of the engine splash screen. -->
+	<splashScreenID>splashScreen</splashScreenID>
+	<!-- A series of color values that define the background gradient for the splash screen. -->
+	<splashBackgroundColors ctype="Array">0x002C3F, 0x0181B8</splashBackgroundColors>
+	<!-- The color of the engine logo on the splash screen. -->
+	<splashLogoColor>0xFFBF00</splashLogoColor>
+	<!-- Seconds that the splash screen should show before it auto-closes. -->
+	<splashScreenWaitTime>6</splashScreenWaitTime>
+	<!-- Determines whether to show the splash screen or not. -->
+	<showSplashScreen>true</showSplashScreen>
+	<!-- Determines whether the user is allowed to abort the splash screen or not
+	(by pressing a key or clicking the mouse). -->
+	<allowSplashAbort>true</allowSplashAbort>
+	
+	<!-- ================================================================================
+	GAME-SPECIFIC SETTINGS
+	================================================================================= -->
+	<!-- Custom example setting -->
+	<essentialIncapMinHealth>20</essentialIncapMinHealth>
+	
+</settings>

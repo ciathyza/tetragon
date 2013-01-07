@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	CELL2D ENTITY DEFINITION FILE
+	===========================================================================================
+	cell2DComponent:
+		nameID					(Optional) String ID of the cell name.
+		descriptionID			(Optional) String ID of the cell description.
+		type					Type of the cell, can be either interior or exterior. Interior
+								Cells are entered through a load portal linked to another cell
+								(interior or exterior). When in an interior, the exterior world
+								is no longer visible. Each interior cell is essentially its own
+								universe.
+		worldSpaceID			The ID of the worldspace that the cell belongs to. Interior
+								type cell always belong to a reserved worldspace with the
+								ID interiors. Exterior type cells can belong to any other
+								defined worldspace.
+		acousticSpaceID			(Optional) ID of an AcousticSpace that is used for this cell.
+		musicID					(Optional) ID of a SoundGroup that represents the music
+								played while the player is in this cell.
+		locationID				(Optional) ID of a Location used for the cell.
+		allowFastTravel			Flag that determines whether the player can fast travel
+								from this cell, default: true.
+		allowWait				Flag that determines whether the player is allowed to wait
+								while in this cell, default: true.
+	cell2DInteriorDataComponent:
+		encounterZoneID			(Optional) ID of an EncounterZone used for the interior cell.
+		ownerActorID			(Optional) ID of an Actor that is the owner of the cell.
+		ownerFactionID			(Optional) ID of a Faction which is the owner of the cell.
+		ownerFactionRankID		(Optional) If the owner is a Faction then this field can be
+								used to specify a rank in the faction that is required to
+								access the cell.
+		isPublicArea			If true, no one will ever be considered trespassing in the
+								cell, but all objects in the cell still inherit the cell
+								ownership and so cannot be freely taken. Default: false.
+		isOffLimits				If true, anyone caught trespassing will immediately be
+								considered committing a crime (instead of being warned as
+								with normal trespassing behavior). Default: false.
+	===========================================================================================
+-->
+<data>
+	
+	<entity id="exampleCell2D">
+		<components>
+			<component classID="cell2DComponent">
+				<nameID>textCells/nameExampleCell2D</nameID>
+				<descriptionID>textCells/descExampleCell2D</descriptionID>
+				<type>interior</type>
+				<worldSpaceID>interiors</worldSpaceID>
+				<acousticSpaceID></acousticSpaceID>
+				<musicID></musicID>
+				<locationID></locationID>
+				<allowFastTravel>true</allowFastTravel>
+				<allowWait>true</allowWait>
+			</component>
+			<component classID="cell2DInteriorDataComponent">
+				<encounterZoneID></encounterZoneID>
+				<ownerActorID></ownerActorID>
+				<ownerFactionID></ownerFactionID>
+				<ownerFactionRankID></ownerFactionRankID>
+				<isPublicArea>false</isPublicArea>
+				<isOffLimits>false</isOffLimits>
+			</component>
+			<component classID="refListComponent">
+				<ref id="exampleRef0">
+					<component classID="actorRefComponent">
+						<baseObjectID>exampleActor</baseObjectID>
+						<encounterZone></encounterZone>
+						<enabled>true</enabled>
+						<respawns>true</respawns>
+						<dead>false</dead>
+					</component>
+					<component classID="spacial2DComponent">
+						<position ctype="Point2D">x: 50, y: 100</position>
+						<rotation>0.0</rotation>
+						<scale>1.0</scale>
+					</component>
+				</ref>
+			</component>
+		</components>
+	</entity>
+	
+</data>

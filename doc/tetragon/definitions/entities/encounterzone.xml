@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	===========================================================================================
+	ENCOUNTER ZONE ENTITY DEFINITION FILE
+	===========================================================================================
+	encounterZoneComponent:
+		minLevel				(Optional) The minimum level that the encounter zone can be
+								calculated. In other words, if the player's level is less
+								than the minimum level, the encounter zone will ignore
+								the player's level and use the minimum level.
+		maxLevel				The maximum level that the encounter zone can be calculated.
+								If left 0, the encounter zone will not max out.
+		resets					If set to false the encounter zone will never reset, no matter
+								how much time passes. The encounter zone will maintain its
+								current state forever.
+		matchPCIfBelowMinLevel	If set to true, the encounter zone will match the player's
+								level if the player enters the encounter zone below the
+								minimum level.
+		regardCombatBoundary	By default actors in combat with the player only follow the
+								player through load portals that lead to the same encounter
+								zone. With this set to false, actors in combat with the player
+								will ignore this rule and follow the player into a different
+								encounter zone.
+	===========================================================================================
+-->
+<data>
+	
+	<entity id="exampleEncounterZone">
+		<components>
+			<component classID="encounterZoneComponent">
+				<minLevel>0</minLevel>
+				<maxLevel>0</maxLevel>
+				<resets>true</resets>
+				<matchPCIfBelowMinLevel>false</matchPCIfBelowMinLevel>
+				<regardCombatBoundary>true</regardCombatBoundary>
+			</component>
+		</components>
+	</entity>
+	
+</data>

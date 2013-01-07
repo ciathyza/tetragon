@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	SPRITESHEET FILE
+	Defines example spritesheet definitions.
+	=====================================================================================
+	A spritesheet definition file can contain one or more spritesheet definitions. A
+	spritesheet definition is a Tetragon-native data format that can be used to define
+	a sheet of sprites (or tiles) that are laid out on a spritesheet image with either
+	reguar sizes or irregular (frames have different width and height) sizes.
+	Spritesheets are used to provide the single-image-frames used in Spritesets.
+	
+	Irregular spritesheet images need to have marker pixels placed that use a unique
+	color value that is not used by any other pixel on the image anbd that define the
+	sizes for every frame's boundaries.
+	=====================================================================================
+-->
+<data>
+	
+	<spriteSheet
+		id="exampleSpriteSheet"
+		frameWidth="64"
+		frameHeight="64"
+		frameOffsetH="0"
+		frameOffsetV="0"
+		frameGapH="0"
+		frameGapV="0"
+		startFrame="0"
+		guidePixelColor="0x0000FF"
+		backgroundColor="0xFF00FF"
+		irregular="false"
+		transparent="true"
+		imageID="exampleSpriteeSheetImage">
+		<frames>
+			<frame id="frame0" registrationPoint=""/>
+			<frame id="frame1" registrationPoint=""/>
+			<frame id="frame2" registrationPoint=""/>
+			<frame id="frame3" registrationPoint=""/>
+			<frame id="frame4" registrationPoint=""/>
+			<frame id="frame5" registrationPoint=""/>
+			<frame id="frame6" registrationPoint=""/>
+			<frame id="frame7" registrationPoint=""/>
+			<frame id="frame8" registrationPoint=""/>
+			<frame id="frame9" registrationPoint=""/>
+		</frames>
+	</spriteSheet>
+	
+</data>
