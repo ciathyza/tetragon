@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/@air_version@">
+	
+	<id>@app_id@</id>
+	<filename>@air_filename@</filename>
+	<name>@app_name@</name>
+	<versionNumber>@app_version@</versionNumber>
+	<versionLabel>v@app_version@.@build_nr@</versionLabel>
+	<description>@app_description@</description>
+	<copyright>@app_copyright@</copyright>
+	
+	<initialWindow>
+		<content>@app_swfname@</content>
+		<title>@air_windowtitle@</title>
+		<systemChrome>@air_systemChrome@</systemChrome>
+		<transparent>@air_transparent@</transparent>
+		<visible>@air_visible@</visible>
+		<minimizable>@air_minimizable@</minimizable>
+		<maximizable>@air_maximizable@</maximizable>
+		<resizable>@air_resizable@</resizable>
+		<width>@app_width@</width>
+		<height>@app_height@</height>
+		<minSize>@air_minsize@</minSize>
+		<!-- <maxSize></maxSize> -->
+		<!-- <x></x> -->
+		<!-- <y></y> -->
+		<fullScreen>@air_ios_fullscreen@</fullScreen>
+		<autoOrients>@air_ios_autoOrients@</autoOrients>
+		<aspectRatio>@air_ios_aspectRatio@</aspectRatio>
+		<renderMode>@air_ios_renderMode@</renderMode>
+		<depthAndStencil>true</depthAndStencil>
+		<softKeyboardBehavior>@air_ios_softKeyboardBehavior@</softKeyboardBehavior>
+	</initialWindow>
+	
+	<supportedProfiles>mobileDevice extendedMobileDevice</supportedProfiles>
+	<!-- <supportedLanguages>en de cs es fr it ja ko nl pl pt ru sv tr zh</supportedLanguages> -->
+	
+	<installFolder>@meta_publisher@</installFolder>
+	<programMenuFolder>@meta_publisher@</programMenuFolder>
+	
+	<icon>
+		<image29x29>@icons_folder@/icon_029.png</image29x29>
+		<image48x48>@icons_folder@/icon_048.png</image48x48>
+		<image57x57>@icons_folder@/icon_057.png</image57x57>
+		<image72x72>@icons_folder@/icon_072.png</image72x72>
+		<image114x114>@icons_folder@/icon_114.png</image114x114>
+		<image512x512>@icons_folder@/icon_512.png</image512x512>
+	</icon>
+	
+	<!-- <customUpdateUI></customUpdateUI> -->
+	<!-- <allowBrowserInvocation></allowBrowserInvocation> -->
+	
+	<!--
+	<fileTypes>
+		<fileType>
+			<name></name>
+			<extension></extension>
+			<description></description>
+			<contentType></contentType>
+			<icon>
+				<image16x16></image16x16>
+				<image32x32></image32x32>
+				<image48x48></image48x48>
+				<image128x128></image128x128>
+			</icon>
+		</fileType>
+	</fileTypes>
+	-->
+	
+	<iPhone>
+		<InfoAdditions>
+			<![CDATA[
+				<key>UIDeviceFamily</key>
+				<array>
+					<string>1</string>
+					<string>2</string>
+				</array>
+				<key>UIStatusBarStyle</key>
+				<string>UIStatusBarStyleBlackOpaque</string>
+				<key>UIRequiresPersistentWiFi</key>
+				<string>YES</string>
+			]]>
+		</InfoAdditions>
+		<!-- <Entitlements>
+			<![CDATA[
+			<key>keychain-access-groups</key>
+			<array>
+				<string></string>
+				<string></string>
+			</array>
+			]]>
+		</Entitlements> -->
+		<requestedDisplayResolution>@air_ios_requestedDisplayResolution@</requestedDisplayResolution>
+	</iPhone>
+
+</application>

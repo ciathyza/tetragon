@@ -1,0 +1,1146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+***************************************************************************************************
+      _________  __      __
+    _/        / / /____ / /________ ____ ____  ___
+   _/        / / __/ -_) __/ __/ _ `/ _ `/ _ \/ _ \
+  _/________/  \__/\__/\__/_/  \_,_/\_, /\___/_//_/
+                                   /___/
+ 
+ Tetragon : Game Engine for multi-platform ActionScript projects.
+ http://www.tetragonengine.com/
+***************************************************************************************************
+-->
+<project default="00. Init" basedir=".." name="tetragon">
+	
+	<property file="bld/project.properties"/>
+	<property file="bld/build.properties"/>
+	<property file="${env.properties}"/>
+	<taskdef resource="flexTasks.tasks" classpath="${flextasks.jar}"/>
+	
+	<loadresource property="updatenotes">
+		<file file="${deploy.shared.extra}/${filename.updatenotes}"/>
+	</loadresource>
+	
+	
+	<!-- == DEFAULT TARGETS =================================================================== -->
+	
+	<target name="00. Init" description="Prints build properties to the output console.">
+		<echoproperties/>
+	</target>
+	
+	<target name="01. Clean" description="Cleans the bin folder.">
+		<clean/>
+	</target>
+	
+	<target name="02. Pack Project" description="Creates a zipped version of the project for use as a default Tetragon project.">
+		<cleanAll/>
+		<zip destfile="dst/${app.shortname}_project.zip"
+			basedir=""
+			includes="art/**/**,bin/,bld/**/**,doc/,pub/,src/**/**,README,LICENSE"
+			excludes="bld/build_swc.xml,doc/tetragon/,src/engine/,**/.svn,bld/build.number,**/**.~$lock"
+			update="false"
+			compress="true"/>
+	</target>
+	
+	<target name="03. Publish: HTML+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
+		<cleanAll/>
+		<buildWeb debug="true" type="html"/>
+		<publishWeb/>
+		<buildDesktop debug="true"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+		<clean/>
+	</target>
+	
+	<target name="04. Publish: HTML+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
+		<cleanAll/>
+		<buildWeb debug="false" type="html"/>
+		<publishWeb/>
+		<buildDesktop debug="false"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+		<clean/>
+	</target>
+	
+	<target name="05. Publish: PHP+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
+		<cleanAll/>
+		<buildWeb debug="true" type="php"/>
+		<publishWeb/>
+		<buildDesktop debug="true"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+		<clean/>
+	</target>
+	
+	<target name="06. Publish: PHP+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
+		<cleanAll/>
+		<buildWeb debug="false" type="php"/>
+		<publishWeb/>
+		<buildDesktop debug="false"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+		<clean/>
+	</target>
+	
+	<target name="07. Publish: All (Release)" description="Publishes release versions of all build targets.">
+		<cleanAll/>
+		<buildWeb debug="false" type="php"/>
+		<publishWeb/>
+		<buildDesktop debug="false"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+		<buildAndroid debug="false"/>
+		<publishAndroid target="apk"/>
+		<buildIOS debug="false"/>
+		<publishIOS target="ipa-app-store"/>
+		<clean/>
+	</target>
+	
+	
+	<!-- == WEB TARGETS ======================================================================= -->
+	
+	<target name="08. HTML: Build (Debug)" description="Clean build the project as a web debug version.">
+		<buildWeb debug="true" type="html"/>
+		<launchInWebBrowser type="html"/>
+	</target>
+	
+	<target name="09. HTML: Build (Release)" description="Clean build the project as a web release version.">
+		<buildWeb debug="false" type="html"/>
+		<launchInWebBrowser type="html"/>
+	</target>
+	
+	<target name="10. HTML: Publish (Debug)" description="Clean build and publish a web debug version for release.">
+		<buildWeb debug="true" type="html"/>
+		<publishWeb/>
+	</target>
+	
+	<target name="11. HTML: Publish (Release)" description="Clean build and publish a web version for release.">
+		<buildWeb debug="false" type="html"/>
+		<publishWeb/>
+	</target>
+	
+	<target name="12. HTML: Test" description="Compiles the application as a web debug version without changing any files. Useful if no files should be affected by the revisioning system.">
+		<testWeb debug="true" type="html"/>
+		<launchInWebBrowser type="html"/>
+	</target>
+	
+	<target name="13. HTML: Compile" description="Compiles the application as a web debug version without preparing or copying resources.">
+		<compileWeb debug="true"/>
+		<launchInWebBrowser type="html"/>
+	</target>
+	
+	
+	<!-- == SERVER TARGETS ==================================================================== -->
+	
+	<target name="14. PHP: Build (Debug)" description="Clean build the project as a local server debug version.">
+		<buildWeb debug="true" type="php"/>
+		<copyFilesToServer/>
+		<launchInWebServer type="php"/>
+	</target>
+	
+	<target name="15. PHP: Build (Release)" description="Clean build the project as a local server release version.">
+		<buildWeb debug="false" type="php"/>
+		<copyFilesToServer/>
+		<launchInWebServer type="php"/>
+	</target>
+	
+	<target name="16. PHP: Publish (Debug)" description="Clean build and publish a server debug version for release.">
+		<buildWeb debug="true" type="php"/>
+		<publishWeb/>
+	</target>
+	
+	<target name="17. PHP: Publish (Release)" description="Clean build and publish a server version for release.">
+		<buildWeb debug="false" type="php"/>
+		<publishWeb/>
+	</target>
+	
+	<target name="18. PHP: Test" description="Compiles the application as a server debug version without changing any files. Useful if no files should be affected by the revisioning system.">
+		<testWeb debug="true" type="php"/>
+		<launchInWebServer type="php"/>
+	</target>
+	
+	<target name="19. PHP: Compile" description="Compiles the application as a server debug version without preparing or copying resources.">
+		<compileWeb debug="true"/>
+		<launchInWebServer type="php"/>
+	</target>
+	
+	
+	<!-- == DESKTOP TARGETS =================================================================== -->
+	
+	<target name="20. Desktop: Build (Debug)" description="Clean build the project as a desktop debug version.">
+		<buildDesktop debug="true"/>
+		<LaunchDesktop/>
+	</target>
+	
+	<target name="21. Desktop: Build (Release)" description="Clean build the project as a desktop release version.">
+		<buildDesktop debug="false"/>
+		<LaunchDesktop/>
+	</target>
+	
+	<target name="22. Desktop: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
+		<buildDesktop debug="true"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+	</target>
+	
+	<target name="23. Desktop: Publish (Release)" description="Clean build and publish a desktop version for release.">
+		<buildDesktop debug="false"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+	</target>
+	
+	<target name="24. Desktop: Compile" description="Compiles the application as a desktop debug version.">
+		<compileDesktop debug="true"/>
+		<LaunchDesktop/>
+	</target>
+	
+	
+	<!-- == ANDROID TARGETS =================================================================== -->
+	
+	<target name="25. Android: Build (Debug)" description="Clean build the project as a Android debug version.">
+		<buildAndroid debug="true"/>
+		<LaunchAndroid/>
+	</target>
+	
+	<target name="26. Android: Build (Release)" description="Clean build the project as a Android release version.">
+		<buildAndroid debug="false"/>
+		<LaunchAndroid/>
+	</target>
+	
+	<target name="27. Android: Publish (APK)" description="Clean build and publish an Android APK version for release.">
+		<buildAndroid debug="false"/>
+		<publishAndroid target="apk"/>
+	</target>
+	
+	<target name="28. Android: Publish (Debug)" description="Clean build and publish an Android APK-Debug version for release.">
+		<buildAndroid debug="true"/>
+		<publishAndroid target="apk-debug"/>
+	</target>
+	
+	<target name="29. Android: Publish (Emulator)" description="Clean build and publish an Android APK-Emulator version for release.">
+		<buildAndroid debug="false"/>
+		<publishAndroid target="apk-emulator"/>
+	</target>
+	
+	<target name="30. Android: Compile" description="Compiles the application as a Android Debug version.">
+		<compileAndroid debug="true"/>
+		<LaunchAndroid/>
+	</target>
+	
+	
+	<!-- == IOS TARGETS ======================================================================= -->
+	
+	<target name="31. iOS: Build (Debug)" description="Clean build the project as a iOS debug version.">
+		<buildIOS debug="true"/>
+		<LaunchIOS/>
+	</target>
+	
+	<target name="32. iOS: Build (Release)" description="Clean build the project as a iOS release version.">
+		<buildIOS debug="false"/>
+		<LaunchIOS/>
+	</target>
+	
+	<target name="33. iOS: Publish (App Store)" description="Clean build and publish a iOS version for App Store release.">
+		<buildIOS debug="false"/>
+		<publishIOS target="ipa-app-store"/>
+	</target>
+	
+	<target name="34. iOS: Publish (Debug)" description="Clean build and publish a iOS debug version.">
+		<buildIOS debug="false"/>
+		<publishIOS target="ipa-debug"/>
+	</target>
+	
+	<target name="35. iOS: Publish (Test)" description="Clean build and publish a iOS test version.">
+		<buildIOS debug="false"/>
+		<publishIOS target="ipa-test"/>
+	</target>
+	
+	<target name="36. iOS: Publish (Ad-Hoc)" description="Clean build and publish a iOS ad-hoc version.">
+		<buildIOS debug="false"/>
+		<publishIOS target="ipa-ad-hoc"/>
+	</target>
+	
+	<target name="37. iOS: Compile" description="Compiles the application as a iOS Debug version.">
+		<compileIOS debug="true"/>
+		<LaunchIOS/>
+	</target>
+	
+	
+	<!-- == MACRODEFS: WEB BUILD ============================================================== -->
+	
+	<macrodef name="buildWeb">
+		<attribute name="debug"/>
+		<attribute name="type"/>
+		<sequential>
+			<clean/>
+			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
+			<generateHTMLWrapper type="@{type}"/>
+			<copySharedFiles/>
+			<copyWebFiles/>
+			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+			<copyResources resourcesSourceFolder="${resources.source.web}"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="testWeb">
+		<attribute name="debug"/>
+		<attribute name="type"/>
+		<sequential>
+			<clean/>
+			<prepareNoFileChange buildtype="web"/>
+			<generateHTMLWrapper type="@{type}"/>
+			<copySharedFiles/>
+			<copyWebFiles/>
+			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+			<copyResources resourcesSourceFolder="${resources.source.web}"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compileWeb">
+		<attribute name="debug"/>
+		<sequential>
+			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<!-- == MACRODEFS: DESKTOP BUILD ========================================================== -->
+	
+	<macrodef name="buildDesktop">
+		<attribute name="debug"/>
+		<sequential>
+			<clean/>
+			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}"/>
+			<generateAIRDesktopDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+			<copySharedFiles/>
+			<copyDesktopFiles/>
+			<packResources resourcesSourceFolder="${resources.source.shared}"/>
+			<packResources resourcesSourceFolder="${resources.source.desktop}"/>
+			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compileDesktop">
+		<attribute name="debug"/>
+		<sequential>
+			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}"/>
+			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<!-- == MACRODEFS: ANDROID BUILD ========================================================== -->
+		
+	<macrodef name="buildAndroid">
+		<attribute name="debug"/>
+		<sequential>
+			<clean/>
+			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}"/>
+			<generateAIRAndroidDescriptor templatepath="${templates.android}/air_descriptor.xml"/>
+			<copySharedFiles/>
+			<copyAndroidFiles/>
+			<packResources resourcesSourceFolder="${resources.source.shared}"/>
+			<packResources resourcesSourceFolder="${resources.source.android}"/>
+			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compileAndroid">
+		<attribute name="debug"/>
+		<sequential>
+			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}"/>
+			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<!-- == MACRODEFS: IOS BUILD ============================================================== -->
+	
+	<macrodef name="buildIOS">
+		<attribute name="debug"/>
+		<sequential>
+			<clean/>
+			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}"/>
+			<generateAIRIOSDescriptor templatepath="${templates.ios}/air_descriptor.xml"/>
+			<copySharedFiles/>
+			<copyIOSFiles/>
+			<packResources resourcesSourceFolder="${resources.source.shared}"/>
+			<packResources resourcesSourceFolder="${resources.source.ios}"/>
+			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compileIOS">
+		<attribute name="debug"/>
+		<sequential>
+			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}"/>
+			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<!-- == MACRODEFS: GENERAL ================================================================ -->
+	
+	<macrodef name="clean">
+		<sequential>
+			<delete includeemptydirs="true">
+				<fileset dir="${path.bin}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="cleanAll">
+		<sequential>
+			<delete includeemptydirs="true">
+				<fileset dir="${path.bin}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+			<delete includeemptydirs="true">
+				<fileset dir="${path.pub}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="prepare">
+		<attribute name="buildType"/>
+		<attribute name="debug"/>
+		<attribute name="entryClassTemplate"/>
+		<attribute name="width"/>
+		<attribute name="height"/>
+		<attribute name="bgcolor"/>
+		<attribute name="framerate"/>
+		<sequential>
+			<buildnumber file="bld/build.number"/>
+			<tstamp>
+				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
+			</tstamp>
+			<echo message="*** ${app.name} version: ${app.version.string} build #${build.number} (@{buildType}), ${build.date} ***" level="info"/>
+			<generateAppInfoClass buildType="@{buildType}" debug="@{debug}" width="@{width}" height="@{height}"/>
+			<generateEntryClass entryClassTemplate="@{entryClassTemplate}" width="@{width}" height="@{height}" bgcolor="@{bgcolor}" framerate="@{framerate}"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="prepareNoFileChange">
+		<attribute name="buildType"/>
+		<sequential>
+			<tstamp>
+				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
+			</tstamp>
+			<echo message="*** ${app.name} version: ${app.version.string} build #${build.number} (@{buildType}), ${build.date} ***" level="info"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateAppInfoClass">
+		<attribute name="buildType"/>
+		<attribute name="debug"/>
+		<attribute name="width"/>
+		<attribute name="height"/>
+		<sequential>
+			<echo message="Generating AppInfo.as ..." level="info"/>
+			<copy file="${templates.classes}/AppInfoClass.as" tofile="${path.src.code}/AppInfo.as" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="app_id"					value="${app.id}"/>
+						<token key="app_name"				value="${app.name}"/>
+						<token key="app_description"		value="${app.description}"/>
+						<token key="app_version"			value="${app.version.string}"/>
+						<token key="build_nr"				value="${build.number}"/>
+						<token key="build_date"				value="${build.date}"/>
+						<token key="app_milestone"			value="${app.milestone}"/>
+						<token key="app_releasestage"		value="${app.releasestage}"/>
+						<token key="build_type"				value="@{buildType}"/>
+						<token key="app_copyright"			value="${app.copyright}"/>
+						<token key="meta_publisher"			value="${meta.publisher}"/>
+						<token key="meta_creator"			value="${meta.creator}"/>
+						<token key="meta_contributor"		value="${meta.contributor}"/>
+						<token key="app_year"				value="${app.year}"/>
+						<token key="app_website"			value="${app.website}"/>
+						<token key="app_language"			value="${app.language}"/>
+						<token key="file_name"				value="${app.swfname}"/>
+						<token key="filename_engineconfig"	value="${filename.engine.ini}"/>
+						<token key="filename_keybindings"	value="${filename.keybindings.ini}"/>
+						<token key="filename_resourceindex"	value="${resource.index.file}"/>
+						<token key="config_folder"			value="${target.folder.config}"/>
+						<token key="resources_folder"		value="${target.folder.resources}"/>
+						<token key="icons_folder"			value="${target.folder.icons}"/>
+						<token key="extra_folder"			value="${target.folder.extra}"/>
+						<token key="default_width"			value="@{width}"/>
+						<token key="default_height"			value="@{height}"/>
+						<token key="reference_width"		value="${reference.width}"/>
+						<token key="reference_height"		value="${reference.height}"/>
+						<token key="swf_version"			value="${swf.version}"/>
+						<token key="is_debug"				value="@{debug}"/>
+						<token key="engine_name"			value="${engine.name}"/>
+						<token key="engine_version"			value="${engine.version}"/>
+						<token key="engine_milestone"		value="${engine.milestone}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateEntryClass">
+		<attribute name="entryClassTemplate"/>
+		<attribute name="width"/>
+		<attribute name="height"/>
+		<attribute name="bgcolor"/>
+		<attribute name="framerate"/>
+		<sequential>
+			<echo message="Generating ${entry.class}.as ..." level="info"/>
+			<copy file="${templates.classes}/@{entryClassTemplate}" tofile="${path.src.code}/${entry.class}.as" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="app_width"			value="@{width}"/>
+						<token key="app_height"			value="@{height}"/>
+						<token key="app_bgcolor"		value="@{bgcolor}"/>
+						<token key="app_framerate"		value="@{framerate}"/>
+						<token key="web_preloaderclass"	value="${web.preloaderclass}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateHTMLWrapper">
+		<attribute name="type"/>
+		<sequential>
+			<echo message="Generating ${web.indexname}.@{type} ..." level="info"/>
+			<copy file="${templates.web}/index_${web.layout}.@{type}" tofile="${path.bin}/${web.indexname}.@{type}" overwrite="true" failonerror="false">
+				<filterchain>
+					<replacetokens>
+						<token key="app_name"				value="${app.name}"/>
+						<token key="app_language"			value="${app.language}"/>
+						<token key="app_description"		value="${app.description}"/>
+						<token key="app_tags"				value="${app.tags}"/>
+						<token key="app_copyright"			value="${app.copyright}"/>
+						<token key="app_shortname"			value="${app.shortname}"/>
+						<token key="app_swfname"			value="${app.swfname.full}"/>
+						<token key="app_id"					value="${app.id}"/>
+						<token key="app_website"			value="${app.website}"/>
+						<token key="app_copyright"			value="${app.copyright}"/>
+						<token key="web_width"				value="${web.width}"/>
+						<token key="web_height"				value="${web.height}"/>
+						<token key="web_bgcolor"			value="${web.bgcolor}"/>
+						<token key="web_allowscriptaccess"	value="${web.allowscriptaccess}"/>
+						<token key="web_allowfullscreen"	value="${web.allowfullscreen}"/>
+						<token key="web_allowFullscreenInteractive"	value="${web.allowFullscreenInteractive}"/>
+						<token key="web_wmode"				value="${web.wmode}"/>
+						<token key="web_quality"			value="${web.quality}"/>
+						<token key="web_skippreloader"		value="${web.skippreloader}"/>
+						<token key="web_ignoreinifile"		value="${web.ignoreinifile}"/>
+						<token key="web_ignorelocalefile"	value="${web.ignorelocalefile}"/>
+						<token key="fpv_version"			value="${fpv.version}"/>
+						<token key="js_path"				value="${target.folder.js}"/>
+						<token key="web_locale_ids"			value="${web.locale.ids}"/>
+						<token key="web_locale_names"		value="${web.locale.names}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+			<mkdir dir="${path.bin}/${target.folder.css}"/>
+			<copy file="${templates.web}/style.css" tofile="${path.bin}/${target.folder.css}/style.css" overwrite="true" failonerror="false">
+				<filterchain>
+					<replacetokens>
+						<token key="web_width"				value="${web.width}"/>
+						<token key="web_height"				value="${web.height}"/>
+						<token key="img_folder"				value="${target.folder.img}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateAIRDesktopDescriptor">
+		<attribute name="templatePath"/>
+		<sequential>
+			<echo message="Generating AIR descriptor file for desktop build ..." level="info"/>
+			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="air_version"						value="${air.version}"/>
+						<token key="app_id"								value="${app.id}"/>
+						<token key="air_filename"						value="${air.filename}"/>
+						<token key="app_name"							value="${app.name}"/>
+						<token key="app_version"						value="${app.version.string}"/>
+						<token key="build_nr"							value="${build.number}"/>
+						<token key="app_description"					value="${app.description}"/>
+						<token key="app_copyright"						value="${app.copyright}"/>
+						<token key="app_swfname"						value="${app.swfname.full}"/>
+						<token key="air_windowtitle"					value="${air.windowtitle}"/>
+						<token key="air_systemChrome"					value="${air.systemChrome}"/>
+						<token key="air_transparent"					value="${air.transparent}"/>
+						<token key="air_visible"						value="${air.visible}"/>
+						<token key="air_minimizable"					value="${air.minimizable}"/>
+						<token key="air_maximizable"					value="${air.maximizable}"/>
+						<token key="air_resizable"						value="${air.resizable}"/>
+						<token key="app_width"							value="${air.desktop.width}"/>
+						<token key="app_height"							value="${air.desktop.height}"/>
+						<token key="air_minsize"						value="${air.minsize}"/>
+						<token key="air_maxsize"						value="${air.maxsize}"/>
+						<token key="air_desktop_renderMode"				value="${air.desktop.renderMode}"/>
+						<token key="meta_publisher"						value="${meta.publisher}"/>
+						<token key="icons_folder"						value="${target.folder.icons}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateAIRAndroidDescriptor">
+		<attribute name="templatePath"/>
+		<sequential>
+			<echo message="Generating AIR descriptor file for Android build ..." level="info"/>
+			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="air_version"						value="${air.version}"/>
+						<token key="app_id"								value="${app.id}"/>
+						<token key="air_filename"						value="${air.filename}"/>
+						<token key="app_name"							value="${app.name}"/>
+						<token key="app_version"						value="${app.version.string}"/>
+						<token key="build_nr"							value="${build.number}"/>
+						<token key="app_description"					value="${app.description}"/>
+						<token key="app_copyright"						value="${app.copyright}"/>
+						<token key="app_swfname"						value="${app.swfname.full}"/>
+						<token key="air_windowtitle"					value="${air.windowtitle}"/>
+						<token key="air_systemChrome"					value="${air.systemChrome}"/>
+						<token key="air_transparent"					value="${air.transparent}"/>
+						<token key="air_visible"						value="${air.visible}"/>
+						<token key="air_minimizable"					value="${air.minimizable}"/>
+						<token key="air_maximizable"					value="${air.maximizable}"/>
+						<token key="air_resizable"						value="${air.resizable}"/>
+						<token key="app_width"							value="${air.android.width}"/>
+						<token key="app_height"							value="${air.android.height}"/>
+						<token key="air_minsize"						value="${air.minsize}"/>
+						<token key="air_maxsize"						value="${air.maxsize}"/>
+						<token key="meta_publisher"						value="${meta.publisher}"/>
+						<token key="icons_folder"						value="${target.folder.icons}"/>
+						<token key="air_android_fullscreen"				value="${air.android.fullscreen}"/>
+						<token key="air_android_autoOrients"			value="${air.android.autoOrients}"/>
+						<token key="air_android_aspectRatio"			value="${air.android.aspectRatio}"/>
+						<token key="air_android_renderMode"				value="${air.android.renderMode}"/>
+						<token key="air_android_softKeyboardBehavior"	value="${air.android.softKeyboardBehavior}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateAIRIOSDescriptor">
+		<attribute name="templatePath"/>
+		<sequential>
+			<echo message="Generating AIR descriptor file for iOS build ..." level="info"/>
+			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="air_version"						value="${air.version}"/>
+						<token key="app_id"								value="${app.id}"/>
+						<token key="air_filename"						value="${air.filename}"/>
+						<token key="app_name"							value="${app.name}"/>
+						<token key="app_version"						value="${app.version.string}"/>
+						<token key="build_nr"							value="${build.number}"/>
+						<token key="app_description"					value="${app.description}"/>
+						<token key="app_copyright"						value="${app.copyright}"/>
+						<token key="app_swfname"						value="${app.swfname.full}"/>
+						<token key="air_windowtitle"					value="${air.windowtitle}"/>
+						<token key="air_systemChrome"					value="${air.systemChrome}"/>
+						<token key="air_transparent"					value="${air.transparent}"/>
+						<token key="air_visible"						value="${air.visible}"/>
+						<token key="air_minimizable"					value="${air.minimizable}"/>
+						<token key="air_maximizable"					value="${air.maximizable}"/>
+						<token key="air_resizable"						value="${air.resizable}"/>
+						<token key="app_width"							value="${air.ios.width}"/>
+						<token key="app_height"							value="${air.ios.height}"/>
+						<token key="air_minsize"						value="${air.minsize}"/>
+						<token key="air_maxsize"						value="${air.maxsize}"/>
+						<token key="meta_publisher"						value="${meta.publisher}"/>
+						<token key="icons_folder"						value="${target.folder.icons}"/>
+						<token key="air_ios_fullscreen"					value="${air.ios.fullscreen}"/>
+						<token key="air_ios_autoOrients"				value="${air.ios.autoOrients}"/>
+						<token key="air_ios_aspectRatio"				value="${air.ios.aspectRatio}"/>
+						<token key="air_ios_renderMode"					value="${air.ios.renderMode}"/>
+						<token key="air_ios_softKeyboardBehavior"		value="${air.ios.softKeyboardBehavior}"/>
+						<token key="air_ios_requestedDisplayResolution"	value="${air.ios.requestedDisplayResolution}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="generateAIRUpdateFile">
+		<sequential>
+			<echo message="Generating AIR update file ..." level="info"/>
+			<copy file="${templates.desktop}/air_update.xml" tofile="${path.pub}/${app.shortname}_update.xml" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="app_version"				value="${app.version.string}"/>
+						<token key="air_desktop_updateurl"		value="${air.desktop.updateurl}/${air.desktop.publishname}.air"/>
+						<token key="air_desktop_updatenotes"	value="${updatenotes}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="compile">
+		<attribute name="bgcolor"/>
+		<attribute name="framerate"/>
+		<attribute name="debug"/>
+		<attribute name="config"/>
+		<attribute name="libpath"/>
+		<attribute name="isWebBuild"/>
+		<attribute name="isAIRBuild"/>
+		<attribute name="isDesktopBuild"/>
+		<attribute name="isMobileBuild"/>
+		<attribute name="isAndroidBuild"/>
+		<attribute name="isIOSBuild"/>
+		<sequential>
+			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
+			<mxmlc
+				file="${path.src.code}/${entry.class}.as"
+				output="${path.bin}/${app.swfname.full}"
+				incremental="false"
+				locale="${app.localestring}"
+				default-frame-rate="@{framerate}"
+				default-background-color="0x@{bgcolor}"
+				defaults-css-url="${path.theme}/theme.css"
+				swf-version="${swf.version}"
+				target-player="${fpv.version.sdk}"
+				debug="@{debug}"
+				accessible="${accessible}"
+				benchmark="${benchmark}"
+				optimize="true"
+				strict="true"
+				show-unused-type-selector-warnings="false">
+				
+				<load-config filename="${FLEX_HOME}/frameworks/@{config}"/>
+				<default-size width="${app.width}" height="${app.height}"/>
+				
+				<default-script-limits
+					max-recursion-depth="${max.recursiondepth}"
+					max-execution-time="${max.executiontime}"/>
+				
+				<!--These Meta Tags are required for the Resource Manager -->
+				<keep-as3-metadata name="TypeHint"/>
+				<keep-as3-metadata name="Resource"/>
+				<keep-as3-metadata name="ResourceIndex"/>
+				<keep-as3-metadata name="Embed"/>
+				
+				<metadata
+					title="${meta.title}"
+					description="${meta.description}"
+					date="${build.date}">
+					<language code="${app.language}"/>
+					<publisher name="${meta.publisher}"/>
+					<creator name="${meta.creator}"/>
+					<contributor name="${meta.contributor}"/>
+				</metadata>
+				
+				<!-- Conditional Compilation Constant Definitions -->
+				<define name="CONFIG::IS_WEB_BUILD" value="@{isWebBuild}"/>
+				<define name="CONFIG::IS_AIR_BUILD" value="@{isAIRBuild}"/>
+				<define name="CONFIG::IS_DESKTOP_BUILD" value="@{isDesktopBuild}"/>
+				<define name="CONFIG::IS_MOBILE_BUILD" value="@{isMobileBuild}"/>
+				<define name="CONFIG::IS_ANDROID_BUILD" value="@{isAndroidBuild}"/>
+				<define name="CONFIG::IS_IOS_BUILD" value="@{isIOSBuild}"/>
+				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
+				
+				<!-- Project Source Path -->
+				<source-path path-element="${path.src.code}"/>
+				
+				<!-- Project Library Source Path -->
+				<source-path path-element="${path.libs.source}"/>
+				
+				<!-- Additional Source Paths should only be used during development! -->
+				<!-- <source-path path-element="${path.src.tetragon.base}"/> -->
+				<!-- <source-path path-element="${path.src.tetragon.game}"/> -->
+				<!-- <source-path path-element="${path.src.hexagonlib}"/> -->
+				<!-- <source-path path-element="${path.src.hexagonui}"/> -->
+				
+				<!-- Flex Framework Libraries should not be appended! -->
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs/@{libpath}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs" append="false">
+					<include name="framework.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/locale/${app.localestring}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				
+				<!-- Project SWCs -->
+				<compiler.library-path dir="${path.libs.swc}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				
+			</mxmlc>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copySharedFiles">
+		<sequential>
+			<echo message="Copying Shared files ..." level="info"/>
+			<copyConfigFiles sourceFolder="${deploy.shared.config}"/>
+			<copyExtraFiles sourceFolder="${deploy.shared.extra}"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyWebFiles">
+		<sequential>
+			<echo message="Copying Web files ..." level="info"/>
+			<copyConfigFiles sourceFolder="${deploy.web.config}"/>
+			<copyExtraFiles sourceFolder="${deploy.web.extra}"/>
+			<copy todir="${path.bin}/${target.folder.js}" verbose="off" overwrite="true" failonerror="false">
+				<fileset dir="${deploy.web.js}" excludes="**/.svn"/>
+			</copy>
+			<copy todir="${path.bin}/${target.folder.css}" verbose="off" overwrite="true" failonerror="false">
+				<fileset dir="${deploy.web.css}" excludes="**/.svn"/>
+			</copy>
+			<copy todir="${path.bin}/${target.folder.img}" verbose="off" overwrite="true" failonerror="false">
+				<fileset dir="${deploy.web.img}" excludes="**/.svn"/>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyDesktopFiles">
+		<sequential>
+			<echo message="Copying Desktop files ..." level="info"/>
+			<copyConfigFiles sourceFolder="${deploy.desktop.config}"/>
+			<copyExtraFiles sourceFolder="${deploy.desktop.extra}"/>
+			<copyIconFiles sourceFolder="${deploy.desktop.icons}"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyAndroidFiles">
+		<sequential>
+			<echo message="Copying Android files ..." level="info"/>
+			<copyConfigFiles sourceFolder="${deploy.android.config}"/>
+			<copyExtraFiles sourceFolder="${deploy.android.extra}"/>
+			<copyIconFiles sourceFolder="${deploy.android.icons}"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyIOSFiles">
+		<sequential>
+			<echo message="Copying iOS files ..." level="info"/>
+			<copyConfigFiles sourceFolder="${deploy.ios.config}"/>
+			<copyExtraFiles sourceFolder="${deploy.ios.extra}"/>
+			<copyIconFiles sourceFolder="${deploy.ios.icons}"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyConfigFiles">
+		<attribute name="sourceFolder"/>
+		<sequential>
+			<copy todir="${path.bin}/${target.folder.config}" verbose="off" overwrite="true">
+				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<filterset>
+					<filter token="update_url" value="${air.desktop.updateurl}/${app.shortname}_update.xml"/>
+				</filterset>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyExtraFiles">
+		<attribute name="sourceFolder"/>
+		<sequential>
+			<copy todir="${path.bin}/${target.folder.extra}" verbose="off" overwrite="true">
+				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyIconFiles">
+		<attribute name="sourceFolder"/>
+		<sequential>
+			<copy todir="${path.bin}/${target.folder.icons}" verbose="off" overwrite="true">
+				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyResources">
+		<attribute name="resourcesSourceFolder"/>
+		<sequential>
+			<echo message="Copying @{resourcesSourceFolder} resources ..." level="info"/>
+			<mkdir dir="${path.resources.target}"/>
+			<copy todir="${path.resources.target}" verbose="off" overwrite="true">
+				<fileset dir="${path.resources.source}/@{resourcesSourceFolder}" excludes="**/.svn"/>
+			</copy>
+			<copy file="${path.resources.source}/${resource.index.file}" todir="${path.resources.target}" verbose="off" overwrite="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="packResources">
+		<attribute name="resourcesSourceFolder"/>
+		<sequential>
+			<echo message="Packing @{resourcesSourceFolder} resources ..." level="info"/>
+			<mkdir dir="${path.resources.target}"/>
+			<zip destfile="${path.resources.target}/resources.pak"
+				basedir="${path.resources.source}/@{resourcesSourceFolder}"
+				excludes="**/.svn,${resource.index.file}"
+				update="true"
+				compress="true"/>
+			<zip destfile="${path.resources.target}/resources.rif"
+				basedir="${path.resources.source}"
+				includes="${resource.index.file}"
+				update="false"
+				compress="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="publishWeb">
+		<sequential>
+			<echo message="Publishing Web build of ${app.name} ${app.version.string} ..." level="info"/>
+			<zip destfile="${path.pub}/${web.publishname}"
+				basedir="${path.bin}"
+				excludes="**/.svn"
+				update="false"
+				compress="true"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="publishDesktop">
+		<sequential>
+			<echo message="Publishing Desktop build of ${app.name} ${app.version.string} ..." level="info"/>
+			<java jar="${air.developertool}" fork="true" failonerror="true">
+				<arg value="-package"/>
+				<arg value="-storetype"/>
+				<arg value="pkcs12"/>
+				<arg value="-keystore"/>
+				<arg value="${air.desktop.certificate.path}"/>
+				<arg value="-storepass"/>
+				<arg value="${air.desktop.certificate.password}"/>
+				<arg value="-target"/>
+				<arg value="${air.desktop.target}"/>
+				<arg value="${path.pub}/${air.desktop.publishname}"/>
+				<arg value="/${path.bin}/${air.descriptor}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${app.swfname.full}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.config}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.extra}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.icons}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.resources}"/>
+				<!-- In case resources.pak and resources.rif should be in base folder:
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${resource.index.file}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="resources.rif"/> -->
+			</java>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="publishAndroid">
+		<attribute name="target"/>
+		<sequential>
+			<echo message="Publishing Android build of ${app.name} ${app.version.string} ..." level="info"/>
+			<java jar="${air.developertool}" fork="true" failonerror="true">
+				<arg value="-package"/>
+				<arg value="-storetype"/>
+				<arg value="pkcs12"/>
+				<arg value="-keystore"/>
+				<arg value="${air.android.certificate.path}"/>
+				<arg value="-storepass"/>
+				<arg value="${air.android.certificate.password}"/>
+				<arg value="${path.pub}/${air.android.publishname}.tmp"/>
+				<arg value="/${path.bin}/${air.descriptor}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${app.swfname.full}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.config}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.extra}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.icons}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.resources}"/>
+			</java>
+			<echo message="Packaging Android @{target} file of ${app.name} ${app.version.string} ..." level="info"/>
+			<java jar="${air.developertool}" fork="true" failonerror="true">
+				<arg value="-package"/>
+				<arg value="-target"/>
+				<arg value="@{target}"/>
+				<arg value="-storetype"/>
+				<arg value="pkcs12"/>
+				<arg value="-keystore"/>
+				<arg value="${air.android.certificate.path}"/>
+				<arg value="-storepass"/>
+				<arg value="${air.android.certificate.password}"/>
+				<arg value="${path.pub}/${air.android.publishname}"/>
+				<arg value="${path.pub}/${air.android.publishname}.tmp"/>
+			</java>
+			<delete file="${path.pub}/${air.android.publishname}.tmp"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="publishIOS">
+		<attribute name="target"/>
+		<sequential>
+			<echo message="Publishing iOS '@{target}' build of ${app.name} ${app.version.string}. This may take some minutes ..." level="info"/>
+			<echo message="${java.32bit} -jar ${air.developertool} -package -target @{target} -provisioning-profile ${air.ios.provprofile.path} -storetype pkcs12 -keystore ${air.ios.certificate.path} -storepass ${air.ios.certificate.password} ${path.pub}/${air.ios.publishname}.ipa /${path.bin}/${air.descriptor} -C ${path.bin} ${app.swfname.full} -C ${path.bin} ${target.folder.config} -C ${path.bin} ${target.folder.extra} -C ${path.bin} ${target.folder.icons} -C ${path.bin} ${target.folder.resources}" level="debug"/>
+			<exec executable="${java.32bit}">
+				<arg value="-jar"/>
+				<arg value="${air.developertool}"/>
+				<arg value="-package"/>
+				<arg value="-target"/>
+				<arg value="@{target}"/>
+				<arg value="-provisioning-profile"/>
+				<arg value="${air.ios.provprofile.path}"/>
+				<arg value="-storetype"/>
+				<arg value="pkcs12"/>
+				<arg value="-keystore"/>
+				<arg value="${air.ios.certificate.path}"/>
+				<arg value="-storepass"/>
+				<arg value="${air.ios.certificate.password}"/>
+				<arg value="${path.pub}/${air.ios.publishname}.ipa"/>
+				<arg value="/${path.bin}/${air.descriptor}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${app.swfname.full}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.config}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.extra}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.icons}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<arg value="${target.folder.resources}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="launchInFlashSAPlayer">
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in Flash Player (Debug) ..." level="info"/>
+			<exec executable="${flash.player}" spawn="true">
+				<arg line="${flash.player.args}"/>
+				<arg line="${path.bin.fp}${app.swfname.full}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="launchInWebBrowser">
+		<attribute name="type"/>
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in Web Browser ..." level="info"/>
+			<exec executable="${web.browser}" dir=".." spawn="true">
+				<arg line="${web.browser.args}"/>
+				<arg line="file://${path.bin}/${web.indexname}.@{type}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyFilesToServer">
+		<sequential>
+			<echo message="Copying files to server WWW ..." level="info"/>
+			<delete includeemptydirs="true" failonerror="false">
+				<fileset dir="${web.server.www}/${app.shortname}" includes="**/*" excludes="**/.svn"/>
+			</delete>
+			<mkdir dir="${web.server.www}/${app.shortname}"/>
+			<copy todir="${web.server.www}/${app.shortname}" verbose="off" overwrite="true">
+				<fileset dir="${path.bin}" excludes="**/.svn"/>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="launchInWebServer">
+		<attribute name="type"/>
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in Web Server ..." level="info"/>
+			<exec executable="${web.browser}" dir=".." spawn="true">
+				<arg line="${web.browser.args}"/>
+				<arg line="${web.server.localhost}/${app.shortname}/${web.indexname}.@{type}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="LaunchDesktop">
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in AIR Debug Launcher ..." level="info"/>
+			<exec executable="${air.debuglauncher}" spawn="false">
+				<arg line="${path.bin}/${air.descriptor}"/>
+				<arg line="${path.bin}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="LaunchAndroid">
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in Android Debug Launcher ..." level="info"/>
+			<exec executable="${air.debuglauncher}" spawn="false">
+				<arg value="${path.bin}/${air.descriptor}"/>
+				<arg value="${path.bin}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="LaunchIOS">
+		<sequential>
+			<echo message="Opening ${app.swfname.full} in iOS Debug Launcher ..." level="info"/>
+			<exec executable="${air.debuglauncher}" spawn="false">
+				<arg value="${path.bin}/${air.descriptor}"/>
+				<arg value="${path.bin}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+</project>

@@ -1,0 +1,52 @@
+AnesChanged=0
+com.powerflasher.fdt.core.CompatiblePlayers=AIR_Debug_Launcher
+com.powerflasher.fdt.core.CompilerArguments=
+com.powerflasher.fdt.core.DefaultOutputFolder=@path_bin_name@
+com.powerflasher.fdt.core.DefaultPlayer=AIR_Debug_Launcher
+com.powerflasher.fdt.core.Language=AS3
+com.powerflasher.fdt.core.PassClasspath=true
+com.powerflasher.fdt.core.PassExterns=false
+com.powerflasher.fdt.core.PassMainclass=true
+com.powerflasher.fdt.core.PassRsls=false
+com.powerflasher.fdt.core.PassSwcs=true
+com.powerflasher.fdt.core.PlatformType=WEB
+com.powerflasher.fdt.core.PlayerVersion=@fpv_version@
+com.powerflasher.fdt.core.ProjectTypeHint=Tetragon
+com.powerflasher.fdt.core.Runtime=AIR
+com.powerflasher.fdt.core.SdkName=Flex 4.6.0
+
+com.powerflasher.fdt.core.mobile.AirDesktop.ACTIVE=false
+com.powerflasher.fdt.core.mobile.AirDesktop.AVAILABLE.EXTENSIONS=
+com.powerflasher.fdt.core.mobile.AirDesktop.DEPLOY.LOCATION=@path_pub_name@
+com.powerflasher.fdt.core.mobile.AirDesktop.DEPLOY.PRE.PACKAGE.LAUNCHER=@app_swfname@
+com.powerflasher.fdt.core.mobile.AirDesktop.DEPLOY.TYPE.AIR.DESKTOP=AIR
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.16x16=@deploy_desktop_icons@/icon_016.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.32x32=@deploy_desktop_icons@/icon_032.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.48x48=@deploy_desktop_icons@/icon_048.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.128x128=@deploy_desktop_icons@/icon_128.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.36x36=@deploy_android_icons@/icon_036.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.72x72=@deploy_android_icons@/icon_072.png
+com.powerflasher.fdt.core.mobile.AirDesktop.ICON.PATH.114x114=@deploy_ios_icons@/icon_114.png
+com.powerflasher.fdt.core.mobile.AirDesktop.MOBILE.DESCRIPTOR=@path_bin_name@/@air_descriptor@
+com.powerflasher.fdt.core.mobile.AirDesktop.PACKAGE.CONTENT=@path_bin_name@/@air_descriptor@ > @air_descriptor@;@path_bin_name@/@app_swfname_full@ > @app_swfname_full@;@path_bin_name@/config;@path_bin_name@/extra;@path_bin_name@/icons;@path_bin_name@/resources;
+com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.CERTIFICATE=
+com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.PWD=HZsdm2UDN/4\=
+com.powerflasher.fdt.core.mobile.AirDesktop.SIGNATURE.REMEMBER.PWD=false
+
+com.powerflasher.fdt.core.mobile.Android.ACTIVE=false
+com.powerflasher.fdt.core.mobile.Android.AVAILABLE.EXTENSIONS=
+com.powerflasher.fdt.core.mobile.Android.DEPLOY.EXPORT.CAPTIVE=false
+com.powerflasher.fdt.core.mobile.Android.DEPLOY.INSTALL.CHECK=false
+com.powerflasher.fdt.core.mobile.Android.DEPLOY.LOCATION=@path_pub_name@
+com.powerflasher.fdt.core.mobile.Android.DEPLOY.MARKET.INDEX=0
+com.powerflasher.fdt.core.mobile.Android.DEPLOY.PRE.PACKAGE.LAUNCHER=\ -- No adequate launcher found\! -- 
+com.powerflasher.fdt.core.mobile.Android.ICON.PATH.36x36=@deploy_android_icons@/icon_036.png
+com.powerflasher.fdt.core.mobile.Android.ICON.PATH.48x48=@deploy_android_icons@/icon_048.png
+com.powerflasher.fdt.core.mobile.Android.ICON.PATH.72x72=@deploy_android_icons@/icon_072.png
+com.powerflasher.fdt.core.mobile.Android.MOBILE.DESCRIPTOR=@path_bin_name@/@air_descriptor@
+com.powerflasher.fdt.core.mobile.Android.PACKAGE.CONTENT=@path_bin_name@/@air_descriptor@ > @air_descriptor@;@path_bin_name@/@app_swfname_full@ > @app_swfname_full@;@path_bin_name@/config;@path_bin_name@/extra;@path_bin_name@/icons;@path_bin_name@/resources;
+com.powerflasher.fdt.core.mobile.Android.SIGNATURE.CERTIFICATE=
+com.powerflasher.fdt.core.mobile.Android.SIGNATURE.PWD=HZsdm2UDN/4\=
+com.powerflasher.fdt.core.mobile.Android.SIGNATURE.REMEMBER.PWD=false
+
+eclipse.preferences.version=1

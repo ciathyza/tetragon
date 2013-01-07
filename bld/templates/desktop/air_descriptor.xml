@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/@air_version@">
+	
+	<id>@app_id@</id>
+	<filename>@air_filename@</filename>
+	<name>@app_name@</name>
+	<versionNumber>@app_version@</versionNumber>
+	<versionLabel>v@app_version@.@build_nr@</versionLabel>
+	<description>@app_description@</description>
+	<copyright>@app_copyright@</copyright>
+	
+	<initialWindow>
+		<content>@app_swfname@</content>
+		<title>@air_windowtitle@</title>
+		<systemChrome>@air_systemChrome@</systemChrome>
+		<transparent>@air_transparent@</transparent>
+		<visible>@air_visible@</visible>
+		<minimizable>@air_minimizable@</minimizable>
+		<maximizable>@air_maximizable@</maximizable>
+		<resizable>@air_resizable@</resizable>
+		<width>@app_width@</width>
+		<height>@app_height@</height>
+		<minSize>@air_minsize@</minSize>
+		<renderMode>@air_desktop_renderMode@</renderMode>
+		<!-- <depthAndStencil>true</depthAndStencil> -->
+		<!-- <maxSize></maxSize> -->
+		<!-- <x></x> -->
+		<!-- <y></y> -->
+	</initialWindow>
+	
+	<supportedProfiles>desktop extendedDesktop</supportedProfiles>
+	<!-- <supportedLanguages>en de cs es fr it ja ko nl pl pt ru sv tr zh</supportedLanguages> -->
+	
+	<installFolder>@meta_publisher@</installFolder>
+	<programMenuFolder>@meta_publisher@</programMenuFolder>
+	
+	<icon>
+		<image16x16>@icons_folder@/icon_016.png</image16x16>
+		<image32x32>@icons_folder@/icon_032.png</image32x32>
+		<image48x48>@icons_folder@/icon_048.png</image48x48>
+		<image128x128>@icons_folder@/icon_128.png</image128x128>
+	</icon>
+	
+	<!-- <customUpdateUI></customUpdateUI> -->
+	<!-- <allowBrowserInvocation></allowBrowserInvocation> -->
+	
+	<!-- <fileTypes> -->
+		<!-- <fileType> -->
+			<!-- <name></name> -->
+			<!-- <extension></extension> -->
+			<!-- <description></description> -->
+			<!-- <contentType></contentType> -->
+			<!-- <icon>
+				<image16x16></image16x16>
+				<image32x32></image32x32>
+				<image48x48></image48x48>
+				<image128x128></image128x128>
+			</icon> -->
+		<!-- </fileType> -->
+	<!-- </fileTypes> -->
+	
+</application>

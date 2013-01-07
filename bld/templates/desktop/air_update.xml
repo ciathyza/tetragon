@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
+	<versionNumber>@app_version@</versionNumber>
+	<url>@air_desktop_updateurl@</url>
+	<description><![CDATA[@air_desktop_updatenotes@]]></description>
+</update>

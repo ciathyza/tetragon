@@ -1,0 +1,183 @@
+body
+{
+	background-color: #222222;
+	color: #CCCCCC;
+}
+
+*
+{
+	font-family: Arial, Helvetica, sans-serif, Verdana, Geneva;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+a, a:visited
+{
+	color: #AAAAAA;
+}
+a div
+{
+	text-decoration: underline;
+}
+a.active
+{
+	color: #EDF3E6;
+}
+
+h1
+{
+	text-align: center;
+	font-size: 24px;
+}
+
+#wrapper
+{
+	margin: 0 auto;
+	position: relative;
+	z-index: 100;
+}
+
+#bgdleft, #bgdright, #header, #swfarea, #flashContent, #footer
+{
+	background-repeat: no-repeat;
+}
+
+#content
+{
+	width: @web_width@px;
+	margin: 20px auto;
+}
+
+#header, #middle, #footer
+{
+	width: @web_width@px;
+	margin: 0 auto;
+}
+
+#header
+{
+	height: 66px;
+}
+
+/* --- Language Links -------------------------------------------- */
+#header div
+{
+	margin: 0 auto;
+	text-align: center;
+	height: 20px;
+}
+#header a
+{
+	height: 41px;
+	text-align: center;
+	font-size: 12px;
+	line-height: 55px;
+	border-right: 1px solid #888888;
+	padding: 0 10px 0 10px;
+}
+#language a.it
+{
+	border-right: 0;
+}
+#language img
+{
+	margin-left: 3px;
+}
+#language div.active
+{
+	color: #EDF3E6;
+}
+
+/* --- Content Area ---------------------------------------------- */
+#title-bar
+{
+	width: 100%;
+	height: 60px;
+}
+#middle, #swfarea
+{
+	height: @web_height@px;
+}
+#swfarea
+{
+	float: left;
+	width: 100%;
+	background: #F60 url("../@img_folder@/flash_bg.png") repeat top left;
+	margin-bottom: 10px;
+	border: 1px solid #222222;
+	text-align: center;
+	-webkit-box-shadow: #666666 0px 0px 6px;
+	-moz-box-shadow: #666666 0px 0px 6px;
+	box-shadow: #000 0px 0px 6px;
+}
+.hidden
+{
+	display: none;
+}
+#noflash-message
+{
+	font-size: 16px;
+	line-height: 20px;
+	margin: 0 auto;
+	padding: 25px;
+	position: relative;
+	font-weight: bold;
+	top: 140px;
+	width: 340px;
+	background-color: #F6531D;
+	color: #FFFFFF;
+}
+#flashContent a
+{
+	font-weight: bold;
+}
+#sound
+{
+	float: left;
+}
+
+/* --- Footer Area ----------------------------------------------- */
+#footer-info-container
+{
+	text-align: center;
+	margin-top: 10px;
+}
+#footer-info-container>div
+{
+	font-size: 16px;
+	width: 100%;
+}
+.line
+{
+	border-right: 1px solid #888888;
+	padding-right: 10px;
+	margin-right: 10px;
+}
+#header a.last
+{
+	border-right: 0;
+}
+#swf-loading-info .first, #swf-loading-info strong span
+{
+	padding: 0;
+}
+#swf-loading-info
+{
+	height: 23px;
+	clear: both;
+}
+#footer-info-browser
+{
+	color: #999999;
+	border-top: 1px solid #888888;
+	padding-top: 3px;
+	margin-top: 5px;
+}
+#logo
+{
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	z-index: -10;
+}

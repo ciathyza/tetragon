@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/@air_version@">
+	
+	<id>@app_id@</id>
+	<filename>@air_filename@</filename>
+	<name>@app_name@</name>
+	<versionNumber>@app_version@</versionNumber>
+	<versionLabel>v@app_version@.@build_nr@</versionLabel>
+	<description>@app_description@</description>
+	<copyright>@app_copyright@</copyright>
+	
+	<initialWindow>
+		<content>@app_swfname@</content>
+		<title>@air_windowtitle@</title>
+		<systemChrome>@air_systemChrome@</systemChrome>
+		<transparent>@air_transparent@</transparent>
+		<visible>@air_visible@</visible>
+		<minimizable>@air_minimizable@</minimizable>
+		<maximizable>@air_maximizable@</maximizable>
+		<resizable>@air_resizable@</resizable>
+		<width>@app_width@</width>
+		<height>@app_height@</height>
+		<minSize>@air_minsize@</minSize>
+		<!-- <maxSize></maxSize> -->
+		<!-- <x></x> -->
+		<!-- <y></y> -->
+		<fullScreen>@air_android_fullscreen@</fullScreen>
+		<autoOrients>@air_android_autoOrients@</autoOrients>
+		<aspectRatio>@air_android_aspectRatio@</aspectRatio>
+		<renderMode>@air_android_renderMode@</renderMode>
+		<depthAndStencil>true</depthAndStencil>
+		<softKeyboardBehavior>@air_android_softKeyboardBehavior@</softKeyboardBehavior>
+	</initialWindow>
+	
+	<supportedProfiles>mobileDevice extendedMobileDevice</supportedProfiles>
+	<!-- <supportedLanguages>en de cs es fr it ja ko nl pl pt ru sv tr zh</supportedLanguages> -->
+	
+	<installFolder>@meta_publisher@</installFolder>
+	<programMenuFolder>@meta_publisher@</programMenuFolder>
+	
+	<icon>
+		<image36x36>@icons_folder@/icon_036.png</image36x36>
+		<image48x48>@icons_folder@/icon_048.png</image48x48>
+		<image72x72>@icons_folder@/icon_072.png</image72x72>
+	</icon>
+	
+	<!-- <customUpdateUI></customUpdateUI> -->
+	<!-- <allowBrowserInvocation></allowBrowserInvocation> -->
+	
+	<!--
+	<fileTypes>
+		<fileType>
+			<name></name>
+			<extension></extension>
+			<description></description>
+			<contentType></contentType>
+			<icon>
+				<image16x16></image16x16>
+				<image32x32></image32x32>
+				<image48x48></image48x48>
+				<image128x128></image128x128>
+			</icon>
+		</fileType>
+	</fileTypes>
+	-->
+	
+	<android>
+		<manifestAdditions>
+		<![CDATA[
+			<manifest android:installLocation="auto">
+				<uses-permission android:name="android.permission.INTERNET"/>
+				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+				<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
+				<application android:enabled="true">
+					<activity android:excludeFromRecents="false">
+						<intent-filter>
+							<action android:name="android.intent.action.MAIN"/>
+							<category android:name="android.intent.category.LAUNCHER"/>
+						</intent-filter>
+					</activity>
+				</application>
+			</manifest>
+		]]>
+		</manifestAdditions>
+		<colorDepth>32bit</colorDepth>
+	</android>
+
+</application>
