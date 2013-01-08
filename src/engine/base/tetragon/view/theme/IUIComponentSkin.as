@@ -26,28 +26,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.core
+package tetragon.view.theme
 {
 	/**
-	 * The InvalidationType class defines <code>InvalidationType</code> constants 
-	 * that are used by the <code>type</code> property of an event object that is 
-	 * dispatched after a component is invalidated. These constants are used 
-	 * by component developers to specify the portion of the component that is to be redrawn 
-	 * after the component is invalidated.
+	 * Interface for classes that can be used as a skin for a UI component.
 	 */
-	public final class UIInvalidationType
+	public interface IUIComponentSkin
 	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
+		function onOver():void;
+		function onOut():void;
+		function onDown():void;
+		function onUp():void;
+		function onEnable():void;
+		function onDisable():void;
+		function onSelect():void;
+		function onDeselect():void;
+		function onEmphasize():void;
 		
-		public static const ALL:String				= "all";
-		public static const SIZE:String				= "size";
-		public static const STYLES:String			= "styles";
-		public static const RENDERER_STYLES:String	= "rendererStyles";		
-		public static const STATE:String			= "state";
-		public static const DATA:String				= "data";
-		public static const SCROLL:String			= "scroll";
-		public static const SELECTED:String			= "selected";
+		function get width():Number;
+		function set width(v:Number):void;
+		function get height():Number;
+		function set height(v:Number):void;
 	}
 }

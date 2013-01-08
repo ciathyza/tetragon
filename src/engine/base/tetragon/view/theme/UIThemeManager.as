@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.theme
+package tetragon.view.theme
 {
 	import lib.fonts.BitstreamVeraSansBoldFont;
 	import lib.fonts.BitstreamVeraSansFont;
@@ -34,7 +34,6 @@ package tetragon.view.ui.theme
 	import lib.fonts.TerminalscopeInverseFont;
 
 	import tetragon.debug.Log;
-	import tetragon.view.ui.core.UIComponent;
 
 	import com.hexagonstar.exception.SingletonException;
 	import com.hexagonstar.util.string.stringIsEmptyOrNull;
@@ -165,19 +164,6 @@ package tetragon.view.ui.theme
 			if (_fonts[fontClass]) return;
 			_fonts[fontClass] = true;
 			Font.registerFont(fontClass);
-		}
-		
-		
-		public function registerUIComponentInstance(component:UIComponent):void
-		{
-			// TODO
-		}
-		
-		
-		public function getStyleDefinition(componentClass:Class):Object
-		{
-			// TODO
-			return null;
 		}
 		
 		

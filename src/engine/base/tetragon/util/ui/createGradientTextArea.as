@@ -29,7 +29,7 @@
 package tetragon.util.ui
 {
 	import tetragon.Main;
-	import tetragon.view.ui.theme.TextFormats;
+	import tetragon.view.theme.TextFormats;
 
 	import com.hexagonstar.display.text.GradientTextArea;
 	import com.hexagonstar.types.Gradient;

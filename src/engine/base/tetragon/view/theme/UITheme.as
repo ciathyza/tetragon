@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.theme
+package tetragon.view.theme
 {
 	import com.hexagonstar.util.reflection.getClassName;
 

@@ -35,27 +35,19 @@
 		<compile extra="game"/>
 		<compile extra="game_2d"/>
 		<compile extra="game_3d"/>
-		<compile extra="game_rpg"/>
-		<compile extra="game_strategy"/>
 		<createDocs extra="base" docsName="Base"/>
 		<createDocs extra="game" docsName="Game"/>
 		<createDocs extra="game_2d" docsName="Game 2D"/>
 		<createDocs extra="game_3d" docsName="Game 3D"/>
-		<createDocs extra="game_rpg" docsName="RPG"/>
-		<createDocs extra="game_strategy" docsName="Strategy"/>
 		<packDocs/>
 		<cleanDocs extra="base"/>
 		<cleanDocs extra="game"/>
 		<cleanDocs extra="game_2d"/>
 		<cleanDocs extra="game_3d"/>
-		<cleanDocs extra="game_rpg"/>
-		<cleanDocs extra="game_strategy"/>
 		<createFatDocs extra="base" docsName="Base"/>
 		<createFatDocs extra="game" docsName="Game"/>
 		<createFatDocs extra="game_2d" docsName="Game 2D"/>
 		<createFatDocs extra="game_3d" docsName="Game 3D"/>
-		<createFatDocs extra="game_rpg" docsName="RPG"/>
-		<createFatDocs extra="game_strategy" docsName="Strategy"/>
 		<clean/>
 		<refresh/>
 	</target>
@@ -66,8 +58,6 @@
 		<compile extra="game"/>
 		<compile extra="game_2d"/>
 		<compile extra="game_3d"/>
-		<compile extra="game_rpg"/>
-		<compile extra="game_strategy"/>
 		<refresh/>
 	</target>
 	
@@ -95,25 +85,12 @@
 		<refresh/>
 	</target>
 	
-	<target name="06. Compile: RPG Extra" description="Compiles an SWC of the tetragon RPG extra.">
-		<prepare/>
-		<compile extra="game_rpg"/>
-		<refresh/>
-	</target>
-	
-	<target name="07. Compile: Strategy Extra" description="Compiles an SWC of the tetragon Strategy extra.">
-		<prepare/>
-		<compile extra="game_strategy"/>
-		<refresh/>
-	</target>
 	
 	<target name="08. Create All Docs" description="Creates all base and extra API docs.">
 		<createDocs extra="base" docsName="Base"/>
 		<createDocs extra="game" docsName="Game"/>
 		<createDocs extra="game_2d" docsName="Game 2D"/>
 		<createDocs extra="game_3d" docsName="Game 3D"/>
-		<createDocs extra="game_rpg" docsName="RPG"/>
-		<createDocs extra="game_strategy" docsName="Strategy"/>
 		<refresh/>
 	</target>
 	
@@ -133,8 +110,6 @@
 		<cleanDocs extra="game"/>
 		<cleanDocs extra="game_2d"/>
 		<cleanDocs extra="game_3d"/>
-		<cleanDocs extra="game_rpg"/>
-		<cleanDocs extra="game_strategy"/>
 		<refresh/>
 	</target>
 	

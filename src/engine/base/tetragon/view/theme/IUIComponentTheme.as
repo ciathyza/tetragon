@@ -26,26 +26,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.theme
+package tetragon.view.theme
 {
+	
+	
 	/**
-	 * Interface for classes that can be used as a skin for a UI component.
+	 * IUIComponentTheme Interface
 	 */
-	public interface IUIComponentSkin
+	public interface IUIComponentTheme
 	{
-		function onOver():void;
-		function onOut():void;
-		function onDown():void;
-		function onUp():void;
-		function onEnable():void;
-		function onDisable():void;
-		function onSelect():void;
-		function onDeselect():void;
-		function onEmphasize():void;
+		function get name():String;
 		
-		function get width():Number;
-		function set width(v:Number):void;
-		function get height():Number;
-		function set height(v:Number):void;
+		function get textFormats():TextFormats;
+		
+		function get sounds():Object;
 	}
 }

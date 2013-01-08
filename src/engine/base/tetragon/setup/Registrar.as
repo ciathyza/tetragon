@@ -36,7 +36,7 @@ package tetragon.setup
 	import tetragon.entity.EntitySystemManager;
 	import tetragon.state.StateManager;
 	import tetragon.view.ScreenManager;
-	import tetragon.view.ui.theme.UIThemeManager;
+	import tetragon.view.theme.UIThemeManager;
 
 	import flash.text.Font;
 	
@@ -134,56 +134,6 @@ package tetragon.setup
 			Font.registerFont(fontClass);
 			Log.verbose("Registered font " + fontClass + ".", this);
 		}
-		
-		
-		/**
-		 * Deprecated method!
-		 * 
-		 * @deprecated
-		 * @param id
-		 * @param font
-		 * @param size
-		 * @param color
-		 * @param letterSpacing
-		 * @param leading
-		 * @param align
-		 * @param bold
-		 * @param italic
-		 * @param underline
-		 * @param kerning
-		 * @param leftMargin
-		 * @param rightMargin
-		 * @param indent
-		 * @return TextFormat object
-		 */
-		//public function registerTextFormat(id:String,
-		//									font:String,
-		//									size:int = 12,
-		//									color:uint = 0x000000,
-		//									letterSpacing:Number = 0,
-		//									leading:int = 0,
-		//									align:String = null,
-		//									bold:Boolean = false,
-		//									italic:Boolean = false,
-		//									underline:Boolean = false,
-		//									kerning:Boolean = false,
-		//									leftMargin:int = 0,
-		//									rightMargin:int = 0,
-		//									indent:int = 0):TextFormat
-		//{
-		//	if (!_textFormats) _textFormats = _main.themeManager.currentTheme.textFormats;
-		//	if (_textFormats.addFormat(id, font, size, color, letterSpacing, leading, align,
-		//		bold, italic, underline, kerning, leftMargin, rightMargin, indent))
-		//	{
-		//		Log.verbose("Registered text format \"" + id + "\".", this);
-		//	}
-		//	else
-		//	{
-		//		Log.warn("Failed to register text format! A text format with ID \"" + id
-		//			+ "\" has already been registered.", this);
-		//	}
-		//	return _textFormats.getFormat(id);
-		//}
 		
 		
 		/**

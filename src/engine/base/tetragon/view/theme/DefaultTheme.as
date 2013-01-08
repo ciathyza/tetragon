@@ -26,14 +26,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.theme
+package tetragon.view.theme
 {
-	import tetragon.view.ui.controls.*;
-	import tetragon.view.ui.core.UIComponent;
-
-	import com.hexagonstar.ui.theme.ThemeAssets;
-	
-	
 	/**
 	 * DefaultTheme class
 	 */
@@ -75,33 +69,6 @@ package tetragon.view.ui.theme
 		override protected function addTextFormats():void
 		{
 			super.addTextFormats();
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function addUIStyles():void
-		{
-			addUIStyle(UIComponent, UIStyleNames.FOCUSRECT_SKIN,			"FocusRect");
-			addUIStyle(UIComponent, UIStyleNames.FOCUSRECT_PADDING,			2);
-			addUIStyle(UIComponent, UIStyleNames.TEXTFORMAT,				ThemeAssets.guiText);
-			addUIStyle(UIComponent, UIStyleNames.TEXTFORMAT_DISABLED,		ThemeAssets.guiTextDisabled);
-			addUIStyle(UIComponent, UIStyleNames.DEFAULT_TEXTFORMAT,		ThemeAssets.guiText);
-			addUIStyle(UIComponent, UIStyleNames.DEFAULT_TEXTFORMAT_DISABLED,ThemeAssets.guiTextDisabled);
-			
-			addUIStyle(BaseButton, UIStyleNames.UP_SKIN,					"ButtonUp");
-			addUIStyle(BaseButton, UIStyleNames.DOWN_SKIN,					"ButtonDown");
-			addUIStyle(BaseButton, UIStyleNames.OVER_SKIN,					"ButtonOver");
-			addUIStyle(BaseButton, UIStyleNames.DISABLED_SKIN,				"ButtonDisabled");
-			addUIStyle(BaseButton, UIStyleNames.SELECTED_DISABLED_SKIN,		"ButtonToggledDisabled");
-			addUIStyle(BaseButton, UIStyleNames.SELECTED_UP_SKIN,			"ButtonToggledDown");
-			addUIStyle(BaseButton, UIStyleNames.SELECTED_DOWN_SKIN,			"ButtonToggledDown");
-			addUIStyle(BaseButton, UIStyleNames.SELECTED_OVER_SKIN,			"ButtonToggledDown");
-			addUIStyle(BaseButton, UIStyleNames.FOCUSRECT_SKIN,				null);
-			addUIStyle(BaseButton, UIStyleNames.FOCUSRECT_PADDING,			null);
-			addUIStyle(BaseButton, UIStyleNames.REPEAT_DELAY,				500);
-			addUIStyle(BaseButton, UIStyleNames.REPEAT_INTERVAL,			35);
 		}
 		
 		
