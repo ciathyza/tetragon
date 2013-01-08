@@ -1,5 +1,5 @@
-Tetragon: Universal Game Engine for multi-platform ActionScript projects
-========================================================================
+Tetragon: the universal game engine
+===================================
 
 What is Tetragon?
 -----------------
