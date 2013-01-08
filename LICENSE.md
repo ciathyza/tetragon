@@ -1,12 +1,7 @@
+MIT License
+===========
 
-      _________  __      __
-    _/        / / /____ / /________ ____ ____  ___
-   _/        / / __/ -_) __/ __/ _ `/ _ `/ _ \/ _ \
-  _/________/  \__/\__/\__/_/  \_,_/\_, /\___/_//_/
-              license.txt          /___/
-
-
-Copyright (C) Copyright (C) 2012 Sascha Balkau
+Copyright (C) 2012 Sascha Balkau
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
