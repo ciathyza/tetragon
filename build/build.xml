@@ -449,7 +449,7 @@
 		<attribute name="height"/>
 		<sequential>
 			<echo message="Generating AppInfo.as ..." level="info"/>
-			<copy file="${templates.classes}/AppInfoClass.as" tofile="${path.src.code}/AppInfo.as" overwrite="true">
+			<copy file="${templates.classes}/AppInfoClass.as" tofile="${path.src.project}/AppInfo.as" overwrite="true">
 				<filterchain>
 					<replacetokens>
 						<token key="app_id"					value="${app.id}"/>
@@ -500,7 +500,7 @@
 		<attribute name="framerate"/>
 		<sequential>
 			<echo message="Generating ${entry.class}.as ..." level="info"/>
-			<copy file="${templates.classes}/@{entryClassTemplate}" tofile="${path.src.code}/${entry.class}.as" overwrite="true">
+			<copy file="${templates.classes}/@{entryClassTemplate}" tofile="${path.src.project}/${entry.class}.as" overwrite="true">
 				<filterchain>
 					<replacetokens>
 						<token key="app_width"			value="@{width}"/>
@@ -715,7 +715,7 @@
 		<sequential>
 			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
 			<mxmlc
-				file="${path.src.code}/${entry.class}.as"
+				file="${path.src.project}/${entry.class}.as"
 				output="${path.bin}/${app.swfname.full}"
 				incremental="false"
 				locale="${app.localestring}"
@@ -763,7 +763,7 @@
 				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
 				
 				<!-- Project Source Path -->
-				<source-path path-element="${path.src.code}"/>
+				<source-path path-element="${path.src.project}"/>
 				
 				<!-- Project Library Source Path -->
 				<source-path path-element="${path.libs.source}"/>
