@@ -9,7 +9,7 @@ Tetragon is an Open Source cross-platform game engine used to develop games and 
 Where do I find more information about Tetragon?
 ------------------------------------------------
 
-Here are a few starting points:
+Here are some starting points:
 
 * [Official Homepage](http://www.tetragonengine.com/)
 * [API Reference](http://help.hexagonstar.com/tetragon/base/)

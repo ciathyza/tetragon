@@ -46,9 +46,9 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "10960";}
+		public function get build():String {return "10962";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "09-January-2013 18:55";}
+		public function get buildDate():String {return "09-January-2013 19:38";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
@@ -64,7 +64,7 @@ package
 		/** @inheritDoc */
 		public function get contributor():String {return "Hexagon Star Softworks";}
 		/** @inheritDoc */
-		public function get year():String {return "2011";}
+		public function get year():String {return "2013";}
 		/** @inheritDoc */
 		public function get website():String {return "http://www.tetragonengine.com/";}
 		/** @inheritDoc */
