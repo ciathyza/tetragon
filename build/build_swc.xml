@@ -14,14 +14,14 @@
 <project default="00. Full Build" basedir=".." name="tetragon.swc">
 	
 	<property name="engine.name"		value="Tetragon Engine"/>
-	<property name="engine.version"		value="1.0.0"/>
-	<property name="engine.milestone"	value="Sol"/>
+	<property name="engine.version"		value="1.1.0"/>
+	<property name="engine.milestone"	value="Centauri"/>
 	<property name="swc.filename"		value="tetragon"/>
 	
 	<property name="swfversion"		value="14"/>
 	<property name="fplversion"		value="11.1"/>
 	
-	<property file="bld/build.properties"/>
+	<property file="build/build.properties"/>
 	<property file="${env.properties}"/>
 	<taskdef resource="flexTasks.tasks" classpath="${flextasks.jar}"/>
 	
@@ -32,84 +32,29 @@
 		<clean/>
 		<prepare/>
 		<compile extra="base"/>
-		<compile extra="game"/>
-		<compile extra="game_2d"/>
-		<compile extra="game_3d"/>
 		<createDocs extra="base" docsName="Base"/>
-		<createDocs extra="game" docsName="Game"/>
-		<createDocs extra="game_2d" docsName="Game 2D"/>
-		<createDocs extra="game_3d" docsName="Game 3D"/>
 		<packDocs/>
 		<cleanDocs extra="base"/>
-		<cleanDocs extra="game"/>
-		<cleanDocs extra="game_2d"/>
-		<cleanDocs extra="game_3d"/>
 		<createFatDocs extra="base" docsName="Base"/>
-		<createFatDocs extra="game" docsName="Game"/>
-		<createFatDocs extra="game_2d" docsName="Game 2D"/>
-		<createFatDocs extra="game_3d" docsName="Game 3D"/>
 		<clean/>
 		<refresh/>
 	</target>
 	
-	<target name="01. Compile: All" description="Compiles an SWC of tetragon base and all add-ons.">
-		<prepare/>
-		<compile extra="base"/>
-		<compile extra="game"/>
-		<compile extra="game_2d"/>
-		<compile extra="game_3d"/>
-		<refresh/>
-	</target>
-	
-	<target name="02. Compile: Base Engine" description="Compiles an SWC of the tetragon Base engine.">
+	<target name="01. Compile Engine" description="Compiles an SWC of the Tetragon base engine.">
 		<prepare/>
 		<compile extra="base"/>
 		<refresh/>
 	</target>
 	
-	<target name="03. Compile: Game Extra" description="Compiles an SWC of the tetragon Game extra.">
-		<prepare/>
-		<compile extra="game"/>
-		<refresh/>
-	</target>
 	
-	<target name="04. Compile: Game2D Extra" description="Compiles an SWC of the tetragon Game2D extra.">
-		<prepare/>
-		<compile extra="game_2d"/>
-		<refresh/>
-	</target>
-	
-	<target name="05. Compile: Game3D Extra" description="Compiles an SWC of the tetragon Game3D extra.">
-		<prepare/>
-		<compile extra="game_3d"/>
-		<refresh/>
-	</target>
-	
-	
-	<target name="08. Create All Docs" description="Creates all base and extra API docs.">
-		<createDocs extra="base" docsName="Base"/>
-		<createDocs extra="game" docsName="Game"/>
-		<createDocs extra="game_2d" docsName="Game 2D"/>
-		<createDocs extra="game_3d" docsName="Game 3D"/>
-		<refresh/>
-	</target>
-	
-	<target name="09. Create Base Docs" description="Creates the base engine API docs.">
+	<target name="02. Create Docs" description="Creates the engine API docs.">
 		<createDocs extra="base" docsName="Base"/>
 		<refresh/>
 	</target>
 	
-	<target name="10. Create Game Extra Docs" description="Creates the game extra API docs.">
-		<createDocs extra="game" docsName="Game"/>
-		<refresh/>
-	</target>
-	
-	<target name="11. Pack Docs" description="Packs all API docs into a zip file.">
+	<target name="03. Pack Docs" description="Packs the API docs into a zip file.">
 		<packDocs/>
 		<cleanDocs extra="base"/>
-		<cleanDocs extra="game"/>
-		<cleanDocs extra="game_2d"/>
-		<cleanDocs extra="game_3d"/>
 		<refresh/>
 	</target>
 	
@@ -118,7 +63,7 @@
 	
 	<macrodef name="prepare">
 		<sequential>
-			<buildnumber file="bld/build.number"/>
+			<buildnumber file="${path.build}/build.number"/>
 			<tstamp>
 				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
 			</tstamp>
@@ -133,7 +78,7 @@
 		<attribute name="builddate" default=""/>
 		<sequential>
 			<echo message="Generating EngineInfo.as ..." level="info"/>
-			<echo file="${path.src}/engine/base/tetragon/EngineInfo.as" append="false"><![CDATA[/*
+			<echo file="${path.src}/engine/tetragon/EngineInfo.as" append="false"><![CDATA[/*
  *      _________  __      __
  *    _/        / / /____ / /________ ____ ____  ___
  *   _/        / / __/ -_) __/ __/ _ `/ _ `/ _ \/ _ \
@@ -141,25 +86,25 @@
  *                                   /___/
  * 
  * Tetragon : Game Engine for multi-platform ActionScript projects.
- * http://www.tetragonengine.com/
- * Copyright (c) The respective Copyright Holder (see LICENSE).
+ * http://www.tetragonengine.com/ - Copyright (C) 2012 Sascha Balkau
  * 
- * Permission is hereby granted, to any person obtaining a copy of this software
- * and associated documentation files (the "Software") under the rules defined in
- * the license found at http://www.tetragonengine.com/license/ or the LICENSE
- * file included within this distribution.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice must be included in all
+ * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
  * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. THE COPYRIGHT
- * HOLDER AND ITS LICENSORS DISCLAIM ALL WARRANTIES AND CONDITIONS, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO ANY IMPLIED WARRANTIES AND CONDITIONS OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT, AND ANY
- * WARRANTIES AND CONDITIONS ARISING OUT OF COURSE OF DEALING OR USAGE OF TRADE.
- * NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED FROM THE COPYRIGHT
- * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
- * IN THIS AGREEMENT.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package tetragon
 {
@@ -223,8 +168,8 @@ package tetragon
 				strict="true">
 				
 				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
-				<source-path path-element="${path.src}/engine/@{extra}"/>
-				<include-sources dir="${path.src}/engine/@{extra}" includes="*"/>
+				<source-path path-element="${path.src}/engine"/>
+				<include-sources dir="${path.src}/engine" includes="*"/>
 				
 				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
 					<include name="*.swc"/>
@@ -250,10 +195,10 @@ package tetragon
 		<sequential>
 			<echo message="Creating @{docsName} API docs ..." level="info"/>
 			<delete includeemptydirs="true" failonerror="false">
-				<fileset dir="doc/tetragon/apidocs/@{extra}" includes="**/*" excludes="**/.svn"/>
+				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn"/>
 			</delete>
 			<asdoc
-				output="doc/tetragon/apidocs/@{extra}"
+				output="${path.docs.api}"
 				lenient="true"
 				strict="true"
 				warnings="true"
@@ -263,8 +208,8 @@ package tetragon
 				left-frameset-width="240"
 				failonerror="true">
 				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
-				<compiler.source-path path-element="${path.src}/engine/@{extra}"/>
-				<doc-sources path-element="${path.src}/engine/@{extra}"/>
+				<compiler.source-path path-element="${path.src}/engine"/>
+				<doc-sources path-element="${path.src}/engine"/>
 				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
 					<include name="*.swc"/>
 				</compiler.external-library-path>
@@ -300,8 +245,8 @@ package tetragon
 				left-frameset-width="240"
 				failonerror="true">
 				<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
-				<compiler.source-path path-element="${path.src}/engine/@{extra}"/>
-				<doc-sources path-element="${path.src}/engine/@{extra}"/>
+				<compiler.source-path path-element="${path.src}/engine"/>
+				<doc-sources path-element="${path.src}/engine"/>
 				<compiler.external-library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
 					<include name="*.swc"/>
 				</compiler.external-library-path>
@@ -330,8 +275,8 @@ package tetragon
 	
 	<macrodef name="packDocs">
 		<sequential>
-			<zip destfile="dst/${swc.filename}_docs.zip"
-				basedir="doc/tetragon/apidocs"
+			<zip destfile="${path.dist}/${swc.filename}_docs.zip"
+				basedir="${path.docs.api}"
 				excludes="**/.svn"
 				update="false"
 				compress="true"/>
@@ -343,7 +288,7 @@ package tetragon
 		<attribute name="extra"/>
 		<sequential>
 			<delete includeemptydirs="true">
-				<fileset dir="doc/tetragon/apidocs/@{extra}" includes="**/*" excludes="**/.svn"/>
+				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn"/>
 			</delete>
 		</sequential>
 	</macrodef>

@@ -6,25 +6,25 @@
  *                                   /___/
  * 
  * Tetragon : Game Engine for multi-platform ActionScript projects.
- * http://www.tetragonengine.com/
- * Copyright (c) The respective Copyright Holder (see LICENSE).
+ * http://www.tetragonengine.com/ - Copyright (C) 2012 Sascha Balkau
  * 
- * Permission is hereby granted, to any person obtaining a copy of this software
- * and associated documentation files (the "Software") under the rules defined in
- * the license found at http://www.tetragonengine.com/license/ or the LICENSE
- * file included within this distribution.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  * 
- * The above copyright notice and this permission notice must be included in all
+ * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
  * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. THE COPYRIGHT
- * HOLDER AND ITS LICENSORS DISCLAIM ALL WARRANTIES AND CONDITIONS, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO ANY IMPLIED WARRANTIES AND CONDITIONS OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT, AND ANY
- * WARRANTIES AND CONDITIONS ARISING OUT OF COURSE OF DEALING OR USAGE OF TRADE.
- * NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED FROM THE COPYRIGHT
- * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
- * IN THIS AGREEMENT.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package tetragon
 {
@@ -46,16 +46,16 @@ package tetragon
 		/**
 		 * Version of the engine.
 		 */
-		public static const VERSION:String = "1.0.0";
+		public static const VERSION:String = "1.1.0";
 		
 		/**
 		 * Build number of the engine.
 		 */
-		public static const BUILD:String = "10920";
+		public static const BUILD:String = "10943";
 		
 		/**
 		 * Milestone name of the engine.
 		 */
-		public static const MILESTONE:String = "Sol";
+		public static const MILESTONE:String = "Centauri";
 	}
 }
