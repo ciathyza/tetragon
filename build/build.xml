@@ -13,8 +13,8 @@
 -->
 <project default="00. Init" basedir=".." name="tetragon">
 	
-	<property file="bld/project.properties"/>
-	<property file="bld/build.properties"/>
+	<property file="build/project.properties"/>
+	<property file="build/build.properties"/>
 	<property file="${env.properties}"/>
 	<taskdef resource="flexTasks.tasks" classpath="${flextasks.jar}"/>
 	
@@ -35,10 +35,10 @@
 	
 	<target name="02. Pack Project" description="Creates a zipped version of the project for use as a default Tetragon project.">
 		<cleanAll/>
-		<zip destfile="dst/${app.shortname}_project.zip"
+		<zip destfile="${path.dist}/${app.shortname}_project.zip"
 			basedir=""
-			includes="art/**/**,bin/,bld/**/**,doc/,pub/,src/**/**,README,LICENSE"
-			excludes="bld/build_swc.xml,doc/tetragon/,src/engine/,**/.svn,bld/build.number,**/**.~$lock"
+			includes="art/**/**,bin/,build/**/**,docs/,pub/,src/**/**,README.md,LICENSE.md"
+			excludes="build/build_swc.xml,docs/engine/,src/engine/,support/,**/.svn,build/build.number,**/**.~$lock"
 			update="false"
 			compress="true"/>
 	</target>
@@ -420,7 +420,7 @@
 		<attribute name="bgcolor"/>
 		<attribute name="framerate"/>
 		<sequential>
-			<buildnumber file="bld/build.number"/>
+			<buildnumber file="${path.build}/build.number"/>
 			<tstamp>
 				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
 			</tstamp>
@@ -770,7 +770,6 @@
 				
 				<!-- Additional Source Paths should only be used during development! -->
 				<!-- <source-path path-element="${path.src.tetragon.base}"/> -->
-				<!-- <source-path path-element="${path.src.tetragon.game}"/> -->
 				<!-- <source-path path-element="${path.src.hexagonlib}"/> -->
 				<!-- <source-path path-element="${path.src.hexagonui}"/> -->
 				
