@@ -38,7 +38,7 @@
 		<zip destfile="${path.dist}/${app.shortname}_project.zip"
 			basedir=""
 			includes="art/**/**,bin/,build/**/**,docs/,pub/,src/**/**,libs/**/**,resources/**/**,README.md,LICENSE.md"
-			excludes="build/build_swc.xml,docs/engine/,src/engine/,support/,**/.svn,build/build.number,**/**.~$lock"
+			excludes="build/build_swc.xml,docs/engine/,src/engine/,support/,**/.svn,**/.gitkeep,build/build.number,**/**.~$lock"
 			update="false"
 			compress="true"/>
 	</target>
@@ -890,7 +890,7 @@
 			<echo message="Copying @{resourcesSourceFolder} resources ..." level="info"/>
 			<mkdir dir="${path.resources.target}"/>
 			<copy todir="${path.resources.target}" verbose="off" overwrite="true">
-				<fileset dir="${path.resources.source}/@{resourcesSourceFolder}" excludes="**/.svn"/>
+				<fileset dir="${path.resources.source}/@{resourcesSourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 			<copy file="${path.resources.source}/${resource.index.file}" todir="${path.resources.target}" verbose="off" overwrite="true"/>
 		</sequential>

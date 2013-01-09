@@ -353,7 +353,7 @@
 			<echo message="Copying @{resourcesSourceFolder} resources ..." level="info"/>
 			<mkdir dir="${path.resources.target}"/>
 			<copy todir="${path.resources.target}" verbose="off" overwrite="true">
-				<fileset dir="${path.resources.source}/@{resourcesSourceFolder}" excludes="**/.svn"/>
+				<fileset dir="${path.resources.source}/@{resourcesSourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 			<copy file="${path.resources.source}/${resource.index.file}" todir="${path.resources.target}" verbose="off" overwrite="true"/>
 		</sequential>
