@@ -721,7 +721,6 @@
 				locale="${app.localestring}"
 				default-frame-rate="@{framerate}"
 				default-background-color="0x@{bgcolor}"
-				defaults-css-url="${path.theme}/theme.css"
 				swf-version="${swf.version}"
 				target-player="${fpv.version.sdk}"
 				debug="@{debug}"

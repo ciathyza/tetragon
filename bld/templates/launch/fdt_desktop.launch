@@ -12,7 +12,6 @@
 		-default-frame-rate=@air_desktop_framerate@
 		-default-background-color=0x@air_desktop_bgcolor@
 		-default-size=@air_desktop_width@,@air_desktop_height@
-		-defaults-css-url='@path_theme@/theme.css'
 		-default-script-limits=@max_recursiondepth@,@max_executiontime@
 		-accessible=@accessible@
 		-benchmark=@benchmark@

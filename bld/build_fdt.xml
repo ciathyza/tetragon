@@ -44,63 +44,6 @@
 		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="run"/>
 	</target>
 	
-	<!--
-	<target name="90. FDT: Launch (Pre-FDT5.5)">
-		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
-		<generateLaunchFile/>
-		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
-		<copySharedFiles/>
-		<copyDesktopFiles/>
-		<packResources resourcesSourceFolder="${resources.source.shared}"/>
-		<packResources resourcesSourceFolder="${resources.source.desktop}"/>
-		<echo message="Launching ${app.swfname.full} ..." level="info"/>
-		<fdt.loadProjectProperties projectname="${proj.name}"/>
-		<fdt.launch.application
-			projectname="${FDTProject}"
-			mainclass="${path.src.code}/${entry.class}.as"
-			debug="true"
-			profile="false"
-			compilerarguments="
-				-static-link-runtime-shared-libraries=true
-				-swf-version=${swf.version}
-				-target-player=${fpv.version}
-				-library-path+='${FDTProjectSdkPath}/frameworks/locale/${app.localestring}'
-				-locale=${app.localestring}
-				-default-frame-rate=${air.desktop.framerate}
-				-default-background-color=0x${air.desktop.bgcolor}
-				-default-size=${air.desktop.width},${air.desktop.height}
-				-defaults-css-url='${path.theme}/theme.css'
-				-default-script-limits=${max.recursiondepth},${max.executiontime}
-				-accessible=${accessible}
-				-benchmark=${benchmark}
-				-optimize=true
-				-strict=true
-				-show-unused-type-selector-warnings=false
-				-keep-as3-metadata+=TypeHint
-				-keep-as3-metadata+=Resource
-				-keep-as3-metadata+=Embed
-				-define=CONFIG::IS_WEB_BUILD,false
-				-define=CONFIG::IS_AIR_BUILD,true
-				-define=CONFIG::IS_DESKTOP_BUILD,true
-				-define=CONFIG::IS_MOBILE_BUILD,false
-				-define=CONFIG::IS_ANDROID_BUILD,false
-				-define=CONFIG::IS_IOS_BUILD,false
-				-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}
-				-title='${meta.title}'
-				-description='${meta.description}'
-				-date='${build.date}'
-				-language=${app.language}
-				-publisher='${meta.publisher}'
-				-creator='${meta.creator}'
-				-contributor='${meta.contributor}'"
-			target="${path.bin}/${app.swfname.full}"
-			startswf="false"
-			swflocation="${path.bin}/${app.swfname.full}"
-		/>
-		<LaunchDesktop/>
-	</target>
-	-->
 	
 	<target name="01. FDT: Debug">
 		<clean/>
@@ -118,70 +61,6 @@
 	</target>
 	
 	
-	<!--
-	<target name="91. FDT: Debug (Pre-FDT5.5)">
-		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
-		<generateLaunchFile/>
-		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
-		<copySharedFiles/>
-		<copyDesktopFiles/>
-		<packResources resourcesSourceFolder="${resources.source.shared}"/>
-		<packResources resourcesSourceFolder="${resources.source.desktop}"/>
-		<echo message="Debugging ${app.swfname.full} ..." level="info"/>
-		<fdt.loadProjectProperties projectname="${proj.name}"/>
-		<fdt.launch.application
-			projectname="${FDTProject}"
-			mainclass="${path.src.code}/${entry.class}.as"
-			debug="true"
-			profile="false"
-			compilerarguments="
-				-static-link-runtime-shared-libraries=true
-				-swf-version=${swf.version}
-				-target-player=${fpv.version}
-				-library-path+='${FDTProjectSdkPath}/frameworks/locale/${app.localestring}'
-				-locale=${app.localestring}
-				-default-frame-rate=${air.desktop.framerate}
-				-default-background-color=0x${air.desktop.bgcolor}
-				-default-size=${air.desktop.width},${air.desktop.height}
-				-defaults-css-url='${path.theme}/theme.css'
-				-default-script-limits=${max.recursiondepth},${max.executiontime}
-				-accessible=${accessible}
-				-benchmark=${benchmark}
-				-optimize=true
-				-strict=true
-				-show-unused-type-selector-warnings=false
-				-keep-as3-metadata+=TypeHint
-				-keep-as3-metadata+=Resource
-				-keep-as3-metadata+=Embed
-				-define=CONFIG::IS_WEB_BUILD,false
-				-define=CONFIG::IS_AIR_BUILD,true
-				-define=CONFIG::IS_DESKTOP_BUILD,true
-				-define=CONFIG::IS_MOBILE_BUILD,false
-				-define=CONFIG::IS_ANDROID_BUILD,false
-				-define=CONFIG::IS_IOS_BUILD,false
-				-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}
-				-title='${meta.title}'
-				-description='${meta.description}'
-				-date='${build.date}'
-				-language=${app.language}
-				-publisher='${meta.publisher}'
-				-creator='${meta.creator}'
-				-contributor='${meta.contributor}'"
-			target="${path.bin}/${app.swfname.full}"
-			startswf="false"
-			swflocation="${path.bin}/${app.swfname.full}"
-		/>
-		<fdt.startDebugger
-			projectname="${proj.name}"
-			targetswf="${path.bin}/${app.swfname.full}"
-			switchperspectiveonbreakpoint="true"
-		/>
-		<LaunchDesktop/>
-	</target>
-	 -->
-	
-	
 	<target name="02. FDT: NoDebug">
 		<clean/>
 		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
@@ -197,62 +76,6 @@
 		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="run"/>
 	</target>
 	
-	<!--
-	<target name="92. FDT: NoDebug (Pre-FDT5.5)">
-		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
-		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
-		<copySharedFiles/>
-		<copyDesktopFiles/>
-		<packResources resourcesSourceFolder="${resources.source.shared}"/>
-		<packResources resourcesSourceFolder="${resources.source.desktop}"/>
-		<echo message="Runs a nodebug of ${app.swfname.full} ..." level="info"/>
-		<fdt.loadProjectProperties projectname="${proj.name}"/>
-		<fdt.launch.application
-			projectname="${FDTProject}"
-			mainclass="${path.src.code}/${entry.class}.as"
-			debug="false"
-			profile="false"
-			compilerarguments="
-				-static-link-runtime-shared-libraries=true
-				-swf-version=${swf.version}
-				-target-player=${fpv.version}
-				-library-path+='${FDTProjectSdkPath}/frameworks/locale/${app.localestring}'
-				-locale=${app.localestring}
-				-default-frame-rate=${air.desktop.framerate}
-				-default-background-color=0x${air.desktop.bgcolor}
-				-default-size=${air.desktop.width},${air.desktop.height}
-				-defaults-css-url='${path.theme}/theme.css'
-				-default-script-limits=${max.recursiondepth},${max.executiontime}
-				-accessible=${accessible}
-				-benchmark=${benchmark}
-				-optimize=true
-				-strict=true
-				-show-unused-type-selector-warnings=false
-				-keep-as3-metadata+=TypeHint
-				-keep-as3-metadata+=Resource
-				-keep-as3-metadata+=Embed
-				-define=CONFIG::IS_WEB_BUILD,false
-				-define=CONFIG::IS_AIR_BUILD,true
-				-define=CONFIG::IS_DESKTOP_BUILD,true
-				-define=CONFIG::IS_MOBILE_BUILD,false
-				-define=CONFIG::IS_ANDROID_BUILD,false
-				-define=CONFIG::IS_IOS_BUILD,false
-				-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}
-				-title='${meta.title}'
-				-description='${meta.description}'
-				-date='${build.date}'
-				-language=${app.language}
-				-publisher='${meta.publisher}'
-				-creator='${meta.creator}'
-				-contributor='${meta.contributor}'"
-			target="${path.bin}/${app.swfname.full}"
-			startswf="false"
-			swflocation="${path.bin}/${app.swfname.full}"
-		/>
-		<LaunchDesktopNoDebug/>
-	</target>
-	-->
 	
 	<target name="03. FDT: Profile">
 		<clean/>
@@ -269,70 +92,6 @@
 		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="profile"/>
 	</target>
 	
-	<!--
-	<target name="93. FDT: Profile (Pre-FDT5.5)">
-		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
-		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
-		<copySharedFiles/>
-		<copyDesktopFiles/>
-		<packResources resourcesSourceFolder="${resources.source.shared}"/>
-		<packResources resourcesSourceFolder="${resources.source.desktop}"/>
-		<echo message="Profiling ${app.swfname.full} ..." level="info"/>
-		<fdt.loadProjectProperties projectname="${proj.name}"/>
-		<fdt.launch.application
-			projectname="${FDTProject}"
-			mainclass="${path.src.code}/${entry.class}.as"
-			debug="false"
-			profile="true"
-			compilerarguments="
-				-static-link-runtime-shared-libraries=true
-				-swf-version=${swf.version}
-				-target-player=${fpv.version}
-				-library-path+='${FDTProjectSdkPath}/frameworks/locale/${app.localestring}'
-				-locale=${app.localestring}
-				-default-frame-rate=${air.desktop.framerate}
-				-default-background-color=0x${air.desktop.bgcolor}
-				-default-size=${air.desktop.width},${air.desktop.height}
-				-defaults-css-url='${path.theme}/theme.css'
-				-default-script-limits=${max.recursiondepth},${max.executiontime}
-				-accessible=${accessible}
-				-benchmark=${benchmark}
-				-optimize=true
-				-strict=true
-				-show-unused-type-selector-warnings=false
-				-keep-as3-metadata+=TypeHint
-				-keep-as3-metadata+=Resource
-				-keep-as3-metadata+=Embed
-				-define=CONFIG::IS_WEB_BUILD,false
-				-define=CONFIG::IS_AIR_BUILD,true
-				-define=CONFIG::IS_DESKTOP_BUILD,true
-				-define=CONFIG::IS_MOBILE_BUILD,false
-				-define=CONFIG::IS_ANDROID_BUILD,false
-				-define=CONFIG::IS_IOS_BUILD,false
-				-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}
-				-title='${meta.title}'
-				-description='${meta.description}'
-				-date='${build.date}'
-				-language=${app.language}
-				-publisher='${meta.publisher}'
-				-creator='${meta.creator}'
-				-contributor='${meta.contributor}'"
-			target="${path.bin}/${app.swfname.full}"
-			startswf="true"
-			swflauncher="AIR Debug Launcher"
-			swflocation="${path.bin}/${app.swfname.full}"
-		/>
-		<fdt.startProfiler
-			collectstackdata="true"
-			filterinternalpackages="true"
-			memoryprofilingenabled="true"
-			performanceprofilingenabled="false"
-			projectname="${proj.name}"
-			targetswf="${path.bin}/${app.swfname.full}"
-		/>
-	</target>
-	-->
 	
 	<!-- == MACRODEFS: GENERAL ================================================================ -->
 	
@@ -411,7 +170,6 @@
 						<token key="air_desktop_bgcolor"	value="${air.desktop.bgcolor}"/>
 						<token key="air_desktop_width"		value="${air.desktop.width}"/>
 						<token key="air_desktop_height"		value="${air.desktop.height}"/>
-						<token key="path_theme"				value="${path.theme}"/>
 						<token key="max_recursiondepth"		value="${max.recursiondepth}"/>
 						<token key="max_executiontime"		value="${max.executiontime}"/>
 						<token key="accessible"				value="${accessible}"/>
