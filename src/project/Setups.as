@@ -29,8 +29,6 @@
 package 
 {
 	import setup.*;
-
-	import tetragon.setup.*;
 	
 	
 	/**
@@ -67,9 +65,9 @@ package
 			_list = [];
 			
 			/* Enable or disable any engine extra setup(s) here depending on your requirements. */
-			_list.push(GameExtraSetup);
-			_list.push(Game2DExtraSetup);
-			_list.push(Game3DExtraSetup);
+			//_list.push(GameExtraSetup);
+			//_list.push(Game2DExtraSetup);
+			//_list.push(Game3DExtraSetup);
 			
 			/* Add application base setup(s) here. */
 			_list.push(AppBaseSetup);
