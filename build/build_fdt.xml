@@ -15,8 +15,8 @@
 	
 	<xmlproperty file="${basedir}/.project"/>
 	
-	<property file="bld/project.properties"/>
-	<property file="bld/build.properties"/>
+	<property file="build/project.properties"/>
+	<property file="build/build.properties"/>
 	<property file="${env.properties}"/>
 	<property name="project.name" value="${projectDescription.name}"/>
 	<property name="launch.file.path" value=".settings/launch/${project.name}.launch"/>
@@ -121,7 +121,7 @@
 		<attribute name="debug"/>
 		<attribute name="entryClassTemplate"/>
 		<sequential>
-			<buildnumber file="bld/build.number"/>
+			<buildnumber file="${path.build}/build.number"/>
 			<tstamp>
 				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
 			</tstamp>
@@ -135,7 +135,7 @@
 	<macrodef name="generateFDTCorePrefs">
 		<sequential>
 			<echo message="Generating FDT core prefs ..." level="info"/>
-			<copy file="bld/templates/launch/fdt_core.prefs" tofile="${coreprefs.file.path}" overwrite="true">
+			<copy file="${path.build}/templates/launch/fdt_core.prefs" tofile="${coreprefs.file.path}" overwrite="true">
 				<filterchain>
 					<replacetokens>
 						<token key="air_descriptor"				value="${air.descriptor}"/>
@@ -159,7 +159,7 @@
 	<macrodef name="generateLaunchFile">
 		<sequential>
 			<echo message="Generating FDT launch file ..." level="info"/>
-			<copy file="bld/templates/launch/fdt_desktop.launch" tofile="${launch.file.path}" overwrite="true">
+			<copy file="${path.build}/templates/launch/fdt_desktop.launch" tofile="${launch.file.path}" overwrite="true">
 				<filterchain>
 					<replacetokens>
 						<token key="air_descriptor"			value="${air.descriptor}"/>
