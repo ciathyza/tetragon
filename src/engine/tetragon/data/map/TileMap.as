@@ -26,36 +26,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.map
 {
+	import tetragon.data.DataObject;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * Standard tilemap type map that lays out tiles on a grid.
 	 */
-	public final class EngineInfo
+	public class TileMap extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public function TileMap(id:String)
+		{
+			_id = id;
+		}
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
 	}
 }

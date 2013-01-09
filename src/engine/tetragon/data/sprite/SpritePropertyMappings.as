@@ -26,36 +26,75 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.sprite
 {
+	import com.hexagonstar.util.string.TabularText;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * A SpritePropertyMappings contains arrays mapped by a specific sprite property value.
 	 */
-	public final class EngineInfo
+	public final class SpritePropertyMappings
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * A hashmap of Vector.<SpriteObject> objects mapped by a specific sprite property value.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		private var _map:Object;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Version of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public function SpritePropertyMappings(map:Object)
+		{
+			_map = map;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Build number of the engine.
+		 * @param mappingID
 		 */
-		public static const BUILD:String = "10971";
+		public function getSpriteArray(mappingID:String):Vector.<SpriteObject>
+		{
+			return _map[mappingID];
+		}
+		
 		
 		/**
-		 * Milestone name of the engine.
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
 		 */
-		public static const MILESTONE:String = "Centauri";
+		public function toString():String
+		{
+			return "SpritePropertyMappings";
+		}
+		
+		
+		public function dump():String
+		{
+			var t:TabularText = new TabularText(2, true, "  ", null, "  ", 0, ["MAPPING_ID", "SPRITE_ID"]);
+			for (var id:String in _map)
+			{
+				var a:Vector.<SpriteObject> = _map[id];
+				for (var i:uint = 0; i < a.length; i++)
+				{
+					t.add([id, a[i].id]);
+				}
+			}
+			return toString() + "\n" + t;
+		}
 	}
 }

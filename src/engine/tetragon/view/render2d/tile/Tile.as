@@ -26,36 +26,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.tile
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * The Tile class represents a concrete tile object that is put inside a tilegroup
+	 * and by that is being placed on a scrollable tilemap. Tiles are created by using
+	 * TileDefinition and TileModel objects. The TileDefinition provides all definition
+	 * data for the tile and the TileModel provides the coordinates that describe where
+	 * the tile is being positioned inside it's parent tilegroup.
 	 */
-	public final class EngineInfo
+	public class Tile
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * The unique ID of the tile.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public var id:String;
 		
 		/**
-		 * Version of the engine.
+		 * The width of the tile.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public var width:int;
 		
 		/**
-		 * Build number of the engine.
+		 * The height of the tile.
 		 */
-		public static const BUILD:String = "10971";
+		public var height:int;
 		
 		/**
-		 * Milestone name of the engine.
+		 * The x coordinate of the tile inside it's parent tilegroup.
 		 */
-		public static const MILESTONE:String = "Centauri";
+		public var x:int;
+		
+		/**
+		 * The y coordinate of the tile inside it's parent tilegroup.
+		 */
+		public var y:int;
+		
+		/**
+		 * If this tile is a virtual copy of another tile then this contains the ID of the
+		 * tile which this tile is a copy of.
+		 */
+		public var copyOf:String;
+		
+		/**
+		 * The tile's tile properties, contains TileProperty objects.
+		 * @private
+		 */
+		public var properties:Object;
+		
+		/**
+		 * A reference to the bitmapdata of the TileDefinition of this Tile.
+		 * @private
+		 */
+		public var bitmapData:BitmapData;
+		
+		/**
+		 * The tile's bitmap.
+		 * @private
+		 */
+		public var bitmap:Bitmap;
 	}
 }

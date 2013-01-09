@@ -26,36 +26,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.core.events
 {
-	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
-	 */
-	public final class EngineInfo
-	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
-	}
+    /** An EnterFrameEvent is triggered once per frame and is dispatched to all objects in the
+     *  display tree.
+     *
+     *  It contains information about the time that has passed since the last frame. That way, you 
+     *  can easily make animations that are independet of the frame rate, taking the passed time
+     *  into account.
+     */ 
+    public class EnterFrameEvent2D extends Event2D
+    {
+        /** Event type for a display object that is entering a new frame. */
+        public static const ENTER_FRAME:String = "enterFrame";
+        
+        private var mPassedTime:Number;
+        
+        /** Creates an enter frame event with the passed time. */
+        public function EnterFrameEvent2D(type:String, passedTime:Number, bubbles:Boolean=false)
+        {
+            super(type, bubbles);
+            mPassedTime = passedTime;
+        }
+        
+        /** The time that has passed since the last frame (in seconds). */
+        public function get passedTime():Number { return mPassedTime; }
+    }
 }

@@ -26,36 +26,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.sprite
 {
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * A SpriteSequence defines an animation for a sprite. A SpriteObject contains
+	 * a number of sprite sequences which in turn represent a range of one or more
+	 * sprite frames.
 	 */
-	public final class EngineInfo
+	public final class SpriteSequence
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
+		public static const DEFAULT_ID:String = "default";
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var id:String;
+		public var loops:int;
+		public var playMode:String;
+		public var followSequence:String;
+		public var followDelay:int;
+		public var frameIDs:Vector.<String>;
+		public var frames:Vector.<SpriteFrame>;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Version of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public function SpriteSequence(id:String)
+		{
+			this.id = id;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Build number of the engine.
+		 * The number of frames in the sprite sequence.
 		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function get length():uint
+		{
+			if (!frameIDs) return 0;
+			return frameIDs.length;
+		}
 	}
 }

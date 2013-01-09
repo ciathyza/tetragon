@@ -26,36 +26,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.core
 {
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * The IAnimatable2D interface describes objects that are animated depending on the
+	 * passed time. Any object that implements this interface can be added to a juggler.
+	 * 
+	 * <p>
+	 * When an object should no longer be animated, it has to be removed from the juggler.
+	 * To do this, you can manually remove it via the method
+	 * <code>juggler.remove(object)</code>, or the object can request to be removed by
+	 * dispatching a Starling event with the type <code>Event.REMOVE_FROM_JUGGLER</code>.
+	 * The "Tween" class is an example of a class that dispatches such an event; you don't
+	 * have to remove tweens manually from the juggler.
+	 * </p>
+	 * 
+	 * @see Juggler2D
+	 * @see Tween2D
 	 */
-	public final class EngineInfo
-	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
-		
+    public interface IAnimatable2D 
+    {
 		/**
-		 * Name of the engine.
+		 * Advance the time by a number of seconds.
+		 * 
+		 * @param time in seconds.
 		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
-	}
+        function advanceTime(time:Number):void;
+    }
 }

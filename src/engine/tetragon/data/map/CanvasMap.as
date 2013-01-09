@@ -26,36 +26,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.map
 {
+	import tetragon.data.DataObject;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * A canvas map is a very basic type of map onto that graphic object can be placed
+	 * freely at any coordinate.
 	 */
-	public final class EngineInfo
+	public class CanvasMap extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _baseColor:uint;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public function CanvasMap(id:String)
+		{
+			_id = id;
+		}
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get baseColor():uint
+		{
+			return _baseColor;
+		}
+		public function set baseColor(v:uint):void
+		{
+			_baseColor = v;
+		}
 	}
 }

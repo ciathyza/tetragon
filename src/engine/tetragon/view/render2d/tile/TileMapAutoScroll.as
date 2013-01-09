@@ -26,36 +26,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.tile
 {
-	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
-	 */
-	public final class EngineInfo
+	public final class TileMapAutoScroll
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public static const NONE:String			= "none";
+		public static const HORIZONTAL:String	= "h";
+		public static const VERTICAL:String		= "v";
+		public static const BOTH:String			= "hv";
 	}
 }

@@ -26,36 +26,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.core.events
 {
-	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
-	 */
-	public final class EngineInfo
+	import tetragon.view.render2d.core.DisplayObject2D;
+	
+	
+	public final class Touch2DVO
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var touch:Touch2D;
+		public var target:DisplayObject2D;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function Touch2DVO(a1:Touch2D, a2:DisplayObject2D)
+		{
+			touch = a1;
+			target = a2;
+		}
 	}
 }

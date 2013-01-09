@@ -26,36 +26,67 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.audio
 {
+	import tetragon.data.DataObject;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * An AcousticSpace is a definition of acoustic behavior for a particular cell. It
+	 * defines a set of one more more SoundObjects or SoundGroups and the time when they
+	 * should be played, as well as an acoustic reverb type for the sound.
 	 */
-	public final class EngineInfo
+	public class AcousticSpace extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _soundIDs:Object;
+		private var _audioEnvironmentID:String;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public function AcousticSpace(id:String)
+		{
+			_id = id;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Version of the engine.
+		 * IDs of SoundObjects or SoundGroups mapped by a time string that determines at
+		 * which time the particular sound will be played.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public function get soundIDs():Object
+		{
+			return _soundIDs;
+		}
+		public function set soundIDs(v:Object):void
+		{
+			_soundIDs = v;
+		}
+		
 		
 		/**
-		 * Build number of the engine.
+		 * String ID of the used audio reverb environment.
 		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function get audioEnvironmentID():String
+		{
+			return _audioEnvironmentID;
+		}
+		public function set audioEnvironmentID(v:String):void
+		{
+			_audioEnvironmentID = v;
+		}
 	}
 }

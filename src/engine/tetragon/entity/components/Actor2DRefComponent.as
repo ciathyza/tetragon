@@ -26,36 +26,81 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.entity.components
 {
-	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
-	 */
-	public final class EngineInfo
+	import tetragon.entity.EntityComponent;
+	import tetragon.entity.IEntityComponent;
+	
+	
+	public class Actor2DRefComponent extends EntityComponent implements IEntityComponent
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
+		/** @private */
+		private var _baseObjectID:String;
+		/** @private */
+		private var _encounterZoneID:String;
+		/** @private */
+		private var _enabled:Boolean;
+		/** @private */
+		private var _respawns:Boolean;
+		/** @private */
+		private var _dead:Boolean;
+
+
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
+		public function get baseObjectID():String
+		{
+			return _baseObjectID;
+		}
+		public function set baseObjectID(v:String):void
+		{
+			_baseObjectID = v;
+		}
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function get encounterZoneID():String
+		{
+			return _encounterZoneID;
+		}
+		public function set encounterZoneID(v:String):void
+		{
+			_encounterZoneID = v;
+		}
+		
+		
+		public function get enabled():Boolean
+		{
+			return _enabled;
+		}
+		public function set enabled(v:Boolean):void
+		{
+			_enabled = v;
+		}
+		
+		
+		public function get respawns():Boolean
+		{
+			return _respawns;
+		}
+		public function set respawns(v:Boolean):void
+		{
+			_respawns = v;
+		}
+		
+		
+		public function get dead():Boolean
+		{
+			return _dead;
+		}
+		public function set dead(v:Boolean):void
+		{
+			_dead = v;
+		}
 	}
 }

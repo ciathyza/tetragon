@@ -26,36 +26,81 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.tile
 {
+	import tetragon.data.sprite.SpriteSet;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * TileMapGenerator class
+	 *
+	 * @author Hexagon
 	 */
-	public final class EngineInfo
+	public class TileMapGenerator
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		/** @private */
+		private var _spriteSet:SpriteSet;
+		/** @private */
+		private var _tileMap:TileMap;
+		/** @private */
+		private var _tileIDCount:int;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Generates a tilemap.
+		 * 
+		 * @param spriteSet
+		 * @param mapWidth
+		 * @param mapHeight
+		 * @return A TileMap object.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public function generate(spriteSet:SpriteSet, mapWidth:int, mapHeight:int):TileMap
+		{
+			_spriteSet = spriteSet;
+			_tileIDCount = 0;
+			
+			_tileMap = generateRandomMap(mapWidth, mapHeight);
+			_tileMap.measure();
+			var tileMap:TileMap = _tileMap;
+			_tileMap = null;
+			_spriteSet = null;
+			return tileMap;
+		}
+		
 		
 		/**
-		 * Version of the engine.
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public function toString():String
+		{
+			return "TileMapGenerator";
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Build number of the engine.
+		 * @private
 		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		private function generateRandomMap(mapWidth:int, mapHeight:int):TileMap
+		{
+			var tileMap:TileMap = new TileMap();
+			tileMap.margin = 20;
+			tileMap.edgeMode = TileMapEdgeMode.HALT;
+			
+			return tileMap;
+		}
 	}
 }

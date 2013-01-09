@@ -26,36 +26,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.modules.app
 {
+	import tetragon.modules.AsyncModule;
+	import tetragon.modules.IAsyncModule;
+	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.core.events.Event2D;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * Module that takes care that Render2D is available before the Game2D Extra
+	 * is being used.
 	 */
-	public final class EngineInfo
+	public final class Game2DModule extends AsyncModule implements IAsyncModule
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _render2D:Render2D;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * @inheritDoc
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		override public function start():void
+		{
+			_asyncComplete = false;
+			_render2D = new Render2D(main.stage);
+			_render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
+		}
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public static function get defaultID():String
+		{
+			return "game2DModule";
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		private function onContext3DCreated(e:Event2D):void
+		{
+			_asyncComplete = true;
+			if (_asyncCompleteSignal) _asyncCompleteSignal.dispatch();
+		}
 	}
 }

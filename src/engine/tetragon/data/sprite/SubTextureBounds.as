@@ -26,36 +26,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.sprite
 {
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * A VO that stores the boundaries for a subtexture on a sprite atlas.
 	 */
-	public final class EngineInfo
+	public class SubTextureBounds
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var id:String;
+		public var x:int;
+		public var y:int;
+		public var width:int;
+		public var height:int;
+		public var frameX:int;
+		public var frameY:int;
+		public var frameWidth:int;
+		public var frameHeight:int;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function SubTextureBounds(id:String)
+		{
+			this.id = id;
+		}
 	}
 }

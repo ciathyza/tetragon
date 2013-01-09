@@ -26,36 +26,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.data.sprite
 {
+	import flash.display.BitmapData;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * Defines a single frame of a sprite sheet.
 	 */
-	public final class EngineInfo
+	public final class SpriteFrame
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
-		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
-		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
-		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public var id:String;
+		public var registrationPoint:String;
+		public var image:BitmapData;
 	}
 }

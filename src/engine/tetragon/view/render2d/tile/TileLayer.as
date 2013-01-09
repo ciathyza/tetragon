@@ -26,36 +26,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.tile
 {
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * TileLayer class
+	 *
+	 * @author Hexagon
 	 */
-	public final class EngineInfo
+	public class TileLayer
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var id:String;
+		public var transparent:Boolean;
+		public var fillColor:uint;
+		public var autoScroll:String;
+		public var autoScrollSpeed:int;
+		public var properties:Object;
+		public var groups:Vector.<TileGroup>;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Name of the engine.
+		 * Creates a new instance of the class.
 		 */
-		public static const NAME:String = "Tetragon Engine";
+		public function TileLayer()
+		{
+		}
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "10971";
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
 	}
 }
