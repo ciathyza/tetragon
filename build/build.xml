@@ -1023,8 +1023,8 @@
 		<attribute name="target"/>
 		<sequential>
 			<echo message="Publishing iOS '@{target}' build of ${app.name} ${app.version.string}. This may take some minutes ..." level="info"/>
-			<echo message="${java.32bit} -jar ${air.developertool} -package -target @{target} -provisioning-profile ${air.ios.provprofile.path} -storetype pkcs12 -keystore ${air.ios.certificate.path} -storepass ${air.ios.certificate.password} ${path.pub}/${air.ios.publishname}.ipa /${path.bin}/${air.descriptor} -C ${path.bin} ${app.swfname.full} -C ${path.bin} ${target.folder.config} -C ${path.bin} ${target.folder.extra} -C ${path.bin} ${target.folder.icons} -C ${path.bin} ${target.folder.resources}" level="debug"/>
-			<exec executable="${java.32bit}">
+			<echo message="${java.exe} -jar ${air.developertool} -package -target @{target} -provisioning-profile ${air.ios.provprofile.path} -storetype pkcs12 -keystore ${air.ios.certificate.path} -storepass ${air.ios.certificate.password} ${path.pub}/${air.ios.publishname}.ipa /${path.bin}/${air.descriptor} -C ${path.bin} ${app.swfname.full} -C ${path.bin} ${target.folder.config} -C ${path.bin} ${target.folder.extra} -C ${path.bin} ${target.folder.icons} -C ${path.bin} ${target.folder.resources}" level="debug"/>
+			<exec executable="${java.exe}">
 				<arg value="-jar"/>
 				<arg value="${air.developertool}"/>
 				<arg value="-package"/>
