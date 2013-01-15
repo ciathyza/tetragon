@@ -405,7 +405,7 @@
 				<fileset dir="${path.bin}" includes="**/*" excludes="**/.svn"/>
 			</delete>
 			<delete includeemptydirs="true">
-				<fileset dir="${path.pub}" includes="**/*" excludes="**/.svn"/>
+				<fileset dir="${path.pub}" includes="**/*" excludes="**/.svn,**/.gitkeep"/>
 			</delete>
 		</sequential>
 	</macrodef>
