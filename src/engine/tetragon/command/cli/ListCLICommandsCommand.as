@@ -112,7 +112,7 @@ package tetragon.command.cli
 				+ " filtered to a specific command group by using the command category's name as an argument:\n\n"
 				+ "\t\tall:      List all commands (default).\n"
 				+ "\t\tcli:      Only list commands that are part of the CLI category.\n"
-				+ "\t\tecs:      Only list commands that are part of the 'entity component system' category.\n\n";
+				+ "\t\tecs:      Only list commands that are part of the 'entity component system' category.\n\n"
 				+ "\t\tenv:      Only list commands that are part of the env category.\n"
 				+ "\t\tfile:     Only list commands that are part of the file category.\n\n";
 		}
