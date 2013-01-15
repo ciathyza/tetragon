@@ -288,7 +288,7 @@ package tetragon
 		<attribute name="extra"/>
 		<sequential>
 			<delete includeemptydirs="true">
-				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn"/>
+				<fileset dir="${path.docs.api}" includes="**/*" excludes="**/.svn,**/.gitkeep"/>
 			</delete>
 		</sequential>
 	</macrodef>

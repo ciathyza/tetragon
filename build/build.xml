@@ -700,6 +700,86 @@
 	</macrodef>
 	
 	
+	<!-- Compile target for use with ActionScript Compiler 2.0 -->
+	<macrodef name="compile.asc2">
+		<attribute name="bgcolor"/>
+		<attribute name="framerate"/>
+		<attribute name="debug"/>
+		<attribute name="config"/>
+		<attribute name="libpath"/>
+		<attribute name="isWebBuild"/>
+		<attribute name="isAIRBuild"/>
+		<attribute name="isDesktopBuild"/>
+		<attribute name="isMobileBuild"/>
+		<attribute name="isAndroidBuild"/>
+		<attribute name="isIOSBuild"/>
+		<sequential>
+			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
+			<mxmlc
+				file="${path.src.project}/${entry.class}.as"
+				output="${path.bin}/${app.swfname.full}"
+				default-frame-rate="@{framerate}"
+				default-background-color="0x@{bgcolor}"
+				swf-version="${swf.version}"
+				target-player="${fpv.version.sdk}"
+				debug="@{debug}"
+				optimize="true"
+				strict="true">
+				
+				<load-config filename="${FLEX_HOME}/frameworks/@{config}"/>
+				<default-size width="${app.width}" height="${app.height}"/>
+				
+				<default-script-limits
+					max-recursion-depth="${max.recursiondepth}"
+					max-execution-time="${max.executiontime}"/>
+				
+				<!--These Meta Tags are required for the Resource Manager -->
+				<keep-as3-metadata name="TypeHint"/>
+				<keep-as3-metadata name="Resource"/>
+				<keep-as3-metadata name="ResourceIndex"/>
+				<keep-as3-metadata name="Embed"/>
+				
+				<!-- Conditional Compilation Constant Definitions -->
+				<define name="CONFIG::IS_WEB_BUILD" value="@{isWebBuild}"/>
+				<define name="CONFIG::IS_AIR_BUILD" value="@{isAIRBuild}"/>
+				<define name="CONFIG::IS_DESKTOP_BUILD" value="@{isDesktopBuild}"/>
+				<define name="CONFIG::IS_MOBILE_BUILD" value="@{isMobileBuild}"/>
+				<define name="CONFIG::IS_ANDROID_BUILD" value="@{isAndroidBuild}"/>
+				<define name="CONFIG::IS_IOS_BUILD" value="@{isIOSBuild}"/>
+				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
+				
+				<!-- Project Source Path -->
+				<source-path path-element="${path.src.project}"/>
+				
+				<!-- Project Library Source Path -->
+				<source-path path-element="${path.libs.source}"/>
+				
+				<!-- Additional Source Paths should only be used during development! -->
+				<!-- <source-path path-element="${path.src.tetragon.base}"/> -->
+				<!-- <source-path path-element="${path.src.hexagonlib}"/> -->
+				<!-- <source-path path-element="${path.src.hexagonui}"/> -->
+				
+				<!-- Flex Framework Libraries should not be appended! -->
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs/@{libpath}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs" append="false">
+					<include name="framework.swc"/>
+				</compiler.library-path>
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/locale/${app.localestring}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				
+				<!-- Project SWCs -->
+				<compiler.library-path dir="${path.libs.swc}" append="false">
+					<include name="*.swc"/>
+				</compiler.library-path>
+				
+			</mxmlc>
+		</sequential>
+	</macrodef>
+	
+	<!-- Old compile target for use with ActionScript Compiler 1.0 -->
 	<macrodef name="compile">
 		<attribute name="bgcolor"/>
 		<attribute name="framerate"/>

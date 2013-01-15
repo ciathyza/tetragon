@@ -46,13 +46,13 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "10972";}
+		public function get build():String {return "10990";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "09-January-2013 22:29";}
+		public function get buildDate():String {return "15-January-2013 19:45";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
-		public function get buildType():String {return "desktop";}
+		public function get buildType():String {return "web";}
 		/** @inheritDoc */
 		public function get releaseStage():String {return "alpha";}
 		/** @inheritDoc */
