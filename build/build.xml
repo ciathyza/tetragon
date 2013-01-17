@@ -280,7 +280,7 @@
 			<copyWebFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 		</sequential>
 	</macrodef>
 	
@@ -296,7 +296,7 @@
 			<copyWebFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 		</sequential>
 	</macrodef>
 	
@@ -305,7 +305,7 @@
 		<attribute name="debug"/>
 		<sequential>
 			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${fpv.version.sdk}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 		</sequential>
 	</macrodef>
 	
@@ -480,7 +480,7 @@
 						<token key="default_height"			value="@{height}"/>
 						<token key="reference_width"		value="${reference.width}"/>
 						<token key="reference_height"		value="${reference.height}"/>
-						<token key="swf_version"			value="${swf.version}"/>
+						<token key="swf_version"			value="${version.swf}"/>
 						<token key="is_debug"				value="@{debug}"/>
 						<token key="engine_name"			value="${engine.name}"/>
 						<token key="engine_version"			value="${engine.version}"/>
@@ -543,7 +543,7 @@
 						<token key="web_skippreloader"		value="${web.skippreloader}"/>
 						<token key="web_ignoreinifile"		value="${web.ignoreinifile}"/>
 						<token key="web_ignorelocalefile"	value="${web.ignorelocalefile}"/>
-						<token key="fpv_version"			value="${fpv.version}"/>
+						<token key="fpv_version"			value="${version.fp}"/>
 						<token key="js_path"				value="${target.folder.js}"/>
 						<token key="web_locale_ids"			value="${web.locale.ids}"/>
 						<token key="web_locale_names"		value="${web.locale.names}"/>
@@ -571,7 +571,7 @@
 			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
 				<filterchain>
 					<replacetokens>
-						<token key="air_version"						value="${air.version}"/>
+						<token key="air_version"						value="${version.air}"/>
 						<token key="app_id"								value="${app.id}"/>
 						<token key="air_filename"						value="${air.filename}"/>
 						<token key="app_name"							value="${app.name}"/>
@@ -608,7 +608,7 @@
 			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
 				<filterchain>
 					<replacetokens>
-						<token key="air_version"						value="${air.version}"/>
+						<token key="air_version"						value="${version.air}"/>
 						<token key="app_id"								value="${app.id}"/>
 						<token key="air_filename"						value="${air.filename}"/>
 						<token key="app_name"							value="${app.name}"/>
@@ -649,7 +649,7 @@
 			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
 				<filterchain>
 					<replacetokens>
-						<token key="air_version"						value="${air.version}"/>
+						<token key="air_version"						value="${version.air}"/>
 						<token key="app_id"								value="${app.id}"/>
 						<token key="air_filename"						value="${air.filename}"/>
 						<token key="app_name"							value="${app.name}"/>
@@ -720,8 +720,8 @@
 				output="${path.bin}/${app.swfname.full}"
 				default-frame-rate="@{framerate}"
 				default-background-color="0x@{bgcolor}"
-				swf-version="${swf.version}"
-				target-player="${fpv.version.sdk}"
+				swf-version="${version.swf}"
+				target-player="${version.pg}"
 				debug="@{debug}"
 				optimize="true"
 				strict="true">
@@ -801,8 +801,8 @@
 				locale="${app.localestring}"
 				default-frame-rate="@{framerate}"
 				default-background-color="0x@{bgcolor}"
-				swf-version="${swf.version}"
-				target-player="${fpv.version.sdk}"
+				swf-version="${version.swf}"
+				target-player="${version.pg}"
 				debug="@{debug}"
 				accessible="${accessible}"
 				benchmark="${benchmark}"

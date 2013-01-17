@@ -139,7 +139,7 @@
 				<filterchain>
 					<replacetokens>
 						<token key="air_descriptor"				value="${air.descriptor}"/>
-						<token key="fpv_version"				value="${fpv.version}"/>
+						<token key="fpv_version"				value="${version.fp}"/>
 						<token key="project_name"				value="${project.name}"/>
 						<token key="path_bin_name"				value="${path.bin.name}"/>
 						<token key="path_pub_name"				value="${path.pub.name}"/>
@@ -163,8 +163,8 @@
 				<filterchain>
 					<replacetokens>
 						<token key="air_descriptor"			value="${air.descriptor}"/>
-						<token key="swf_version"			value="${swf.version}"/>
-						<token key="fpv_version"			value="${fpv.version}"/>
+						<token key="swf_version"			value="${version.swf}"/>
+						<token key="fpv_version"			value="${version.fp}"/>
 						<token key="app_localestring"		value="${app.localestring}"/>
 						<token key="air_desktop_framerate"	value="${air.desktop.framerate}"/>
 						<token key="air_desktop_bgcolor"	value="${air.desktop.bgcolor}"/>
@@ -228,7 +228,7 @@
 						<token key="default_height"			value="${air.desktop.height}"/>
 						<token key="reference_width"		value="${reference.width}"/>
 						<token key="reference_height"		value="${reference.height}"/>
-						<token key="swf_version"			value="${swf.version}"/>
+						<token key="swf_version"			value="${version.swf}"/>
 						<token key="is_debug"				value="@{debug}"/>
 						<token key="engine_name"			value="${engine.name}"/>
 						<token key="engine_version"			value="${engine.version}"/>
@@ -265,7 +265,7 @@
 			<copy file="@{templatePath}" tofile="${path.bin}/${air.descriptor}" overwrite="true">
 				<filterchain>
 					<replacetokens>
-						<token key="air_version"						value="${air.version}"/>
+						<token key="air_version"						value="${version.air}"/>
 						<token key="app_id"								value="${app.id}"/>
 						<token key="air_filename"						value="${air.filename}"/>
 						<token key="app_name"							value="${app.name}"/>
