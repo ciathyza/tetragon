@@ -12,7 +12,7 @@ Where do I find more information about Tetragon?
 Here are some starting points:
 
 * [Official Homepage](http://www.tetragonengine.com/)
-* [API Reference](http://help.hexagonstar.com/tetragon/base/)
 * [Tetragon Wiki](http://wiki.tetragonengine.com/)
+* [API Reference](http://help.hexagonstar.com/tetragon/base/)
 * [Engine Repository](https://github.com/nothingagency/tetragon)
 * [Modules Repository](https://github.com/nothingagency/tetragon-modules)
