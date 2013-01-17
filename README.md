@@ -13,6 +13,6 @@ Here are some starting points:
 
 * [Official Homepage](http://www.tetragonengine.com/)
 * [Tetragon Wiki](http://wiki.tetragonengine.com/)
-* [API Reference](http://help.hexagonstar.com/tetragon/base/)
+* [API Reference](http://docs.tetragonengine.com/base/)
 * [Engine Repository](https://github.com/nothingagency/tetragon)
 * [Modules Repository](https://github.com/nothingagency/tetragon-modules)
