@@ -28,16 +28,6 @@
  */
 package tetragon
 {
-	import com.hexagonstar.exception.SingletonException;
-	import com.hexagonstar.util.debug.HLog;
-	import com.hexagonstar.util.display.StageReference;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.display.StageDisplayState;
-	import flash.events.ErrorEvent;
-	import flash.events.UncaughtErrorEvent;
-	import flash.external.ExternalInterface;
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
@@ -56,10 +46,19 @@ package tetragon
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
 	import tetragon.view.ScreenManager;
-	import tetragon.view.render.RenderBufferManager;
 	import tetragon.view.theme.UIThemeManager;
 
+	import com.hexagonstar.exception.SingletonException;
+	import com.hexagonstar.util.debug.HLog;
+	import com.hexagonstar.util.display.StageReference;
 
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.display.StageDisplayState;
+	import flash.events.ErrorEvent;
+	import flash.events.UncaughtErrorEvent;
+	import flash.external.ExternalInterface;
 	
 	
 	/**
@@ -109,7 +108,7 @@ package tetragon
 		/** @private */
 		private var _localSettingsManager:LocalSettingsManager;
 		/** @private */
-		private var _renderBufferManager:RenderBufferManager;
+		//private var _renderBufferManager:RenderBufferManager;
 		/** @private */
 		private var _keyInputManager:KeyInputManager;
 		/** @private */
@@ -365,11 +364,11 @@ package tetragon
 		/**
 		 * A reference to the renderbuffer manager.
 		 */
-		public function get renderBufferManager():RenderBufferManager
-		{
-			if (!_renderBufferManager) _renderBufferManager = new RenderBufferManager();
-			return _renderBufferManager;
-		}
+		//public function get renderBufferManager():RenderBufferManager
+		//{
+		//	if (!_renderBufferManager) _renderBufferManager = new RenderBufferManager();
+		//	return _renderBufferManager;
+		//}
 
 
 		/**
