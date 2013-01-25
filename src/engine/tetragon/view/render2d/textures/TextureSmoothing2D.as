@@ -26,40 +26,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view
+package tetragon.view.render2d.textures
 {
-	import tetragon.Main;
-	
-	
-	/**
-	 * A deferred view can be used for view classes that should not be registered in their
-	 * parent view or screen and that might be instantiated at a later time.
-	 * 
-	 * <p>
-	 * In some situations it is preferrable to have a view that is not registered as a
-	 * child view in it's parent view or screen class and that should be created at a
-	 * later time while the screen is open. In such cases your view class should extends
-	 * <code>DeferredView</code> instead of <code>View</code>. Unlike the
-	 * <code>View</code> class, the <code>DeferredView</code> class instantly creates the
-	 * view, adds children and listeners, etc. and calls <code>update()</code>. All these
-	 * steps are normally handled automatically for registered views.
-	 * </p>
-	 */
-	public class DeferredView extends View
+	/** A class that provides constant values for the possible smoothing algorithms of a texture. */
+	public class TextureSmoothing2D
 	{
-		//-----------------------------------------------------------------------------------------
-		// Constructor
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function DeferredView()
+		/** No smoothing, also called "Nearest Neighbor". Pixels will scale up as big rectangles. */
+		public static const NONE:String = "none";
+		/** Bilinear filtering. Creates smooth transitions between pixels. */
+		public static const BILINEAR:String = "bilinear";
+		/** Trilinear filtering. Highest quality by taking the next mip map level into account. */
+		public static const TRILINEAR:String = "trilinear";
+
+
+		/** Determines whether a smoothing value is valid. */
+		public static function isValid(smoothing:String):Boolean
 		{
-			_main = Main.instance;
-			setup();
-			createView();
-			update();
+			return smoothing == NONE || smoothing == BILINEAR || smoothing == TRILINEAR;
 		}
 	}
 }

@@ -29,8 +29,8 @@
 package tetragon.view.loadprogress
 {
 	import tetragon.Main;
-	import tetragon.view.Screen;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.obsolete.Screen;
+	import tetragon.view.obsolete.ScreenManager;
 
 	import com.hexagonstar.file.BulkProgress;
 	import com.hexagonstar.signals.Signal;

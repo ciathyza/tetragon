@@ -28,7 +28,7 @@
  */
 package view.empty
 {
-	import tetragon.view.Screen;
+	import tetragon.view.obsolete.Screen;
 	
 	
 	/**

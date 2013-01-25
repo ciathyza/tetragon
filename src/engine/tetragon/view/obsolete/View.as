@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view
+package tetragon.view.obsolete
 {
 	import tetragon.Main;
 	import tetragon.data.Registry;

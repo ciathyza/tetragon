@@ -45,7 +45,8 @@ package tetragon
 	import tetragon.input.KeyInputManager;
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.obsolete.ScreenManager;
+	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;
 
 	import com.hexagonstar.exception.SingletonException;
@@ -109,6 +110,8 @@ package tetragon
 		private var _localSettingsManager:LocalSettingsManager;
 		/** @private */
 		//private var _renderBufferManager:RenderBufferManager;
+		/** @private */
+		private var _stage3DManager:Stage3DManager;
 		/** @private */
 		private var _keyInputManager:KeyInputManager;
 		/** @private */
@@ -371,6 +374,16 @@ package tetragon
 		//}
 
 
+		/**
+		 * A reference to the stage3d manager.
+		 */
+		public function get stage3DManager():Stage3DManager
+		{
+			if (!_stage3DManager) _stage3DManager = new Stage3DManager(stage);
+			return _stage3DManager;
+		}
+		
+		
 		/**
 		 * A reference to the key input manager.
 		 */

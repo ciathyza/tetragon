@@ -30,8 +30,8 @@ package view.splash
 {
 	import tetragon.data.Settings;
 	import tetragon.util.display.centerChild;
-	import tetragon.view.Screen;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
+	import tetragon.view.obsolete.Screen;
 
 	import com.hexagonstar.display.shape.RectangleGradientShape;
 

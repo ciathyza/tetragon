@@ -29,7 +29,7 @@
 package tetragon.util.display
 {
 	import tetragon.Main;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.obsolete.ScreenManager;
 
 	import flash.display.DisplayObject;
 	
