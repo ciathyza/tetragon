@@ -45,10 +45,11 @@ package tetragon.core
 		 * 
 		 * @param ticks (uint) The ticks that occured since the last frame.
 		 * @param ms (uint) The milliseconds that passed since the last frame.
+		 * @param fps (uint) The current render fps.
 		 */
 		public function RenderSignal()
 		{
-			super(uint, uint);
+			super(uint, uint, uint);
 		}
 	}
 }

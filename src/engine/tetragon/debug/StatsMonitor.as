@@ -149,10 +149,6 @@ package tetragon.debug
 		private var _stageMS:uint;
 		
 		/** @private */
-		private var _renders:uint;
-		/** @private */
-		private var _renderLast:uint;
-		/** @private */
 		private var _renderFPS:uint;
 		
 		/** @private */
@@ -305,19 +301,9 @@ package tetragon.debug
 		/**
 		 * @private
 		 */
-		private function onGameLoopRender(ticks:uint, ms:uint):void
+		private function onGameLoopRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			_glTicks = ticks;
-			_glRenderMS = ms;
-			++_renders;
-			var time:uint = getTimer();
-			var delta:uint = time - _renderLast;
-			if (delta >= 50)
-			{
-				_renderFPS = (_renders / delta * 1000);
-				_renders = 0;
-				_renderLast = time;
-			}
+			_renderFPS = fps;
 		}
 		
 		

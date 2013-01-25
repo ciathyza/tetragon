@@ -84,6 +84,13 @@ package tetragon.core
 		 */
 		private var _main:Main;
 		
+		/** @private */
+		private var _renders:uint;
+		/** @private */
+		private var _renderLast:uint;
+		/** @private */
+		private var _renderFPS:uint;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Signals
@@ -175,6 +182,12 @@ package tetragon.core
 		}
 		
 		
+		public function get renderFPS():uint
+		{
+			return _renderFPS;
+		}
+		
+		
 		public function get tickSignal():TickSignal
 		{
 			return _tickSignal;
@@ -219,7 +232,19 @@ package tetragon.core
 				_tickSignal.dispatch();
 				_accumulator -= _step;
 			}
-			_renderSignal.dispatch(ticks, ms);
+			
+			/* Calculate render fps. */
+			++_renders;
+			time = getTimer();
+			var delta:uint = time - _renderLast;
+			if (delta >= 50)
+			{
+				_renderFPS = (_renders / delta * 1000);
+				_renders = 0;
+				_renderLast = time;
+			}
+			
+			_renderSignal.dispatch(ticks, ms, _renderFPS);
 		}
 	}
 }

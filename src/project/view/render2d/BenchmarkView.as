@@ -37,6 +37,8 @@ package view.render2d
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.system.System;
 	
 	
@@ -97,19 +99,19 @@ package view.render2d
 		}
 		
 		
-		override protected function onRender(ticks:uint, ms:uint):void
+		override protected function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			var passedSeconds:uint = ms;// / 1000;
+			var seconds:Number = ms / 60;
 			
-			_elapsed += passedSeconds;
+			_elapsed += seconds;
 			_frameCount++;
 			
 			if (_frameCount % _waitFrames == 0)
 			{
-				var fps:Number = _waitFrames / _elapsed;
-				var targetFps:int = Render2D.current.stage.frameRate;
+				var zfps:Number = _waitFrames / _elapsed;
+				var targetFPS:int = _gameLoop.frameRate;
 				
-				if (Math.ceil(fps) >= targetFps)
+				if (Math.ceil(fps) >= targetFPS)
 				{
 					_failCount = 0;
 					addTestObjects();
@@ -129,7 +131,7 @@ package view.render2d
 			}
 			
 			var numObjects:int = numChildren;
-			var passedTime:Number = passedSeconds;
+			var passedTime:Number = seconds;
 			
 			for (var i:int = 0; i < numObjects; ++i)
 			{
@@ -140,6 +142,41 @@ package view.render2d
 		
 		private function onEnterFrame(e:EnterFrameEvent2D):void
 		{
+			Debug.trace(e.passedTime * 60);
+			_elapsed += e.passedTime;
+			_frameCount++;
+			
+			if (_frameCount % _waitFrames == 0)
+			{
+				var fps:Number = _waitFrames / _elapsed;
+				var targetFPS:int = _gameLoop.frameRate;
+				
+				if (Math.ceil(fps) >= targetFPS)
+				{
+					_failCount = 0;
+					addTestObjects();
+				}
+				else
+				{
+					_failCount++;
+					
+					// slow down creation process to be more exact
+					if (_failCount > 20) _waitFrames = 5;
+					if (_failCount > 30) _waitFrames = 10;
+					// target fps not reached for a while
+					if (_failCount == 40) benchmarkComplete();
+				}
+				
+				_elapsed = _frameCount = 0;
+			}
+			
+			var numObjects:int = numChildren;
+			var passedTime:Number = e.passedTime;
+			
+			for (var i:int = 0; i < numObjects; ++i)
+			{
+				getChildAt(i).rotation += Math.PI / 2 * passedTime;
+			}
 		}
 		
 		
