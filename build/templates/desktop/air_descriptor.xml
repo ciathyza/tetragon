@@ -22,7 +22,7 @@
 		<height>@app_height@</height>
 		<minSize>@air_minsize@</minSize>
 		<renderMode>@air_desktop_renderMode@</renderMode>
-		<!-- <depthAndStencil>true</depthAndStencil> -->
+		<depthAndStencil>true</depthAndStencil>
 		<!-- <maxSize></maxSize> -->
 		<!-- <x></x> -->
 		<!-- <y></y> -->
