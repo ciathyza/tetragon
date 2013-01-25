@@ -270,6 +270,7 @@ package view.render2d
 		 */
 		override protected function executeBeforeStart():void
 		{
+			main.gameLoop.start();
 		}
 		
 		

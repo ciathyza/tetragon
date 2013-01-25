@@ -86,21 +86,22 @@ package view.render2d
 		
 		override protected function onAddedToStage(e:Event2D):void
 		{
-			super.onAddedToStage(e);
-			
 			_texture = Texture2D.fromBitmapData(Main.instance.resourceManager.resourceIndex.getImage("123"));
 			
 			_failCount = 0;
 			_waitFrames = 2;
 			_frameCount = 0;
 			
-			addEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
+			super.onAddedToStage(e);
+			//addEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
 		}
 		
 		
-		private function onEnterFrame(e:EnterFrameEvent2D):void
+		override protected function onRender(ticks:uint, ms:uint):void
 		{
-			_elapsed += e.passedTime;
+			var passedSeconds:uint = ms;// / 1000;
+			
+			_elapsed += passedSeconds;
 			_frameCount++;
 			
 			if (_frameCount % _waitFrames == 0)
@@ -116,24 +117,29 @@ package view.render2d
 				else
 				{
 					_failCount++;
-
+					
 					// slow down creation process to be more exact
 					if (_failCount > 20) _waitFrames = 5;
 					if (_failCount > 30) _waitFrames = 10;
 					// target fps not reached for a while
 					if (_failCount == 40) benchmarkComplete();
 				}
-
+				
 				_elapsed = _frameCount = 0;
 			}
-
+			
 			var numObjects:int = numChildren;
-			var passedTime:Number = e.passedTime;
-
+			var passedTime:Number = passedSeconds;
+			
 			for (var i:int = 0; i < numObjects; ++i)
 			{
 				getChildAt(i).rotation += Math.PI / 2 * passedTime;
 			}
+		}
+		
+		
+		private function onEnterFrame(e:EnterFrameEvent2D):void
+		{
 		}
 		
 		

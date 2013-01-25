@@ -43,8 +43,8 @@ package tetragon.core
 		/**
 		 * Creates a new instance of the class.
 		 * 
-		 * @param ticks (uint)
-		 * @param ms (uint)
+		 * @param ticks (uint) The ticks that occured since the last frame.
+		 * @param ms (uint) The milliseconds that passed since the last frame.
 		 */
 		public function RenderSignal()
 		{
