@@ -221,7 +221,6 @@ package tetragon.view.render2d.display
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			_gameLoop.renderSignal.add(onRender);
 		}
 		
 		

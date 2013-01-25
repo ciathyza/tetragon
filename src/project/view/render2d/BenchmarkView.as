@@ -30,14 +30,10 @@ package view.render2d
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.View2D;
-	import tetragon.view.render2d.events.EnterFrameEvent2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.system.System;
 	
@@ -55,7 +51,6 @@ package view.render2d
 		
 		private var _texture:Texture2D;
         private var _frameCount:int;
-        private var _elapsed:Number;
         private var _failCount:int;
         private var _waitFrames:int;
 		
@@ -88,30 +83,26 @@ package view.render2d
 		
 		override protected function onAddedToStage(e:Event2D):void
 		{
+			super.onAddedToStage(e);
+			
 			_texture = Texture2D.fromBitmapData(Main.instance.resourceManager.resourceIndex.getImage("123"));
 			
 			_failCount = 0;
 			_waitFrames = 2;
 			_frameCount = 0;
 			
-			super.onAddedToStage(e);
-			//addEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
+			_gameLoop.renderSignal.add(onRender);
 		}
 		
 		
 		override protected function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			var seconds:Number = ms / 60;
-			
-			_elapsed += seconds;
 			_frameCount++;
 			
 			if (_frameCount % _waitFrames == 0)
 			{
-				var zfps:Number = _waitFrames / _elapsed;
 				var targetFPS:int = _gameLoop.frameRate;
-				
-				if (Math.ceil(fps) >= targetFPS)
+				if (fps >= targetFPS)
 				{
 					_failCount = 0;
 					addTestObjects();
@@ -127,55 +118,13 @@ package view.render2d
 					if (_failCount == 40) benchmarkComplete();
 				}
 				
-				_elapsed = _frameCount = 0;
+				_frameCount = 0;
 			}
 			
 			var numObjects:int = numChildren;
-			var passedTime:Number = seconds;
-			
 			for (var i:int = 0; i < numObjects; ++i)
 			{
-				getChildAt(i).rotation += Math.PI / 2 * passedTime;
-			}
-		}
-		
-		
-		private function onEnterFrame(e:EnterFrameEvent2D):void
-		{
-			Debug.trace(e.passedTime * 60);
-			_elapsed += e.passedTime;
-			_frameCount++;
-			
-			if (_frameCount % _waitFrames == 0)
-			{
-				var fps:Number = _waitFrames / _elapsed;
-				var targetFPS:int = _gameLoop.frameRate;
-				
-				if (Math.ceil(fps) >= targetFPS)
-				{
-					_failCount = 0;
-					addTestObjects();
-				}
-				else
-				{
-					_failCount++;
-					
-					// slow down creation process to be more exact
-					if (_failCount > 20) _waitFrames = 5;
-					if (_failCount > 30) _waitFrames = 10;
-					// target fps not reached for a while
-					if (_failCount == 40) benchmarkComplete();
-				}
-				
-				_elapsed = _frameCount = 0;
-			}
-			
-			var numObjects:int = numChildren;
-			var passedTime:Number = e.passedTime;
-			
-			for (var i:int = 0; i < numObjects; ++i)
-			{
-				getChildAt(i).rotation += Math.PI / 2 * passedTime;
+				getChildAt(i).rotation += Math.PI / 4 * (ms / 60);
 			}
 		}
 		
@@ -192,7 +141,7 @@ package view.render2d
 			for (var i:int = 0; i < numObjects; ++i)
 			{
 				var img:Image2D = new Image2D(_texture);
-				//var q:Quad2D = new Quad2D(40, 40, Math.random() * 0xFFFFFF);
+				//var img:Quad2D = new Quad2D(40, 40, Math.random() * 0xFFFFFF);
 				img.x = padding + Math.random() * (_frameWidth - 2 * padding);
 				img.y = padding + Math.random() * (_frameHeight - 2 * padding);
 				addChild(img);
@@ -202,12 +151,10 @@ package view.render2d
 
 		private function benchmarkComplete():void
 		{
-			removeEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
-			
-			var fps:int = Render2D.current.stage.frameRate;
+			_gameLoop.renderSignal.remove(onRender);
 
 			Log.trace("Benchmark complete!");
-			Log.trace("FPS: " + fps);
+			Log.trace("FPS: " + _gameLoop.renderFPS);
 			Log.trace("Number of objects: " + numChildren);
 			
 			System.pauseForGCIfCollectionImminent();
