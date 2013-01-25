@@ -36,7 +36,10 @@ package view.render2d
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
+	import com.hexagonstar.util.color.colorHexToColorTransform;
+
 	import flash.display.BitmapData;
+	import flash.display.Sprite;
 	import flash.system.System;
 	
 	
@@ -51,10 +54,11 @@ package view.render2d
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _texture:Texture2D;
         private var _frameCount:int;
         private var _failCount:int;
         private var _waitFrames:int;
+		
+		private var _images:Vector.<Image2D>;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -86,12 +90,17 @@ package view.render2d
 		override protected function onAddedToStage(e:Event2D):void
 		{
 			super.onAddedToStage(e);
-			
-			var icon:UpdateDialogIcon = new UpdateDialogIcon();
-			var bmd:BitmapData = new BitmapData(icon.width, icon.height, true, 0x00000000);
-			bmd.draw(icon);
-			
-			_texture = Texture2D.fromBitmapData(bmd);
+				
+			/* Pre-generate images. */
+			_images = new Vector.<Image2D>();
+			for (var i:uint = 0; i < 512; i++)
+			{
+				var icon:Sprite = new UpdateDialogIcon();
+				var bmd:BitmapData = new BitmapData(icon.width, icon.height, true, 0x00000000);
+				bmd.draw(icon, null, colorHexToColorTransform(Math.random() * 0xFFFFFF));
+				var img:Image2D = new Image2D(Texture2D.fromBitmapData(bmd));
+				_images.push(img);
+			}
 			
 			_failCount = 0;
 			_waitFrames = 2;
@@ -139,6 +148,12 @@ package view.render2d
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
 		
+		override protected function setup():void
+		{
+			super.setup();
+		}
+		
+		
 		private function addTestObjects():void
 		{
 			var padding:int = 15;
@@ -146,7 +161,7 @@ package view.render2d
 			
 			for (var i:int = 0; i < numObjects; ++i)
 			{
-				var img:Image2D = new Image2D(_texture);
+				var img:Image2D = _images.pop();
 				//var img:Quad2D = new Quad2D(40, 40, Math.random() * 0xFFFFFF);
 				img.x = padding + Math.random() * (_frameWidth - 2 * padding);
 				img.y = padding + Math.random() * (_frameHeight - 2 * padding);

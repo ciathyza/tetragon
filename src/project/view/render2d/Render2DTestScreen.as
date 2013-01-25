@@ -150,7 +150,7 @@ package view.render2d
 			view1.y = 10;
 			view1.frameWidth = (main.stage.stageWidth * 0.5) - 20;
 			view1.frameHeight = (main.stage.stageHeight) - 20;
-			view1.background = new Quad2D(10, 10, 0x00AAAA);
+			view1.background = new Quad2D(10, 10, 0x888888);
 			view1.touchable = false;
 			
 			var view2:View2D = new BenchmarkView();
@@ -158,7 +158,7 @@ package view.render2d
 			view2.y = 10;
 			view2.frameWidth = (main.stage.stageWidth * 0.5) - 10;
 			view2.frameHeight = (main.stage.stageHeight * 0.5) - 20;
-			view2.background = new Quad2D(10, 10, 0x00AAAA);
+			view2.background = new Quad2D(10, 10, 0x888888);
 			view2.touchable = false;
 			
 			var view3:View2D = new BenchmarkView();
@@ -166,7 +166,7 @@ package view.render2d
 			view3.y = view2.y + view2.frameHeight + 10;
 			view3.frameWidth = (main.stage.stageWidth * 0.5) - 10;
 			view3.frameHeight = (main.stage.stageHeight * 0.5) - 10;
-			view3.background = new Quad2D(10, 10, 0x00AAAA);
+			view3.background = new Quad2D(10, 10, 0x888888);
 			view3.touchable = false;
 			
 			_render2D1 = new Render2D(view1, _stage3DProxy);

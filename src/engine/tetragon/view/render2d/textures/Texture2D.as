@@ -39,6 +39,7 @@ package tetragon.view.render2d.textures
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.textures.Texture;
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -146,7 +147,7 @@ package tetragon.view.render2d.textures
 
 			if (context == null) throw new MissingContext3DException();
 
-			var nativeTexture:flash.display3D.textures.Texture = context.createTexture(legalWidth, legalHeight, Context3DTextureFormat.BGRA, optimizeForRenderToTexture);
+			var nativeTexture:Texture = context.createTexture(legalWidth, legalHeight, Context3DTextureFormat.BGRA, optimizeForRenderToTexture);
 
 			if (legalWidth > origWidth || legalHeight > origHeight)
 			{
