@@ -28,13 +28,15 @@
  */
 package view.render2d
 {
-	import tetragon.Main;
+	import lib.display.UpdateDialogIcon;
+
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
+	import flash.display.BitmapData;
 	import flash.system.System;
 	
 	
@@ -85,7 +87,11 @@ package view.render2d
 		{
 			super.onAddedToStage(e);
 			
-			_texture = Texture2D.fromBitmapData(Main.instance.resourceManager.resourceIndex.getImage("123"));
+			var icon:UpdateDialogIcon = new UpdateDialogIcon();
+			var bmd:BitmapData = new BitmapData(icon.width, icon.height, true, 0x00000000);
+			bmd.draw(icon);
+			
+			_texture = Texture2D.fromBitmapData(bmd);
 			
 			_failCount = 0;
 			_waitFrames = 2;
