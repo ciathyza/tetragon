@@ -281,6 +281,7 @@
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
 			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -297,6 +298,7 @@
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
 			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -306,6 +308,7 @@
 		<sequential>
 			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
 			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -323,6 +326,7 @@
 			<packResources resourcesSourceFolder="${resources.source.shared}"/>
 			<packResources resourcesSourceFolder="${resources.source.desktop}"/>
 			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -332,6 +336,7 @@
 		<sequential>
 			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}"/>
 			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -349,6 +354,7 @@
 			<packResources resourcesSourceFolder="${resources.source.shared}"/>
 			<packResources resourcesSourceFolder="${resources.source.android}"/>
 			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -358,6 +364,7 @@
 		<sequential>
 			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}"/>
 			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -375,6 +382,7 @@
 			<packResources resourcesSourceFolder="${resources.source.shared}"/>
 			<packResources resourcesSourceFolder="${resources.source.ios}"/>
 			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -384,6 +392,7 @@
 		<sequential>
 			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}"/>
 			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
@@ -870,6 +879,18 @@
 				</compiler.library-path>
 				
 			</mxmlc>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="addTelemetry">
+		<sequential>
+			<!-- Uncomment to enable Adobe Scout integration!
+			<echo message="Enabling Scout telemetry data ..." level="info"/>
+			<exec dir="${templates.launch}" executable="python" failonerror="true">
+				<arg line="add-opt-in.py ${path.bin}/${app.swfname.full} ${scout.telemetry.password}"/>
+			</exec>
+			-->
 		</sequential>
 	</macrodef>
 	
