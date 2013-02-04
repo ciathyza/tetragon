@@ -89,6 +89,7 @@ package tetragon.debug
 			
 			if (Main.instance.appInfo.isDebug)
 			{
+				_flashTrace = true;
 				_externalLog = new ExternalLogAdapter();
 			}
 		}
@@ -299,7 +300,10 @@ package tetragon.debug
 		 */
 		public static function delimiter(length:int = 20, level:int = 2, inverse:Boolean = false):void
 		{
-			send(Console.makeLine(length), level, null, inverse);
+			var s:String = Console.makeLine(length);
+			send(s, level, null, inverse);
+			if (_externalLog) _externalLog.trace(s);
+			if (_flashTrace) FlashTrace.log(s, level, null);
 		}
 		
 		

@@ -885,12 +885,11 @@
 	
 	<macrodef name="addTelemetry">
 		<sequential>
-			<!-- Uncomment to enable Adobe Scout integration!
+			<!-- Uncomment to enable Adobe Scout integration! -->
 			<echo message="Enabling Scout telemetry data ..." level="info"/>
 			<exec dir="${templates.launch}" executable="python" failonerror="true">
 				<arg line="add-opt-in.py ${path.bin}/${app.swfname.full} ${scout.telemetry.password}"/>
 			</exec>
-			-->
 		</sequential>
 	</macrodef>
 	
