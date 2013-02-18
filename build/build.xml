@@ -320,7 +320,7 @@
 		<attribute name="type"/>
 		<sequential>
 			<clean/>
-			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
+			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}" usePackedResources="false"/>
 			<generateHTMLWrapper type="@{type}"/>
 			<copySharedFiles/>
 			<copyWebFiles/>
