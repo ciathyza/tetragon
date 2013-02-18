@@ -11,7 +11,7 @@
  http://www.tetragonengine.com/
 ***************************************************************************************************
 -->
-<project default="00. Full Build" basedir=".." name="tetragon.swc">
+<project default="000 Full Build" basedir=".." name="tetragon.swc">
 	
 	<property name="engine.name"		value="Tetragon Engine"/>
 	<property name="engine.version"		value="1.1.0"/>
@@ -28,7 +28,7 @@
 	
 	<!-- == DEFAULT TARGETS =================================================================== -->
 	
-	<target name="00. Full Build" description="Builds a distribution package incl. all fat SWCs and API docs.">
+	<target name="000 Full Build" description="Builds a distribution package incl. all fat SWCs and API docs.">
 		<clean/>
 		<prepare/>
 		<compile extra="base"/>
@@ -40,19 +40,19 @@
 		<refresh/>
 	</target>
 	
-	<target name="01. Compile Engine" description="Compiles an SWC of the Tetragon base engine.">
+	<target name="010 Compile Engine" description="Compiles an SWC of the Tetragon base engine.">
 		<prepare/>
 		<compile extra="base"/>
 		<refresh/>
 	</target>
 	
 	
-	<target name="02. Create Docs" description="Creates the engine API docs.">
+	<target name="020 Create Docs" description="Creates the engine API docs.">
 		<createDocs extra="base" docsName="Base"/>
 		<refresh/>
 	</target>
 	
-	<target name="03. Pack Docs" description="Packs the API docs into a zip file.">
+	<target name="030 Pack Docs" description="Packs the API docs into a zip file.">
 		<packDocs/>
 		<cleanDocs extra="base"/>
 		<refresh/>

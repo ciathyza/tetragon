@@ -35,7 +35,6 @@ package tetragon.file.resource
 	import tetragon.file.loaders.ResourceIndexLoader;
 
 	import com.hexagonstar.exception.IllegalArgumentException;
-	import com.hexagonstar.util.env.isAIRApplication;
 
 	import flash.utils.Dictionary;
 	
@@ -56,6 +55,8 @@ package tetragon.file.resource
 		private var _indexLoader:ResourceIndexLoader;
 		/** @private */
 		private var _packedResourceProviderCount:int;
+		/** @private */
+		private var _main:Main;
 		
 		/** @private */
 		internal var _usePackages:Boolean;
@@ -98,9 +99,17 @@ package tetragon.file.resource
 				_indexLoader.dispose();
 				_indexLoader = null;
 			}
-			/* If we're on an AIR application we want to use packed resources! */
-			if (isAIRApplication()) preparePackageFiles();
-			else _resourceManager.completeInitialization();
+			
+			/* If we're on an AIR application that uses packed resources we want to prepare
+			 * for that! */
+			if (_main.appInfo.usePackedResources)
+			{
+				preparePackageFiles();
+			}
+			else
+			{
+				_resourceManager.completeInitialization();
+			}
 		}
 		
 		
@@ -147,7 +156,8 @@ package tetragon.file.resource
 		 */
 		internal function init(resourceBundleClass:Class = null):void
 		{
-			_resourceManager = Main.instance.resourceManager;
+			_main = Main.instance;
+			_resourceManager = _main.resourceManager;
 			
 			_resourceIndex = new ResourceIndex();
 			_resourceProviders = new Dictionary();

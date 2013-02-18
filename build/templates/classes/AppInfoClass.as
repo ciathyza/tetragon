@@ -102,5 +102,8 @@ package
 		
 		/** @inheritDoc */
 		public function get isDebug():Boolean {return @is_debug@;}
+		
+		/** @inheritDoc */
+		public function get usePackedResources():Boolean {return @use_packed_resources@;}
 	}
 }

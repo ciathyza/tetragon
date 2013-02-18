@@ -46,13 +46,13 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "11012";}
+		public function get build():String {return "11039";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "25-January-2013 18:06";}
+		public function get buildDate():String {return "18-February-2013 14:23";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
-		public function get buildType():String {return "web";}
+		public function get buildType():String {return "desktop";}
 		/** @inheritDoc */
 		public function get releaseStage():String {return "alpha";}
 		/** @inheritDoc */
@@ -102,5 +102,8 @@ package
 		
 		/** @inheritDoc */
 		public function get isDebug():Boolean {return true;}
+		
+		/** @inheritDoc */
+		public function get usePackedResources():Boolean {return true;}
 	}
 }

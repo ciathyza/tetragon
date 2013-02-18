@@ -11,7 +11,7 @@
  http://www.tetragonengine.com/
 ***************************************************************************************************
 -->
-<project default="00. Init" basedir=".." name="tetragon">
+<project default="001 Init" basedir=".." name="tetragon">
 	
 	<property file="build/project.properties"/>
 	<property file="build/build.properties"/>
@@ -25,15 +25,17 @@
 	
 	<!-- == DEFAULT TARGETS =================================================================== -->
 	
-	<target name="00. Init" description="Prints build properties to the output console.">
+	<target name="000 ----------------------------------"/>
+	
+	<target name="001 Init" description="Prints build properties to the output console.">
 		<echoproperties/>
 	</target>
 	
-	<target name="01. Clean" description="Cleans the bin folder.">
+	<target name="002 Clean Project" description="Cleans the bin folder.">
 		<clean/>
 	</target>
 	
-	<target name="02. Pack Project" description="Creates a zipped version of the project for use as a default Tetragon project.">
+	<target name="003 Pack Project" description="Creates a zipped version of the project for use as a default Tetragon project.">
 		<cleanAll/>
 		<zip destfile="${path.dist}/${app.shortname}_project.zip"
 			basedir=""
@@ -43,7 +45,9 @@
 			compress="true"/>
 	</target>
 	
-	<target name="03. Publish: HTML+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
+	<target name="010 ----------------------------------"/>
+	
+	<target name="020 Publish: HTML+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
 		<cleanAll/>
 		<buildWeb debug="true" type="html"/>
 		<publishWeb/>
@@ -53,7 +57,7 @@
 		<clean/>
 	</target>
 	
-	<target name="04. Publish: HTML+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
+	<target name="030 Publish: HTML+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
 		<cleanAll/>
 		<buildWeb debug="false" type="html"/>
 		<publishWeb/>
@@ -63,7 +67,7 @@
 		<clean/>
 	</target>
 	
-	<target name="05. Publish: PHP+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
+	<target name="040 Publish: PHP+Desktop (Debug)" description="Publishes debug versions of web and desktop targets.">
 		<cleanAll/>
 		<buildWeb debug="true" type="php"/>
 		<publishWeb/>
@@ -73,7 +77,7 @@
 		<clean/>
 	</target>
 	
-	<target name="06. Publish: PHP+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
+	<target name="050 Publish: PHP+Desktop (Release)" description="Publishes release versions of web and desktop targets.">
 		<cleanAll/>
 		<buildWeb debug="false" type="php"/>
 		<publishWeb/>
@@ -83,7 +87,7 @@
 		<clean/>
 	</target>
 	
-	<target name="07. Publish: All (Release)" description="Publishes release versions of all build targets.">
+	<target name="060 Publish: All (Release)" description="Publishes release versions of all build targets.">
 		<cleanAll/>
 		<buildWeb debug="false" type="php"/>
 		<publishWeb/>
@@ -100,32 +104,34 @@
 	
 	<!-- == WEB TARGETS ======================================================================= -->
 	
-	<target name="08. HTML: Build (Debug)" description="Clean build the project as a web debug version.">
+	<target name="100 ----------------------------------"/>
+	
+	<target name="110 HTML: Build (Debug)" description="Clean build the project as a web debug version.">
 		<buildWeb debug="true" type="html"/>
 		<launchInWebBrowser type="html"/>
 	</target>
 	
-	<target name="09. HTML: Build (Release)" description="Clean build the project as a web release version.">
+	<target name="120 HTML: Build (Release)" description="Clean build the project as a web release version.">
 		<buildWeb debug="false" type="html"/>
 		<launchInWebBrowser type="html"/>
 	</target>
 	
-	<target name="10. HTML: Publish (Debug)" description="Clean build and publish a web debug version for release.">
+	<target name="130 HTML: Publish (Debug)" description="Clean build and publish a web debug version for release.">
 		<buildWeb debug="true" type="html"/>
 		<publishWeb/>
 	</target>
 	
-	<target name="11. HTML: Publish (Release)" description="Clean build and publish a web version for release.">
+	<target name="140 HTML: Publish (Release)" description="Clean build and publish a web version for release.">
 		<buildWeb debug="false" type="html"/>
 		<publishWeb/>
 	</target>
 	
-	<target name="12. HTML: Test" description="Compiles the application as a web debug version without changing any files. Useful if no files should be affected by the revisioning system.">
+	<target name="150 HTML: Test" description="Compiles the application as a web debug version without changing any files. Useful if no files should be affected by the revisioning system.">
 		<testWeb debug="true" type="html"/>
 		<launchInWebBrowser type="html"/>
 	</target>
 	
-	<target name="13. HTML: Compile" description="Compiles the application as a web debug version without preparing or copying resources.">
+	<target name="160 HTML: Compile" description="Compiles the application as a web debug version without preparing or copying resources.">
 		<compileWeb debug="true"/>
 		<launchInWebBrowser type="html"/>
 	</target>
@@ -133,34 +139,36 @@
 	
 	<!-- == SERVER TARGETS ==================================================================== -->
 	
-	<target name="14. PHP: Build (Debug)" description="Clean build the project as a local server debug version.">
+	<target name="200 ----------------------------------"/>
+	
+	<target name="210 PHP: Build (Debug)" description="Clean build the project as a local server debug version.">
 		<buildWeb debug="true" type="php"/>
 		<copyFilesToServer/>
 		<launchInWebServer type="php"/>
 	</target>
 	
-	<target name="15. PHP: Build (Release)" description="Clean build the project as a local server release version.">
+	<target name="220 PHP: Build (Release)" description="Clean build the project as a local server release version.">
 		<buildWeb debug="false" type="php"/>
 		<copyFilesToServer/>
 		<launchInWebServer type="php"/>
 	</target>
 	
-	<target name="16. PHP: Publish (Debug)" description="Clean build and publish a server debug version for release.">
+	<target name="230 PHP: Publish (Debug)" description="Clean build and publish a server debug version for release.">
 		<buildWeb debug="true" type="php"/>
 		<publishWeb/>
 	</target>
 	
-	<target name="17. PHP: Publish (Release)" description="Clean build and publish a server version for release.">
+	<target name="240 PHP: Publish (Release)" description="Clean build and publish a server version for release.">
 		<buildWeb debug="false" type="php"/>
 		<publishWeb/>
 	</target>
 	
-	<target name="18. PHP: Test" description="Compiles the application as a server debug version without changing any files. Useful if no files should be affected by the revisioning system.">
+	<target name="250 PHP: Test" description="Compiles the application as a server debug version without changing any files. Useful if no files should be affected by the revisioning system.">
 		<testWeb debug="true" type="php"/>
 		<launchInWebServer type="php"/>
 	</target>
 	
-	<target name="19. PHP: Compile" description="Compiles the application as a server debug version without preparing or copying resources.">
+	<target name="260 PHP: Compile" description="Compiles the application as a server debug version without preparing or copying resources.">
 		<compileWeb debug="true"/>
 		<launchInWebServer type="php"/>
 	</target>
@@ -168,29 +176,63 @@
 	
 	<!-- == DESKTOP TARGETS =================================================================== -->
 	
-	<target name="20. Desktop: Build (Debug)" description="Clean build the project as a desktop debug version.">
+	<target name="300 ----------------------------------"/>
+	
+	<target name="310 Desktop: Build (Debug)" description="Clean build the project as a desktop debug version.">
 		<buildDesktop debug="true"/>
 		<LaunchDesktop/>
 	</target>
 	
-	<target name="21. Desktop: Build (Release)" description="Clean build the project as a desktop release version.">
+	<target name="320 Desktop: Build (Release)" description="Clean build the project as a desktop release version.">
 		<buildDesktop debug="false"/>
 		<LaunchDesktop/>
 	</target>
 	
-	<target name="22. Desktop: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
+	<target name="330 Desktop: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
 		<buildDesktop debug="true"/>
 		<publishDesktop/>
 		<generateAIRUpdateFile/>
 	</target>
 	
-	<target name="23. Desktop: Publish (Release)" description="Clean build and publish a desktop version for release.">
+	<target name="340 Desktop: Publish (Release)" description="Clean build and publish a desktop version for release.">
 		<buildDesktop debug="false"/>
 		<publishDesktop/>
 		<generateAIRUpdateFile/>
 	</target>
 	
-	<target name="24. Desktop: Compile" description="Compiles the application as a desktop debug version.">
+	<target name="350 Desktop: Compile" description="Compiles the application as a desktop debug version.">
+		<compileDesktop debug="true"/>
+		<LaunchDesktop/>
+	</target>
+	
+	
+	<!-- == DESKTOP PACKED TARGETS =================================================================== -->
+	
+	<target name="400 ----------------------------------"/>
+	
+	<target name="410 Desktop Packed: Build (Debug)" description="Clean build the project as a desktop debug version.">
+		<buildDesktopPacked debug="true"/>
+		<LaunchDesktop/>
+	</target>
+	
+	<target name="420 Desktop Packed: Build (Release)" description="Clean build the project as a desktop release version.">
+		<buildDesktopPacked debug="false"/>
+		<LaunchDesktop/>
+	</target>
+	
+	<target name="430 Desktop Packed: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
+		<buildDesktopPacked debug="true"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+	</target>
+	
+	<target name="440 Desktop Packed: Publish (Release)" description="Clean build and publish a desktop version for release.">
+		<buildDesktopPacked debug="false"/>
+		<publishDesktop/>
+		<generateAIRUpdateFile/>
+	</target>
+	
+	<target name="450 Desktop Packed: Compile" description="Compiles the application as a desktop debug version.">
 		<compileDesktop debug="true"/>
 		<LaunchDesktop/>
 	</target>
@@ -198,32 +240,34 @@
 	
 	<!-- == ANDROID TARGETS =================================================================== -->
 	
-	<target name="25. Android: Build (Debug)" description="Clean build the project as a Android debug version.">
+	<target name="500 ----------------------------------"/>
+	
+	<target name="510 Android: Build (Debug)" description="Clean build the project as a Android debug version.">
 		<buildAndroid debug="true"/>
 		<LaunchAndroid/>
 	</target>
 	
-	<target name="26. Android: Build (Release)" description="Clean build the project as a Android release version.">
+	<target name="520 Android: Build (Release)" description="Clean build the project as a Android release version.">
 		<buildAndroid debug="false"/>
 		<LaunchAndroid/>
 	</target>
 	
-	<target name="27. Android: Publish (APK)" description="Clean build and publish an Android APK version for release.">
+	<target name="530 Android: Publish (APK)" description="Clean build and publish an Android APK version for release.">
 		<buildAndroid debug="false"/>
 		<publishAndroid target="apk"/>
 	</target>
 	
-	<target name="28. Android: Publish (Debug)" description="Clean build and publish an Android APK-Debug version for release.">
+	<target name="540 Android: Publish (Debug)" description="Clean build and publish an Android APK-Debug version for release.">
 		<buildAndroid debug="true"/>
 		<publishAndroid target="apk-debug"/>
 	</target>
 	
-	<target name="29. Android: Publish (Emulator)" description="Clean build and publish an Android APK-Emulator version for release.">
+	<target name="550 Android: Publish (Emulator)" description="Clean build and publish an Android APK-Emulator version for release.">
 		<buildAndroid debug="false"/>
 		<publishAndroid target="apk-emulator"/>
 	</target>
 	
-	<target name="30. Android: Compile" description="Compiles the application as a Android Debug version.">
+	<target name="560 Android: Compile" description="Compiles the application as a Android Debug version.">
 		<compileAndroid debug="true"/>
 		<LaunchAndroid/>
 	</target>
@@ -231,37 +275,39 @@
 	
 	<!-- == IOS TARGETS ======================================================================= -->
 	
-	<target name="31. iOS: Build (Debug)" description="Clean build the project as a iOS debug version.">
+	<target name="600 ----------------------------------"/>
+	
+	<target name="610 iOS: Build (Debug)" description="Clean build the project as a iOS debug version.">
 		<buildIOS debug="true"/>
 		<LaunchIOS/>
 	</target>
 	
-	<target name="32. iOS: Build (Release)" description="Clean build the project as a iOS release version.">
+	<target name="620 iOS: Build (Release)" description="Clean build the project as a iOS release version.">
 		<buildIOS debug="false"/>
 		<LaunchIOS/>
 	</target>
 	
-	<target name="33. iOS: Publish (App Store)" description="Clean build and publish a iOS version for App Store release.">
+	<target name="630 iOS: Publish (App Store)" description="Clean build and publish a iOS version for App Store release.">
 		<buildIOS debug="false"/>
 		<publishIOS target="ipa-app-store"/>
 	</target>
 	
-	<target name="34. iOS: Publish (Debug)" description="Clean build and publish a iOS debug version.">
+	<target name="640 iOS: Publish (Debug)" description="Clean build and publish a iOS debug version.">
 		<buildIOS debug="false"/>
 		<publishIOS target="ipa-debug"/>
 	</target>
 	
-	<target name="35. iOS: Publish (Test)" description="Clean build and publish a iOS test version.">
+	<target name="650 iOS: Publish (Test)" description="Clean build and publish a iOS test version.">
 		<buildIOS debug="false"/>
 		<publishIOS target="ipa-test"/>
 	</target>
 	
-	<target name="36. iOS: Publish (Ad-Hoc)" description="Clean build and publish a iOS ad-hoc version.">
+	<target name="660 iOS: Publish (Ad-Hoc)" description="Clean build and publish a iOS ad-hoc version.">
 		<buildIOS debug="false"/>
 		<publishIOS target="ipa-ad-hoc"/>
 	</target>
 	
-	<target name="37. iOS: Compile" description="Compiles the application as a iOS Debug version.">
+	<target name="670 iOS: Compile" description="Compiles the application as a iOS Debug version.">
 		<compileIOS debug="true"/>
 		<LaunchIOS/>
 	</target>
@@ -316,7 +362,22 @@
 		<attribute name="debug"/>
 		<sequential>
 			<clean/>
-			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}"/>
+			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" usePackedResources="false"/>
+			<generateAIRDesktopDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+			<copySharedFiles/>
+			<copyDesktopFiles/>
+			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+			<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
+			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="buildDesktopPacked">
+		<attribute name="debug"/>
+		<sequential>
+			<clean/>
+			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" usePackedResources="true"/>
 			<generateAIRDesktopDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
 			<copySharedFiles/>
 			<copyDesktopFiles/>
@@ -342,12 +403,12 @@
 		<attribute name="debug"/>
 		<sequential>
 			<clean/>
-			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}"/>
+			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" usePackedResources="false"/>
 			<generateAIRAndroidDescriptor templatepath="${templates.android}/air_descriptor.xml"/>
 			<copySharedFiles/>
 			<copyAndroidFiles/>
-			<packResources resourcesSourceFolder="${resources.source.shared}"/>
-			<packResources resourcesSourceFolder="${resources.source.android}"/>
+			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+			<copyResources resourcesSourceFolder="${resources.source.android}"/>
 			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
 		</sequential>
 	</macrodef>
@@ -368,12 +429,12 @@
 		<attribute name="debug"/>
 		<sequential>
 			<clean/>
-			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}"/>
+			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" usePackedResources="false"/>
 			<generateAIRIOSDescriptor templatepath="${templates.ios}/air_descriptor.xml"/>
 			<copySharedFiles/>
 			<copyIOSFiles/>
-			<packResources resourcesSourceFolder="${resources.source.shared}"/>
-			<packResources resourcesSourceFolder="${resources.source.ios}"/>
+			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+			<copyResources resourcesSourceFolder="${resources.source.ios}"/>
 			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
 		</sequential>
 	</macrodef>
@@ -419,13 +480,14 @@
 		<attribute name="height"/>
 		<attribute name="bgcolor"/>
 		<attribute name="framerate"/>
+		<attribute name="usePackedResources"/>
 		<sequential>
 			<buildnumber file="${path.build}/build.number"/>
 			<tstamp>
 				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
 			</tstamp>
 			<echo message="*** ${app.name} version: ${app.version.string} build #${build.number} (@{buildType}), ${build.date} ***" level="info"/>
-			<generateAppInfoClass buildType="@{buildType}" debug="@{debug}" width="@{width}" height="@{height}"/>
+			<generateAppInfoClass buildType="@{buildType}" debug="@{debug}" width="@{width}" height="@{height}" usePackedResources="@{usePackedResources}"/>
 			<generateEntryClass entryClassTemplate="@{entryClassTemplate}" width="@{width}" height="@{height}" bgcolor="@{bgcolor}" framerate="@{framerate}"/>
 		</sequential>
 	</macrodef>
@@ -447,6 +509,7 @@
 		<attribute name="debug"/>
 		<attribute name="width"/>
 		<attribute name="height"/>
+		<attribute name="usePackedResources"/>
 		<sequential>
 			<echo message="Generating AppInfo.as ..." level="info"/>
 			<copy file="${templates.classes}/AppInfoClass.as" tofile="${path.src.project}/AppInfo.as" overwrite="true">
@@ -482,6 +545,7 @@
 						<token key="reference_height"		value="${reference.height}"/>
 						<token key="swf_version"			value="${version.swf}"/>
 						<token key="is_debug"				value="@{debug}"/>
+						<token key="use_packed_resources"	value="@{usePackedResources}"/>
 						<token key="engine_name"			value="${engine.name}"/>
 						<token key="engine_version"			value="${engine.version}"/>
 						<token key="engine_milestone"		value="${engine.milestone}"/>
@@ -935,7 +999,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.config}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 				<filterset>
 					<filter token="update_url" value="${air.desktop.updateurl}/${app.shortname}_update.xml"/>
 				</filterset>
@@ -948,7 +1012,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.extra}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
 	</macrodef>
@@ -958,7 +1022,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.icons}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
 	</macrodef>

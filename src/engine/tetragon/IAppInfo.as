@@ -187,5 +187,11 @@ package tetragon
 		 * (<code>false</code>).
 		 */
 		function get isDebug():Boolean;
+		
+		/**
+		 * Determines whether the build uses resource files that are packed (<code>true</code>)
+		 * or not (<code>false</code>).
+		 */
+		function get usePackedResources():Boolean;
 	}
 }
