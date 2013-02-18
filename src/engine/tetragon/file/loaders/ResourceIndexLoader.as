@@ -258,14 +258,17 @@ package tetragon.file.loaders
 		{
 			_subCount = 0;
 			var x:XML;
-			/* Parse package file entries. */
-			for each (x in xml.packageFiles.file)
-			{
-				_resourceIndex.addPackageFileEntry(x.@id, x.@path);
-				++_subCount;
-			}
 			
-			Log.verbose("Parsed " + _subCount + " package files.", this);
+			/* Parse package file entries if packed resources are being used. */
+			if (main.appInfo.usePackedResources)
+			{
+				for each (x in xml.packageFiles.file)
+				{
+					_resourceIndex.addPackageFileEntry(x.@id, x.@path);
+					++_subCount;
+				}
+				Log.verbose("Parsed " + _subCount + " package files.", this);
+			}
 			
 			/* Parse data file entries. */
 			_subCount = 0;

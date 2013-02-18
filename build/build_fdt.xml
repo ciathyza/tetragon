@@ -11,7 +11,7 @@
  http://www.tetragonengine.com/
 ***************************************************************************************************
 -->
-<project default="00. FDT: Launch" basedir=".." name="tetragon.fdt">
+<project default="010 FDT: Launch" basedir=".." name="tetragon.fdt">
 	
 	<xmlproperty file="${basedir}/.project"/>
 	
@@ -27,11 +27,83 @@
 	
 	<!-- == FDT TARGETS ======================================================================= -->
 	
-	<target name="00. FDT: Launch">
+	<target name="000 ----------------------------------"/>
+	
+	<target name="010 FDT: Launch">
 		<echo message="${basedir}"/>
 		<echo message="${proj.name}"/>
 		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="false"/>
+		<generateFDTCorePrefs/>
+		<generateLaunchFile/>
+		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+		<copySharedFiles/>
+		<copyDesktopFiles/>
+		<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+		<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
+		<echo message="Launching ${app.swfname.full} ..." level="info"/>
+		<fdt.loadProjectProperties projectname="${proj.name}"/>
+		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="run"/>
+	</target>
+	
+	
+	<target name="020 FDT: Debug">
+		<clean/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="false"/>
+		<generateFDTCorePrefs/>
+		<generateLaunchFile/>
+		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+		<copySharedFiles/>
+		<copyDesktopFiles/>
+		<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+		<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
+		<echo message="Debugging ${app.swfname.full} ..." level="info"/>
+		<fdt.loadProjectProperties projectname="${proj.name}"/>
+		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="debug"/>
+	</target>
+	
+	
+	<target name="030 FDT: NoDebug">
+		<clean/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="false"/>
+		<generateFDTCorePrefs/>
+		<generateLaunchFile/>
+		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+		<copySharedFiles/>
+		<copyDesktopFiles/>
+		<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+		<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
+		<echo message="Runs a nodebug of ${app.swfname.full} ..." level="info"/>
+		<fdt.loadProjectProperties projectname="${proj.name}"/>
+		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="run"/>
+	</target>
+	
+	
+	<target name="040 FDT: Profile">
+		<clean/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="false"/>
+		<generateFDTCorePrefs/>
+		<generateLaunchFile/>
+		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
+		<copySharedFiles/>
+		<copyDesktopFiles/>
+		<copyResources resourcesSourceFolder="${resources.source.shared}"/>
+		<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
+		<echo message="Profiling ${app.swfname.full} ..." level="info"/>
+		<fdt.loadProjectProperties projectname="${proj.name}"/>
+		<fdt.invoke.launchConfiguration file="${launch.file.path}" mode="profile"/>
+	</target>
+	
+	
+	<!-- == FDT PACKED TARGETS =============================================================== -->
+	
+	<target name="050 ----------------------------------"/>
+	
+	<target name="060 FDT Packed: Launch">
+		<echo message="${basedir}"/>
+		<echo message="${proj.name}"/>
+		<clean/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="true"/>
 		<generateFDTCorePrefs/>
 		<generateLaunchFile/>
 		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
@@ -45,9 +117,9 @@
 	</target>
 	
 	
-	<target name="01. FDT: Debug">
+	<target name="070 FDT Packed: Debug">
 		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="true"/>
 		<generateFDTCorePrefs/>
 		<generateLaunchFile/>
 		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
@@ -61,9 +133,9 @@
 	</target>
 	
 	
-	<target name="02. FDT: NoDebug">
+	<target name="080 FDT Packed: NoDebug">
 		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="true"/>
 		<generateFDTCorePrefs/>
 		<generateLaunchFile/>
 		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
@@ -77,9 +149,9 @@
 	</target>
 	
 	
-	<target name="03. FDT: Profile">
+	<target name="090 FDT Packed: Profile">
 		<clean/>
-		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as"/>
+		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="true"/>
 		<generateFDTCorePrefs/>
 		<generateLaunchFile/>
 		<generateAIRDescriptor templatepath="${templates.desktop}/air_descriptor.xml"/>
@@ -120,13 +192,14 @@
 		<attribute name="buildType"/>
 		<attribute name="debug"/>
 		<attribute name="entryClassTemplate"/>
+		<attribute name="usePackedResources"/>
 		<sequential>
 			<buildnumber file="${path.build}/build.number"/>
 			<tstamp>
 				<format property="build.date" pattern="dd-MMMM-yyyy HH:mm" unit="minute" locale="en"/>
 			</tstamp>
 			<echo message="*** ${app.name} version: ${app.version.string} build #${build.number} (@{buildType}), ${build.date} ***" level="info"/>
-			<generateAppInfoClass buildType="@{buildType}" debug="@{debug}"/>
+			<generateAppInfoClass buildType="@{buildType}" debug="@{debug}" usePackedResources="@{usePackedResources}"/>
 			<generateEntryClass entryClassTemplate="@{entryClassTemplate}"/>
 		</sequential>
 	</macrodef>
@@ -195,6 +268,7 @@
 	<macrodef name="generateAppInfoClass">
 		<attribute name="buildType"/>
 		<attribute name="debug"/>
+		<attribute name="usePackedResources"/>
 		<sequential>
 			<echo message="Generating AppInfo.as ..." level="info"/>
 			<copy file="${templates.classes}/AppInfoClass.as" tofile="${path.src.project}/AppInfo.as" overwrite="true">
@@ -230,6 +304,7 @@
 						<token key="reference_height"		value="${reference.height}"/>
 						<token key="swf_version"			value="${version.swf}"/>
 						<token key="is_debug"				value="@{debug}"/>
+						<token key="use_packed_resources"	value="@{usePackedResources}"/>
 						<token key="engine_name"			value="${engine.name}"/>
 						<token key="engine_version"			value="${engine.version}"/>
 						<token key="engine_milestone"		value="${engine.milestone}"/>
@@ -318,7 +393,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.config}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 				<filterset>
 					<filter token="update_url" value="${air.desktop.updateurl}/${app.shortname}_update.xml"/>
 				</filterset>
@@ -331,7 +406,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.extra}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
 	</macrodef>
@@ -341,7 +416,7 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.icons}" verbose="off" overwrite="true">
-				<fileset dir="@{sourceFolder}" excludes="**/.svn"/>
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
 	</macrodef>
