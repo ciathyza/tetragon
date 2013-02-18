@@ -85,6 +85,7 @@
 		<image>
 			<resource id="image1" path="images/image1.jpg" packageID="resourcePackage"/>
 			<resource id="image2" path="images/image2.jpg" packageID="resourcePackage"/>
+			<resource id="marsmap" path="images/marsmap.jpg" packageID="resourcePackage"/>
 		</image>
 		<!-- Exampe of a media resource collection. -->
 		<image id="imageCollection">

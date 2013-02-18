@@ -36,7 +36,7 @@ package
 	import flash.display.StageScaleMode;
 	
 	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
+	[SWF(width="768", height="1024", backgroundColor="#000000", frameRate="60")]
 	
 	/**
 	 * Entry acts as the entry point and base display object container (or: context view) for

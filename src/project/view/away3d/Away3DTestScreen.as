@@ -28,7 +28,16 @@
  */
 package view.away3d
 {
+	import away3d.containers.View3D;
+	import away3d.entities.Mesh;
+	import away3d.materials.TextureMaterial;
+	import away3d.primitives.SphereGeometry;
+	import away3d.utils.Cast;
+
 	import tetragon.view.obsolete.Screen;
+
+	import flash.display.BitmapData;
+	import flash.geom.Vector3D;
 	
 	
 	/**
@@ -46,6 +55,9 @@ package view.away3d
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
+		
+		private var _view:View3D;
+		private var _sphere:Mesh;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -165,6 +177,7 @@ package view.away3d
 		 */
 		override protected function registerResources():void
 		{
+			registerResource("marsmap");
 		}
 		
 		
@@ -173,6 +186,20 @@ package view.away3d
 		 */
 		override protected function createChildren():void
 		{
+			_view = new View3D();
+			
+			//_view.camera.z = -600;
+			//_view.camera.y = 500;
+			_view.camera.lookAt(new Vector3D());
+			
+			var b:BitmapData = resourceIndex.getImage("marsmap");
+			
+			_sphere = new Mesh(new SphereGeometry(800, 64, 64), new TextureMaterial(Cast.bitmapTexture(b)));
+			_sphere.rotationZ = 90;
+			_sphere.y = -800;
+			_sphere.z = -800;
+			
+			_view.scene.addChild(_sphere);
 		}
 		
 		
@@ -189,6 +216,7 @@ package view.away3d
 		 */
 		override protected function addChildren():void
 		{
+			addChild(_view);
 		}
 		
 		
@@ -197,6 +225,14 @@ package view.away3d
 		 */
 		override protected function addListeners():void
 		{
+			main.gameLoop.renderSignal.add(onRender);
+		}
+
+
+		private function onRender(ticks:uint, ms:uint, renderFPS:uint):void
+		{
+			_sphere.rotationY += 0.1;
+			_view.render();
 		}
 		
 		
@@ -213,6 +249,8 @@ package view.away3d
 		 */
 		override protected function executeBeforeStart():void
 		{
+			main.statsMonitor.toggle();
+			main.gameLoop.start();
 		}
 		
 		
