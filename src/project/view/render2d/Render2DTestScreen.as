@@ -153,21 +153,21 @@ package view.render2d
 			view1.background = new Quad2D(10, 10, 0x888888);
 			view1.touchable = false;
 			
-			var view2:View2D = new BenchmarkView();
-			view2.x = view1.x + view1.frameWidth + 10;
-			view2.y = 10;
-			view2.frameWidth = (main.stage.stageWidth * 0.5) - 10;
-			view2.frameHeight = (main.stage.stageHeight * 0.5) - 20;
-			view2.background = new Quad2D(10, 10, 0x888888);
-			view2.touchable = false;
+//			var view2:View2D = new BenchmarkView();
+//			view2.x = view1.x + view1.frameWidth + 10;
+//			view2.y = 10;
+//			view2.frameWidth = (main.stage.stageWidth * 0.5) - 10;
+//			view2.frameHeight = (main.stage.stageHeight * 0.5) - 20;
+//			view2.background = new Quad2D(10, 10, 0x888888);
+//			view2.touchable = false;
 			
-			var view3:View2D = new BenchmarkView();
-			view3.x = view2.x;
-			view3.y = view2.y + view2.frameHeight + 10;
-			view3.frameWidth = (main.stage.stageWidth * 0.5) - 10;
-			view3.frameHeight = (main.stage.stageHeight * 0.5) - 10;
-			view3.background = new Quad2D(10, 10, 0x888888);
-			view3.touchable = false;
+//			var view3:View2D = new BenchmarkView();
+//			view3.x = view2.x;
+//			view3.y = view2.y + view2.frameHeight + 10;
+//			view3.frameWidth = (main.stage.stageWidth * 0.5) - 10;
+//			view3.frameHeight = (main.stage.stageHeight * 0.5) - 10;
+//			view3.background = new Quad2D(10, 10, 0x888888);
+//			view3.touchable = false;
 			
 			_render2D1 = new Render2D(view1, _stage3DProxy);
 			//_render2D1.simulateMultitouch = true;
@@ -175,17 +175,17 @@ package view.render2d
 			//_render2D1.antiAliasing = 2;
 			_render2D1.start();
 			
-			_render2D2 = new Render2D(view2, _stage3DProxy);
+			//_render2D2 = new Render2D(view2, _stage3DProxy);
 			//_render2D2.simulateMultitouch = true;
 			//_render2D2.enableErrorChecking = true;
 			//_render2D2.antiAliasing = 2;
-			_render2D2.start();
+			//_render2D2.start();
 			
-			_render2D3 = new Render2D(view3, _stage3DProxy);
+			//_render2D3 = new Render2D(view3, _stage3DProxy);
 			//_render2D3.simulateMultitouch = true;
 			//_render2D3.enableErrorChecking = true;
 			//_render2D3.antiAliasing = 2;
-			_render2D3.start();
+			//_render2D3.start();
 			
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
