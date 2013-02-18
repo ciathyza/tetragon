@@ -180,12 +180,12 @@
 	
 	<target name="310 Desktop: Build (Debug)" description="Clean build the project as a desktop debug version.">
 		<buildDesktop debug="true"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	<target name="320 Desktop: Build (Release)" description="Clean build the project as a desktop release version.">
 		<buildDesktop debug="false"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	<target name="330 Desktop: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
@@ -202,7 +202,7 @@
 	
 	<target name="350 Desktop: Compile" description="Compiles the application as a desktop debug version.">
 		<compileDesktop debug="true"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	
@@ -212,12 +212,12 @@
 	
 	<target name="410 Desktop Packed: Build (Debug)" description="Clean build the project as a desktop debug version.">
 		<buildDesktopPacked debug="true"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	<target name="420 Desktop Packed: Build (Release)" description="Clean build the project as a desktop release version.">
 		<buildDesktopPacked debug="false"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	<target name="430 Desktop Packed: Publish (Debug)" description="Clean build and publish a desktop debug version for testing.">
@@ -234,7 +234,7 @@
 	
 	<target name="450 Desktop Packed: Compile" description="Compiles the application as a desktop debug version.">
 		<compileDesktop debug="true"/>
-		<LaunchDesktop/>
+		<launchDesktop/>
 	</target>
 	
 	
@@ -244,12 +244,12 @@
 	
 	<target name="510 Android: Build (Debug)" description="Clean build the project as a Android debug version.">
 		<buildAndroid debug="true"/>
-		<LaunchAndroid/>
+		<launchAndroid/>
 	</target>
 	
 	<target name="520 Android: Build (Release)" description="Clean build the project as a Android release version.">
 		<buildAndroid debug="false"/>
-		<LaunchAndroid/>
+		<launchAndroid/>
 	</target>
 	
 	<target name="530 Android: Publish (APK)" description="Clean build and publish an Android APK version for release.">
@@ -269,7 +269,7 @@
 	
 	<target name="560 Android: Compile" description="Compiles the application as a Android Debug version.">
 		<compileAndroid debug="true"/>
-		<LaunchAndroid/>
+		<launchAndroid/>
 	</target>
 	
 	
@@ -953,13 +953,13 @@
 			<copyConfigFiles sourceFolder="${deploy.web.config}"/>
 			<copyExtraFiles sourceFolder="${deploy.web.extra}"/>
 			<copy todir="${path.bin}/${target.folder.js}" verbose="off" overwrite="true" failonerror="false">
-				<fileset dir="${deploy.web.js}" excludes="**/.svn"/>
+				<fileset dir="${deploy.web.js}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 			<copy todir="${path.bin}/${target.folder.css}" verbose="off" overwrite="true" failonerror="false">
-				<fileset dir="${deploy.web.css}" excludes="**/.svn"/>
+				<fileset dir="${deploy.web.css}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 			<copy todir="${path.bin}/${target.folder.img}" verbose="off" overwrite="true" failonerror="false">
-				<fileset dir="${deploy.web.img}" excludes="**/.svn"/>
+				<fileset dir="${deploy.web.img}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
 	</macrodef>
@@ -1253,7 +1253,7 @@
 	</macrodef>
 	
 	
-	<macrodef name="LaunchDesktop">
+	<macrodef name="launchDesktop">
 		<sequential>
 			<echo message="Opening ${app.swfname.full} in AIR Debug Launcher ..." level="info"/>
 			<exec executable="${air.debuglauncher}" spawn="false">
@@ -1264,7 +1264,7 @@
 	</macrodef>
 	
 	
-	<macrodef name="LaunchAndroid">
+	<macrodef name="launchAndroid">
 		<sequential>
 			<echo message="Opening ${app.swfname.full} in Android Debug Launcher ..." level="info"/>
 			<exec executable="${air.debuglauncher}" spawn="false">
