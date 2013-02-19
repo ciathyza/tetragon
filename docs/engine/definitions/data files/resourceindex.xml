@@ -148,6 +148,11 @@
 		<group type="Settings">
 			<resource id="settings" fileID="settingsFile"/>
 		</group>
+		<!-- Data type group for Texture Atlas resource. -->
+		<group type="TextureAtlas" fileID="textureAtlasFile">
+			<resource id="bgTextureAtlas"/>
+			<resource id="spriteTextureAtlas"/>
+		</group>
 		<!-- Custom data type group with definitions that are in different files. -->
 		<group type="ExampleDataType">
 			<resource id="dataItem1" fileID="dataFile1"/>

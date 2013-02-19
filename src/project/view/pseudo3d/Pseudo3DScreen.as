@@ -147,6 +147,8 @@ package view.pseudo3d
 		 */
 		override protected function registerResources():void
 		{
+			registerResource("bgTextureAtlas");
+			registerResource("spriteTextureAtlas");
 		}
 		
 		

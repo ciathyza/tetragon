@@ -59,14 +59,7 @@
 	======================================================================================= -->
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
-		<file id="dataFile1" path="data/data1.xml" packageID="resourcePackage"/>
-		<file id="dataFile2" path="data/data2.xml" packageID="resourcePackage"/>
-		<file id="dataFile3" path="data/data3.xml" packageID="resourcePackage"/>
-		<file id="dataFile4" path="data/data4.xml" packageID="resourcePackage"/>
-		<file id="dataListsFile" path="data/datalists.xml" packageID="resourcePackage"/>
-		<file id="entitiesFile" path="data/entities.xml" packageID="resourcePackage"/>
-		<file id="assetCatalogsFile" path="data/assetcatalog.xml" packageID="resourcePackage"/>
-		<file id="cellsFile" path="data/cells.xml" packageID="resourcePackage"/>
+		<file id="textureAtlasFile" path="data/textureatlas.xml" packageID="resourcePackage"/>
 	</dataFiles>
 	
 	
@@ -83,37 +76,23 @@
 	======================================================================================= -->
 	<media>
 		<image>
-			<resource id="image1" path="images/image1.jpg" packageID="resourcePackage"/>
-			<resource id="image2" path="images/image2.jpg" packageID="resourcePackage"/>
-			<resource id="marsmap" path="images/marsmap.jpg" packageID="resourcePackage"/>
 		</image>
 		<!-- Exampe of a media resource collection. -->
 		<image id="imageCollection">
-			<resource id="image3" path="images/image3.jpg" packageID="resourcePackage"/>
-			<resource id="image4" path="images/image4.jpg" packageID="resourcePackage"/>
-			<resource id="image5" path="images/image5.jpg" packageID="resourcePackage"/>
-			<resource id="image6" path="images/image6.jpg" packageID="resourcePackage"/>
 		</image>
 		<image32>
-			<resource id="image7" path="images/image7.jpg" packageID="resourcePackage"/>
-			<resource id="image8" path="images/image8.jpg" packageID="resourcePackage"/>
+			<resource id="bgTextureAtlasImage" path="images/bg.png" packageID="resourcePackage"/>
+			<resource id="spriteTextureAtlasImage" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<swf/>
 		<shader>
-			<resource id="exampleShader" path="shaders/example.pbj" packageID="resourcePackage"/>
 		</shader>
 		<audioMP3>
 			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
-			<resource id="exampleAudio1" path="audio/example1.mp3" packageID="resourcePackage"/>
-			<resource id="exampleAudio2" path="audio/example2.mp3" packageID="resourcePackage"/>
-			<resource id="exampleAudio3" path="audio/example3.mp3" packageID="resourcePackage"/>
 		</audioMP3>
 		<audioModule>
 		</audioModule>
 		<binary>
-			<resource id="exampleBinary1" path="geometry/example1.obj" packageID="resourcePackage"/>
-			<resource id="exampleBinary2" path="geometry/example2.obj" packageID="resourcePackage"/>
-			<resource id="exampleBinary3" path="geometry/example3.obj" packageID="resourcePackage"/>
 		</binary>
 	</media>
 	
@@ -145,27 +124,10 @@
 		<group type="Settings">
 			<resource id="settings" fileID="settingsFile"/>
 		</group>
-		<!-- Data type group for display assets SWF resource. -->
-		<group type="SWFAssetCatalog">
-			<resource id="exampleAssetCatalog" fileID="assetCatalogsFile"/>
-		</group>
-		<!-- Custom data type group with definitions that are in different files. -->
-		<group type="ExampleDataType">
-			<resource id="dataItem1" fileID="dataFile1"/>
-			<resource id="dataItem2" fileID="dataFile2"/>
-			<resource id="dataItem3" fileID="dataFile2"/>
-		</group>
-		<!-- Custom data type group with definitions that are in one file. -->
-		<group type="AnotherDataType" fileID="dataFile3">
-			<resource id="dataItem4"/>
-			<resource id="dataItem5"/>
-			<resource id="dataItem6"/>
-		</group>
-		<!-- Custom data type group that is defined as a collection with ID "examples". -->
-		<group type="ExampleDataType" id="examples" fileID="dataFile4">
-			<resource id="dataItem7"/>
-			<resource id="dataItem8"/>
-			<resource id="dataItem9"/>
+		<!-- Data type group for Texture Atlas resource. -->
+		<group type="TextureAtlas" fileID="textureAtlasFile">
+			<resource id="bgTextureAtlas"/>
+			<resource id="spriteTextureAtlas"/>
 		</group>
 	</data>
 	
@@ -176,10 +138,6 @@
 	Datalist definitions follow the same rules and attributes like data definitions.
 	======================================================================================= -->
 	<lists>
-		<group type="ExampleDataList" fileID="dataListsFile">
-			<resource id="dataList1"/>
-			<resource id="dataList2"/>
-		</group>
 	</lists>
 	
 	
@@ -189,14 +147,6 @@
 	Entity definitions follow the same rules and attributes like data definitions.
 	======================================================================================= -->
 	<entities>
-		<group type="ExampleEntity" fileID="entitiesFile">
-			<resource id="entity1"/>
-			<resource id="entity2"/>
-			<resource id="entity3"/>
-		</group>
-		<group type="ExampleEntity" fileID="cellsFile">
-			<resource id="exampleCell2D"/>
-		</group>
 	</entities>
 	
 	
@@ -211,8 +161,6 @@
 	resource.packageID		ID of the resource package that the XML file is in.
 	======================================================================================= -->
 	<xml>
-		<resource id="rawXMLData1" path="xml/xmldata1.xml" packageID="resourcePackage"/>
-		<resource id="rawXMLData2" path="xml/xmldata2.xml" packageID="resourcePackage"/>
 	</xml>
 	
 	
@@ -235,11 +183,6 @@
 	<text>
 		<resource id="textUI">
 			<locale lang="en" path="text/en/ui_text.xml" packageID="resourcePackage"/>
-			<locale lang="de"/>
-			<locale lang="jp"/>
-		</resource>
-		<resource id="textDialogues">
-			<locale lang="en" path="text/en/dialogue_text.xml" packageID="resourcePackage"/>
 			<locale lang="de"/>
 			<locale lang="jp"/>
 		</resource>
