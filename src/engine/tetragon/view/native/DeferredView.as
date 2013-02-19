@@ -26,34 +26,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.obsolete
+package tetragon.view.native
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.Main;
+	import tetragon.view.IView;
 	
 	
 	/**
-	 * A signal that can be used inside view classes.
+	 * A deferred view can be used for view classes that should not be registered in their
+	 * parent view or screen and that might be instantiated at a later time.
+	 * 
+	 * <p>
+	 * In some situations it is preferrable to have a view that is not registered as a
+	 * child view in it's parent view or screen class and that should be created at a
+	 * later time while the screen is open. In such cases your view class should extends
+	 * <code>DeferredView</code> instead of <code>View</code>. Unlike the
+	 * <code>View</code> class, the <code>DeferredView</code> class instantly creates the
+	 * view, adds children and listeners, etc. and calls <code>update()</code>. All these
+	 * steps are normally handled automatically for registered views.
+	 * </p>
 	 */
-	public class ViewSignal extends Signal
+	public class DeferredView extends View implements IView
 	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
-		
-		public static const MOUSE_CLICK:String = "mouseClick";
-		
-		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
 		 * Creates a new instance of the class.
-		 * Parameter signature: type:String, args:Array
 		 */
-		public function ViewSignal()
+		public function DeferredView()
 		{
-			super(String, Array);
+			_main = Main.instance;
+			setup();
+			createView();
+			update();
 		}
 	}
 }

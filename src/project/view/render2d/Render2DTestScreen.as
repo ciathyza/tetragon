@@ -28,13 +28,14 @@
  */
 package view.render2d
 {
-	import tetragon.view.render2d.display.Quad2D;
-	import flash.events.Event;
-	import tetragon.view.obsolete.Screen;
+	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
+
+	import flash.events.Event;
 
 	
 	/**

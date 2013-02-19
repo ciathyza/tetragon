@@ -31,7 +31,7 @@ package view.splash
 	import lib.display.TetragonLogo;
 
 	import tetragon.data.Settings;
-	import tetragon.view.obsolete.View;
+	import tetragon.view.native.View;
 
 	import com.hexagonstar.util.color.colorHexToColorTransform;
 
