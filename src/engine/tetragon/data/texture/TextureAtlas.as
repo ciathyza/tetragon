@@ -168,6 +168,21 @@ package tetragon.data.texture
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function dump():String
+		{
+			var s:String = toString();
+			for (var i:uint = 0; i < _subTextureBounds.length; i++)
+			{
+				var stb:SubTextureBounds = _subTextureBounds[i];
+				s += "\n\t" + stb.id;
+			}
+			return s;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
