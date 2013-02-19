@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:82f31bab42dcccbafc2233be93797459$ -->
+<TextureAtlas imagePath="bg.png">
+    <SubTexture name="bg_hills" x="0" y="0" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
+    <SubTexture name="bg_sky" x="0" y="452" width="1280" height="480"/>
+    <SubTexture name="bg_trees" x="0" y="932" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
+</TextureAtlas>
