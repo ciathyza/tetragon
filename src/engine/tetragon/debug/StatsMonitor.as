@@ -303,6 +303,8 @@ package tetragon.debug
 		 */
 		private function onGameLoopRender(ticks:uint, ms:uint, fps:uint):void
 		{
+			_glTicks = ticks;
+			_glRenderMS = ms;
 			_renderFPS = fps;
 		}
 		
