@@ -29,6 +29,13 @@
 package view.pseudo3d
 {
 	import tetragon.view.Screen;
+	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.display.Quad2D;
+	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.stage3d.Stage3DEvent;
+	import tetragon.view.stage3d.Stage3DProxy;
+
+	import flash.events.Event;
 	
 	
 	/**
@@ -46,6 +53,9 @@ package view.pseudo3d
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
+		
+		private var _stage3DProxy:Stage3DProxy;
+		private var _render2D:Render2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -129,6 +139,35 @@ package view.pseudo3d
 		}
 		
 		
+		private function onContext3DCreated(e:Stage3DEvent):void
+		{
+			var view1:View2D = new Pseudo2DView();
+			view1.x = 10;
+			view1.y = 10;
+			view1.frameWidth = (main.stage.stageWidth * 0.5) - 20;
+			view1.frameHeight = (main.stage.stageHeight) - 20;
+			view1.background = new Quad2D(10, 10, 0x888888);
+			view1.touchable = false;
+			
+			_render2D = new Render2D(view1, _stage3DProxy);
+			//_render2D1.simulateMultitouch = true;
+			//_render2D1.enableErrorChecking = true;
+			//_render2D1.antiAliasing = 2;
+			_render2D.start();
+			
+			resourceManager.process("bgTextureAtlas");
+			resourceManager.process("spriteTextureAtlas");
+			
+			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		
+		private function onEnterFrame(event:Event):void
+		{
+			_render2D.nextFrame();
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
@@ -157,6 +196,11 @@ package view.pseudo3d
 		 */
 		override protected function createChildren():void
 		{
+			_stage3DProxy = main.stage3DManager.getFreeStage3DProxy();
+			_stage3DProxy.antiAlias = 2;
+			_stage3DProxy.color = 0x000000;
+			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContext3DCreated);
+			_stage3DProxy.requestContext3D();
 		}
 		
 		
@@ -197,8 +241,6 @@ package view.pseudo3d
 		 */
 		override protected function executeBeforeStart():void
 		{
-			//resourceManager.process("bgTextureAtlas");
-			//resourceManager.process("spriteTextureAtlas");
 		}
 		
 		

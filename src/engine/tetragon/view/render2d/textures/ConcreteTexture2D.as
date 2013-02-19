@@ -105,7 +105,7 @@ package tetragon.view.render2d.textures
 			else if (atfData)
 			{
 				nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format, _optimizedForRenderTexture);
-				Texture2D.uploadAtfData(nativeTexture, atfData.data);
+				Texture2D.uploadATFData(nativeTexture, atfData.data);
 			}
 
 			_base = nativeTexture;
