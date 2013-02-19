@@ -130,7 +130,7 @@ package tetragon.data.swf
 		 * 
 		 * @return A string dump of the asset catalog.
 		 */
-		public function dump():String
+		override public function dump():String
 		{
 			var t:TabularText = new TabularText(4, true, "  ", null, "  ", 0,
 				["ID", "TYPE", "INSTANCE", "CHILDREN"]);

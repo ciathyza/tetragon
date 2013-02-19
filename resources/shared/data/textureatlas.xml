@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
 	
-	<TextureAtlas id="bgTextureAtlas" imageID="bgTextureAtlasImage">
+	<textureAtlas id="bgTextureAtlas" imageID="bgTextureAtlasImage">
 	    <SubTexture name="bg_hills" x="0" y="0" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
 	    <SubTexture name="bg_sky" x="0" y="452" width="1280" height="480"/>
 	    <SubTexture name="bg_trees" x="0" y="932" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
-	</TextureAtlas>
+	</textureAtlas>
 	
-	<TextureAtlas id="spriteTextureAtlas" imageID="spriteTextureAtlasImage">
+	<textureAtlas id="spriteTextureAtlas" imageID="spriteTextureAtlasImage">
 	    <SubTexture name="sprite_billboard01" x="575" y="263" width="300" height="170"/>
 	    <SubTexture name="sprite_billboard02" x="901" y="575" width="215" height="220"/>
 	    <SubTexture name="sprite_billboard03" x="1116" y="450" width="230" height="220"/>
@@ -42,6 +42,6 @@
 	    <SubTexture name="sprite_tree1" x="215" y="0" width="360" height="360"/>
 	    <SubTexture name="sprite_tree2" x="200" y="580" width="282" height="295"/>
 	    <SubTexture name="sprite_truck" x="1283" y="814" width="100" height="78"/>
-	</TextureAtlas>
+	</textureAtlas>
 
 </data>

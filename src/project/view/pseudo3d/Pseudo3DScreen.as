@@ -197,6 +197,8 @@ package view.pseudo3d
 		 */
 		override protected function executeBeforeStart():void
 		{
+			//resourceManager.process("bgTextureAtlas");
+			//resourceManager.process("spriteTextureAtlas");
 		}
 		
 		

@@ -51,7 +51,7 @@ package tetragon.file.parsers
 			_xml = loader.xml;
 			const index:ResourceIndex = model;
 			
-			for each (var xml:XML in _xml.spriteAtlas)
+			for each (var xml:XML in _xml.textureAtlas)
 			{
 				/* Get the current item's ID. */
 				var id:String = extractString(xml, "@id");

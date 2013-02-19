@@ -83,6 +83,15 @@ package tetragon.data
 		}
 		
 		
+		/**
+		 * Dumps data output for the object. Override this method in subclass!
+		 */
+		public function dump():String
+		{
+			return toString();
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------

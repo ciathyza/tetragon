@@ -106,7 +106,7 @@ package tetragon.entity
 		 * 
 		 * TODO move implementation to dump CLI command (EDs should be as lightweight as possible)!
 		 */
-		public function dump():String
+		override public function dump():String
 		{
 			var s:String = "\n" + toString() + "\nfamilySignature: " + _familySignature;
 			for (var classID:String in _componentMappings)

@@ -102,20 +102,31 @@ package tetragon.view.render2d.textures
 	 */
 	public class Texture2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		private var _frame:Rectangle;
 		private var _repeat:Boolean;
 		
 		/** helper object */
 		private static var _origin:Point = new Point();
-
-
-		/** @private */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
 		public function Texture2D()
 		{
 			_repeat = false;
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/** Disposes the underlying texture data. Note that not all textures need to be disposed: 
 		 *  SubTextures (created with 'Texture.fromTexture') just reference other textures and
 		 *  and do not take up resources themselves; this is also true for textures from an 

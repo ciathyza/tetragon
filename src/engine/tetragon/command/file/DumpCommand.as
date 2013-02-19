@@ -30,6 +30,7 @@ package tetragon.command.file
 {
 	import tetragon.command.CLICommand;
 	import tetragon.data.DataList;
+	import tetragon.data.DataObject;
 	import tetragon.entity.EntityDefinition;
 	import tetragon.file.resource.Resource;
 
@@ -64,12 +65,17 @@ package tetragon.command.file
 				{
 					if (content is EntityDefinition)
 					{
-						var et:EntityDefinition = EntityDefinition(content);
+						var et:EntityDefinition = content;
 						s = et.dump();
+					}
+					else if (content is DataObject)
+					{
+						var d:DataObject = content;
+						s = d.dump();
 					}
 					else if (content is DataList)
 					{
-						var dl:DataList = DataList(content);
+						var dl:DataList = content;
 						s = dl.dump();
 					}
 					else

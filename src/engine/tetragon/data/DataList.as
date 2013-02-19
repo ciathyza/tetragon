@@ -260,7 +260,7 @@ package tetragon.data
 		/**
 		 * dump
 		 */
-		public function dump():String
+		override public function dump():String
 		{
 			var s:String = "\nDataList (id: " + _id + ", size: " + _size + ", datatype: " + _dataType + ")";
 			for (var key:String in _items)
