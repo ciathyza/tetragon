@@ -160,6 +160,9 @@ package view.pseudo3d
 		
 		private function onRender2DRootCreated(e:Event2D):void
 		{
+			// TODO Currently have to wait until Stage3D context is created to process
+			// the texture atlases. Need to change the render2D system so that this is handled
+			// more comfortably.
 			resourceManager.process("bgTextureAtlas");
 			resourceManager.process("spriteTextureAtlas");
 			_render2D.start();
