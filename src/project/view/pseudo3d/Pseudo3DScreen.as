@@ -32,6 +32,7 @@ package view.pseudo3d
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
@@ -144,8 +145,8 @@ package view.pseudo3d
 			var view1:View2D = new Pseudo2DView();
 			view1.x = 10;
 			view1.y = 10;
-			view1.frameWidth = (main.stage.stageWidth * 0.5) - 20;
-			view1.frameHeight = (main.stage.stageHeight) - 20;
+			view1.frameWidth = main.stage.stageWidth - 20;
+			view1.frameHeight = main.stage.stageHeight - 20;
 			view1.background = new Quad2D(10, 10, 0x888888);
 			view1.touchable = false;
 			
@@ -153,18 +154,36 @@ package view.pseudo3d
 			//_render2D1.simulateMultitouch = true;
 			//_render2D1.enableErrorChecking = true;
 			//_render2D1.antiAliasing = 2;
-			_render2D.start();
-			
+			_render2D.addEventListener(Event2D.ROOT_CREATED, onRender2DRootCreated);
+		}
+		
+		
+		private function onRender2DRootCreated(e:Event2D):void
+		{
 			resourceManager.process("bgTextureAtlas");
 			resourceManager.process("spriteTextureAtlas");
-			
+			_render2D.start();
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			main.gameLoop.start();
 		}
 		
 		
 		private function onEnterFrame(event:Event):void
 		{
+			//_render2D.nextFrame();
+		}
+		
+		
+		private function onTick():void
+		{
+		}
+		
+		
+		private function onRender(ticks:uint, ms:uint, fps:uint):void
+		{
+			_stage3DProxy.clear();
 			_render2D.nextFrame();
+			_stage3DProxy.present();
 		}
 		
 		
@@ -225,6 +244,8 @@ package view.pseudo3d
 		 */
 		override protected function addListeners():void
 		{
+			main.gameLoop.tickSignal.add(onTick);
+			main.gameLoop.renderSignal.add(onRender);
 		}
 		
 		
