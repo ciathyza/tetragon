@@ -35,6 +35,7 @@ package view.pseudo3d.constants
 		
 		public static const SKY:uint = 0x72D7EE;
 		public static const TREE:uint = 0x005108;
+		public static const FOG:uint = 0x005108;
 		public static const LIGHT:ColorLight = new ColorLight();
 		public static const DARK:ColorDark = new ColorDark();
 		public static const START:ColorStart = new ColorStart();
