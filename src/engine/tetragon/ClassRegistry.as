@@ -141,8 +141,9 @@ package tetragon
 			mapResourceFileType(Image32ResourceLoader,	"image32",	["image32", "image-transparent", "image-vector"],	["png", "svg", "svgz"]);
 			mapResourceFileType(SWFResourceLoader,		"swf",		["swf"],											["swf"]);
 			mapResourceFileType(BinaryResourceLoader,	"binary",	["binary", "shader"],								["obj", "pbj", "bin"]);
-			mapResourceFileType(MP3ResourceLoader,		"mp3",		["audioMP3", "audio-mp3"],							["mp3"]);
-			mapResourceFileType(BinaryResourceLoader,	"mod",		["audioModule", "audio-module"],					["mod"]); // TODO
+			mapResourceFileType(BinaryResourceLoader,	"atf",		["atf"],											["atf"]);
+			mapResourceFileType(MP3ResourceLoader,		"mp3",		["mp3"],											["mp3"]);
+			mapResourceFileType(BinaryResourceLoader,	"mod",		["soundModule", "sound-module"],					["mod"]); // TODO
 			mapResourceFileType(XMLResourceLoader,		"xml",		["data", "xml", "text"],							["xml", "txt", "ini", "css", "htm", "html"]);
 			
 			/* Map default complex types. */
@@ -180,9 +181,13 @@ package tetragon
 			_resourceFileTypeNameMap[resourceLoaderClass] = fileTypeName;
 			var key:String;
 			for each (key in fileTypeIDs)
+			{
 				_resourceFileTypeMap[key.toLowerCase()] = resourceLoaderClass;
+			}
 			for each (key in fileTypeExtensions)
+			{
 				_fileTypeExtensionMap[key.toLowerCase()] = resourceLoaderClass;
+			}
 		}
 		
 		

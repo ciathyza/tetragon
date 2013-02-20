@@ -83,16 +83,18 @@
 		<image32>
 			<resource id="spriteTextureAtlasPNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
+		<atf>
+			<resource id="spriteTextureAtlasATF" path="images/sprites.atf" packageID="resourcePackage"/>
+		</atf>
 		<swf/>
 		<shader>
 		</shader>
-		<audioMP3>
+		<mp3>
 			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
-		</audioMP3>
-		<audioModule>
-		</audioModule>
+		</mp3>
+		<soundModule>
+		</soundModule>
 		<binary>
-			<resource id="spriteTextureAtlasATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</binary>
 	</media>
 	

@@ -50,7 +50,7 @@ package tetragon.file.resource
 		/** @private */
 		private var _family:String;
 		/** @private */
-		private var _dataType:String;
+		private var _type:String;
 		/** @private */
 		private var _embedded:Boolean;
 		/** @private */
@@ -88,7 +88,7 @@ package tetragon.file.resource
 			_dataFileID = d;
 			_loaderClass = c;
 			_family = f;
-			_dataType = t;
+			_type = t;
 			_embedded = e;
 			
 			_referenceCount = 0;
@@ -173,11 +173,12 @@ package tetragon.file.resource
 		
 		
 		/**
-		 * The data type of the resource, only used for data and entity resources.
+		 * The (data) type of the resource, only used for data and entity resources.
+		 * For media resources the type describes the file format.
 		 */
-		public function get dataType():String
+		public function get type():String
 		{
-			return _dataType;
+			return _type;
 		}
 		
 		

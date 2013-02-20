@@ -90,7 +90,7 @@ package tetragon.entity
 				return null;
 			}
 			
-			var e:IEntity = _entityManager.createEntity(resource.dataType, resource.content);
+			var e:IEntity = _entityManager.createEntity(resource.type, resource.content);
 			if (!e) return null;
 			
 			var mappings:Object = EntityDefinition(resource.content).componentMappings;

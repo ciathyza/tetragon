@@ -29,6 +29,7 @@
 package tetragon.command.file
 {
 	import tetragon.command.CLICommand;
+	import tetragon.data.DataObject;
 	import tetragon.file.resource.Resource;
 
 	import com.hexagonstar.types.Byte;
@@ -62,23 +63,50 @@ package tetragon.command.file
 			if (r)
 			{
 				var content:* = r.content;
-				var size:String;
+				var objType:String = "unknown";
+				var size:String = "unknown";
+				
 				if (content)
 				{
-					if (content is ByteArray)
+					if (content is DataObject)
+					{
+						objType = "DataObject";
+					}
+					else if (content is ByteArray)
+					{
+						objType = "ByteArray";
 						size = new Byte(ByteArray(content).length).toString();
+					}
 					else if (content is BitmapData)
+					{
+						objType = "BitmapData";
 						size = new Byte(BitmapData(content).width * BitmapData(content).height).toString();
+					}
 					else if (content is String)
+					{
+						objType = "String";
 						size = new Byte(String(content).length).toString();
+					}
 					else if (content is Array)
+					{
+						objType = "Array";
 						size = "" + (content as Array).length;
+					}
 					else if (content is XML)
+					{
+						objType = "XML";
 						size = new Byte(XML(content).toXMLString().length).toString();
+					}
 					else if (content is XMLList)
+					{
+						objType = "XMLList";
 						size = "" + XMLList(content).length();
+					}
 					else if (content is Sound)
+					{
+						objType = "Sound";
 						size = new Byte(Sound(content).bytesTotal).toString();
+					}
 					else
 					{
 						try
@@ -89,21 +117,23 @@ package tetragon.command.file
 						}
 						catch (err:Error)
 						{
+							size = "unknown";
 						}
 					}
 				}
 				
 				var s:String = "\n\tid:             " + r.id
-					+ "\n\tpath:           " + r.path
+					+ "\n\tobjType         " + objType
+					+ "\n\ttype:           " + r.type
 					+ "\n\tpackageID:      " + r.packageID
+					+ "\n\tpath:           " + r.path
 					+ "\n\tdataFileID:     " + r.dataFileID
-					+ "\n\tdataType:       " + r.dataType
 					+ "\n\tembedded:       " + r.embedded
 					+ "\n\treferenceCount: " + r.referenceCount
 					+ "\n\tstatus:         " + r.status
-					+ "\n\tcontent:        " + content
-					+ (size ? "\n\tsize:           " + size : "")
+					+ "\n\tsize:           " + size
 					+ "\n\tloaderClass:    " + r.loaderClass
+					+ "\n\tcontent:        " + content
 					+ "";
 				main.console.log(s, LogLevel.INFO);
 			}

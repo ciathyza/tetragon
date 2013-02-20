@@ -97,6 +97,9 @@
 			<resource id="image7" path="images/image7.jpg" packageID="resourcePackage"/>
 			<resource id="image8" path="images/image8.jpg" packageID="resourcePackage"/>
 		</image32>
+		<atf>
+			<resource id="atfTexture" path="images/texture.atf" packageID="resourcePackage"/>
+		</atf>
 		<swf>
 			<resource id="exampleSWF1" path="swf/example1.swf" packageID="resourcePackage"/>
 			<resource id="exampleSWF2" path="swf/example2.swf" packageID="resourcePackage"/>
@@ -105,14 +108,14 @@
 			<resource id="shaderScanlines" path="shaders/scanlines.pbj" packageID="resourcePackage"/>
 			<resource id="exampleShader" path="shaders/example.pbj" packageID="resourcePackage"/>
 		</shader>
-		<audioMP3>
+		<mp3>
 			<resource id="audioLogoTetragon" path="audio/ui/tetragon_logo.mp3" packageID="resourcePackage"/>
 			<resource id="exampleAudio1" path="audio/example1.mp3" packageID="resourcePackage"/>
 			<resource id="exampleAudio2" path="audio/example2.mp3" packageID="resourcePackage"/>
 			<resource id="exampleAudio3" path="audio/example3.mp3" packageID="resourcePackage"/>
-		</audioMP3>
-		<audioModule>
-		</audioModule>
+		</mp3>
+		<soundModule>
+		</>
 		<binary>
 			<resource id="exampleBinary1" path="geometry/example1.obj" packageID="resourcePackage"/>
 			<resource id="exampleBinary2" path="geometry/example2.obj" packageID="resourcePackage"/>

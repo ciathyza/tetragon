@@ -253,7 +253,7 @@ package tetragon.file.resource
 		public function getResourceDataType(id:String):String
 		{
 			var r:Resource = _resources[id];
-			if (r) return r.dataType;
+			if (r) return r.type;
 			return null;
 		}
 		
@@ -464,7 +464,7 @@ package tetragon.file.resource
 		{
 			var cr:ClassRegistry = Main.instance.classRegistry;
 			var t:TabularText = new TabularText(8, true, "  ", null, "  ", 0,
-				["ID", "FAMILY", "FTYPE", "TYPE", "PACKAGE", "PATH", "EMBEDDED", "REFCOUNT"]);
+				["ID", "FAMILY", "FTYPE", "DTYPE", "PACKAGE", "PATH", "EMBEDDED", "REFCOUNT"]);
 			
 			for each (var e:Resource in _resources)
 			{
@@ -472,8 +472,27 @@ package tetragon.file.resource
 				if (filter == "loaded" && e.referenceCount < 1) continue;
 				else if (filter == "unloaded" && e.referenceCount > 0) continue;
 				
-				var ftype:String = cr.getResourceFileTypeName(e.loaderClass) || "";
-				var type:String = e.dataType || "";
+				var ftype:String;
+				var type:String;
+				
+				/* For media resources the type is the filetype! */
+				if (e.family == ResourceFamily.MEDIA)
+				{
+					ftype = e.type;
+					type = "";
+				}
+				/* For collections we don't want to display a type. */
+				else if (e.family == ResourceFamily.COLLECTION)
+				{
+					ftype = "";
+					type = "";
+				}
+				else
+				{
+					ftype = cr.getResourceFileTypeName(e.loaderClass) || "";
+					type = e.type || "";
+				}
+				
 				var pack:String = getPackagePath(e.packageID) || "";
 				var path:String = e.path || "";
 				
@@ -577,8 +596,8 @@ package tetragon.file.resource
 			var type:String = ResourceFamily.SETTINGS.toLowerCase();
 			for each (var e:Resource in _resources)
 			{
-				if (e.dataType == null) continue;
-				if (e.dataType.toLowerCase() == type)
+				if (e.type == null) continue;
+				if (e.type.toLowerCase() == type)
 				{
 					a.push(e.id);
 				}

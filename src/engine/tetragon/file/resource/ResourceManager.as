@@ -388,7 +388,7 @@ package tetragon.file.resource
 				{
 					/* If the to be removed resource is a text resource,
 					 * also remove all of it's strings. */
-					if (r.dataType == ResourceFamily.TEXT)
+					if (r.type == ResourceFamily.TEXT)
 					{
 						_stringIndex.removeStrings(r.content);
 					}
@@ -507,12 +507,12 @@ package tetragon.file.resource
 					+ " has not yet been loaded.");
 				return false;
 			}
-			var clazz:Class = _classRegistry.getResourceProcessorClass(resource.dataType);
+			var clazz:Class = _classRegistry.getResourceProcessorClass(resource.type);
 			if (!clazz)
 			{
 				error("Failed to process resource \"" + resource.id
 					+ "\". No processor class is registered for it's dataType \""
-					+ resource.dataType + "\".");
+					+ resource.type + "\".");
 				return false;
 			}
 			
@@ -525,7 +525,7 @@ package tetragon.file.resource
 			{
 				error("Failed to process resource \"" + resource.id
 					+ "\". The registered processor class for dataType \""
-					+ resource.dataType + "\" is not of type ResourceProcessor.");
+					+ resource.type + "\" is not of type ResourceProcessor.");
 				return false;
 			}
 			//Log.debug("Processing resource \"" + resourceID + "\" with " + processor.toString() + " ...", this);

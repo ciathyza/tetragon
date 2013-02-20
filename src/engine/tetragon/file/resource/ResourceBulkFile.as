@@ -84,7 +84,7 @@ package tetragon.file.resource
 		{
 			if (_path == null) _path = item.resource.path;
 			if (_resourceFamily == null) _resourceFamily = item.resource.family;
-			if (_resourceType == null) _resourceType = item.resource.dataType;
+			if (_resourceType == null) _resourceType = item.resource.type;
 			
 			item.setBulkFile(this);
 			_items.push(item);

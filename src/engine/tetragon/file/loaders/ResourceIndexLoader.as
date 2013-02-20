@@ -299,7 +299,7 @@ package tetragon.file.loaders
 				
 				if (collectionID.length > 0)
 				{
-					collection = new ResourceCollection(collectionID, null);
+					collection = new ResourceCollection(collectionID, topNodeName);
 				}
 				
 				for each (var s:XML in x.children())
@@ -311,13 +311,13 @@ package tetragon.file.loaders
 						resourceClassID = topNodeName + "-" + s.name();
 						for each (var c:XML in s.children())
 						{
-							addResourceEntry(c, resourceClassID, ResourceFamily.MEDIA, null);
+							addResourceEntry(c, resourceClassID, ResourceFamily.MEDIA, topNodeName);
 							++_subCount;
 						}
 					}
 					else
 					{
-						addResourceEntry(s, resourceClassID, ResourceFamily.MEDIA, null);
+						addResourceEntry(s, resourceClassID, ResourceFamily.MEDIA, topNodeName);
 						++_subCount;
 						if (collection) collection.addResource(s.@id);
 					}
