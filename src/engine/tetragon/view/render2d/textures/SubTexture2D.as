@@ -35,13 +35,18 @@ package tetragon.view.render2d.textures
 	import flash.geom.Rectangle;
 
 
-	/** A SubTexture represents a section of another texture. This is achieved solely by 
-	 *  manipulation of texture coordinates, making the class very efficient. 
+	/**
+	 * A SubTexture represents a section of another texture. This is achieved solely by 
+	 * manipulation of texture coordinates, making the class very efficient. 
 	 *
-	 *  <p><em>Note that it is OK to create subtextures of subtextures.</em></p>
+	 * <p><em>Note that it is OK to create subtextures of subtextures.</em></p>
 	 */
 	public class SubTexture2D extends Texture2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		private var _parent:Texture2D;
 		private var _clipping:Rectangle;
 		private var _rootClipping:Rectangle;
@@ -49,95 +54,105 @@ package tetragon.view.render2d.textures
 		
 		/** Helper object. */
 		private static var _texCoords:Point = new Point();
-
-
-		/** Creates a new subtexture containing the specified region (in points) of a parent 
-		 *  texture. If 'ownsParent' is true, the parent texture will be disposed automatically
-		 *  when the subtexture is disposed. */
-		public function SubTexture2D(parentTexture:Texture2D, region:Rectangle, ownsParent:Boolean = false)
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new subtexture containing the specified region (in points) of a parent 
+		 * texture. If 'ownsParent' is true, the parent texture will be disposed automatically
+		 * when the subtexture is disposed.
+		 * 
+		 * @param parentTexture
+		 * @param region
+		 * @param ownsParent
+		 */
+		public function SubTexture2D(parentTexture:Texture2D, region:Rectangle,
+			ownsParent:Boolean = false)
 		{
 			_parent = parentTexture;
 			_ownsParent = ownsParent;
-
-			if (region == null) setClipping(new Rectangle(0, 0, 1, 1));
-			else setClipping(new Rectangle(region.x / parentTexture.width, region.y / parentTexture.height, region.width / parentTexture.width, region.height / parentTexture.height));
+			
+			setClipping(!region
+				? new Rectangle(0, 0, 1, 1)
+				: new Rectangle(region.x / parentTexture.width, region.y / parentTexture.height,
+					region.width / parentTexture.width, region.height / parentTexture.height)
+			);
 		}
-
-
-		/** Disposes the parent texture if this texture owns it. */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Disposes the parent texture if this texture owns it.
+		 */
 		public override function dispose():void
 		{
 			if (_ownsParent) _parent.dispose();
 			super.dispose();
 		}
-
-
-		private function setClipping(value:Rectangle):void
-		{
-			_clipping = value;
-			_rootClipping = value.clone();
-
-			var parentTexture:SubTexture2D = _parent as SubTexture2D;
-			while (parentTexture)
-			{
-				var parentClipping:Rectangle = parentTexture._clipping;
-				_rootClipping.x = parentClipping.x + _rootClipping.x * parentClipping.width;
-				_rootClipping.y = parentClipping.y + _rootClipping.y * parentClipping.height;
-				_rootClipping.width *= parentClipping.width;
-				_rootClipping.height *= parentClipping.height;
-				parentTexture = parentTexture._parent as SubTexture2D;
-			}
-		}
-
-
-		/** @inheritDoc */
-		public override function adjustVertexData(vertexData:VertexData2D, vertexID:int, count:int):void
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public override function adjustVertexData(vertexData:VertexData2D, vertexID:int,
+			count:int):void
 		{
 			super.adjustVertexData(vertexData, vertexID, count);
-
+			
 			var clipX:Number = _rootClipping.x;
 			var clipY:Number = _rootClipping.y;
 			var clipWidth:Number = _rootClipping.width;
 			var clipHeight:Number = _rootClipping.height;
 			var endIndex:int = vertexID + count;
-
+			
 			for (var i:int = vertexID; i < endIndex; ++i)
 			{
 				vertexData.getTexCoords(i, _texCoords);
-				vertexData.setTexCoords(i, clipX + _texCoords.x * clipWidth, clipY + _texCoords.y * clipHeight);
+				vertexData.setTexCoords(i, clipX + _texCoords.x * clipWidth,
+					clipY + _texCoords.y * clipHeight);
 			}
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
 		/** The texture which the subtexture is based on. */
 		public function get parent():Texture2D
 		{
 			return _parent;
 		}
-
-
+		
+		
 		/** Indicates if the parent texture is disposed when this object is disposed. */
 		public function get ownsParent():Boolean
 		{
 			return _ownsParent;
 		}
-
-
+		
+		
 		/** The clipping rectangle, which is the region provided on initialization 
 		 *  scaled into [0.0, 1.0]. */
 		public function get clipping():Rectangle
 		{
 			return _clipping.clone();
 		}
-
-
+		
+		
 		/** @inheritDoc */
 		public override function get base():TextureBase
 		{
 			return _parent.base;
 		}
-
-
+		
+		
 		/** @inheritDoc */
 		public override function get root():ConcreteTexture2D
 		{
@@ -198,6 +213,31 @@ package tetragon.view.render2d.textures
 		public override function get scale():Number
 		{
 			return _parent.scale;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function setClipping(value:Rectangle):void
+		{
+			_clipping = value;
+			_rootClipping = value.clone();
+
+			var parentTexture:SubTexture2D = _parent as SubTexture2D;
+			while (parentTexture)
+			{
+				var parentClipping:Rectangle = parentTexture._clipping;
+				_rootClipping.x = parentClipping.x + _rootClipping.x * parentClipping.width;
+				_rootClipping.y = parentClipping.y + _rootClipping.y * parentClipping.height;
+				_rootClipping.width *= parentClipping.width;
+				_rootClipping.height *= parentClipping.height;
+				parentTexture = parentTexture._parent as SubTexture2D;
+			}
 		}
 	}
 }

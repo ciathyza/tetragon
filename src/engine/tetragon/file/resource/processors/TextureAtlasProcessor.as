@@ -65,7 +65,7 @@ package tetragon.file.resource.processors
 				}
 				if (textureAtlas.subTextureCount < 1)
 				{
-					error("Cannot process textureAtlas \"" + textureAtlas.id
+					error("Cannot process texture atlas \"" + textureAtlas.id
 						+ "\" because it has no subtextures defined.");
 					continue;
 				}
@@ -77,8 +77,8 @@ package tetragon.file.resource.processors
 				}
 				else
 				{
-					error("Cannot process textureAtlas \"" + textureAtlas.id
-						+ "\" because the required textureAtlas image \"" + textureAtlas.imageID
+					error("Cannot process texture atlas \"" + textureAtlas.id
+						+ "\" because the required texture atlas image \"" + textureAtlas.imageID
 						+ "\" is null.");
 					continue;
 				}
