@@ -37,9 +37,15 @@ package tetragon.view.render2d.textures
 	import flash.display3D.textures.TextureBase;
 	
 	
-	/** A ConcreteTexture wraps a Stage3D texture object, storing the properties of the texture. */
+	/**
+	 * A ConcreteTexture wraps a Stage3D texture object, storing the properties of the texture.
+	 */
 	public class ConcreteTexture2D extends Texture2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		private var _base:TextureBase;
 		private var _format:String;
 		private var _width:int;
@@ -49,13 +55,30 @@ package tetragon.view.render2d.textures
 		private var _optimizedForRenderTexture:Boolean;
 		private var _data:Object;
 		private var _scale:Number;
-
-
-		/** Creates a ConcreteTexture object from a TextureBase, storing information about size,
-		 *  mip-mapping, and if the channels contain premultiplied alpha values. */
-		public function ConcreteTexture2D(base:TextureBase, format:String, width:int, height:int, mipMapping:Boolean, premultipliedAlpha:Boolean, optimizedForRenderTexture:Boolean = false, scale:Number = 1)
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a ConcreteTexture object from a TextureBase, storing information about size,
+		 * mip-mapping, and if the channels contain premultiplied alpha values.
+		 * 
+		 * @param base
+		 * @param format
+		 * @param width
+		 * @param height
+		 * @param mipMapping
+		 * @param premultipliedAlpha
+		 * @param optimizedForRenderTexture
+		 * @param scale
+		 */
+		public function ConcreteTexture2D(base:TextureBase, format:String, width:int, height:int,
+			mipMapping:Boolean, premultipliedAlpha:Boolean,
+			optimizedForRenderTexture:Boolean = false, scale:Number = 1.0)
 		{
-			_scale = scale <= 0 ? 1.0 : scale;
+			_scale = scale <= 0.0 ? 1.0 : scale;
 			_base = base;
 			_format = format;
 			_width = width;
@@ -64,55 +87,76 @@ package tetragon.view.render2d.textures
 			_premultipliedAlpha = premultipliedAlpha;
 			_optimizedForRenderTexture = optimizedForRenderTexture;
 		}
-
-
-		/** Disposes the TextureBase object. */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Disposes the TextureBase object.
+		 */
 		public override function dispose():void
 		{
 			if (_base) _base.dispose();
-			restoreOnLostContext(null);
-			// removes event listener & data reference
+			restoreOnLostContext(null); // removes event listener & data reference
 			super.dispose();
 		}
-
-
+		
+		
 		// texture backup (context lost)
-		/** Instructs this instance to restore its base texture when the context is lost. 'data' 
-		 *  can be either BitmapData or a ByteArray with ATF data. */
+		
+		/**
+		 * Instructs this instance to restore its base texture when the context is lost. 'data' 
+		 * can be either BitmapData or a ByteArray with ATF data.
+		 * 
+		 * @param data
+		 */
 		public function restoreOnLostContext(data:Object):void
 		{
-			if (_data == null && data != null)
+			if (!_data && data)
 				Render2D.current.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
-			else if (data == null)
+			else if (!data)
 				Render2D.current.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
-
 			_data = data;
 		}
-
-
-		private function onContextCreated(event:Event2D):void
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function onContextCreated(e:Event2D):void
 		{
 			var context:Context3D = Render2D.context;
 			var bitmapData:BitmapData = _data as BitmapData;
 			var atfData:ATFData2D = _data as ATFData2D;
 			var nativeTexture:flash.display3D.textures.Texture;
-
+			
 			if (bitmapData)
 			{
-				nativeTexture = context.createTexture(_width, _height, Context3DTextureFormat.BGRA, _optimizedForRenderTexture);
+				nativeTexture = context.createTexture(_width, _height, Context3DTextureFormat.BGRA,
+					_optimizedForRenderTexture);
 				Texture2D.uploadBitmapData(nativeTexture, bitmapData, _mipMapping);
 			}
 			else if (atfData)
 			{
-				nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format, _optimizedForRenderTexture);
+				nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
+					_optimizedForRenderTexture);
 				Texture2D.uploadATFData(nativeTexture, atfData.data);
 			}
-
+			
 			_base = nativeTexture;
 		}
-
-
-		// properties
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
 		/** Indicates if the base texture was optimized for being used in a render texture. */
 		public function get optimizedForRenderTexture():Boolean
 		{

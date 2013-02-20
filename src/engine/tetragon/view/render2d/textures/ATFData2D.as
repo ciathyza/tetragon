@@ -32,22 +32,36 @@ package tetragon.view.render2d.textures
 	import flash.utils.ByteArray;
 	
 	
-	/** A parser for the ATF data format. */
+	/**
+	 * A parser for the ATF data format.
+	 */
 	internal class ATFData2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		private var _format:String;
 		private var _width:int;
 		private var _height:int;
 		private var _numTextures:int;
 		private var _data:ByteArray;
-
-
-		/** Create a new instance by parsing the given byte array. */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Create a new instance by parsing the given byte array.
+		 * 
+		 * @param data
+		 */
 		public function ATFData2D(data:ByteArray)
 		{
 			var signature:String = String.fromCharCode(data[0], data[1], data[2]);
 			if (signature != "ATF") throw new ArgumentError("Invalid ATF data");
-
+			
 			switch (data[6])
 			{
 				case 0:
@@ -60,21 +74,23 @@ package tetragon.view.render2d.textures
 					break;
 				case 4:
 				case 5:
-					_format = "compressedAlpha";
+					_format = Context3DTextureFormat.COMPRESSED_ALPHA;
 					break;
-				// explicit string to stay compatible 
-				// with older versions
 				default:
-					throw new Error("Invalid ATF format");
+					throw new Error("Invalid ATF format!");
 			}
-
+			
 			_width = Math.pow(2, data[7]);
 			_height = Math.pow(2, data[8]);
 			_numTextures = data[9];
 			_data = data;
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
 		public function get format():String
 		{
 			return _format;
