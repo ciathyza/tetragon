@@ -9,6 +9,10 @@ package view.pseudo3d.vo
 	 */
 	public class Sprites
 	{
+		public var BG_SKY:Image2D;
+		public var BG_HILLS:Image2D;
+		public var BG_TREES:Image2D;
+		
 		public var PALM_TREE:Image2D;
 		public var BILLBOARD08:Image2D;
 		public var TREE1:Image2D;
@@ -48,12 +52,14 @@ package view.pseudo3d.vo
 		public var PLANTS:Vector.<Image2D>;
 		public var CARS:Vector.<Image2D>;
 
-		// the reference sprite width should be 1/3rd the (half-)roadWidth
-		public var SCALE:Number = 0.3 * (1 / PLAYER_STRAIGHT.width);
+		public var SCALE:Number;
 		
 		
 		public function init():void
 		{
+			// the reference sprite width should be 1/3rd the (half-)roadWidth
+			SCALE = 0.3 * (1 / PLAYER_STRAIGHT.width);
+			
 			BILLBOARDS = new Vector.<Image2D>();
 			BILLBOARDS.push(BILLBOARD01, BILLBOARD02, BILLBOARD03, BILLBOARD04, BILLBOARD05, BILLBOARD06, BILLBOARD07, BILLBOARD08, BILLBOARD09);
 			

@@ -32,12 +32,12 @@ package view.pseudo3d
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.textures.Texture2D;
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
 	import view.pseudo3d.vo.SSprite;
 	import view.pseudo3d.vo.Segment;
+	import view.pseudo3d.vo.Sprites;
 	
 	
 	/**
@@ -69,8 +69,6 @@ package view.pseudo3d
 		private var segments:Vector.<Segment>;				// array of road segments
 		private var cars:Array = [];						// array of cars on the road
 		
-		private var texture:Texture2D;
-		private var sprites:Image2D;						// our spritesheet (loaded below)
 		private var resolution:Number;						// scaling factor to provide resolution independence (computed)
 		
 		private var roadWidth:int = 2000;					// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
@@ -97,6 +95,8 @@ package view.pseudo3d
 		private var currentLapTime:Number = 0;				// current lap time
 		private var lastLapTime:Number;						// last lap time
 		
+		private var SPRITES:Sprites;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -121,9 +121,6 @@ package view.pseudo3d
 		{
 			prepareSprites();
 			
-			texture = atlas.getTexture("sprite_billboard01");
-			sprites = new Image2D(texture);
-			
 			cameraDepth = 1 / Math.tan((fieldOfView / 2) * Math.PI / 180);
 			playerZ = (cameraHeight * cameraDepth);
 			resolution = frameHeight / 640;
@@ -138,7 +135,52 @@ package view.pseudo3d
 		private function prepareSprites():void
 		{
 			var atlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
+			SPRITES = new Sprites();
 			
+			SPRITES.BG_SKY = new Image2D(atlas.getTexture("bg_sky"));
+			SPRITES.BG_HILLS = new Image2D(atlas.getTexture("bg_hills"));
+			SPRITES.BG_TREES = new Image2D(atlas.getTexture("bg_trees"));
+			
+			SPRITES.BILLBOARD01 = new Image2D(atlas.getTexture("sprite_billboard01"));
+			SPRITES.BILLBOARD02 = new Image2D(atlas.getTexture("sprite_billboard02"));
+			SPRITES.BILLBOARD03 = new Image2D(atlas.getTexture("sprite_billboard03"));
+			SPRITES.BILLBOARD04 = new Image2D(atlas.getTexture("sprite_billboard04"));
+			SPRITES.BILLBOARD05 = new Image2D(atlas.getTexture("sprite_billboard05"));
+			SPRITES.BILLBOARD06 = new Image2D(atlas.getTexture("sprite_billboard06"));
+			SPRITES.BILLBOARD07 = new Image2D(atlas.getTexture("sprite_billboard07"));
+			SPRITES.BILLBOARD08 = new Image2D(atlas.getTexture("sprite_billboard08"));
+			SPRITES.BILLBOARD09 = new Image2D(atlas.getTexture("sprite_billboard09"));
+			
+			SPRITES.BOULDER1 = new Image2D(atlas.getTexture("sprite_boulder1"));
+			SPRITES.BOULDER2 = new Image2D(atlas.getTexture("sprite_boulder2"));
+			SPRITES.BOULDER3 = new Image2D(atlas.getTexture("sprite_boulder3"));
+			
+			SPRITES.BUSH1 = new Image2D(atlas.getTexture("sprite_bush1"));
+			SPRITES.BUSH2 = new Image2D(atlas.getTexture("sprite_bush2"));
+			SPRITES.CACTUS = new Image2D(atlas.getTexture("sprite_cactus"));
+			SPRITES.TREE1 = new Image2D(atlas.getTexture("sprite_tree1"));
+			SPRITES.TREE2 = new Image2D(atlas.getTexture("sprite_tree2"));
+			SPRITES.PALM_TREE = new Image2D(atlas.getTexture("sprite_palm_tree"));
+			SPRITES.DEAD_TREE1 = new Image2D(atlas.getTexture("sprite_dead_tree1"));
+			SPRITES.DEAD_TREE2 = new Image2D(atlas.getTexture("sprite_dead_tree2"));
+			SPRITES.STUMP = new Image2D(atlas.getTexture("sprite_stump"));
+			SPRITES.COLUMN = new Image2D(atlas.getTexture("sprite_column"));
+			
+			SPRITES.CAR01 = new Image2D(atlas.getTexture("sprite_car01"));
+			SPRITES.CAR02 = new Image2D(atlas.getTexture("sprite_car02"));
+			SPRITES.CAR03 = new Image2D(atlas.getTexture("sprite_car03"));
+			SPRITES.CAR04 = new Image2D(atlas.getTexture("sprite_car04"));
+			SPRITES.SEMI = new Image2D(atlas.getTexture("sprite_semi"));
+			SPRITES.TRUCK = new Image2D(atlas.getTexture("sprite_truck"));
+			
+			SPRITES.PLAYER_STRAIGHT = new Image2D(atlas.getTexture("sprite_player_straight"));
+			SPRITES.PLAYER_LEFT = new Image2D(atlas.getTexture("sprite_player_left"));
+			SPRITES.PLAYER_RIGHT = new Image2D(atlas.getTexture("sprite_player_right"));
+			SPRITES.PLAYER_UPHILL_STRAIGHT = new Image2D(atlas.getTexture("sprite_player_uphill_straight"));
+			SPRITES.PLAYER_UPHILL_LEFT = new Image2D(atlas.getTexture("sprite_player_uphill_left"));
+			SPRITES.PLAYER_UPHILL_RIGHT = new Image2D(atlas.getTexture("sprite_player_uphill_right"));
+			
+			SPRITES.init();
 		}
 		
 		
