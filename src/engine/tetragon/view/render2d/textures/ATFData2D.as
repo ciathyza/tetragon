@@ -59,9 +59,6 @@ package tetragon.view.render2d.textures
 		 */
 		public function ATFData2D(data:ByteArray)
 		{
-			var signature:String = String.fromCharCode(data[0], data[1], data[2]);
-			if (signature != "ATF") throw new ArgumentError("Invalid ATF data");
-			
 			switch (data[6])
 			{
 				case 0:

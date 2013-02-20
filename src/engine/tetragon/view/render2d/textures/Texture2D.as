@@ -250,7 +250,7 @@ package tetragon.view.render2d.textures
 			
 			var async:Boolean = loadAsync != null;
 			var atfData:ATFData2D = new ATFData2D(data);
-			var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width,
+			var nativeTexture:Texture = context.createTexture(atfData.width,
 				atfData.height, atfData.format, false);
 			
 			uploadATFData(nativeTexture, data, 0, async);

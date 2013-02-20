@@ -34,6 +34,7 @@ package tetragon.file.resource.processors
 
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 	
 	
 	/**
@@ -70,16 +71,39 @@ package tetragon.file.resource.processors
 					continue;
 				}
 				
-				var image:BitmapData = resourceIndex.getResourceContent(textureAtlas.imageID);
-				if (image)
+				var image:* = resourceIndex.getResourceContent(textureAtlas.imageID);
+				
+				if (image is BitmapData)
 				{
 					textureAtlas.texture = Texture2D.fromBitmapData(image);
+				}
+				else if (image is ByteArray)
+				{
+					var bytes:ByteArray = image;
+					var sig:String = String.fromCharCode(bytes[0], bytes[1], bytes[2]);
+					if (sig == "ATF")
+					{
+						textureAtlas.texture = Texture2D.fromATFData(bytes);
+					}
+					else
+					{
+						error("Cannot process texture atlas \"" + textureAtlas.id
+							+ "\". Invalid ATF format!");
+						continue;
+					}
+				}
+				else if (image == null)
+				{
+					error("Cannot process texture atlas \"" + textureAtlas.id
+						+ "\". Required texture atlas image \"" + textureAtlas.imageID
+						+ "\" is null.");
+					continue;
 				}
 				else
 				{
 					error("Cannot process texture atlas \"" + textureAtlas.id
-						+ "\" because the required texture atlas image \"" + textureAtlas.imageID
-						+ "\" is null.");
+						+ "\". Required texture atlas image \"" + textureAtlas.imageID
+						+ "\" is an unsupported format.");
 					continue;
 				}
 				

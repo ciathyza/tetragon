@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
 	
-	<textureAtlas id="spriteTextureAtlas" imageID="spriteTextureAtlasPNG">
+	<textureAtlas id="spriteTextureAtlas" imageID="spriteTextureAtlasATF">
 	    <SubTexture name="bg_hills" x="2" y="484" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
 	    <SubTexture name="bg_sky" x="2" y="2" width="1280" height="480"/>
 	    <SubTexture name="bg_trees" x="2" y="938" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
