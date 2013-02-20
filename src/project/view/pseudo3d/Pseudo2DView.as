@@ -36,6 +36,7 @@ package view.pseudo3d
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
+	import view.pseudo3d.vo.SSprite;
 	import view.pseudo3d.vo.Segment;
 	
 	
@@ -68,6 +69,7 @@ package view.pseudo3d
 		private var segments:Vector.<Segment>;				// array of road segments
 		private var cars:Array = [];						// array of cars on the road
 		
+		private var texture:Texture2D;
 		private var sprites:Image2D;						// our spritesheet (loaded below)
 		private var resolution:Number;						// scaling factor to provide resolution independence (computed)
 		
@@ -117,8 +119,9 @@ package view.pseudo3d
 		 */
 		public function start():void
 		{
-			var atlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
-			var texture:Texture2D = atlas.getTexture("sprite_billboard01");
+			prepareSprites();
+			
+			texture = atlas.getTexture("sprite_billboard01");
 			sprites = new Image2D(texture);
 			
 			cameraDepth = 1 / Math.tan((fieldOfView / 2) * Math.PI / 180);
@@ -126,6 +129,16 @@ package view.pseudo3d
 			resolution = frameHeight / 640;
 			
 			resetRoad();
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function prepareSprites():void
+		{
+			var atlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
+			
 		}
 		
 		
@@ -153,19 +166,22 @@ package view.pseudo3d
 			seg.p1 = {world: {y: lastY(), z: n * segmentLength}, camera: {}, screen: {}};
 			seg.p2 = {world: {y: y, z: (n + 1) * segmentLength}, camera: {}, screen: {}};
 			seg.curve = curve;
-			seg.sprites = [];
+			seg.sprites = new Vector.<SSprite>();
 			seg.cars = [];
 			seg.color = Math.floor(n / rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			segments.push(seg);
 		}
 		
 		
-		private function addSprite(n:int, sprite, offset):void
+		private function addSprite(n:int, sprite, offset:Number):void
 		{
-			segments[n].sprites.push({source: sprite, offset: offset});
+			var s:SSprite = new SSprite();
+			s.source = sprite;
+			s.offset = offset;
+			segments[n].sprites.push(s);
 		}
-
-
+		
+		
 		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number):void
 		{
 			var startY:Number = lastY();
