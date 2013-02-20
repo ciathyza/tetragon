@@ -23,7 +23,7 @@ package view.pseudo3d
 		}
 		
 		
-		public static function toFloat(obj:*, def:*):Number
+		public static function toFloat(obj:*, def:Number = NaN):Number
 		{
 			if (obj != null)
 			{
@@ -116,9 +116,9 @@ package view.pseudo3d
 		}
 		
 		
-		public static function overlap(x1:Number, w1:Number, x2:Number, w2:Number, percent:Number):Boolean
+		public static function overlap(x1:Number, w1:Number, x2:Number, w2:Number, percent:Number = 1.0):Boolean
 		{
-			var half:Number = (percent || 1) / 2;
+			var half:Number = percent / 2;
 			var min1:Number = x1 - (w1 * half);
 			var max1:Number = x1 + (w1 * half);
 			var min2:Number = x2 - (w2 * half);

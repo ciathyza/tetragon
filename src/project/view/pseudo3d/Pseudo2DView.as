@@ -92,13 +92,17 @@ package view.pseudo3d
 		private var accel:Number = maxSpeed / 5;			// acceleration rate - tuned until it 'felt' right
 		private var breaking:Number = -maxSpeed;			// deceleration rate when braking
 		private var decel:Number = -maxSpeed / 5;			// 'natural' deceleration rate when neither accelerating, nor braking
-		//private var offRoadDecel:Number = -maxSpeed / 2;	// off road deceleration is somewhere in between
 		private var offRoadLimit:Number = maxSpeed / 4;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
 		private var totalCars:Number = 200;					// total number of cars on the road
 		private var currentLapTime:Number = 0;				// current lap time
 		private var lastLapTime:Number;						// last lap time
 		
 		private var SPRITES:Sprites;
+		
+		private var keyLeft:Boolean;
+		private var keyRight:Boolean;
+		private var keyFaster:Boolean;
+		private var keySlower:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -123,6 +127,9 @@ package view.pseudo3d
 		public function start():void
 		{
 			prepareSprites();
+			
+			// off road deceleration is somewhere in between
+			offRoadDecel = -maxSpeed / 2;
 			
 			cameraDepth = 1 / Math.tan((fieldOfView / 2) * Math.PI / 180);
 			playerZ = (cameraHeight * cameraDepth);
@@ -441,6 +448,7 @@ package view.pseudo3d
 
 		private function onTick():void
 		{
+			update(step);
 		}
 		
 		
@@ -456,6 +464,200 @@ package view.pseudo3d
 		override protected function setup():void
 		{
 			super.setup();
+		}
+		
+		
+		private function update(dt:Number):void
+		{
+			var n:int, car:Car, carW:Number, sprite:SSprite, spriteW:Number;
+			var playerSegment:Segment = findSegment(position + playerZ);
+			var playerW:Number = SPRITES.PLAYER_STRAIGHT.width * SPRITES.SCALE;
+			var speedPercent:Number = speed / maxSpeed;
+			
+			// at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+			var dx:Number = dt * 2 * speedPercent;
+			
+			var startPosition:Number = position;
+
+			updateCars(dt, playerSegment, playerW);
+
+			position = Util.increase(position, dt * speed, trackLength);
+
+			if (keyLeft) playerX = playerX - dx;
+			else if (keyRight) playerX = playerX + dx;
+			
+			playerX = playerX - (dx * speedPercent * playerSegment.curve * centrifugal);
+			
+			if (keyFaster) speed = Util.accelerate(speed, accel, dt);
+			else if (keySlower) speed = Util.accelerate(speed, breaking, dt);
+			else speed = Util.accelerate(speed, decel, dt);
+			
+			if ((playerX < -1) || (playerX > 1))
+			{
+				if (speed > offRoadLimit) speed = Util.accelerate(speed, offRoadDecel, dt);
+				
+				for (n = 0; n < playerSegment.sprites.length; n++)
+				{
+					sprite = playerSegment.sprites[n];
+					spriteW = sprite.source.width * SPRITES.SCALE;
+					if (Util.overlap(playerX, playerW, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW))
+					{
+						speed = maxSpeed / 5;
+						// stop in front of sprite (at front of segment)
+						position = Util.increase(playerSegment.p1.world.z, -playerZ, trackLength);
+						break;
+					}
+				}
+			}
+			
+			for (n = 0; n < playerSegment.cars.length; n++)
+			{
+				car = playerSegment.cars[n];
+				carW = car.sprite.width * SPRITES.SCALE;
+				if (speed > car.speed)
+				{
+					if (Util.overlap(playerX, playerW, car.offset, carW, 0.8))
+					{
+						speed = car.speed * (car.speed / speed);
+						position = Util.increase(car.z, -playerZ, trackLength);
+						break;
+					}
+				}
+			}
+			
+			// dont ever let it go too far out of bounds
+			playerX = Util.limit(playerX, -3, 3);
+			// or exceed maxSpeed
+			speed = Util.limit(speed, 0, maxSpeed);
+			
+			skyOffset = Util.increase(skyOffset, skySpeed * playerSegment.curve * (position - startPosition) / segmentLength, 1);
+			hillOffset = Util.increase(hillOffset, hillSpeed * playerSegment.curve * (position - startPosition) / segmentLength, 1);
+			treeOffset = Util.increase(treeOffset, treeSpeed * playerSegment.curve * (position - startPosition) / segmentLength, 1);
+			
+			if (position > playerZ)
+			{
+				if (currentLapTime && (startPosition < playerZ))
+				{
+					lastLapTime = currentLapTime;
+					currentLapTime = 0;
+					//if (lastLapTime <= Util.toFloat(Dom.storage.fast_lap_time))
+					//{
+					//	Dom.storage.fast_lap_time = lastLapTime;
+					//	updateHud('fast_lap_time', formatTime(lastLapTime));
+					//	Dom.addClassName('fast_lap_time', 'fastest');
+					//	Dom.addClassName('last_lap_time', 'fastest');
+					//}
+					//else
+					//{
+					//	Dom.removeClassName('fast_lap_time', 'fastest');
+					//	Dom.removeClassName('last_lap_time', 'fastest');
+					//}
+					updateHUD('last_lap_time', formatTime(lastLapTime));
+					//Dom.show('last_lap_time');
+				}
+				else
+				{
+					currentLapTime += dt;
+				}
+			}
+
+			updateHUD('speed', "" + (5 * Math.round(speed / 500)));
+			updateHUD('current_lap_time', formatTime(currentLapTime));
+		}
+		
+		
+		private function updateCars(dt:Number, playerSegment:Segment, playerW:Number):void
+		{
+			var n:int, car:Car, oldSegment:Segment, newSegment:Segment;
+			for (n = 0 ; n < cars.length ; n++)
+			{
+				car = cars[n];
+				oldSegment = findSegment(car.z);
+				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
+				car.z = Util.increase(car.z, dt * car.speed, trackLength);
+				car.percent = Util.percentRemaining(car.z, segmentLength);
+				// useful for interpolation during rendering phase
+				newSegment = findSegment(car.z);
+				if (oldSegment != newSegment)
+				{
+					var index:int = oldSegment.cars.indexOf(car);
+					oldSegment.cars.splice(index, 1);
+					newSegment.cars.push(car);
+				}
+			}
+		}
+
+
+		private function updateCarOffset(car:Car, carSegment:Segment, playerSegment:Segment, playerW:Number):Number
+		{
+			var i:int, j:int, dir:Number, segment:Segment, otherCar:Car, otherCarW:Number,
+			lookahead:int = 20, carW:Number = car.sprite.width * SPRITES.SCALE;
+
+			// optimization, dont bother steering around other cars when 'out of sight' of the player
+			if ((carSegment.index - playerSegment.index) > drawDistance)
+				return 0;
+
+			for (i = 1 ; i < lookahead ; i++)
+			{
+				segment = segments[(carSegment.index + i) % segments.length];
+
+				if ((segment === playerSegment) && (car.speed > speed) && (Util.overlap(playerX, playerW, car.offset, carW, 1.2)))
+				{
+					if (playerX > 0.5)
+						dir = -1;
+					else if (playerX < -0.5)
+						dir = 1;
+					else
+						dir = (car.offset > playerX) ? 1 : -1;
+					return dir * 1 / i * (car.speed - speed) / maxSpeed;
+					// the closer the cars (smaller i) and the greated the speed ratio, the larger the offset
+				}
+
+				for (j = 0 ; j < segment.cars.length ; j++)
+				{
+					otherCar = segment.cars[j];
+					otherCarW = otherCar.sprite.width * SPRITES.SCALE;
+					if ((car.speed > otherCar.speed) && Util.overlap(car.offset, carW, otherCar.offset, otherCarW, 1.2))
+					{
+						if (otherCar.offset > 0.5)
+							dir = -1;
+						else if (otherCar.offset < -0.5)
+							dir = 1;
+						else
+							dir = (car.offset > otherCar.offset) ? 1 : -1;
+						return dir * 1 / i * (car.speed - otherCar.speed) / maxSpeed;
+					}
+				}
+			}
+
+			// if no cars ahead, but I have somehow ended up off road, then steer back on
+			if (car.offset < -0.9)
+				return 0.1;
+			else if (car.offset > 0.9)
+				return -0.1;
+			else
+				return 0;
+		}
+
+
+		private function updateHUD(key:String, value:String):void
+		{
+			// accessing DOM can be slow, so only do it if value has changed
+			//if (hud[key].value !== value)
+			//{
+			//	hud[key].value = value;
+			//	Dom.set(hud[key].dom, value);
+			//}
+		}
+
+
+		private function formatTime(dt:Number):String
+		{
+			var minutes:Number = Math.floor(dt / 60);
+			var seconds:Number = Math.floor(dt - (minutes * 60));
+			var tenths:Number = Math.floor(10 * (dt - Math.floor(dt)));
+			if (minutes > 0) return minutes + "." + (seconds < 10 ? "0" : "") + seconds + "." + tenths;
+			else return seconds + "." + tenths;
 		}
 	}
 }

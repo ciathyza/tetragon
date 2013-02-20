@@ -13,6 +13,7 @@ package view.pseudo3d.vo
 		public var z:Number;
 		public var sprite:Image2D;
 		public var speed:Number;
+		public var percent:Number;
 		
 		
 		public function Car(offset:Number, z:Number, sprite:Image2D, speed:Number)
