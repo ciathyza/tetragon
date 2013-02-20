@@ -40,7 +40,7 @@
             </struct>
         </struct>
         <key>shapePadding</key>
-        <uint>0</uint>
+        <uint>2</uint>
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
@@ -50,7 +50,7 @@
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
-        <uint>0</uint>
+        <uint>2</uint>
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
@@ -74,7 +74,7 @@
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
-            <enum type="AlgorithmSettings::SizeConstraints">AnySize</enum>
+            <enum type="AlgorithmSettings::SizeConstraints">POT</enum>
             <key>forceSquared</key>
             <false/>
             <key>forceWordAligned</key>
@@ -82,7 +82,7 @@
             <key>maxRects</key>
             <struct type="AlgorithmMaxRectsSettings">
                 <key>heuristic</key>
-                <enum type="AlgorithmMaxRectsSettings::Heuristic">Best</enum>
+                <enum type="AlgorithmMaxRectsSettings::Heuristic">AreaFit</enum>
             </struct>
             <key>basic</key>
             <struct type="AlgorithmBasicSettings">
@@ -141,6 +141,15 @@
         </struct>
         <key>fileList</key>
         <array>
+            <filename>bg_hills.png</filename>
+            <filename>bg_sky.png</filename>
+            <filename>bg_trees.png</filename>
+            <filename>bg_hills.png</filename>
+            <filename>bg_sky.png</filename>
+            <filename>bg_trees.png</filename>
+            <filename>bg_hills.png</filename>
+            <filename>bg_sky.png</filename>
+            <filename>bg_trees.png</filename>
             <filename>sprite_billboard01.png</filename>
             <filename>sprite_billboard02.png</filename>
             <filename>sprite_billboard03.png</filename>

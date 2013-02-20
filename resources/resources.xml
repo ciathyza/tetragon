@@ -81,8 +81,7 @@
 		<image id="imageCollection">
 		</image>
 		<image32>
-			<resource id="bgTextureAtlasImage" path="images/bg.png" packageID="resourcePackage"/>
-			<resource id="spriteTextureAtlasImage" path="images/sprites.png" packageID="resourcePackage"/>
+			<resource id="spriteTextureAtlasPNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<swf/>
 		<shader>
@@ -93,6 +92,7 @@
 		<audioModule>
 		</audioModule>
 		<binary>
+			<resource id="spriteTextureAtlasATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</binary>
 	</media>
 	
@@ -126,7 +126,6 @@
 		</group>
 		<!-- Data type group for Texture Atlas resource. -->
 		<group type="TextureAtlas" fileID="textureAtlasFile">
-			<resource id="bgTextureAtlas"/>
 			<resource id="spriteTextureAtlas"/>
 		</group>
 	</data>
