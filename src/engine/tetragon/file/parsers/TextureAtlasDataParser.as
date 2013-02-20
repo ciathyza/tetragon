@@ -49,9 +49,16 @@ package tetragon.file.parsers
 		public function parse(loader:XMLResourceLoader, model:*):void
 		{
 			_xml = loader.xml;
-			const index:ResourceIndex = model;
+			var index:ResourceIndex = model;
+			var xmlList:XMLList = _xml.textureAtlas;
 			
-			for each (var xml:XML in _xml.textureAtlas)
+			/* Check in case XML tags were written uppercase. */
+			if (xmlList.length() < 1)
+			{
+				xmlList = _xml.TextureAtlas;
+			}
+			
+			for each (var xml:XML in xmlList)
 			{
 				/* Get the current item's ID. */
 				var id:String = extractString(xml, "@id");

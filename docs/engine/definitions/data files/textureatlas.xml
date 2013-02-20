@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	TEXTURE ATLAS FILE
+	Defines example texture atlas definitions.
+	=====================================================================================
+	A texture atlas file for Tetragon contains one or more TextureAtlas sections, each
+	for a related texture image that contains graphics that are being used for the atlas.
+	The format is similar to that of the Sparrow/Starling Texture Atlas format. The only
+	differences are that the Tetragon Texture Atlas sections are inside the <data> tag
+	and have an imageID attribute instead of an imagePath attribute.
+	=====================================================================================
+-->
+<data>
+	
+	<textureAtlas id="textureAtlas1" imageID="textureAtlasImage1">
+	    <SubTexture name="bg_hills" x="0" y="0" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
+	    <SubTexture name="bg_sky" x="0" y="452" width="1280" height="480"/>
+	    <SubTexture name="bg_trees" x="0" y="932" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
+	</textureAtlas>
+	
+	<textureAtlas id="textureAtlas2" imageID="textureAtlasImage2">
+	    <SubTexture name="sprite_billboard01" x="575" y="263" width="300" height="170"/>
+	    <SubTexture name="sprite_billboard02" x="901" y="575" width="215" height="220"/>
+	    <SubTexture name="sprite_billboard03" x="1116" y="450" width="230" height="220"/>
+	    <SubTexture name="sprite_billboard04" x="1173" y="280" width="268" height="170"/>
+	    <SubTexture name="sprite_billboard05" x="535" y="433" width="298" height="190"/>
+	    <SubTexture name="sprite_billboard06" x="482" y="813" width="284" height="190" frameX="0" frameY="0" frameWidth="298" frameHeight="190"/>
+	    <SubTexture name="sprite_billboard07" x="482" y="623" width="284" height="190" frameX="0" frameY="0" frameWidth="298" frameHeight="190"/>
+	    <SubTexture name="sprite_billboard08" x="575" y="0" width="375" height="263" frameX="-5" frameY="-2" frameWidth="385" frameHeight="265"/>
+	    <SubTexture name="sprite_billboard09" x="950" y="0" width="322" height="280" frameX="-2" frameY="-2" frameWidth="328" frameHeight="282"/>
+	</textureAtlas>
+
+</data>
