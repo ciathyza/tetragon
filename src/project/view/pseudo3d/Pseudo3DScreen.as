@@ -163,6 +163,7 @@ package view.pseudo3d
 			// the texture atlases. Need to change the render2D system so that this is handled
 			// more comfortably.
 			resourceManager.process("spriteTextureAtlas");
+			resourceManager.unload("spriteTextureAtlasATF");
 			_view1.start();
 			_render2D.start();
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);

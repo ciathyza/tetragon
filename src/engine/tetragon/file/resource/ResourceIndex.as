@@ -409,6 +409,7 @@ package tetragon.file.resource
 				{
 					return;
 				}
+				
 				if (r.content)
 				{
 					/* Dispose any BitmapData before removing it. */
@@ -421,13 +422,14 @@ package tetragon.file.resource
 					{
 						(r.content as BitmapData).dispose();
 					}
+					else if (r.content is XML)
+					{
+						System.disposeXML(r.content as XML);
+					}
 				}
+				
+				r.reset();
 			}
-			if (r.content is XML)
-			{
-				System.disposeXML(r.content as XML);
-			}
-			r.reset();
 		}
 		
 		
