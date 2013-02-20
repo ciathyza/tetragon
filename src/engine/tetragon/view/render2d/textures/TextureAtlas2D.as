@@ -32,7 +32,10 @@ package tetragon.view.render2d.textures
 	import flash.utils.Dictionary;
 	
 	
-	/** A texture atlas is a collection of many smaller textures in one big image. This class
+	/**
+	 * TODO Obsolete class! Instead data.texture.TextureAtlas is used!
+	 * 
+	 * A texture atlas is a collection of many smaller textures in one big image. This class
 	 *  is used to access textures from such an atlas.
 	 *  
 	 *  <p>Using a texture atlas for your textures solves two problems:</p>
