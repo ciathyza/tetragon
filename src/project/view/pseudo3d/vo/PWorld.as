@@ -1,0 +1,19 @@
+package view.pseudo3d.vo
+{
+	/**
+	 * PWorld
+	 * @author Hexagon
+	 */
+	public class PWorld
+	{
+		public var y:Number;
+		public var z:Number;
+		
+		
+		public function PWorld(y:Number, z:Number)
+		{
+			this.y = y;
+			this.z = z;
+		}
+	}
+}

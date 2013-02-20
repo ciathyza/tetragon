@@ -35,6 +35,8 @@ package view.pseudo3d
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
+	import view.pseudo3d.vo.PPoint;
+	import view.pseudo3d.vo.PWorld;
 	import view.pseudo3d.vo.SSprite;
 	import view.pseudo3d.vo.Segment;
 	import view.pseudo3d.vo.Sprites;
@@ -188,6 +190,44 @@ package view.pseudo3d
 		// BUILD ROAD GEOMETRY
 		// =========================================================================
 		
+		private function resetRoad():void
+		{
+			segments = new Vector.<Segment>();
+			
+			addStraight(ROAD.LENGTH.SHORT);
+			addLowRollingHills();
+			addSCurves();
+			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
+			addBumps();
+			addLowRollingHills();
+			addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+			addStraight();
+			addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
+			addSCurves();
+			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
+			addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
+			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
+			addBumps();
+			addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
+			addStraight();
+			addSCurves();
+			addDownhillToEnd();
+			
+			resetSprites();
+			resetCars();
+			
+			segments[findSegment(playerZ).index + 2].color = COLORS.START;
+			segments[findSegment(playerZ).index + 3].color = COLORS.START;
+			
+			for (var n:int = 0; n < rumbleLength; n++)
+			{
+				segments[segments.length - 1 - n].color = COLORS.FINISH;
+			}
+
+			trackLength = segments.length * segmentLength;
+		}
+		
+		
 		private function lastY():Number
 		{
 			return (segments.length == 0) ? 0 : segments[segments.length - 1].p2.world.y;
@@ -205,8 +245,8 @@ package view.pseudo3d
 			var n:uint = segments.length;
 			var seg:Segment = new Segment();
 			seg.index = n;
-			seg.p1 = {world: {y: lastY(), z: n * segmentLength}, camera: {}, screen: {}};
-			seg.p2 = {world: {y: y, z: (n + 1) * segmentLength}, camera: {}, screen: {}};
+			seg.p1 = new PPoint(new PWorld(lastY(), n * segmentLength), {}, {});
+			seg.p2 = new PPoint(new PWorld(y, (n + 1) * segmentLength), {}, {});
 			seg.curve = curve;
 			seg.sprites = new Vector.<SSprite>();
 			seg.cars = [];
@@ -242,44 +282,6 @@ package view.pseudo3d
 			{
 				addSegment(Util.easeInOut(curve, 0, n / leave), Util.easeInOut(startY, endY, (enter + hold + n) / total));
 			}
-		}
-		
-		
-		private function resetRoad():void
-		{
-			segments = new Vector.<Segment>();
-			
-			addStraight(ROAD.LENGTH.SHORT);
-			addLowRollingHills();
-			addSCurves();
-			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
-			addBumps();
-			addLowRollingHills();
-			addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-			addStraight();
-			addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
-			addSCurves();
-			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
-			addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
-			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
-			addBumps();
-			addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
-			addStraight();
-			addSCurves();
-			addDownhillToEnd();
-			
-			resetSprites();
-			resetCars();
-
-			segments[findSegment(playerZ).index + 2].color = COLORS.START;
-			segments[findSegment(playerZ).index + 3].color = COLORS.START;
-			
-			for (var n:int = 0; n < rumbleLength; n++)
-			{
-				segments[segments.length - 1 - n].color = COLORS.FINISH;
-			}
-
-			trackLength = segments.length * segmentLength;
 		}
 		
 		

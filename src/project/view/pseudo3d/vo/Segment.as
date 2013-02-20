@@ -39,8 +39,8 @@ package view.pseudo3d.vo
 	public class Segment
 	{
 		public var index:int;
-		public var p1:Object;
-		public var p2:Object;
+		public var p1:PPoint;
+		public var p2:PPoint;
 		public var curve:Number;
 		public var sprites:Vector.<SSprite>;
 		public var cars:Array;
