@@ -402,34 +402,30 @@ package tetragon.file.resource
 		public function resetResource(id:String):void
 		{
 			var r:Resource = _resources[id];
-			if (r)
+			if (!r) return;
+			
+			/* Resource collections may not be reset! */
+			if (r.family == ResourceFamily.COLLECTION) return;
+			
+			if (r.content)
 			{
-				/* Resource collections may not be reset! */
-				if (r.family == ResourceFamily.COLLECTION)
+				/* Dispose any BitmapData before removing it. */
+				if (r.content is Bitmap)
 				{
-					return;
+					var b:Bitmap = r.content;
+					if (b.bitmapData) b.bitmapData.dispose();
 				}
-				
-				if (r.content)
+				else if (r.content is BitmapData)
 				{
-					/* Dispose any BitmapData before removing it. */
-					if (r.content is Bitmap)
-					{
-						var b:Bitmap = r.content;
-						if (b.bitmapData) b.bitmapData.dispose();
-					}
-					else if (r.content is BitmapData)
-					{
-						(r.content as BitmapData).dispose();
-					}
-					else if (r.content is XML)
-					{
-						System.disposeXML(r.content as XML);
-					}
+					(r.content as BitmapData).dispose();
 				}
-				
-				r.reset();
+				else if (r.content is XML)
+				{
+					System.disposeXML(r.content as XML);
+				}
 			}
+			
+			r.reset();
 		}
 		
 		
