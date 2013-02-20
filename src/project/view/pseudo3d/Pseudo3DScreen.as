@@ -31,7 +31,6 @@ package view.pseudo3d
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
@@ -57,7 +56,7 @@ package view.pseudo3d
 		
 		private var _stage3DProxy:Stage3DProxy;
 		private var _render2D:Render2D;
-		
+		private var _view1:Pseudo2DView;
 		
 		//-----------------------------------------------------------------------------------------
 		// Signals
@@ -142,15 +141,15 @@ package view.pseudo3d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			var view1:View2D = new Pseudo2DView();
-			view1.x = 10;
-			view1.y = 10;
-			view1.frameWidth = main.stage.stageWidth - 20;
-			view1.frameHeight = main.stage.stageHeight - 20;
-			view1.background = new Quad2D(10, 10, 0x888888);
-			view1.touchable = false;
+			_view1 = new Pseudo2DView();
+			_view1.x = 10;
+			_view1.y = 10;
+			_view1.frameWidth = main.stage.stageWidth - 20;
+			_view1.frameHeight = main.stage.stageHeight - 20;
+			_view1.background = new Quad2D(10, 10, 0x888888);
+			_view1.touchable = false;
 			
-			_render2D = new Render2D(view1, _stage3DProxy);
+			_render2D = new Render2D(_view1, _stage3DProxy);
 			//_render2D1.simulateMultitouch = true;
 			//_render2D1.enableErrorChecking = true;
 			//_render2D1.antiAliasing = 2;
@@ -164,6 +163,7 @@ package view.pseudo3d
 			// the texture atlases. Need to change the render2D system so that this is handled
 			// more comfortably.
 			resourceManager.process("spriteTextureAtlas");
+			_view1.start();
 			_render2D.start();
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			main.gameLoop.start();

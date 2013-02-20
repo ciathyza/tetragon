@@ -28,8 +28,11 @@
  */
 package view.pseudo3d
 {
+	import tetragon.data.texture.TextureAtlas;
+	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
+	import tetragon.view.render2d.textures.Texture2D;
 	
 	
 	/**
@@ -62,6 +65,16 @@ package view.pseudo3d
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * @private
+		 */
+		public function start():void
+		{
+			var atlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
+			var texture:Texture2D = atlas.getTexture("sprite_billboard01");
+			var image:Image2D = new Image2D(texture);
+			addChild(image);
+		}
 		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
