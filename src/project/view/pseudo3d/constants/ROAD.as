@@ -33,35 +33,8 @@ package view.pseudo3d.constants
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const LENGTH:Length = new Length();
-		public static const HILL:Hill = new Hill();
-		public static const CURVE:Curve = new Curve();
+		public static const LENGTH:RoadLength = new RoadLength();
+		public static const HILL:RoadHill = new RoadHill();
+		public static const CURVE:RoadCurve = new RoadCurve();
 	}
-}
-
-
-class Length
-{
-	public const NONE:int = 0;
-	public const SHORT:int = 25;
-	public const MEDIUM:int = 50;
-	public const LONG:int = 100;
-}
-
-
-class Hill
-{
-	public const NONE:int = 0;
-	public const LOW:int = 20;
-	public const MEDIUM:int = 40;
-	public const HIGH:int = 60;
-}
-
-
-class Curve
-{
-	public const NONE:int = 0;
-	public const EASY:int = 2;
-	public const MEDIUM:int = 4;
-	public const HARD:int = 6;
 }

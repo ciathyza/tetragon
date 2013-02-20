@@ -36,6 +36,7 @@ package view.pseudo3d
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
+	import view.pseudo3d.vo.Segment;
 	
 	
 	/**
@@ -64,7 +65,7 @@ package view.pseudo3d
 		private var hillOffset:int = 0;						// current hill scroll offset
 		private var treeOffset:int = 0;						// current tree scroll offset
 		
-		private var segments:Array = [];					// array of road segments
+		private var segments:Vector.<Segment>;				// array of road segments
 		private var cars:Array = [];						// array of cars on the road
 		
 		private var sprites:Image2D;						// our spritesheet (loaded below)
@@ -147,15 +148,15 @@ package view.pseudo3d
 		private function addSegment(curve:Number, y:Number):void
 		{
 			var n:uint = segments.length;
-			segments.push({
-				index:	n,
-				p1:		{world: {y: lastY(), z: n * segmentLength}, camera: {}, screen: {}},
-				p2:		{world: {y: y, z: (n + 1) * segmentLength}, camera: {}, screen: {}},
-				curve:	curve,
-				sprites:[],
-				cars:	[],
-				color:	Math.floor(n / rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT
-			});
+			var seg:Segment = new Segment();
+			seg.index = n;
+			seg.p1 = {world: {y: lastY(), z: n * segmentLength}, camera: {}, screen: {}};
+			seg.p2 = {world: {y: y, z: (n + 1) * segmentLength}, camera: {}, screen: {}};
+			seg.curve = curve;
+			seg.sprites = [];
+			seg.cars = [];
+			seg.color = Math.floor(n / rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
+			segments.push(seg);
 		}
 		
 		
@@ -188,7 +189,7 @@ package view.pseudo3d
 		
 		private function resetRoad():void
 		{
-			segments = [];
+			segments = new Vector.<Segment>();
 			
 			addStraight(ROAD.LENGTH.SHORT);
 			addLowRollingHills();
@@ -279,9 +280,9 @@ package view.pseudo3d
 		function resetCars():void
 		{
 			cars = [];
-			var n, car, segment, offset, z, sprite, speed;
+			var n:int, car, segment, offset, z, sprite, speed;
 			
-			for (var n = 0 ; n < totalCars ; n++)
+			for (n = 0 ; n < totalCars ; n++)
 			{
 				offset = Math.random() * Util.randomChoice([-0.8, 0.8]);
 				z = Math.floor(Math.random() * segments.length) * segmentLength;

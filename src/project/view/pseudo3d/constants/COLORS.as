@@ -35,42 +35,9 @@ package view.pseudo3d.constants
 		
 		public static const SKY:uint = 0x72D7EE;
 		public static const TREE:uint = 0x005108;
-		public static const LIGHT:Light = new Light();
-		public static const DARK:Dark = new Dark();
-		public static const START:Start = new Start();
-		public static const FINISH:Finish = new Finish();
+		public static const LIGHT:ColorLight = new ColorLight();
+		public static const DARK:ColorDark = new ColorDark();
+		public static const START:ColorStart = new ColorStart();
+		public static const FINISH:ColorFinish = new ColorFinish();
 	}
-}
-
-
-class Light
-{
-	public const road:uint = 0x6B6B6B;
-	public const grass:uint = 0x10AA10;
-	public const rumble:uint = 0x555555;
-	public const lane:uint = 0xCCCCCC;
-}
-
-
-class Dark
-{
-	public const road:uint = 0x696969;
-	public const grass:uint = 0x009A00;
-	public const rumble:uint = 0xBBBBBB;
-}
-
-
-class Start
-{
-	public const road:uint = 0xFFFFFF;
-	public const grass:uint = 0xFFFFFF;
-	public const rumble:uint = 0xFFFFFF;
-}
-
-
-class Finish
-{
-	public const road:uint = 0x000000;
-	public const grass:uint = 0x000000;
-	public const rumble:uint = 0x000000;
 }
