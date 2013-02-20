@@ -48,9 +48,9 @@ package view.pseudo3d.vo
 		public var PLAYER_STRAIGHT:Image2D;
 		public var PLAYER_RIGHT:Image2D;
 		
-		public var BILLBOARDS:Vector.<Image2D>;
-		public var PLANTS:Vector.<Image2D>;
-		public var CARS:Vector.<Image2D>;
+		public var BILLBOARDS:Array;
+		public var PLANTS:Array;
+		public var CARS:Array;
 
 		public var SCALE:Number;
 		
@@ -60,13 +60,13 @@ package view.pseudo3d.vo
 			// the reference sprite width should be 1/3rd the (half-)roadWidth
 			SCALE = 0.3 * (1 / PLAYER_STRAIGHT.width);
 			
-			BILLBOARDS = new Vector.<Image2D>();
+			BILLBOARDS = [];
 			BILLBOARDS.push(BILLBOARD01, BILLBOARD02, BILLBOARD03, BILLBOARD04, BILLBOARD05, BILLBOARD06, BILLBOARD07, BILLBOARD08, BILLBOARD09);
 			
-			PLANTS = new Vector.<Image2D>();
+			PLANTS = [];
 			PLANTS.push(TREE1, TREE2, DEAD_TREE1, DEAD_TREE2, PALM_TREE, BUSH1, BUSH2, CACTUS, STUMP, BOULDER1, BOULDER2, BOULDER3);
 			
-			CARS = new Vector.<Image2D>();
+			CARS = [];
 			CARS.push(CAR01, CAR02, CAR03, CAR04, SEMI, TRUCK);
 		}
 	}

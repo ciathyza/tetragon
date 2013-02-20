@@ -35,6 +35,7 @@ package view.pseudo3d
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
+	import view.pseudo3d.vo.Car;
 	import view.pseudo3d.vo.PPoint;
 	import view.pseudo3d.vo.PWorld;
 	import view.pseudo3d.vo.SSprite;
@@ -69,7 +70,7 @@ package view.pseudo3d
 		private var treeOffset:int = 0;						// current tree scroll offset
 		
 		private var segments:Vector.<Segment>;				// array of road segments
-		private var cars:Array = [];						// array of cars on the road
+		private var cars:Vector.<Car>;						// array of cars on the road
 		
 		private var resolution:Number;						// scaling factor to provide resolution independence (computed)
 		
@@ -228,13 +229,84 @@ package view.pseudo3d
 		}
 		
 		
+		private function resetSprites():void
+		{
+			var n:int, i:int;
+			var side:Number, sprite:Image2D, offset:Number;
+
+			addSprite(20, SPRITES.BILLBOARD07, -1);
+			addSprite(40, SPRITES.BILLBOARD06, -1);
+			addSprite(60, SPRITES.BILLBOARD08, -1);
+			addSprite(80, SPRITES.BILLBOARD09, -1);
+			addSprite(100, SPRITES.BILLBOARD01, -1);
+			addSprite(120, SPRITES.BILLBOARD02, -1);
+			addSprite(140, SPRITES.BILLBOARD03, -1);
+			addSprite(160, SPRITES.BILLBOARD04, -1);
+			addSprite(180, SPRITES.BILLBOARD05, -1);
+
+			addSprite(240, SPRITES.BILLBOARD07, -1.2);
+			addSprite(240, SPRITES.BILLBOARD06, 1.2);
+			addSprite(segments.length - 25, SPRITES.BILLBOARD07, -1.2);
+			addSprite(segments.length - 25, SPRITES.BILLBOARD06, 1.2);
+			
+			for (n = 10; n < 200; n += 4 + Math.floor(n / 100))
+			{
+				addSprite(n, SPRITES.PALM_TREE, 0.5 + Math.random() * 0.5);
+				addSprite(n, SPRITES.PALM_TREE, 1 + Math.random() * 2);
+			}
+			
+			for (n = 250; n < 1000; n += 5)
+			{
+				addSprite(n, SPRITES.COLUMN, 1.1);
+				addSprite(n + Util.randomInt(0, 5), SPRITES.TREE1, -1 - (Math.random() * 2));
+				addSprite(n + Util.randomInt(0, 5), SPRITES.TREE2, -1 - (Math.random() * 2));
+			}
+			
+			for (n = 200; n < segments.length; n += 3)
+			{
+				addSprite(n, Util.randomChoice(SPRITES.PLANTS), Util.randomChoice([1, -1]) * (2 + Math.random() * 5));
+			}
+			
+			for (n = 1000; n < (segments.length - 50); n += 100)
+			{
+				side = Util.randomChoice([1, -1]);
+				addSprite(n + Util.randomInt(0, 50), Util.randomChoice(SPRITES.BILLBOARDS), -side);
+				for (i = 0 ; i < 20 ; i++)
+				{
+					sprite = Util.randomChoice(SPRITES.PLANTS);
+					offset = side * (1.5 + Math.random());
+					addSprite(n + Util.randomInt(0, 50), sprite, offset);
+				}
+			}
+		}
+		
+		
+		function resetCars():void
+		{
+			cars = new Vector.<Car>();
+			var n:int, car:Car, segment:Segment, offset:Number, z:Number, sprite:Image2D, speed:Number;
+			
+			for (n = 0; n < totalCars; n++)
+			{
+				offset = Math.random() * Util.randomChoice([-0.8, 0.8]);
+				z = Math.floor(Math.random() * segments.length) * segmentLength;
+				sprite = Util.randomChoice(SPRITES.CARS);
+				speed = maxSpeed / 4 + Math.random() * maxSpeed / (sprite == SPRITES.SEMI ? 4 : 2);
+				car = new Car(offset, z, sprite, speed);
+				segment = findSegment(car.z);
+				segment.cars.push(car);
+				cars.push(car);
+			}
+		}
+		
+		
 		private function lastY():Number
 		{
 			return (segments.length == 0) ? 0 : segments[segments.length - 1].p2.world.y;
 		}
 		
 		
-		private function findSegment(z:Number):*
+		private function findSegment(z:Number):Segment
 		{
 			return segments[Math.floor(z / segmentLength) % segments.length];
 		}
@@ -249,13 +321,13 @@ package view.pseudo3d
 			seg.p2 = new PPoint(new PWorld(y, (n + 1) * segmentLength), {}, {});
 			seg.curve = curve;
 			seg.sprites = new Vector.<SSprite>();
-			seg.cars = [];
+			seg.cars = new Vector.<Car>();
 			seg.color = Math.floor(n / rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			segments.push(seg);
 		}
 		
 		
-		private function addSprite(n:int, sprite, offset:Number):void
+		private function addSprite(n:int, sprite:Image2D, offset:Number):void
 		{
 			var s:SSprite = new SSprite();
 			s.source = sprite;
@@ -285,105 +357,28 @@ package view.pseudo3d
 		}
 		
 		
-		private function resetSprites():void
+		private function addStraight(num:int = ROAD.LENGTH.MEDIUM):void
 		{
-			var n:int, i:int;
-
-			addSprite(20, SPRITES.BILLBOARD07, -1);
-			addSprite(40, SPRITES.BILLBOARD06, -1);
-			addSprite(60, SPRITES.BILLBOARD08, -1);
-			addSprite(80, SPRITES.BILLBOARD09, -1);
-			addSprite(100, SPRITES.BILLBOARD01, -1);
-			addSprite(120, SPRITES.BILLBOARD02, -1);
-			addSprite(140, SPRITES.BILLBOARD03, -1);
-			addSprite(160, SPRITES.BILLBOARD04, -1);
-			addSprite(180, SPRITES.BILLBOARD05, -1);
-
-			addSprite(240, SPRITES.BILLBOARD07, -1.2);
-			addSprite(240, SPRITES.BILLBOARD06, 1.2);
-			addSprite(segments.length - 25, SPRITES.BILLBOARD07, -1.2);
-			addSprite(segments.length - 25, SPRITES.BILLBOARD06, 1.2);
-
-			for (n = 10 ; n < 200 ; n += 4 + Math.floor(n / 100))
-			{
-				addSprite(n, SPRITES.PALM_TREE, 0.5 + Math.random() * 0.5);
-				addSprite(n, SPRITES.PALM_TREE, 1 + Math.random() * 2);
-			}
-
-			for (n = 250 ; n < 1000 ; n += 5)
-			{
-				addSprite(n, SPRITES.COLUMN, 1.1);
-				addSprite(n + Util.randomInt(0, 5), SPRITES.TREE1, -1 - (Math.random() * 2));
-				addSprite(n + Util.randomInt(0, 5), SPRITES.TREE2, -1 - (Math.random() * 2));
-			}
-
-			for (n = 200 ; n < segments.length ; n += 3)
-			{
-				addSprite(n, Util.randomChoice(SPRITES.PLANTS), Util.randomChoice([1, -1]) * (2 + Math.random() * 5));
-			}
-
-			var side, sprite, offset;
-			for (n = 1000 ; n < (segments.length - 50) ; n += 100)
-			{
-				side = Util.randomChoice([1, -1]);
-				addSprite(n + Util.randomInt(0, 50), Util.randomChoice(SPRITES.BILLBOARDS), -side);
-				for (i = 0 ; i < 20 ; i++)
-				{
-					sprite = Util.randomChoice(SPRITES.PLANTS);
-					offset = side * (1.5 + Math.random());
-					addSprite(n + Util.randomInt(0, 50), sprite, offset);
-				}
-			}
-		}
-		
-		
-		function resetCars():void
-		{
-			cars = [];
-			var n:int, car, segment, offset, z, sprite, speed;
-			
-			for (n = 0 ; n < totalCars ; n++)
-			{
-				offset = Math.random() * Util.randomChoice([-0.8, 0.8]);
-				z = Math.floor(Math.random() * segments.length) * segmentLength;
-				sprite = Util.randomChoice(SPRITES.CARS);
-				speed = maxSpeed / 4 + Math.random() * maxSpeed / (sprite == SPRITES.SEMI ? 4 : 2);
-				car = {offset:offset, z:z, sprite:sprite, speed:speed};
-				segment = findSegment(car.z);
-				segment.cars.push(car);
-				cars.push(car);
-			}
-		}
-	
-	
-		private function addStraight(num:Number = NaN):void
-		{
-			num = num || ROAD.LENGTH.MEDIUM;
 			addRoad(num, num, num, 0, 0);
 		}
-
-
-		private function addHill(num:Number, height:Number):void
+		
+		
+		private function addHill(num:int = ROAD.LENGTH.MEDIUM, height:int = ROAD.HILL.MEDIUM):void
 		{
-			num = num || ROAD.LENGTH.MEDIUM;
-			height = height || ROAD.HILL.MEDIUM;
 			addRoad(num, num, num, 0, height);
 		}
-
-
-		private function addCurve(num:Number, curve:Number, height:Number):void
+		
+		
+		private function addCurve(num:int = ROAD.LENGTH.MEDIUM, curve:int = ROAD.CURVE.MEDIUM,
+			height:int = ROAD.HILL.NONE):void
 		{
-			num = num || ROAD.LENGTH.MEDIUM;
-			curve = curve || ROAD.CURVE.MEDIUM;
-			height = height || ROAD.HILL.NONE;
 			addRoad(num, num, num, curve, height);
 		}
-
-
-		private function addLowRollingHills(num:Number = NaN, height:Number = NaN):void
+		
+		
+		private function addLowRollingHills(num:int = ROAD.LENGTH.SHORT,
+			height:int = ROAD.HILL.LOW):void
 		{
-			num = num || ROAD.LENGTH.SHORT;
-			height = height || ROAD.HILL.LOW;
 			addRoad(num, num, num, 0, height / 2);
 			addRoad(num, num, num, 0, -height);
 			addRoad(num, num, num, ROAD.CURVE.EASY, height);
@@ -391,8 +386,8 @@ package view.pseudo3d
 			addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
 			addRoad(num, num, num, 0, 0);
 		}
-
-
+		
+		
 		private function addSCurves():void
 		{
 			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.NONE);
@@ -416,13 +411,12 @@ package view.pseudo3d
 		}
 
 
-		private function addDownhillToEnd(num:Number = NaN):void
+		private function addDownhillToEnd(num:int = 200):void
 		{
-			num = num || 200;
 			addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY() / segmentLength);
 		}
-	
-	
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
@@ -440,7 +434,13 @@ package view.pseudo3d
 			_waitFrames = 2;
 			_frameCount = 0;
 			
+			_gameLoop.tickSignal.add(onTick);
 			_gameLoop.renderSignal.add(onRender);
+		}
+
+
+		private function onTick():void
+		{
 		}
 		
 		

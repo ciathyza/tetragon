@@ -46,7 +46,7 @@ package view.pseudo3d
 		}
 		
 		
-		public static function randomChoice(options:*):*
+		public static function randomChoice(options:Array):*
 		{
 			return options[randomInt(0, options.length - 1)];
 		}

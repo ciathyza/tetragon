@@ -43,7 +43,7 @@ package view.pseudo3d.vo
 		public var p2:PPoint;
 		public var curve:Number;
 		public var sprites:Vector.<SSprite>;
-		public var cars:Array;
+		public var cars:Vector.<Car>;
 		public var color:ColorSet;
 	}
 }
