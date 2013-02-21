@@ -29,10 +29,12 @@
 package view.racing
 {
 	import tetragon.data.sprite.SpriteAtlas;
+	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	
 	
 	/**
@@ -54,9 +56,29 @@ package view.racing
 		private var _atlas:SpriteAtlas;
 		private var _renderBuffer:RenderBuffer;
 		private var _bufferBitmap:Bitmap;
+		private var _sprites:Sprites;
 		
 		private var _bufferWidth:int = 640;
 		private var _bufferHeight:int = 480;
+		
+		private var _resolution:Number = 1;					// scaling factor to provide resolution independence (computed)
+		
+		private var _skySpeed:Number = 0.001;				// background sky layer scroll speed when going around curve (or up hill)
+		private var _hillSpeed:Number = 0.002;				// background hill layer scroll speed when going around curve (or up hill)
+		private var _treeSpeed:Number = 0.003;				// background tree layer scroll speed when going around curve (or up hill)
+		
+		private var _skyOffset:int = 0;						// current sky scroll offset
+		private var _hillOffset:int = 0;					// current hill scroll offset
+		private var _treeOffset:int = 0;					// current tree scroll offset
+		
+		private var _playerX:Number = 0;					// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerY:Number = 0;
+		private var _playerZ:Number;						// player relative z distance from camera (computed)
+		
+		private var _isAccelerate:Boolean;
+		private var _isBrake:Boolean;
+		private var _isSteerLeft:Boolean;
+		private var _isSteerRight:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -74,7 +96,6 @@ package view.racing
 		override public function start():void
 		{
 			super.start();
-			main.gameLoop.start();
 		}
 		
 		
@@ -144,6 +165,36 @@ package view.racing
 		/**
 		 * @private
 		 */
+		private function onKeyDown(key:String):void
+		{
+			switch (key)
+			{
+				case "u": _isAccelerate = true; break;
+				case "d": _isBrake = true; break;
+				case "l": _isSteerLeft = true; break;
+				case "r": _isSteerRight = true; break;
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onKeyUp(key:String):void
+		{
+			switch (key)
+			{
+				case "u": _isAccelerate = false; break;
+				case "d": _isBrake = false; break;
+				case "l": _isSteerLeft = false; break;
+				case "r": _isSteerRight = false; break;
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function onTick():void
 		{
 		}
@@ -154,6 +205,9 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
+			_renderBuffer.clear();
+			
+			renderBackground();
 		}
 		
 		
@@ -184,8 +238,19 @@ package view.racing
 		 */
 		override protected function createChildren():void
 		{
+			main.keyInputManager.assign("CURSORUP", KeyMode.DOWN, onKeyDown, "u");
+			main.keyInputManager.assign("CURSORDOWN", KeyMode.DOWN, onKeyDown, "d");
+			main.keyInputManager.assign("CURSORLEFT", KeyMode.DOWN, onKeyDown, "l");
+			main.keyInputManager.assign("CURSORRIGHT", KeyMode.DOWN, onKeyDown, "r");
+			main.keyInputManager.assign("CURSORUP", KeyMode.UP, onKeyUp, "u");
+			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
+			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
+			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
+			
 			resourceManager.process("spriteAtlas");
 			_atlas = getResource("spriteAtlas");
+			
+			prepareSprites();
 			
 			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x333333);
 			_bufferBitmap = new Bitmap(_renderBuffer);
@@ -234,6 +299,8 @@ package view.racing
 		 */
 		override protected function executeBeforeStart():void
 		{
+			main.statsMonitor.toggle();
+			main.gameLoop.start();
 		}
 		
 		
@@ -242,7 +309,6 @@ package view.racing
 		 */
 		override protected function updateDisplayText():void
 		{
-			/* Abstract method! */
 		}
 		
 		
@@ -256,34 +322,84 @@ package view.racing
 		
 		
 		/**
-		 * @inheritDoc
+		 * @private
 		 */
-		override protected function enableChildren():void
+		private function prepareSprites():void
 		{
+			_sprites = new Sprites();
+			_sprites.BG_SKY = _atlas.getSprite("bg_sky");
+			_sprites.BG_HILLS = _atlas.getSprite("bg_hills");
+			_sprites.BG_TREES = _atlas.getSprite("bg_trees");
+			_sprites.BILLBOARD01 = _atlas.getSprite("sprite_billboard01");
+			_sprites.BILLBOARD02 = _atlas.getSprite("sprite_billboard02");
+			_sprites.BILLBOARD03 = _atlas.getSprite("sprite_billboard03");
+			_sprites.BILLBOARD04 = _atlas.getSprite("sprite_billboard04");
+			_sprites.BILLBOARD05 = _atlas.getSprite("sprite_billboard05");
+			_sprites.BILLBOARD06 = _atlas.getSprite("sprite_billboard06");
+			_sprites.BILLBOARD07 = _atlas.getSprite("sprite_billboard07");
+			_sprites.BILLBOARD08 = _atlas.getSprite("sprite_billboard08");
+			_sprites.BILLBOARD09 = _atlas.getSprite("sprite_billboard09");
+			_sprites.BOULDER1 = _atlas.getSprite("sprite_boulder1");
+			_sprites.BOULDER2 = _atlas.getSprite("sprite_boulder2");
+			_sprites.BOULDER3 = _atlas.getSprite("sprite_boulder3");
+			_sprites.BUSH1 = _atlas.getSprite("sprite_bush1");
+			_sprites.BUSH2 = _atlas.getSprite("sprite_bush2");
+			_sprites.CACTUS = _atlas.getSprite("sprite_cactus");
+			_sprites.TREE1 = _atlas.getSprite("sprite_tree1");
+			_sprites.TREE2 = _atlas.getSprite("sprite_tree2");
+			_sprites.PALM_TREE = _atlas.getSprite("sprite_palm_tree");
+			_sprites.DEAD_TREE1 = _atlas.getSprite("sprite_dead_tree1");
+			_sprites.DEAD_TREE2 = _atlas.getSprite("sprite_dead_tree2");
+			_sprites.STUMP = _atlas.getSprite("sprite_stump");
+			_sprites.COLUMN = _atlas.getSprite("sprite_column");
+			_sprites.CAR01 = _atlas.getSprite("sprite_car01");
+			_sprites.CAR02 = _atlas.getSprite("sprite_car02");
+			_sprites.CAR03 = _atlas.getSprite("sprite_car03");
+			_sprites.CAR04 = _atlas.getSprite("sprite_car04");
+			_sprites.SEMI = _atlas.getSprite("sprite_semi");
+			_sprites.TRUCK = _atlas.getSprite("sprite_truck");
+			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("sprite_player_straight");
+			_sprites.PLAYER_LEFT = _atlas.getSprite("sprite_player_left");
+			_sprites.PLAYER_RIGHT = _atlas.getSprite("sprite_player_right");
+			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("sprite_player_uphill_straight");
+			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("sprite_player_uphill_left");
+			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("sprite_player_uphill_right");
+			_sprites.init();
 		}
 		
 		
 		/**
-		 * @inheritDoc
+		 * @private
 		 */
-		override protected function disableChildren():void
+		private function renderBackground():void
 		{
+			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
 		}
 		
 		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function pauseChildren():void
+		private function renderBackgroundLayer(sprite:BitmapData, rotation:Number = 0.0,
+			offset:Number = 0.0):void
 		{
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function unpauseChildren():void
-		{
+			var imageW:Number = sprite.width / 2;
+			var imageH:Number = sprite.height;
+			var sourceX:Number = 0 + Math.floor(sprite.width * rotation);
+			var sourceY:Number = 0;
+			var sourceW:Number = Math.min(imageW, 0 + sprite.width - sourceX);
+			var sourceH:Number = imageH;
+			var destX:Number = 0;
+			var destY:Number = offset;
+			var destW:Number = Math.floor(width * (sourceW / imageW));
+			var destH:Number = height;
+			
+			//ctx.drawImage(atlas, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
+			_renderBuffer.draw(sprite);
+			
+			if (sourceW < imageW)
+			{
+				//ctx.drawImage(atlas, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
+			}
 		}
 	}
 }
