@@ -61,6 +61,7 @@ package view.racing
 		private var _bufferWidth:int = 640;
 		private var _bufferHeight:int = 480;
 		
+		private var _dt:Number = 1 / 60;					// how long is each frame (in seconds)
 		private var _resolution:Number = 1;					// scaling factor to provide resolution independence (computed)
 		
 		private var _skySpeed:Number = 0.001;				// background sky layer scroll speed when going around curve (or up hill)
@@ -74,6 +75,21 @@ package view.racing
 		private var _playerX:Number = 0;					// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerY:Number = 0;
 		private var _playerZ:Number;						// player relative z distance from camera (computed)
+		
+		private var _roadWidth:int = 2000;					// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+		private var _segmentLength:int = 200;				// length of a single segment
+		private var _rumbleLength:int = 3;					// number of segments per red/white rumble strip
+		private var _trackLength:int = 200;						// z length of entire track (computed)
+		
+		private var _accel:Number = _maxSpeed / 5;			// acceleration rate - tuned until it 'felt' right
+		private var _breaking:Number = -_maxSpeed;			// deceleration rate when braking
+		private var _decel:Number = -_maxSpeed / 5;			// 'natural' deceleration rate when neither accelerating, nor braking
+		private var _offRoadDecel:Number = 0.99;			// speed multiplier when off road (e.g. you lose 2% speed each update frame)
+		private var _offRoadLimit:Number = _maxSpeed / 4;	// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+		
+		private var _position:Number = 0;					// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _speed:Number = 0;						// current speed
+		private var _maxSpeed:Number = _segmentLength / _dt;// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
 		private var _isAccelerate:Boolean;
 		private var _isBrake:Boolean;
@@ -197,6 +213,29 @@ package view.racing
 		 */
 		private function onTick():void
 		{
+			_position = Util.increase(_position, _dt * _speed, _trackLength);
+			
+			/* At top speed, should be able to cross from left to right (-1 to 1) in 1 second. */
+			var dx:Number = _dt * 2 * (_speed / _maxSpeed);
+			
+			/* Check left/right steering. */
+			if (_isSteerLeft) _playerX = _playerX - dx;
+			else if (_isSteerRight) _playerX = _playerX + dx;
+			
+			/* Check acceleration and deceleration. */
+			if (_isAccelerate) _speed = Util.accelerate(_speed, _accel, _dt);
+			else if (_isBrake) _speed = Util.accelerate(_speed, _breaking, _dt);
+			else _speed = Util.accelerate(_speed, _decel, _dt);
+			
+			/* Check if player steers off-road. */
+			if (((_playerX < -1) || (_playerX > 1)) && (_speed > _offRoadLimit))
+			{
+				_speed = Util.accelerate(_speed, _offRoadDecel, _dt);
+			}
+			
+			/* Limit player steering bounds and max speed. */
+			_playerX = Util.limit(_playerX, -2, 2);
+			_speed = Util.limit(_speed, 0, _maxSpeed);
 		}
 		
 		
