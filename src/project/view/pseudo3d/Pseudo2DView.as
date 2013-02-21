@@ -74,6 +74,10 @@ package view.pseudo3d
 		private var segments:Vector.<Segment>;				// array of road segments
 		private var cars:Vector.<Car>;						// array of cars on the road
 		
+		private var ctx:RenderBuffer;
+		private var bufferWidth:int;
+		private var bufferHeight:int;
+		private var image:Image2D;
 		private var atlas:TextureAtlas;
 		private var resolution:Number;						// scaling factor to provide resolution independence (computed)
 		
@@ -129,6 +133,12 @@ package view.pseudo3d
 		 */
 		public function start():void
 		{
+			bufferWidth = 640;
+			bufferHeight = 480;
+			ctx = new RenderBuffer(bufferWidth, bufferHeight);
+			image = new Image2D(ctx);
+			addChild(image);
+			
 			prepareSprites();
 			
 			// off road deceleration is somewhere in between
@@ -136,7 +146,7 @@ package view.pseudo3d
 			
 			cameraDepth = 1 / Math.tan((fieldOfView / 2) * Math.PI / 180);
 			playerZ = (cameraHeight * cameraDepth);
-			resolution = frameHeight / 640;
+			resolution = bufferHeight / 640;
 			
 			resetRoad();
 		}
@@ -646,7 +656,7 @@ package view.pseudo3d
 			var playerSegment:Segment = findSegment(position + playerZ);
 			var playerPercent:Number = Util.percentRemaining(position + playerZ, segmentLength);
 			var playerY:Number = Util.interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
-			var maxy:Number = frameHeight;
+			var maxy:Number = bufferHeight;
 			
 			var x:Number = 0;
 			var dx:Number = - (baseSegment.curve * basePercent);
@@ -654,12 +664,12 @@ package view.pseudo3d
 			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number,
 				spriteX:Number, spriteY:Number;
 			
-			ctx.clearRect(0, 0, width, height);
+			ctx.clear();
 			
 			/* Render the background. */
-			Render.background(ctx, background, width, height, SPRITES.BG_SKY, skyOffset, resolution * skySpeed * playerY);
-			Render.background(ctx, background, width, height, SPRITES.BG_HILLS, hillOffset, resolution * hillSpeed * playerY);
-			Render.background(ctx, background, width, height, SPRITES.BG_TREES, treeOffset, resolution * treeSpeed * playerY);
+			Render.background(ctx, atlas, bufferWidth, bufferHeight, SPRITES.BG_SKY, skyOffset, resolution * skySpeed * playerY);
+			Render.background(ctx, atlas, bufferWidth, bufferHeight, SPRITES.BG_HILLS, hillOffset, resolution * hillSpeed * playerY);
+			Render.background(ctx, atlas, bufferWidth, bufferHeight, SPRITES.BG_TREES, treeOffset, resolution * treeSpeed * playerY);
 			
 			/* PHASE 1: render segments, front to back and clip far segments that have been
 			 * obscured by already rendered near segments if their projected coordinates are
@@ -672,9 +682,9 @@ package view.pseudo3d
 				segment.clip = maxy;
 				
 				Util.project(segment.p1, (playerX * roadWidth) - x, playerY + cameraHeight,
-					position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+					position - (segment.looped ? trackLength : 0), cameraDepth, bufferWidth, bufferHeight, roadWidth);
 				Util.project(segment.p2, (playerX * roadWidth) - x - dx, playerY + cameraHeight,
-					position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+					position - (segment.looped ? trackLength : 0), cameraDepth, bufferWidth, bufferHeight, roadWidth);
 				
 				x = x + dx;
 				dx = dx + segment.curve;
@@ -686,7 +696,7 @@ package view.pseudo3d
 					continue;
 				}
 				
-				Render.segment(ctx, width, lanes, segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
+				Render.segment(ctx, bufferWidth, lanes, segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
 				maxy = segment.p1.screen.y;
 			}
 			
@@ -701,9 +711,9 @@ package view.pseudo3d
 					car = segment.cars[i];
 					sprite = car.sprite;
 					spriteScale = Util.interpolate(segment.p1.screen.scale, segment.p2.screen.scale, car.percent);
-					spriteX = Util.interpolate(segment.p1.screen.x, segment.p2.screen.x, car.percent) + (spriteScale * car.offset * roadWidth * width / 2);
+					spriteX = Util.interpolate(segment.p1.screen.x, segment.p2.screen.x, car.percent) + (spriteScale * car.offset * roadWidth * bufferWidth / 2);
 					spriteY = Util.interpolate(segment.p1.screen.y, segment.p2.screen.y, car.percent);
-					Render.sprite(ctx, width, height, resolution, roadWidth, atlas, car.sprite, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
+					Render.sprite(ctx, bufferWidth, bufferHeight, resolution, roadWidth, atlas, car.sprite.source, SPRITES, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
 				}
 				
 				/* Render decoration and obstacle sprites. */
@@ -711,17 +721,17 @@ package view.pseudo3d
 				{
 					sprite = segment.sprites[i];
 					spriteScale = segment.p1.screen.scale;
-					spriteX = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * width / 2);
+					spriteX = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * bufferWidth / 2);
 					spriteY = segment.p1.screen.y;
-					Render.sprite(ctx, width, height, resolution, roadWidth, atlas, sprite, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
+					Render.sprite(ctx, bufferWidth, bufferHeight, resolution, roadWidth, atlas, sprite.source, SPRITES, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
 				}
 				
 				/* Render player sprite. */
 				if (segment == playerSegment)
 				{
-					Render.player(ctx, width, height, resolution, roadWidth, atlas, speed / maxSpeed,
-						cameraDepth / playerZ, width / 2,
-						(height / 2) - (cameraDepth / playerZ * Util.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * height / 2), speed * (keyLeft ? -1 : keyRight ? 1 : 0), playerSegment.p2.world.y - playerSegment.p1.world.y);
+					Render.player(ctx, bufferWidth, bufferHeight, resolution, roadWidth, atlas, SPRITES, speed / maxSpeed,
+						cameraDepth / playerZ, bufferWidth / 2,
+						(bufferHeight / 2) - (cameraDepth / playerZ * Util.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * bufferHeight / 2), speed * (keyLeft ? -1 : keyRight ? 1 : 0), playerSegment.p2.world.y - playerSegment.p1.world.y);
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package view.pseudo3d
 {
+	import view.pseudo3d.vo.PPoint;
 	/**
 	 * Util
 	 * @author Hexagon
@@ -103,7 +104,7 @@ package view.pseudo3d
 		}
 		
 		
-		public static function project(p:*, cameraX:Number, cameraY:Number, cameraZ:Number,
+		public static function project(p:PPoint, cameraX:Number, cameraY:Number, cameraZ:Number,
 			cameraDepth:Number, width:Number, height:Number, roadWidth:Number):void
 		{
 			p.camera.x = (p.world.x || 0) - cameraX;

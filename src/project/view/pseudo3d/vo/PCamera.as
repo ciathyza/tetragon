@@ -6,7 +6,7 @@ package view.pseudo3d.vo
 	 */
 	public class PCamera
 	{
-		//public var x:Number;
+		public var x:Number;
 		public var y:Number;
 		public var z:Number;
 	}

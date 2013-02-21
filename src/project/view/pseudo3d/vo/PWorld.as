@@ -6,6 +6,7 @@ package view.pseudo3d.vo
 	 */
 	public class PWorld
 	{
+		public var x:Number;
 		public var y:Number;
 		public var z:Number;
 		

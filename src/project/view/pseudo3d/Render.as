@@ -1,10 +1,11 @@
 package view.pseudo3d
 {
 	import tetragon.data.texture.TextureAtlas;
+	import tetragon.view.render2d.display.Image2D;
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ColorSet;
-	import view.pseudo3d.vo.SSprite;
+	import view.pseudo3d.vo.Sprites;
 	
 	
 	/**
@@ -13,7 +14,7 @@ package view.pseudo3d
 	 */
 	public class Render
 	{
-		public static function polygon(ctx, x1:Number, y1:Number, x2:Number, y2:Number, x3:Number,
+		public static function polygon(ctx:RenderBuffer, x1:Number, y1:Number, x2:Number, y2:Number, x3:Number,
 			y3:Number, x4:Number, y4:Number, color:uint):void
 		{
 			ctx.fillStyle = color;
@@ -27,7 +28,7 @@ package view.pseudo3d
 		}
 		
 		
-		public static function segment(ctx, width:Number, lanes:int, x1:Number, y1:Number,
+		public static function segment(ctx:RenderBuffer, width:Number, lanes:int, x1:Number, y1:Number,
 			w1:Number, x2:Number, y2:Number, w2:Number, fog:Number, color:ColorSet):void
 		{
 			var r1:Number = rumbleWidth(w1, lanes),
@@ -59,18 +60,18 @@ package view.pseudo3d
 		}
 		
 		
-		public static function background(ctx, background, width:Number, height:Number, layer,
-			rotation:Number, offset:Number):void
+		public static function background(ctx:RenderBuffer, atlas:TextureAtlas, width:Number,
+			height:Number, layer:Image2D, rotation:Number, offset:Number):void
 		{
 			rotation = rotation || 0;
 			offset = offset || 0;
 
-			var imageW:Number = layer.w / 2;
-			var imageH:Number = layer.h;
+			var imageW:Number = layer.width / 2;
+			var imageH:Number = layer.height;
 
-			var sourceX:Number = layer.x + Math.floor(layer.w * rotation);
+			var sourceX:Number = layer.x + Math.floor(layer.width * rotation);
 			var sourceY:Number = layer.y;
-			var sourceW:Number = Math.min(imageW, layer.x + layer.w - sourceX);
+			var sourceW:Number = Math.min(imageW, layer.x + layer.width - sourceX);
 			var sourceH:Number = imageH;
 
 			var destX:Number = 0;
@@ -78,21 +79,21 @@ package view.pseudo3d
 			var destW:Number = Math.floor(width * (sourceW / imageW));
 			var destH:Number = height;
 
-			ctx.drawImage(background, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
+			ctx.drawImage(atlas, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
 			if (sourceW < imageW)
 			{
-				ctx.drawImage(background, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
+				ctx.drawImage(atlas, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
 			}
 		}
 		
 		
-		public static function sprite(ctx, width:Number, height:Number, resolution:Number,
-			roadWidth:Number, atlas:TextureAtlas, sprite:SSprite, scale:Number, destX:Number,
+		public static function sprite(ctx:RenderBuffer, width:Number, height:Number, resolution:Number,
+			roadWidth:Number, atlas:TextureAtlas, sprite:Image2D, SPRITES:Sprites, scale:Number, destX:Number,
 			destY:Number, offsetX:Number, offsetY:Number, clipY:Number = NaN):void
 		{
 			// scale for projection AND relative to roadWidth (for tweakUI)
-			var destW:Number = (sprite.w * scale * width / 2) * (SPRITES.SCALE * roadWidth);
-			var destH:Number = (sprite.h * scale * width / 2) * (SPRITES.SCALE * roadWidth);
+			var destW:Number = (sprite.width * scale * width / 2) * (SPRITES.SCALE * roadWidth);
+			var destH:Number = (sprite.height * scale * width / 2) * (SPRITES.SCALE * roadWidth);
 
 			destX = destX + (destW * (offsetX || 0));
 			destY = destY + (destH * (offsetY || 0));
@@ -100,17 +101,17 @@ package view.pseudo3d
 			var clipH:Number = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			if (clipH < destH)
 			{
-				ctx.drawImage(atlas, sprite.x, sprite.y, sprite.w, sprite.h - (sprite.h * clipH / destH), destX, destY, destW, destH - clipH);
+				ctx.drawImage(atlas, sprite.x, sprite.y, sprite.width, sprite.height - (sprite.height * clipH / destH), destX, destY, destW, destH - clipH);
 			}
 		}
 		
 		
-		public static function player(ctx, width:Number, height:Number, resolution:Number,
-			roadWidth:Number, atlas:TextureAtlas, speedPercent:Number, scale:Number, destX:Number,
-			destY:Number, steer:Number, updown:Number):void
+		public static function player(ctx:RenderBuffer, width:Number, height:Number, resolution:Number,
+			roadWidth:Number, atlas:TextureAtlas, SPRITES:Sprites, speedPercent:Number, scale:Number,
+			destX:Number, destY:Number, steer:Number, updown:Number):void
 		{
 			var bounce:Number = (1.5 * Math.random() * speedPercent * resolution) * Util.randomChoice([-1, 1]);
-			var spr;
+			var spr:Image2D;
 			
 			if (steer < 0)
 			{
@@ -125,11 +126,11 @@ package view.pseudo3d
 				spr = (updown > 0) ? SPRITES.PLAYER_UPHILL_STRAIGHT : SPRITES.PLAYER_STRAIGHT;
 			}
 
-			sprite(ctx, width, height, resolution, roadWidth, atlas, spr, scale, destX, destY + bounce, -0.5, -1);
+			sprite(ctx, width, height, resolution, roadWidth, atlas, spr, SPRITES, scale, destX, destY + bounce, -0.5, -1);
 		}
 		
 		
-		public static function fog(ctx, x:Number, y:Number, width:Number, height:Number,
+		public static function fog(ctx:RenderBuffer, x:Number, y:Number, width:Number, height:Number,
 			fog:Number):void
 		{
 			if (fog < 1)
