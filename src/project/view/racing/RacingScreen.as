@@ -41,16 +41,9 @@ package view.racing
 	import view.racing.vo.PWorld;
 	import view.racing.vo.Segment;
 
-	import com.hexagonstar.util.debug.Debug;
-
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Shape;
-
-
-
-
-
 	
 	
 	/**
@@ -80,11 +73,12 @@ package view.racing
 		private var _bufferHeight:int = 768;
 		
 		private var _dt:Number;					// how long is each frame (in seconds)
-		private var _resolution:Number = 1;		// scaling factor to provide resolution independence (computed)
+		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
 		private var _drawDistance:int = 300;	// number of segments to draw
 		private var _fogDensity:int = 5;		// exponential fog density
 		private var _cameraHeight:Number = 1000;// z height of camera
-		private var _cameraDepth:int;			// z distance camera is from screen (computed)
+		private var _cameraDepth:Number;		// z distance camera is from screen (computed)
+		private var _fieldOfView:int = 100;		// angle (degrees) for field of view
 		
 		private var _skySpeed:Number = 0.001;	// background sky layer scroll speed when going around curve (or up hill)
 		private var _hillSpeed:Number = 0.002;	// background hill layer scroll speed when going around curve (or up hill)
@@ -160,6 +154,9 @@ package view.racing
 			_breaking = -_maxSpeed;
 			_decel = -_maxSpeed / 5;
 			_offRoadLimit = _maxSpeed / 4;
+			_cameraDepth = 1 / Math.tan((_fieldOfView / 2) * Math.PI / 180);
+			_playerZ = (_cameraHeight * _cameraDepth);
+			_resolution = _bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
 			
@@ -310,8 +307,12 @@ package view.racing
 				//Debug.trace(s.p1.screen.x + " " + s.p1.screen.y + " " + s.p1.screen.w + "    " + s.p2.screen.x + " " + s.p2.screen.y + " " + s.p2.screen.w);
 				
 				renderSegment(
-					s.p1.screen.x, s.p1.screen.y, s.p1.screen.w,
-					s.p2.screen.x, s.p2.screen.y, s.p2.screen.w,
+					s.p1.screen.x,
+					s.p1.screen.y,
+					s.p1.screen.w,
+					s.p2.screen.x,
+					s.p2.screen.y,
+					s.p2.screen.w,
 					s.fog,
 					s.color);
 				
