@@ -47,7 +47,7 @@ package tetragon.file.parsers
 		 */
 		public function parse(loader:XMLResourceLoader, model:*):void
 		{
-			ResourceIndex(model).addXMLResource(loader.bulkFile.id, loader.xml);
+			(model as ResourceIndex).addXMLResource(loader.bulkFile.id, loader.xml);
 			dispose();
 		}
 	}

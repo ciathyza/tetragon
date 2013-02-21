@@ -50,13 +50,7 @@ package tetragon.file.parsers
 		{
 			_xml = loader.xml;
 			var index:ResourceIndex = model;
-			var xmlList:XMLList = _xml.textureAtlas;
-			
-			/* Check in case XML tags were written uppercase. */
-			if (xmlList.length() < 1)
-			{
-				xmlList = _xml.TextureAtlas;
-			}
+			var xmlList:XMLList = obtainXMLList(_xml, "textureAtlas");
 			
 			for each (var xml:XML in xmlList)
 			{

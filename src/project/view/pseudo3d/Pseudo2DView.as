@@ -126,7 +126,7 @@ package view.pseudo3d
 		 */
 		public function start():void
 		{
-			prepareSprites();
+			//prepareSprites();
 			
 			// off road deceleration is somewhere in between
 			offRoadDecel = -maxSpeed / 2;
@@ -135,7 +135,7 @@ package view.pseudo3d
 			playerZ = (cameraHeight * cameraDepth);
 			resolution = frameHeight / 640;
 			
-			resetRoad();
+			//resetRoad();
 		}
 		
 		
@@ -448,7 +448,7 @@ package view.pseudo3d
 
 		private function onTick():void
 		{
-			update(step);
+			//update(step);
 		}
 		
 		

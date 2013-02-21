@@ -98,6 +98,39 @@ package tetragon.file.parsers
 		
 		
 		/**
+		 * A helper method that can be used to obtain a XML list from the to be parsed XML
+		 * while ignoring upper/lowercase-ness of the XML list's tag name. Obtaining a XML
+		 * list with this method makes sure that the XML list is found in the XML regardless
+		 * of it's tag name being written in camelCase, all lowercase, all uppercase or with
+		 * the first letter being uppercase. To use this method specify the to be parsed XML
+		 * and the list's tag name in camelCase format.
+		 * 
+		 * @param xml The XML data to be parsed.
+		 * @param name The name of the XML list to be obtained from the XML, written in
+		 *        camelCase.
+		 * @return The XML list.
+		 */
+		protected function obtainXMLList(xml:XML, name:String):XMLList
+		{
+			var xmlList:XMLList = xml[name];
+			if (xmlList.length() > 0) return xmlList;
+			/* Check if the XML contains the list name with first letter uppercase. */
+			var n:String = name.charAt(0).toUpperCase() + name.substr(1, name.length);
+			xmlList = xml[n];
+			if (xmlList.length() > 0) return xmlList;
+			/* Check if the XML contains the list name in all lowercase. */
+			xmlList = xml[name.toLowerCase()];
+			if (xmlList.length() > 0) return xmlList;
+			/* Check if the XML contains the list name in all uppercase. */
+			xmlList = xml[name.toUpperCase()];
+			if (xmlList.length() > 0) return xmlList;
+			
+			warn("Could not find any XML list named \"" + name + "\" in the XML!");
+			return xmlList;
+		}
+		
+		
+		/**
 		 * Extracts the value that is stored under an XML node name or XML attribute name
 		 * specified with the xml and name arguments. The xml parameter can be an object
 		 * of type XML or XMLList.
