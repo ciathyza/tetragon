@@ -29,6 +29,7 @@
 package view.racing
 {
 	import flash.display.BitmapData;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	
@@ -49,6 +50,8 @@ package view.racing
 		
 		private var buffer:Array = new Array();
 		private var r:Rectangle = new Rectangle();
+		private var sourceRect:Rectangle = new Rectangle();
+		private var destPoint:Point = new Point();
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -105,6 +108,32 @@ package view.racing
 			lineTo(buffer, x4, y4, x1, y1, color);
 		}
 		
+		
+		public function drawImage(sprite:BitmapData, x:Number, y:Number, w:Number, h:Number):void
+		{
+			sourceRect.setTo(0, 0, w, h);
+			destPoint.setTo(x, y);
+			copyPixels(sprite, sourceRect, destPoint);
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get fillColor():uint
+		{
+			return _fillColor;
+		}
+		public function set fillColor(v:uint):void
+		{
+			_fillColor = v;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
 		
 		/**
 		 * Special line for filled triangle
@@ -205,20 +234,6 @@ package view.racing
 			{
 				a[y] = x;
 			}
-		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Accessors
-		//-----------------------------------------------------------------------------------------
-		
-		public function get fillColor():uint
-		{
-			return _fillColor;
-		}
-		public function set fillColor(v:uint):void
-		{
-			_fillColor = v;
 		}
 	}
 }

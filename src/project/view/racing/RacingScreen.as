@@ -283,9 +283,9 @@ package view.racing
 			_renderBuffer.clear();
 			
 			/* Render background layers. */
-			//renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
-			//renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
-			//renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
 			
 			/* Render road segments. */
 			for (n = 0; n < _drawDistance; n++)
@@ -303,8 +303,6 @@ package view.racing
 					continue;
 				}
 				
-				//Debug.trace(s.p1.screen.x + " " + s.p1.screen.y + " " + s.p1.screen.w + "    " + s.p2.screen.x + " " + s.p2.screen.y + " " + s.p2.screen.w);
-				
 				renderSegment(
 					s.p1.screen.x,
 					s.p1.screen.y,
@@ -319,7 +317,7 @@ package view.racing
 			}
 			
 			/* Render the player sprite. */
-			//renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, _bufferHeight, _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), 0);
+			renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, _bufferHeight, _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), 0);
 		}
 		
 		
@@ -667,22 +665,22 @@ package view.racing
 			destX:Number, destY:Number, steer:Number, updown:Number):void
 		{
 			var bounce:Number = (1.5 * Math.random() * speedPercent * _resolution) * randomChoice([-1, 1]);
-			var spr:BitmapData;
+			var sprite:BitmapData;
 			
 			if (steer < 0)
 			{
-				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_LEFT : _sprites.PLAYER_LEFT;
+				sprite = (updown > 0) ? _sprites.PLAYER_UPHILL_LEFT : _sprites.PLAYER_LEFT;
 			}
 			else if (steer > 0)
 			{
-				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_RIGHT : _sprites.PLAYER_RIGHT;
+				sprite = (updown > 0) ? _sprites.PLAYER_UPHILL_RIGHT : _sprites.PLAYER_RIGHT;
 			}
 			else
 			{
-				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_STRAIGHT : _sprites.PLAYER_STRAIGHT;
+				sprite = (updown > 0) ? _sprites.PLAYER_UPHILL_STRAIGHT : _sprites.PLAYER_STRAIGHT;
 			}
 			
-			renderSprite(roadWidth, spr, scale, destX, destY + bounce, -0.5, -1);
+			renderSprite(roadWidth, sprite, scale, destX, destY + bounce, -0.5, -1);
 		}
 		
 		
@@ -697,7 +695,7 @@ package view.racing
 			var clipH:Number = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			if (clipH < destH)
 			{
-//				ctx.drawImage(atlas, sprite.x, sprite.y, sprite.width, sprite.height - (sprite.height * clipH / destH), destX, destY, destW, destH - clipH);
+				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH);
 			}
 		}
 	}
