@@ -28,7 +28,7 @@
  */
 package view.racing.vo
 {
-	import view.pseudo3d.constants.ColorSet;
+	import view.racing.constants.ColorSet;
 	
 	
 	/**

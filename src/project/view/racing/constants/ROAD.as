@@ -25,20 +25,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package view.pseudo3d.constants
+package view.racing.constants
 {
-	public final class COLORS
+	public final class ROAD
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const SKY:uint = 0x72D7EE;
-		public static const TREE:uint = 0x005108;
-		public static const FOG:uint = 0x005108;
-		public static const LIGHT:ColorLight = new ColorLight();
-		public static const DARK:ColorDark = new ColorDark();
-		public static const START:ColorStart = new ColorStart();
-		public static const FINISH:ColorFinish = new ColorFinish();
+		public static const LENGTH:RoadLength = new RoadLength();
+		public static const HILL:RoadHill = new RoadHill();
+		public static const CURVE:RoadCurve = new RoadCurve();
 	}
 }

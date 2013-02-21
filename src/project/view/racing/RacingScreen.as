@@ -33,16 +33,22 @@ package view.racing
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 
-	import view.pseudo3d.constants.COLORS;
-	import view.pseudo3d.constants.ColorSet;
+	import view.racing.constants.COLORS;
+	import view.racing.constants.ColorSet;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
 	import view.racing.vo.PScreen;
 	import view.racing.vo.PWorld;
 	import view.racing.vo.Segment;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Shape;
+
+
+
 
 
 	
@@ -70,14 +76,14 @@ package view.racing
 		
 		private var _segments:Vector.<Segment>;	// array of road segments
 		
-		private var _bufferWidth:int = 640;
-		private var _bufferHeight:int = 480;
+		private var _bufferWidth:int = 1024;
+		private var _bufferHeight:int = 768;
 		
 		private var _dt:Number;					// how long is each frame (in seconds)
 		private var _resolution:Number = 1;		// scaling factor to provide resolution independence (computed)
 		private var _drawDistance:int = 300;	// number of segments to draw
 		private var _fogDensity:int = 5;		// exponential fog density
-		private var _cameraHeight:int = 1000;	// z height of camera
+		private var _cameraHeight:Number = 1000;// z height of camera
 		private var _cameraDepth:int;			// z distance camera is from screen (computed)
 		
 		private var _skySpeed:Number = 0.001;	// background sky layer scroll speed when going around curve (or up hill)
@@ -104,8 +110,8 @@ package view.racing
 		private var _offRoadDecel:Number = 0.99;// speed multiplier when off road (e.g. you lose 2% speed each update frame)
 		private var _offRoadLimit:Number;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
 		
-		private var _position:Number = 0;		// current camera Z position (add playerZ to get player's absolute Z position)
-		private var _speed:Number = 0;			// current speed
+		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _speed:Number;				// current speed
 		private var _maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
 		private var _isAccelerate:Boolean;
@@ -149,11 +155,13 @@ package view.racing
 			super.reset();
 			
 			_dt = 1 / main.gameLoop.frameRate;
+			_maxSpeed = _segmentLength / _dt;
 			_accel = _maxSpeed / 5;
 			_breaking = -_maxSpeed;
 			_decel = -_maxSpeed / 5;
 			_offRoadLimit = _maxSpeed / 4;
-			_maxSpeed = _segmentLength / _dt;
+			_position = 0;
+			_speed = 0;
 			
 			resetRoad();
 		}
@@ -250,19 +258,19 @@ package view.racing
 			else if (_isSteerRight) _playerX = _playerX + dx;
 			
 			/* Check acceleration and deceleration. */
-			if (_isAccelerate) _speed = Util.accelerate(_speed, _accel, _dt);
-			else if (_isBrake) _speed = Util.accelerate(_speed, _breaking, _dt);
-			else _speed = Util.accelerate(_speed, _decel, _dt);
+			if (_isAccelerate) _speed = accelerate(_speed, _accel, _dt);
+			else if (_isBrake) _speed = accelerate(_speed, _breaking, _dt);
+			else _speed = accelerate(_speed, _decel, _dt);
 			
 			/* Check if player steers off-road. */
 			if (((_playerX < -1) || (_playerX > 1)) && (_speed > _offRoadLimit))
 			{
-				_speed = Util.accelerate(_speed, _offRoadDecel, _dt);
+				_speed = accelerate(_speed, _offRoadDecel, _dt);
 			}
 			
 			/* Limit player steering bounds and max speed. */
-			_playerX = Util.limit(_playerX, -2, 2);
-			_speed = Util.limit(_speed, 0, _maxSpeed);
+			_playerX = limit(_playerX, -2, 2);
+			_speed = limit(_speed, 0, _maxSpeed);
 		}
 		
 		
@@ -279,9 +287,9 @@ package view.racing
 			_renderBuffer.clear();
 			
 			/* Render background layers. */
-			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
+			//renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
+			//renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
+			//renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
 			
 			/* Render road segments. */
 			for (n = 0; n < _drawDistance; n++)
@@ -299,7 +307,14 @@ package view.racing
 					continue;
 				}
 				
-				renderSegment(s.p1.screen.x, s.p1.screen.y, s.p1.screen.w, s.p2.screen.x, s.p2.screen.y, s.p2.screen.w, s.fog, s.color);
+				//Debug.trace(s.p1.screen.x + " " + s.p1.screen.y + " " + s.p1.screen.w + "    " + s.p2.screen.x + " " + s.p2.screen.y + " " + s.p2.screen.w);
+				
+				renderSegment(
+					s.p1.screen.x, s.p1.screen.y, s.p1.screen.w,
+					s.p2.screen.x, s.p2.screen.y, s.p2.screen.w,
+					s.fog,
+					s.color);
+				
 				maxy = s.p2.screen.y;
 			}
 			
@@ -509,6 +524,18 @@ package view.racing
 		}
 		
 		
+		private static function accelerate(v:Number, accel:Number, dt:Number):Number
+		{
+			return v + (accel * dt);
+		}
+		
+		
+		private static function limit(value:Number, min:Number, max:Number):Number
+		{
+			return Math.max(min, Math.min(value, max));
+		}
+		
+		
 		private static function exponentialFog(distance:Number, density:Number):Number
 		{
 			return 1 / (Math.pow(Math.E, (distance * distance * density)));
@@ -596,7 +623,7 @@ package view.racing
 			
 //			ctx.fillStyle = color.grass;
 //			ctx.fillRect(0, y2, _bufferWidth, y1 - y2);
-
+			
 			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
 			renderPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
 			renderPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road);
@@ -617,9 +644,22 @@ package view.racing
 		}
 		
 		
-		private function renderPolygon(x1:Number, y1:Number, x2:Number, y2:Number, x3:Number, y3:Number,
-			x4:Number, y4:Number, color:uint):void
+		private function renderPolygon(x1:Number, y1:Number, x2:Number, y2:Number,
+			x3:Number, y3:Number, x4:Number, y4:Number, color:uint):void
 		{
+			//Debug.trace(x1 + " " + y2 + "    " + x2 + " " + y2 + "    " + x3 + " " + y3 + "    " + x4 + " " + y4);
+			
+			var s:Shape = new Shape();
+			s.graphics.lineStyle();
+			s.graphics.beginFill(color);
+			s.graphics.moveTo(x1, y1);
+			s.graphics.lineTo(x2, y2);
+			s.graphics.lineTo(x3, y3);
+			s.graphics.lineTo(x4, y4);
+			s.graphics.endFill();
+			
+			_renderBuffer.draw(s);
+			
 //			ctx.fillStyle = color;
 //			ctx.beginPath();
 //			ctx.moveTo(x1, y1);

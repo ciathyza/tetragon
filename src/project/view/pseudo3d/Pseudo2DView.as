@@ -32,9 +32,8 @@ package view.pseudo3d
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
-
-	import view.pseudo3d.constants.COLORS;
-	import view.pseudo3d.constants.ROAD;
+	import view.racing.constants.COLORS;
+	import view.racing.constants.ROAD;
 	import view.racing.vo.Car;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
@@ -43,6 +42,7 @@ package view.pseudo3d
 	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 	import view.racing.vo.Sprites;
+
 
 	
 	
