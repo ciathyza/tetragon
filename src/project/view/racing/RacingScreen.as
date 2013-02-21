@@ -29,10 +29,10 @@
 package view.racing
 {
 	import tetragon.data.sprite.SpriteAtlas;
+	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	
 	
 	/**
@@ -51,6 +51,13 @@ package view.racing
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		private var _atlas:SpriteAtlas;
+		private var _renderBuffer:RenderBuffer;
+		private var _bufferBitmap:Bitmap;
+		
+		private var _bufferWidth:int = 640;
+		private var _bufferHeight:int = 480;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Signals
@@ -67,6 +74,7 @@ package view.racing
 		override public function start():void
 		{
 			super.start();
+			main.gameLoop.start();
 		}
 		
 		
@@ -94,6 +102,7 @@ package view.racing
 		override public function stop():void
 		{
 			super.stop();
+			main.gameLoop.stop();
 		}
 		
 		
@@ -132,6 +141,22 @@ package view.racing
 		}
 		
 		
+		/**
+		 * @private
+		 */
+		private function onTick():void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onRender(ticks:uint, ms:uint, fps:uint):void
+		{
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
@@ -160,10 +185,10 @@ package view.racing
 		override protected function createChildren():void
 		{
 			resourceManager.process("spriteAtlas");
-			var atlas:SpriteAtlas = getResource("spriteAtlas");
-			var sprite:BitmapData = atlas.getSprite("sprite_billboard09");
-			var b:Bitmap = new Bitmap(sprite);
-			addChild(b);
+			_atlas = getResource("spriteAtlas");
+			
+			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x333333);
+			_bufferBitmap = new Bitmap(_renderBuffer);
 		}
 		
 		
@@ -180,6 +205,7 @@ package view.racing
 		 */
 		override protected function addChildren():void
 		{
+			addChild(_bufferBitmap);
 		}
 		
 		
@@ -188,6 +214,8 @@ package view.racing
 		 */
 		override protected function addListeners():void
 		{
+			main.gameLoop.tickSignal.add(onTick);
+			main.gameLoop.renderSignal.add(onRender);
 		}
 		
 		
@@ -196,6 +224,8 @@ package view.racing
 		 */
 		override protected function removeListeners():void
 		{
+			main.gameLoop.tickSignal.remove(onTick);
+			main.gameLoop.renderSignal.remove(onRender);
 		}
 		
 		
@@ -221,6 +251,7 @@ package view.racing
 		 */
 		override protected function layoutChildren():void
 		{
+			centerChild(_bufferBitmap);
 		}
 		
 		
