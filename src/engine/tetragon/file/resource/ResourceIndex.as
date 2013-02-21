@@ -115,20 +115,20 @@ package tetragon.file.resource
 		 * Placeholder single frame.
 		 * @private
 		 */
-		private var _placeholderBitmap:PlaceholderBitmap;
+		private static var _placeholderBitmap:PlaceholderBitmap;
 		
 		/**
 		 * A placeholder object that is used for bitmap resources in case the original
 		 * resource data could not be found.
 		 * @private
 		 */
-		private var _placeholderImage:BitmapData;
+		private static var _placeholderImage:BitmapData;
 		
 		/**
 		 * Placeholder shape used to draw placeholder image fills.
 		 * @private
 		 */
-		private var _placeholderShape:Shape;
+		private static var _placeholderShape:Shape;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -306,37 +306,7 @@ package tetragon.file.resource
 			if (!allowPlaceholder) return null;
 			/* Image resource not found! Try to provide a placeholder image! */
 			warn("getImage: Image resource \"" + id + "\" not found! Using a placeholder.");
-			/* Placeholder with the same size already created, return it! */
-			if (_placeholderImage && _placeholderImage.width == placeholderWidth
-				&& _placeholderImage.height == placeholderHeight)
-			{
-				return _placeholderImage.clone();
-			}
-			/* Else create a new placeholder bitmap with requested size. */
 			return getPlaceholderImage(placeholderWidth, placeholderHeight);
-		}
-		
-		
-		/**
-		 * Creates and returns a placeholder image at the specified size.
-		 * 
-		 * @param width
-		 * @param height
-		 * @return BitmapData
-		 */
-		public function getPlaceholderImage(width:int, height:int):BitmapData
-		{
-			if (!_placeholderShape) _placeholderShape = new Shape();
-			else _placeholderShape.graphics.clear();
-			
-			if (!_placeholderBitmap) _placeholderBitmap = new PlaceholderBitmap();
-			
-			_placeholderShape.graphics.beginBitmapFill(_placeholderBitmap);
-			_placeholderShape.graphics.drawRect(0, 0, width, height);
-			_placeholderShape.graphics.endFill();
-			_placeholderImage = new BitmapData(width, height, false, 0xCC0000);
-			_placeholderImage.draw(_placeholderShape);
-			return _placeholderImage.clone();
 		}
 		
 		
@@ -558,6 +528,36 @@ package tetragon.file.resource
 		public function toString():String
 		{
 			return "ResourceIndex";
+		}
+		
+		
+		/**
+		 * Creates and returns a placeholder image at the specified size.
+		 * 
+		 * @param width
+		 * @param height
+		 * @return BitmapData
+		 */
+		public static function getPlaceholderImage(width:int, height:int):BitmapData
+		{
+			/* Placeholder with the same size already created, return it! */
+			if (_placeholderImage && _placeholderImage.width == width
+				&& _placeholderImage.height == height)
+			{
+				return _placeholderImage.clone();
+			}
+			
+			if (!_placeholderShape) _placeholderShape = new Shape();
+			else _placeholderShape.graphics.clear();
+			
+			if (!_placeholderBitmap) _placeholderBitmap = new PlaceholderBitmap();
+			
+			_placeholderShape.graphics.beginBitmapFill(_placeholderBitmap);
+			_placeholderShape.graphics.drawRect(0, 0, width, height);
+			_placeholderShape.graphics.endFill();
+			_placeholderImage = new BitmapData(width, height, false, 0xCC0000);
+			_placeholderImage.draw(_placeholderShape);
+			return _placeholderImage.clone();
 		}
 		
 		

@@ -66,9 +66,10 @@ package tetragon.data.sprite
 		private var _spriteFrames:Object;
 		/** @private */
 		private var _processed:Boolean;
+		
 		/** @private */
 		private static var _point:Point;
-		
+			
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -115,7 +116,10 @@ package tetragon.data.sprite
 		public function getSprite(id:String):BitmapData
 		{
 			var region:Rectangle = _spriteRegions[id];
-			if (!_image || !region) return null;
+			if (!_image || !region)
+			{
+				
+			}
 			if (!_point) _point = new Point(0, 0);
 			var sprite:BitmapData = new BitmapData(region.width, region.height, true, 0x00000000);
 			sprite.copyPixels(_image, region, _point);
