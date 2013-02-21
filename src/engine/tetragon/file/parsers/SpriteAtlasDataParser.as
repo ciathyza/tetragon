@@ -82,7 +82,8 @@ package tetragon.file.parsers
 				}
 				
 				/* Create new SpriteAtlas definition. */
-				var sa:SpriteAtlas = new SpriteAtlas(id, extractString(xml, "@imageID"), subTextures);
+				var sa:SpriteAtlas = new SpriteAtlas(id, extractString(xml, "@imageID"), subTextures,
+					extractBoolean(xml, "@transparent"), extractColorValue(xml, "@backgroundColor"));
 				checkReferencedID("imageID", sa.imageID);
 				index.addDataResource(sa);
 			}

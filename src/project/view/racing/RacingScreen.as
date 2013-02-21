@@ -31,6 +31,7 @@ package view.racing
 	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.view.Screen;
 
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	
 	
@@ -160,7 +161,9 @@ package view.racing
 		{
 			resourceManager.process("spriteAtlas");
 			var atlas:SpriteAtlas = getResource("spriteAtlas");
-			var sprite:BitmapData = atlas.getSprite("sprite_billboard01");
+			var sprite:BitmapData = atlas.getSprite("sprite_billboard09");
+			var b:Bitmap = new Bitmap(sprite);
+			addChild(b);
 		}
 		
 		

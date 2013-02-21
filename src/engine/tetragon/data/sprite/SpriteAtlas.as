@@ -62,9 +62,13 @@ package tetragon.data.sprite
 		/** @private */
 		private var _image:BitmapData;
 		/** @private */
+		private var _backgroundColor:uint;
+		/** @private */
 		private var _spriteRegions:Object;
 		/** @private */
 		private var _spriteFrames:Object;
+		/** @private */
+		private var _transparent:Boolean;
 		/** @private */
 		private var _processed:Boolean;
 		
@@ -82,13 +86,18 @@ package tetragon.data.sprite
 		 * @param id
 		 * @param imageID
 		 * @param subTextureBounds
+		 * @param transparent
+		 * @param backgroundColor
 		 */
 		public function SpriteAtlas(id:String, imageID:String,
-			subTextureBounds:Vector.<SubTextureBounds>)
+			subTextureBounds:Vector.<SubTextureBounds>, transparent:Boolean = false,
+			backgroundColor:uint = 0xFF00FF)
 		{
 			_id = id;
 			_imageID = imageID;
 			_subTextureBounds = subTextureBounds;
+			_transparent = transparent;
+			_backgroundColor = backgroundColor;
 			_spriteRegions = {};
 			_spriteFrames = {};
 		}
@@ -119,7 +128,8 @@ package tetragon.data.sprite
 			var region:Rectangle = _spriteRegions[id];
 			if (!_image || !region) return ResourceIndex.getPlaceholderImage();
 			if (!_point) _point = new Point(0, 0);
-			var sprite:BitmapData = new BitmapData(region.width, region.height, true, 0x00000000);
+			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent,
+				_backgroundColor);
 			sprite.copyPixels(_image, region, _point);
 			return sprite;
 		}
@@ -224,6 +234,16 @@ package tetragon.data.sprite
 		}
 		
 		
+		public function get backgroundColor():uint
+		{
+			return _backgroundColor;
+		}
+		public function set backgroundColor(v:uint):void
+		{
+			_backgroundColor = v;
+		}
+		
+		
 		public function get spriteRegions():Object
 		{
 			return _spriteRegions;
@@ -233,6 +253,16 @@ package tetragon.data.sprite
 		public function get spriteFrames():Object
 		{
 			return _spriteFrames;
+		}
+		
+		
+		public function get transparent():Boolean
+		{
+			return _transparent;
+		}
+		public function set transparent(v:Boolean):void
+		{
+			_transparent = v;
 		}
 		
 		

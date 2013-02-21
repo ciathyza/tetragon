@@ -268,7 +268,7 @@ package tetragon.file.parsers
 		
 		
 		/**
-		 * Parses a string color value. The specified string needs to contain
+		 * Parses a string color value. The specified string can contain
 		 * a hexadecimal color value either starting with a '#' or only consist
 		 * of a hexadecimal value.
 		 * 
