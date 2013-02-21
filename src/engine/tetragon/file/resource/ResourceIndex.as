@@ -538,7 +538,7 @@ package tetragon.file.resource
 		 * @param height
 		 * @return BitmapData
 		 */
-		public static function getPlaceholderImage(width:int, height:int):BitmapData
+		public static function getPlaceholderImage(width:int = 32, height:int = 32):BitmapData
 		{
 			/* Placeholder with the same size already created, return it! */
 			if (_placeholderImage && _placeholderImage.width == width

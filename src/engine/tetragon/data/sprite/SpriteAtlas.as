@@ -30,6 +30,7 @@ package tetragon.data.sprite
 {
 	import tetragon.data.DataObject;
 	import tetragon.data.texture.SubTextureBounds;
+	import tetragon.file.resource.ResourceIndex;
 
 	import flash.display.BitmapData;
 	import flash.geom.Point;
@@ -116,10 +117,7 @@ package tetragon.data.sprite
 		public function getSprite(id:String):BitmapData
 		{
 			var region:Rectangle = _spriteRegions[id];
-			if (!_image || !region)
-			{
-				
-			}
+			if (!_image || !region) return ResourceIndex.getPlaceholderImage();
 			if (!_point) _point = new Point(0, 0);
 			var sprite:BitmapData = new BitmapData(region.width, region.height, true, 0x00000000);
 			sprite.copyPixels(_image, region, _point);
