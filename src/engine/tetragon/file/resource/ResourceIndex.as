@@ -313,13 +313,28 @@ package tetragon.file.resource
 				return _placeholderImage.clone();
 			}
 			/* Else create a new placeholder bitmap with requested size. */
+			return getPlaceholderImage(placeholderWidth, placeholderHeight);
+		}
+		
+		
+		/**
+		 * Creates and returns a placeholder image at the specified size.
+		 * 
+		 * @param width
+		 * @param height
+		 * @return BitmapData
+		 */
+		public function getPlaceholderImage(width:int, height:int):BitmapData
+		{
 			if (!_placeholderShape) _placeholderShape = new Shape();
 			else _placeholderShape.graphics.clear();
+			
 			if (!_placeholderBitmap) _placeholderBitmap = new PlaceholderBitmap();
+			
 			_placeholderShape.graphics.beginBitmapFill(_placeholderBitmap);
-			_placeholderShape.graphics.drawRect(0, 0, placeholderWidth, placeholderHeight);
+			_placeholderShape.graphics.drawRect(0, 0, width, height);
 			_placeholderShape.graphics.endFill();
-			_placeholderImage = new BitmapData(placeholderWidth, placeholderHeight, false, 0xCC0000);
+			_placeholderImage = new BitmapData(width, height, false, 0xCC0000);
 			_placeholderImage.draw(_placeholderShape);
 			return _placeholderImage.clone();
 		}

@@ -32,6 +32,7 @@ package tetragon.data.sprite
 	import tetragon.data.texture.SubTextureBounds;
 
 	import flash.display.BitmapData;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	
@@ -65,6 +66,8 @@ package tetragon.data.sprite
 		private var _spriteFrames:Object;
 		/** @private */
 		private var _processed:Boolean;
+		/** @private */
+		private static var _point:Point;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -112,12 +115,11 @@ package tetragon.data.sprite
 		public function getSprite(id:String):BitmapData
 		{
 			var region:Rectangle = _spriteRegions[id];
-			if (!region) return null;
-			
-			//var sprite:BitmapData = new BitmapData(width, height);
-			//_image.
-			
-			return null; // TODO Texture2D.fromTexture(_image, region, _spriteFrames[id]);
+			if (!_image || !region) return null;
+			if (!_point) _point = new Point(0, 0);
+			var sprite:BitmapData = new BitmapData(region.width, region.height, true, 0x00000000);
+			sprite.copyPixels(_image, region, _point);
+			return sprite;
 		}
 		
 		

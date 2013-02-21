@@ -28,7 +28,10 @@
  */
 package view.racing
 {
+	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.view.Screen;
+
+	import flash.display.BitmapData;
 	
 	
 	/**
@@ -155,6 +158,9 @@ package view.racing
 		 */
 		override protected function createChildren():void
 		{
+			resourceManager.process("spriteAtlas");
+			var atlas:SpriteAtlas = getResource("spriteAtlas");
+			var sprite:BitmapData = atlas.getSprite("sprite_billboard01");
 		}
 		
 		
