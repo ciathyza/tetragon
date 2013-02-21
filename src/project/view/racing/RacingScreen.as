@@ -43,7 +43,6 @@ package view.racing
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Shape;
 	
 	
 	/**
@@ -648,27 +647,7 @@ package view.racing
 		private function renderPolygon(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint):void
 		{
-			//Debug.trace(x1 + " " + y2 + "    " + x2 + " " + y2 + "    " + x3 + " " + y3 + "    " + x4 + " " + y4);
-			
-			var s:Shape = new Shape();
-			s.graphics.lineStyle();
-			s.graphics.beginFill(color);
-			s.graphics.moveTo(x1, y1);
-			s.graphics.lineTo(x2, y2);
-			s.graphics.lineTo(x3, y3);
-			s.graphics.lineTo(x4, y4);
-			s.graphics.endFill();
-			
-			_renderBuffer.draw(s);
-			
-//			ctx.fillStyle = color;
-//			ctx.beginPath();
-//			ctx.moveTo(x1, y1);
-//			ctx.lineTo(x2, y2);
-//			ctx.lineTo(x3, y3);
-//			ctx.lineTo(x4, y4);
-//			ctx.closePath();
-//			ctx.fill();
+			_renderBuffer.drawPolygon(x1, y1, x2, y2, x3, y3, x4, y4, color);
 		}
 		
 		
