@@ -11,5 +11,12 @@ package view.pseudo3d.vo
 	{
 		public var source:Image2D;
 		public var offset:Number;
+		
+		
+		public function SSprite(source:Image2D, offset:Number = 0.0)
+		{
+			this.source = source;
+			this.offset = offset;
+		}
 	}
 }

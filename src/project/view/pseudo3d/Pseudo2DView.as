@@ -36,7 +36,9 @@ package view.pseudo3d
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
 	import view.pseudo3d.vo.Car;
+	import view.pseudo3d.vo.PCamera;
 	import view.pseudo3d.vo.PPoint;
+	import view.pseudo3d.vo.PScreen;
 	import view.pseudo3d.vo.PWorld;
 	import view.pseudo3d.vo.SSprite;
 	import view.pseudo3d.vo.Segment;
@@ -72,6 +74,7 @@ package view.pseudo3d
 		private var segments:Vector.<Segment>;				// array of road segments
 		private var cars:Vector.<Car>;						// array of cars on the road
 		
+		private var atlas:TextureAtlas;
 		private var resolution:Number;						// scaling factor to provide resolution independence (computed)
 		
 		private var roadWidth:int = 2000;					// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
@@ -126,7 +129,7 @@ package view.pseudo3d
 		 */
 		public function start():void
 		{
-			//prepareSprites();
+			prepareSprites();
 			
 			// off road deceleration is somewhere in between
 			offRoadDecel = -maxSpeed / 2;
@@ -135,7 +138,7 @@ package view.pseudo3d
 			playerZ = (cameraHeight * cameraDepth);
 			resolution = frameHeight / 640;
 			
-			//resetRoad();
+			resetRoad();
 		}
 		
 		
@@ -144,7 +147,7 @@ package view.pseudo3d
 		 */
 		private function prepareSprites():void
 		{
-			var atlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
+			atlas = _main.resourceManager.resourceIndex.getResourceContent("spriteTextureAtlas");
 			SPRITES = new Sprites();
 			
 			SPRITES.BG_SKY = new Image2D(atlas.getTexture("bg_sky"));
@@ -299,7 +302,7 @@ package view.pseudo3d
 				z = Math.floor(Math.random() * segments.length) * segmentLength;
 				sprite = Util.randomChoice(SPRITES.CARS);
 				speed = maxSpeed / 4 + Math.random() * maxSpeed / (sprite == SPRITES.SEMI ? 4 : 2);
-				car = new Car(offset, z, sprite, speed);
+				car = new Car(offset, z, new SSprite(sprite), speed);
 				segment = findSegment(car.z);
 				segment.cars.push(car);
 				cars.push(car);
@@ -324,8 +327,8 @@ package view.pseudo3d
 			var n:uint = segments.length;
 			var seg:Segment = new Segment();
 			seg.index = n;
-			seg.p1 = new PPoint(new PWorld(lastY(), n * segmentLength), {}, {});
-			seg.p2 = new PPoint(new PWorld(y, (n + 1) * segmentLength), {}, {});
+			seg.p1 = new PPoint(new PWorld(lastY(), n * segmentLength), new PCamera(), new PScreen());
+			seg.p2 = new PPoint(new PWorld(y, (n + 1) * segmentLength), new PCamera(), new PScreen());
 			seg.curve = curve;
 			seg.sprites = new Vector.<SSprite>();
 			seg.cars = new Vector.<Car>();
@@ -336,9 +339,7 @@ package view.pseudo3d
 		
 		private function addSprite(n:int, sprite:Image2D, offset:Number):void
 		{
-			var s:SSprite = new SSprite();
-			s.source = sprite;
-			s.offset = offset;
+			var s:SSprite = new SSprite(sprite, offset);
 			segments[n].sprites.push(s);
 		}
 		
@@ -448,12 +449,13 @@ package view.pseudo3d
 
 		private function onTick():void
 		{
-			//update(step);
+			update(step);
 		}
 		
 		
 		override protected function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
+			renderGame();
 		}
 		
 		
@@ -513,7 +515,7 @@ package view.pseudo3d
 			for (n = 0; n < playerSegment.cars.length; n++)
 			{
 				car = playerSegment.cars[n];
-				carW = car.sprite.width * SPRITES.SCALE;
+				carW = car.sprite.source.width * SPRITES.SCALE;
 				if (speed > car.speed)
 				{
 					if (Util.overlap(playerX, playerW, car.offset, carW, 0.8))
@@ -591,7 +593,7 @@ package view.pseudo3d
 		private function updateCarOffset(car:Car, carSegment:Segment, playerSegment:Segment, playerW:Number):Number
 		{
 			var i:int, j:int, dir:Number, segment:Segment, otherCar:Car, otherCarW:Number,
-			lookahead:int = 20, carW:Number = car.sprite.width * SPRITES.SCALE;
+			lookahead:int = 20, carW:Number = car.sprite.source.width * SPRITES.SCALE;
 
 			// optimization, dont bother steering around other cars when 'out of sight' of the player
 			if ((carSegment.index - playerSegment.index) > drawDistance)
@@ -616,7 +618,7 @@ package view.pseudo3d
 				for (j = 0 ; j < segment.cars.length ; j++)
 				{
 					otherCar = segment.cars[j];
-					otherCarW = otherCar.sprite.width * SPRITES.SCALE;
+					otherCarW = otherCar.sprite.source.width * SPRITES.SCALE;
 					if ((car.speed > otherCar.speed) && Util.overlap(car.offset, carW, otherCar.offset, otherCarW, 1.2))
 					{
 						if (otherCar.offset > 0.5)
@@ -631,15 +633,100 @@ package view.pseudo3d
 			}
 
 			// if no cars ahead, but I have somehow ended up off road, then steer back on
-			if (car.offset < -0.9)
-				return 0.1;
-			else if (car.offset > 0.9)
-				return -0.1;
-			else
-				return 0;
+			if (car.offset < -0.9) return 0.1;
+			else if (car.offset > 0.9) return -0.1;
+			else return 0;
 		}
-
-
+		
+		
+		private function renderGame():void
+		{
+			var baseSegment:Segment = findSegment(position);
+			var basePercent:Number = Util.percentRemaining(position, segmentLength);
+			var playerSegment:Segment = findSegment(position + playerZ);
+			var playerPercent:Number = Util.percentRemaining(position + playerZ, segmentLength);
+			var playerY:Number = Util.interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+			var maxy:Number = frameHeight;
+			
+			var x:Number = 0;
+			var dx:Number = - (baseSegment.curve * basePercent);
+			
+			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number,
+				spriteX:Number, spriteY:Number;
+			
+			ctx.clearRect(0, 0, width, height);
+			
+			/* Render the background. */
+			Render.background(ctx, background, width, height, SPRITES.BG_SKY, skyOffset, resolution * skySpeed * playerY);
+			Render.background(ctx, background, width, height, SPRITES.BG_HILLS, hillOffset, resolution * hillSpeed * playerY);
+			Render.background(ctx, background, width, height, SPRITES.BG_TREES, treeOffset, resolution * treeSpeed * playerY);
+			
+			/* PHASE 1: render segments, front to back and clip far segments that have been
+			 * obscured by already rendered near segments if their projected coordinates are
+			 * lower than maxy. */
+			for (n = 0; n < drawDistance; n++)
+			{
+				segment = segments[(baseSegment.index + n) % segments.length];
+				segment.looped = segment.index < baseSegment.index;
+				segment.fog = Util.exponentialFog(n / drawDistance, fogDensity);
+				segment.clip = maxy;
+				
+				Util.project(segment.p1, (playerX * roadWidth) - x, playerY + cameraHeight,
+					position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+				Util.project(segment.p2, (playerX * roadWidth) - x - dx, playerY + cameraHeight,
+					position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+				
+				x = x + dx;
+				dx = dx + segment.curve;
+				
+				if ((segment.p1.camera.z <= cameraDepth)				// behind us
+					|| (segment.p2.screen.y >= segment.p1.screen.y)		// back face cull
+					|| (segment.p2.screen.y >= maxy))					// clip by (already rendered) hill
+				{
+					continue;
+				}
+				
+				Render.segment(ctx, width, lanes, segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
+				maxy = segment.p1.screen.y;
+			}
+			
+			/* PHASE 2: Back to front render the sprites. */
+			for (n = (drawDistance - 1); n > 0; n--)
+			{
+				segment = segments[(baseSegment.index + n) % segments.length];
+				
+				/* Render oponents. */
+				for (i = 0; i < segment.cars.length; i++)
+				{
+					car = segment.cars[i];
+					sprite = car.sprite;
+					spriteScale = Util.interpolate(segment.p1.screen.scale, segment.p2.screen.scale, car.percent);
+					spriteX = Util.interpolate(segment.p1.screen.x, segment.p2.screen.x, car.percent) + (spriteScale * car.offset * roadWidth * width / 2);
+					spriteY = Util.interpolate(segment.p1.screen.y, segment.p2.screen.y, car.percent);
+					Render.sprite(ctx, width, height, resolution, roadWidth, atlas, car.sprite, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
+				}
+				
+				/* Render decoration and obstacle sprites. */
+				for (i = 0; i < segment.sprites.length; i++)
+				{
+					sprite = segment.sprites[i];
+					spriteScale = segment.p1.screen.scale;
+					spriteX = segment.p1.screen.x + (spriteScale * sprite.offset * roadWidth * width / 2);
+					spriteY = segment.p1.screen.y;
+					Render.sprite(ctx, width, height, resolution, roadWidth, atlas, sprite, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
+				}
+				
+				/* Render player sprite. */
+				if (segment == playerSegment)
+				{
+					Render.player(ctx, width, height, resolution, roadWidth, atlas, speed / maxSpeed,
+						cameraDepth / playerZ, width / 2,
+						(height / 2) - (cameraDepth / playerZ * Util.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * height / 2), speed * (keyLeft ? -1 : keyRight ? 1 : 0), playerSegment.p2.world.y - playerSegment.p1.world.y);
+				}
+			}
+		}
+		
+		
 		private function updateHUD(key:String, value:String):void
 		{
 			// accessing DOM can be slow, so only do it if value has changed

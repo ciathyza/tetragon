@@ -1,6 +1,5 @@
 package view.pseudo3d.vo
 {
-	import tetragon.view.render2d.display.Image2D;
 	
 	
 	/**
@@ -11,12 +10,12 @@ package view.pseudo3d.vo
 	{
 		public var offset:Number;
 		public var z:Number;
-		public var sprite:Image2D;
+		public var sprite:SSprite;
 		public var speed:Number;
 		public var percent:Number;
 		
 		
-		public function Car(offset:Number, z:Number, sprite:Image2D, speed:Number)
+		public function Car(offset:Number, z:Number, sprite:SSprite, speed:Number)
 		{
 			this.offset = offset;
 			this.z = z;

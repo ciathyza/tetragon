@@ -45,5 +45,8 @@ package view.pseudo3d.vo
 		public var sprites:Vector.<SSprite>;
 		public var cars:Vector.<Car>;
 		public var color:ColorSet;
+		public var looped:Boolean;
+		public var fog:Number;
+		public var clip:Number;
 	}
 }

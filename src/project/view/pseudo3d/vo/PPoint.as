@@ -7,11 +7,11 @@ package view.pseudo3d.vo
 	public class PPoint
 	{
 		public var world:PWorld;
-		public var camera:Object;
-		public var screen:Object;
+		public var camera:PCamera;
+		public var screen:PScreen;
 		
 		
-		public function PPoint(world:PWorld, camera:Object, screen:Object)
+		public function PPoint(world:PWorld, camera:PCamera, screen:PScreen)
 		{
 			this.world = world;
 			this.camera = camera;
