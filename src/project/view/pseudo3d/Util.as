@@ -1,6 +1,6 @@
 package view.pseudo3d
 {
-	import view.pseudo3d.vo.PPoint;
+	import view.racing.vo.PPoint;
 	/**
 	 * Util
 	 * @author Hexagon

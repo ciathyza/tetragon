@@ -33,8 +33,18 @@ package view.racing
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 
+	import view.pseudo3d.constants.COLORS;
+	import view.pseudo3d.constants.ColorSet;
+	import view.racing.vo.PCamera;
+	import view.racing.vo.PPoint;
+	import view.racing.vo.PScreen;
+	import view.racing.vo.PWorld;
+	import view.racing.vo.Segment;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+
+
 	
 	
 	/**
@@ -58,38 +68,45 @@ package view.racing
 		private var _bufferBitmap:Bitmap;
 		private var _sprites:Sprites;
 		
+		private var _segments:Vector.<Segment>;	// array of road segments
+		
 		private var _bufferWidth:int = 640;
 		private var _bufferHeight:int = 480;
 		
-		private var _dt:Number = 1 / 60;					// how long is each frame (in seconds)
-		private var _resolution:Number = 1;					// scaling factor to provide resolution independence (computed)
+		private var _dt:Number;					// how long is each frame (in seconds)
+		private var _resolution:Number = 1;		// scaling factor to provide resolution independence (computed)
+		private var _drawDistance:int = 300;	// number of segments to draw
+		private var _fogDensity:int = 5;		// exponential fog density
+		private var _cameraHeight:int = 1000;	// z height of camera
+		private var _cameraDepth:int;			// z distance camera is from screen (computed)
 		
-		private var _skySpeed:Number = 0.001;				// background sky layer scroll speed when going around curve (or up hill)
-		private var _hillSpeed:Number = 0.002;				// background hill layer scroll speed when going around curve (or up hill)
-		private var _treeSpeed:Number = 0.003;				// background tree layer scroll speed when going around curve (or up hill)
+		private var _skySpeed:Number = 0.001;	// background sky layer scroll speed when going around curve (or up hill)
+		private var _hillSpeed:Number = 0.002;	// background hill layer scroll speed when going around curve (or up hill)
+		private var _treeSpeed:Number = 0.003;	// background tree layer scroll speed when going around curve (or up hill)
 		
-		private var _skyOffset:int = 0;						// current sky scroll offset
-		private var _hillOffset:int = 0;					// current hill scroll offset
-		private var _treeOffset:int = 0;					// current tree scroll offset
+		private var _skyOffset:int = 0;			// current sky scroll offset
+		private var _hillOffset:int = 0;		// current hill scroll offset
+		private var _treeOffset:int = 0;		// current tree scroll offset
 		
-		private var _playerX:Number = 0;					// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerX:Number = 0;		// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerY:Number = 0;
-		private var _playerZ:Number;						// player relative z distance from camera (computed)
+		private var _playerZ:Number;			// player relative z distance from camera (computed)
 		
-		private var _roadWidth:int = 2000;					// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-		private var _segmentLength:int = 200;				// length of a single segment
-		private var _rumbleLength:int = 3;					// number of segments per red/white rumble strip
-		private var _trackLength:int = 200;						// z length of entire track (computed)
+		private var _roadWidth:int = 2000;		// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+		private var _segmentLength:int = 200;	// length of a single segment
+		private var _rumbleLength:int = 3;		// number of segments per red/white rumble strip
+		private var _trackLength:int = 200;		// z length of entire track (computed)
+		private var _lanes:int = 3;				// number of lanes
 		
-		private var _accel:Number = _maxSpeed / 5;			// acceleration rate - tuned until it 'felt' right
-		private var _breaking:Number = -_maxSpeed;			// deceleration rate when braking
-		private var _decel:Number = -_maxSpeed / 5;			// 'natural' deceleration rate when neither accelerating, nor braking
-		private var _offRoadDecel:Number = 0.99;			// speed multiplier when off road (e.g. you lose 2% speed each update frame)
-		private var _offRoadLimit:Number = _maxSpeed / 4;	// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+		private var _accel:Number;				// acceleration rate - tuned until it 'felt' right
+		private var _breaking:Number;			// deceleration rate when braking
+		private var _decel:Number;				// 'natural' deceleration rate when neither accelerating, nor braking
+		private var _offRoadDecel:Number = 0.99;// speed multiplier when off road (e.g. you lose 2% speed each update frame)
+		private var _offRoadLimit:Number;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
 		
-		private var _position:Number = 0;					// current camera Z position (add playerZ to get player's absolute Z position)
-		private var _speed:Number = 0;						// current speed
-		private var _maxSpeed:Number = _segmentLength / _dt;// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+		private var _position:Number = 0;		// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _speed:Number = 0;			// current speed
+		private var _maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
 		private var _isAccelerate:Boolean;
 		private var _isBrake:Boolean;
@@ -130,6 +147,15 @@ package view.racing
 		override public function reset():void
 		{
 			super.reset();
+			
+			_dt = 1 / main.gameLoop.frameRate;
+			_accel = _maxSpeed / 5;
+			_breaking = -_maxSpeed;
+			_decel = -_maxSpeed / 5;
+			_offRoadLimit = _maxSpeed / 4;
+			_maxSpeed = _segmentLength / _dt;
+			
+			resetRoad();
 		}
 		
 		
@@ -213,7 +239,8 @@ package view.racing
 		 */
 		private function onTick():void
 		{
-			_position = Util.increase(_position, _dt * _speed, _trackLength);
+			_position = increase(_position, _dt * _speed, _trackLength);
+			if (isNaN(_position)) _position = 0;
 			
 			/* At top speed, should be able to cross from left to right (-1 to 1) in 1 second. */
 			var dx:Number = _dt * 2 * (_speed / _maxSpeed);
@@ -244,9 +271,40 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
+			var baseSegment:Segment = findSegment(_position);
+			var maxy:Number = _bufferHeight;
+			var s:Segment;
+			var n:int;
+			
 			_renderBuffer.clear();
 			
-			renderBackground();
+			/* Render background layers. */
+			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
+			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
+			
+			/* Render road segments. */
+			for (n = 0; n < _drawDistance; n++)
+			{
+				s = _segments[(baseSegment.index + n) % _segments.length];
+				s.looped = s.index < baseSegment.index;
+				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
+				
+				project(s.p1, (_playerX * _roadWidth), _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				project(s.p2, (_playerX * _roadWidth), _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				
+				if ((s.p1.camera.z <= _cameraDepth)	// behind us
+					|| (s.p2.screen.y >= maxy))		// clip by (already rendered) segment
+				{
+					continue;
+				}
+				
+				renderSegment(s.p1.screen.x, s.p1.screen.y, s.p1.screen.w, s.p2.screen.x, s.p2.screen.y, s.p2.screen.w, s.fog, s.color);
+				maxy = s.p2.screen.y;
+			}
+			
+			/* Render the player sprite. */
+			//renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, _bufferHeight, _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), 0);
 		}
 		
 		
@@ -338,6 +396,7 @@ package view.racing
 		 */
 		override protected function executeBeforeStart():void
 		{
+			reset();
 			main.statsMonitor.toggle();
 			main.gameLoop.start();
 		}
@@ -410,13 +469,98 @@ package view.racing
 		/**
 		 * @private
 		 */
-		private function renderBackground():void
+		private function resetRoad():void
 		{
-			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
+			_segments = new Vector.<Segment>();
+			
+			for (var i:int = 0; i < 500; i++)
+			{
+				var segment:Segment = new Segment();
+				segment.index = i;
+				segment.p1 = new PPoint(new PWorld(0, i * _segmentLength), new PCamera(), new PScreen());
+				segment.p2 = new PPoint(new PWorld(0, (i + 1) * _segmentLength), new PCamera(), new PScreen());
+				segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
+				_segments.push(segment);
+			}
+			
+			_trackLength = _segments.length * _segmentLength;
 		}
 		
+		
+		/**
+		 * @private
+		 */
+		private function findSegment(z:Number):Segment
+		{
+			return _segments[Math.floor(z / _segmentLength) % _segments.length];
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Util Functions
+		//-----------------------------------------------------------------------------------------
+		
+		private static function increase(start:Number, increment:Number, max:Number):Number
+		{
+			var result:Number = start + increment;
+			while (result >= max) result -= max;
+			while (result < 0) result += max;
+			return result;
+		}
+		
+		
+		private static function exponentialFog(distance:Number, density:Number):Number
+		{
+			return 1 / (Math.pow(Math.E, (distance * distance * density)));
+		}
+		
+		
+		private static function project(p:PPoint, cameraX:Number, cameraY:Number, cameraZ:Number,
+			cameraDepth:Number, width:Number, height:Number, roadWidth:Number):void
+		{
+			p.camera.x = (p.world.x || 0) - cameraX;
+			p.camera.y = (p.world.y || 0) - cameraY;
+			p.camera.z = (p.world.z || 0) - cameraZ;
+			p.screen.scale = cameraDepth / p.camera.z;
+			p.screen.x = Math.round((width / 2) + (p.screen.scale * p.camera.x * width / 2));
+			p.screen.y = Math.round((height / 2) - (p.screen.scale * p.camera.y * height / 2));
+			p.screen.w = Math.round((p.screen.scale * roadWidth * width / 2));
+		}
+		
+		
+		private static function rumbleWidth(projectedRoadWidth:Number, lanes:int):Number
+		{
+			return projectedRoadWidth / Math.max(6, 2 * lanes);
+		}
+		
+		
+		private static function laneMarkerWidth(projectedRoadWidth:Number, lanes:int):Number
+		{
+			return projectedRoadWidth / Math.max(32, 8 * lanes);
+		}
+		
+		
+		private static function interpolate(a:Number, b:Number, percent:Number):Number
+		{
+			return a + (b - a) * percent;
+		}
+		
+		
+		private static function randomInt(min:Number, max:Number):int
+		{
+			return Math.round(interpolate(min, max, Math.random()));
+		}
+		
+		
+		private static function randomChoice(a:Array):*
+		{
+			return a[randomInt(0, a.length - 1)];
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Render Functions
+		//-----------------------------------------------------------------------------------------
 		
 		private function renderBackgroundLayer(sprite:BitmapData, rotation:Number = 0.0,
 			offset:Number = 0.0):void
@@ -434,10 +578,106 @@ package view.racing
 			
 			//ctx.drawImage(atlas, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
 			_renderBuffer.draw(sprite);
-			
 			if (sourceW < imageW)
 			{
 				//ctx.drawImage(atlas, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
+			}
+		}
+		
+		
+		private function renderSegment(x1:Number, y1:Number, w1:Number, x2:Number, y2:Number,
+			w2:Number, fogNum:Number, color:ColorSet):void
+		{
+			var r1:Number = rumbleWidth(w1, _lanes),
+				r2:Number = rumbleWidth(w2, _lanes),
+				l1:Number = laneMarkerWidth(w1, _lanes),
+				l2:Number = laneMarkerWidth(w2, _lanes),
+				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
+			
+//			ctx.fillStyle = color.grass;
+//			ctx.fillRect(0, y2, _bufferWidth, y1 - y2);
+
+			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
+			renderPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
+			renderPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road);
+			
+			if (color.lane)
+			{
+				lanew1 = w1 * 2 / _lanes;
+				lanew2 = w2 * 2 / _lanes;
+				lanex1 = x1 - w1 + lanew1;
+				lanex2 = x2 - w2 + lanew2;
+				for (lane = 1 ; lane < _lanes ; lanex1 += lanew1, lanex2 += lanew2, lane++)
+				{
+					renderPolygon(lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane);
+				}
+			}
+			
+			renderFog(0, y1, _bufferWidth, y2 - y1, fogNum);
+		}
+		
+		
+		private function renderPolygon(x1:Number, y1:Number, x2:Number, y2:Number, x3:Number, y3:Number,
+			x4:Number, y4:Number, color:uint):void
+		{
+//			ctx.fillStyle = color;
+//			ctx.beginPath();
+//			ctx.moveTo(x1, y1);
+//			ctx.lineTo(x2, y2);
+//			ctx.lineTo(x3, y3);
+//			ctx.lineTo(x4, y4);
+//			ctx.closePath();
+//			ctx.fill();
+		}
+		
+		
+		private function renderFog(x:Number, y:Number, width:Number, height:Number, fog:Number):void
+		{
+			if (fog < 1)
+			{
+//				ctx.globalAlpha = (1 - fog);
+//				ctx.fillStyle = COLORS.FOG;
+//				ctx.fillRect(x, y, width, height);
+//				ctx.globalAlpha = 1;
+			}
+		}
+		
+		
+		private function renderPlayer(roadWidth:Number, speedPercent:Number, scale:Number,
+			destX:Number, destY:Number, steer:Number, updown:Number):void
+		{
+			var bounce:Number = (1.5 * Math.random() * speedPercent * _resolution) * randomChoice([-1, 1]);
+			var spr:BitmapData;
+			
+			if (steer < 0)
+			{
+				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_LEFT : _sprites.PLAYER_LEFT;
+			}
+			else if (steer > 0)
+			{
+				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_RIGHT : _sprites.PLAYER_RIGHT;
+			}
+			else
+			{
+				spr = (updown > 0) ? _sprites.PLAYER_UPHILL_STRAIGHT : _sprites.PLAYER_STRAIGHT;
+			}
+			
+			renderSprite(roadWidth, spr, scale, destX, destY + bounce, -0.5, -1);
+		}
+		
+		
+		private function renderSprite(roadWidth:Number, sprite:BitmapData, scale:Number,
+			destX:Number, destY:Number, offsetX:Number, offsetY:Number, clipY:Number = NaN):void
+		{
+			/* Scale for projection AND relative to roadWidth. */
+			var destW:Number = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
+			var destH:Number = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
+			destX = destX + (destW * (offsetX || 0));
+			destY = destY + (destH * (offsetY || 0));
+			var clipH:Number = clipY ? Math.max(0, destY + destH - clipY) : 0;
+			if (clipH < destH)
+			{
+//				ctx.drawImage(atlas, sprite.x, sprite.y, sprite.width, sprite.height - (sprite.height * clipH / destH), destX, destY, destW, destH - clipH);
 			}
 		}
 	}

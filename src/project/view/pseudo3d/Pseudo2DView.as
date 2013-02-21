@@ -35,14 +35,15 @@ package view.pseudo3d
 
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ROAD;
-	import view.pseudo3d.vo.Car;
-	import view.pseudo3d.vo.PCamera;
-	import view.pseudo3d.vo.PPoint;
-	import view.pseudo3d.vo.PScreen;
-	import view.pseudo3d.vo.PWorld;
-	import view.pseudo3d.vo.SSprite;
-	import view.pseudo3d.vo.Segment;
-	import view.pseudo3d.vo.Sprites;
+	import view.racing.vo.Car;
+	import view.racing.vo.PCamera;
+	import view.racing.vo.PPoint;
+	import view.racing.vo.PScreen;
+	import view.racing.vo.PWorld;
+	import view.racing.vo.SSprite;
+	import view.racing.vo.Segment;
+	import view.racing.vo.Sprites;
+
 	
 	
 	/**

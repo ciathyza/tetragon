@@ -2,10 +2,10 @@ package view.pseudo3d
 {
 	import tetragon.data.texture.TextureAtlas;
 	import tetragon.view.render2d.display.Image2D;
-
 	import view.pseudo3d.constants.COLORS;
 	import view.pseudo3d.constants.ColorSet;
-	import view.pseudo3d.vo.Sprites;
+	import view.racing.vo.Sprites;
+
 	
 	
 	/**

@@ -28,7 +28,6 @@
  */
 package setup
 {
-	import view.racing.RacingScreen;
 	import data.GameModel;
 
 	import modules.app.AppModule;
@@ -39,7 +38,7 @@ package setup
 	import tetragon.setup.Setup;
 
 	import view.empty.EmptyScreen;
-	import view.pseudo3d.Pseudo3DScreen;
+	import view.racing.RacingScreen;
 	import view.render2d.Render2DTestScreen;
 	import view.splash.SplashScreen;
 
@@ -259,7 +258,6 @@ package setup
 			registrar.registerScreen(SplashScreen.ID, SplashScreen);
 			registrar.registerScreen(EmptyScreen.ID, EmptyScreen);
 			registrar.registerScreen(Render2DTestScreen.ID, Render2DTestScreen);
-			registrar.registerScreen(Pseudo3DScreen.ID, Pseudo3DScreen);
 			registrar.registerScreen(RacingScreen.ID, RacingScreen);
 		}
 	}

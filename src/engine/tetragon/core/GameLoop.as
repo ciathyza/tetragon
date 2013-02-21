@@ -182,6 +182,15 @@ package tetragon.core
 		}
 		
 		
+		/**
+		 * The milliseconds for one frame.
+		 */
+		public function get step():Number
+		{
+			return _step;
+		}
+		
+		
 		public function get renderFPS():uint
 		{
 			return _renderFPS;

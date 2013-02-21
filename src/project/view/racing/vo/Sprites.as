@@ -1,4 +1,4 @@
-package view.pseudo3d.vo
+package view.racing.vo
 {
 	import tetragon.view.render2d.display.Image2D;
 

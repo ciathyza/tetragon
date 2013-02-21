@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package view.pseudo3d.vo
+package view.racing.vo
 {
 	import view.pseudo3d.constants.ColorSet;
 	
