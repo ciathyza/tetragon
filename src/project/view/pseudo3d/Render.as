@@ -29,7 +29,7 @@ package view.pseudo3d
 		
 		
 		public static function segment(ctx:RenderBuffer, width:Number, lanes:int, x1:Number, y1:Number,
-			w1:Number, x2:Number, y2:Number, w2:Number, fog:Number, color:ColorSet):void
+			w1:Number, x2:Number, y2:Number, w2:Number, fogNum:Number, color:ColorSet):void
 		{
 			var r1:Number = rumbleWidth(w1, lanes),
 				r2:Number = rumbleWidth(w2, lanes),
@@ -56,29 +56,24 @@ package view.pseudo3d
 				}
 			}
 			
-			fog(ctx, 0, y1, width, y2 - y1, fog);
+			fog(ctx, 0, y1, width, y2 - y1, fogNum);
 		}
 		
 		
 		public static function background(ctx:RenderBuffer, atlas:TextureAtlas, width:Number,
-			height:Number, layer:Image2D, rotation:Number, offset:Number):void
+			height:Number, layer:Image2D, rotation:Number = 0.0, offset:Number = 0.0):void
 		{
-			rotation = rotation || 0;
-			offset = offset || 0;
-
 			var imageW:Number = layer.width / 2;
 			var imageH:Number = layer.height;
-
 			var sourceX:Number = layer.x + Math.floor(layer.width * rotation);
 			var sourceY:Number = layer.y;
 			var sourceW:Number = Math.min(imageW, layer.x + layer.width - sourceX);
 			var sourceH:Number = imageH;
-
 			var destX:Number = 0;
 			var destY:Number = offset;
 			var destW:Number = Math.floor(width * (sourceW / imageW));
 			var destH:Number = height;
-
+			
 			ctx.drawImage(atlas, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
 			if (sourceW < imageW)
 			{

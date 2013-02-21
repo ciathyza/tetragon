@@ -301,7 +301,7 @@ package view.pseudo3d
 		}
 		
 		
-		function resetCars():void
+		private function resetCars():void
 		{
 			cars = new Vector.<Car>();
 			var n:int, car:Car, segment:Segment, offset:Number, z:Number, sprite:Image2D, speed:Number;

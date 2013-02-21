@@ -60,6 +60,7 @@
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
 		<file id="textureAtlasFile" path="data/textureatlas.xml" packageID="resourcePackage"/>
+		<file id="spriteAtlasFile" path="data/spriteatlas.xml" packageID="resourcePackage"/>
 	</dataFiles>
 	
 	
@@ -128,7 +129,11 @@
 		</group>
 		<!-- Data type group for Texture Atlas resource. -->
 		<group type="TextureAtlas" fileID="textureAtlasFile">
-			<resource id="spriteTextureAtlas"/>
+			<resource id="textureAtlas"/>
+		</group>
+		<!-- Data type group for Sprite Atlas resource. -->
+		<group type="SpriteAtlas" fileID="spriteAtlasFile">
+			<resource id="spriteAtlas"/>
 		</group>
 	</data>
 	

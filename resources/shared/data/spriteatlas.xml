@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
 	
-	<textureAtlas id="textureAtlas" imageID="spriteTextureAtlasATF">
+	<spriteAtlas id="spriteAtlas" imageID="spriteTextureAtlasPNG">
 	    <SubTexture name="bg_hills" x="2" y="484" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
 	    <SubTexture name="bg_sky" x="2" y="2" width="1280" height="480"/>
 	    <SubTexture name="bg_trees" x="2" y="938" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
@@ -39,6 +39,6 @@
 	    <SubTexture name="sprite_tree1" x="1284" y="2" width="360" height="360"/>
 	    <SubTexture name="sprite_tree2" x="1284" y="646" width="282" height="295"/>
 	    <SubTexture name="sprite_truck" x="1642" y="1280" width="100" height="78"/>
-	</textureAtlas>
+	</spriteAtlas>
 
 </data>
