@@ -28,6 +28,7 @@
  */
 package setup
 {
+	import view.racing.RacingScreen;
 	import data.GameModel;
 
 	import modules.app.AppModule;
@@ -259,6 +260,7 @@ package setup
 			registrar.registerScreen(EmptyScreen.ID, EmptyScreen);
 			registrar.registerScreen(Render2DTestScreen.ID, Render2DTestScreen);
 			registrar.registerScreen(Pseudo3DScreen.ID, Pseudo3DScreen);
+			registrar.registerScreen(RacingScreen.ID, RacingScreen);
 		}
 	}
 }

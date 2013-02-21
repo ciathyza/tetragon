@@ -29,7 +29,7 @@
 package tetragon.data.texture
 {
 	/**
-	 * A VO that stores the boundaries for a subtexture on a sprite atlas.
+	 * A VO that stores the boundaries for a subtexture on a texture- or sprite atlas.
 	 */
 	public class SubTextureBounds
 	{

@@ -37,12 +37,15 @@ package tetragon.setup
 	import tetragon.data.Config;
 	import tetragon.data.Params;
 	import tetragon.data.Settings;
+	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.data.texture.TextureAtlas;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
 	import tetragon.debug.StatsMonitor;
 	import tetragon.entity.components.*;
+	import tetragon.file.parsers.SpriteAtlasDataParser;
 	import tetragon.file.parsers.TextureAtlasDataParser;
+	import tetragon.file.resource.processors.SpriteAtlasProcessor;
 	import tetragon.file.resource.processors.TextureAtlasProcessor;
 
 	import com.hexagonstar.util.env.getSeparator;
@@ -438,6 +441,7 @@ package tetragon.setup
 		override protected function registerDataTypes():void
 		{
 			registrar.registerDataType(TextureAtlas.TEXTURE_ATLAS, TextureAtlasDataParser);
+			registrar.registerDataType(SpriteAtlas.SPRITE_ATLAS, SpriteAtlasDataParser);
 			//registrar.registerDataType(SWFAssetCatalog.SWF_ASSET_CATALOG, SWFAssetCatalogParser);
 			//registrar.registerDataType(SpriteSheet.SPRITE_SHEET, SpriteSheetDataParser);
 			//registrar.registerDataType(SpriteSet.SPRITE_SET, SpriteSetDataParser);
@@ -450,6 +454,7 @@ package tetragon.setup
 		override protected function registerResourceProcessors():void
 		{
 			registrar.registerResourceProcessor(TextureAtlas.TEXTURE_ATLAS, TextureAtlasProcessor);
+			registrar.registerResourceProcessor(SpriteAtlas.SPRITE_ATLAS, SpriteAtlasProcessor);
 			//registrar.registerResourceProcessor(SWFAssetCatalog.SWF_ASSET_CATALOG, SWFAssetCatalogProcessor);
 			//registrar.registerResourceProcessor(SpriteSheet.SPRITE_SHEET, SpriteSheetProcessor);
 			//registrar.registerResourceProcessor(SpriteSet.SPRITE_SET, SpriteSetProcessor);

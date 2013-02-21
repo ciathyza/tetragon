@@ -26,26 +26,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.data.texture
+package tetragon.data.sprite
 {
 	import tetragon.data.DataObject;
-	import tetragon.view.render2d.textures.Texture2D;
+	import tetragon.data.texture.SubTextureBounds;
 
+	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	
 	
 	/**
-	 * TextureAtlas class
+	 * SpriteAtlas class
 	 *
 	 * @author Hexagon
 	 */
-	public class TextureAtlas extends DataObject
+	public class SpriteAtlas extends DataObject
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const TEXTURE_ATLAS:String = "TextureAtlas";
+		public static const SPRITE_ATLAS:String = "SpriteAtlas";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -57,11 +58,11 @@ package tetragon.data.texture
 		/** @private */
 		private var _subTextureBounds:Vector.<SubTextureBounds>;
 		/** @private */
-		private var _texture:Texture2D;
+		private var _image:BitmapData;
 		/** @private */
-		private var _textureRegions:Object;
+		private var _spriteRegions:Object;
 		/** @private */
-		private var _textureFrames:Object;
+		private var _spriteFrames:Object;
 		/** @private */
 		private var _processed:Boolean;
 		
@@ -77,14 +78,14 @@ package tetragon.data.texture
 		 * @param imageID
 		 * @param subTextureBounds
 		 */
-		public function TextureAtlas(id:String, imageID:String,
+		public function SpriteAtlas(id:String, imageID:String,
 			subTextureBounds:Vector.<SubTextureBounds>)
 		{
 			_id = id;
 			_imageID = imageID;
 			_subTextureBounds = subTextureBounds;
-			_textureRegions = {};
-			_textureFrames = {};
+			_spriteRegions = {};
+			_spriteFrames = {};
 		}
 		
 		
@@ -97,49 +98,52 @@ package tetragon.data.texture
 		 */
 		override public function dispose():void
 		{
-			if (!_texture) return;
-			_texture.dispose();
+			if (!_image) return;
+			_image.dispose();
 		}
 		
 		
 		/**
-		 * Retrieves a subtexture by name. Returns <code>null</code> if it is not found.
+		 * Retrieves a sprite by name. Returns <code>null</code> if it is not found.
 		 * 
 		 * @param id
-		 * @return Texture2D or null.
+		 * @return BitmapData or null.
 		 */
-		public function getTexture(id:String):Texture2D
+		public function getSprite(id:String):BitmapData
 		{
-			var region:Rectangle = _textureRegions[id];
+			var region:Rectangle = _spriteRegions[id];
 			if (!region) return null;
-			return Texture2D.fromTexture(_texture, region, _textureFrames[id]);
+			
+			//var sprite:BitmapData = new BitmapData(width, height);
+			//_image.
+			
+			return null; // TODO Texture2D.fromTexture(_image, region, _spriteFrames[id]);
 		}
 		
 		
 		/**
-		 * Returns all textures that start with a certain string, sorted alphabetically
-		 * (especially useful for "MovieClip").
+		 * Returns all sprites that start with a certain string, sorted alphabetically
 		 * 
 		 * @param prefix
-		 * @return Vector
+		 * @return A Vector of BitmapDatas.
 		 */
-		public function getTextures(prefix:String = ""):Vector.<Texture2D>
+		public function getSprites(prefix:String = ""):Vector.<BitmapData>
 		{
-			var textures:Vector.<Texture2D> = new <Texture2D>[];
+			var sprites:Vector.<BitmapData> = new <BitmapData>[];
 			var names:Vector.<String> = new <String>[];
 			var name:String;
 			
-			for (name in _textureRegions)
+			for (name in _spriteRegions)
 			{
 				if (name.indexOf(prefix) == 0) names.push(name);
 			}
 			names.sort(Array.CASEINSENSITIVE);
 			for each (name in names)
 			{
-				textures.push(getTexture(name));
+				sprites.push(getSprite(name));
 			}
 			
-			return textures;
+			return sprites;
 		}
 		
 		
@@ -152,8 +156,8 @@ package tetragon.data.texture
 		 */
 		public function addRegion(id:String, region:Rectangle, frame:Rectangle = null):void
 		{
-			_textureRegions[id] = region;
-			if (frame) _textureFrames[id] = frame;
+			_spriteRegions[id] = region;
+			if (frame) _spriteFrames[id] = frame;
 		}
 		
 		
@@ -164,7 +168,7 @@ package tetragon.data.texture
 		 */
 		public function removeRegion(id:String):void
 		{
-			delete _textureRegions[id];
+			delete _spriteRegions[id];
 		}
 		
 		
@@ -206,25 +210,25 @@ package tetragon.data.texture
 		}
 		
 		
-		public function get texture():Texture2D
+		public function get image():BitmapData
 		{
-			return _texture;
+			return _image;
 		}
-		public function set texture(v:Texture2D):void
+		public function set image(v:BitmapData):void
 		{
-			_texture = v;
-		}
-		
-		
-		public function get textureRegions():Object
-		{
-			return _textureRegions;
+			_image = v;
 		}
 		
 		
-		public function get textureFrames():Object
+		public function get spriteRegions():Object
 		{
-			return _textureFrames;
+			return _spriteRegions;
+		}
+		
+		
+		public function get spriteFrames():Object
+		{
+			return _spriteFrames;
 		}
 		
 		
