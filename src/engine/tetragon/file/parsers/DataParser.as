@@ -131,6 +131,22 @@ package tetragon.file.parsers
 		
 		
 		/**
+		 * Checks whether the specified XML contains a tag or attribute of the
+		 * specified name. Can be used for checking data existance in an XML.
+		 * 
+		 * @param xml
+		 * @param name
+		 * @return true or false.
+		 */
+		public static function contains(xml:XML, name:String):Boolean
+		{
+			var list:XMLList = xml[name];
+			if (list == null) return false;
+			return list.length() > 0;
+		}
+		
+		
+		/**
 		 * Extracts the value that is stored under an XML node name or XML attribute name
 		 * specified with the xml and name arguments. The xml parameter can be an object
 		 * of type XML or XMLList.

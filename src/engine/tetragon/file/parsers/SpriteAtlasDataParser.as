@@ -82,8 +82,14 @@ package tetragon.file.parsers
 				}
 				
 				/* Create new SpriteAtlas definition. */
-				var sa:SpriteAtlas = new SpriteAtlas(id, extractString(xml, "@imageID"), subTextures,
-					extractBoolean(xml, "@transparent"), extractColorValue(xml, "@backgroundColor"));
+				var sa:SpriteAtlas = new SpriteAtlas(id, extractString(xml, "@imageID"), subTextures);
+				
+				/* only set these if they exist in the XML! */
+				if (contains(xml, "@transparent"))
+					sa.transparent = extractBoolean(xml, "@transparent");
+				if (contains(xml, "@backgroundColor"))
+					sa.backgroundColor = extractColorValue(xml, "@backgroundColor");
+				
 				checkReferencedID("imageID", sa.imageID);
 				index.addDataResource(sa);
 			}
