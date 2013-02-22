@@ -81,7 +81,7 @@ package view.racing
 		private var _cars:Vector.<Car>;			// array of cars on the road
 		
 		private var _bufferWidth:int = 1024;
-		private var _bufferHeight:int = 768;
+		private var _bufferHeight:int = 640;
 		
 		private var _dt:Number;					// how long is each frame (in seconds)
 		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
@@ -145,6 +145,9 @@ package view.racing
 		override public function start():void
 		{
 			super.start();
+			reset();
+			main.statsMonitor.toggle();
+			main.gameLoop.start();
 		}
 		
 		
@@ -778,9 +781,6 @@ package view.racing
 		 */
 		override protected function executeBeforeStart():void
 		{
-			reset();
-			main.statsMonitor.toggle();
-			main.gameLoop.start();
 		}
 		
 		
@@ -1456,7 +1456,7 @@ package view.racing
 		
 		
 		private function renderSprite(roadWidth:Number, sprite:BitmapData, scale:Number,
-			destX:int, destY:int, offsetX:Number, offsetY:Number, clipY:Number = NaN):void
+			destX:int, destY:int, offsetX:Number, offsetY:Number, clipY:Number = 0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
 			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);

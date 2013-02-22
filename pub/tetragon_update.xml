@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
+	<versionNumber>1.0.0</versionNumber>
+	<url>http://files.hexagonstar.com/downloads/app/tetragon/tetragon.air</url>
+	<description><![CDATA[v1.2.0 - Added brilliant feature X.
+v1.1.0 - Optimized reverse-extrapolated splines.
+v1.0.8 - Added fractal-based enemy unit A.I.
+v1.0.3 - Small bug fix that caused the world to stop rotating.
+v1.0.2 - Even more bug fixes.
+v1.0.1 - Several small bug fixes that resulted in crashing The Matrix.
+v1.0.0 - Initial public release.
+]]></description>
+</update>
