@@ -297,6 +297,9 @@ package view.racing
 		{
 			var baseSegment:Segment = findSegment(_position);
 			var basePercent:Number = percentRemaining(_position, _segmentLength);
+			var playerSegment:Segment = findSegment(_position + _playerZ);
+			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
+			var playerY:Number = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
 			var maxY:Number = _bufferHeight;
 			var x:Number = 0;
 			var dx:Number = -(baseSegment.curve * basePercent);
@@ -306,9 +309,9 @@ package view.racing
 			_renderBuffer.clear();
 			
 			/* Render background layers. */
-			renderBackground(_sprites.REGION_SKY, _skyOffset);
-			renderBackground(_sprites.REGION_HILLS, _hillOffset);
-			renderBackground(_sprites.REGION_TREES, _treeOffset);
+			renderBackground(_sprites.REGION_SKY, _skyOffset, _resolution * _skySpeed  * playerY);
+			renderBackground(_sprites.REGION_HILLS, _hillOffset, _resolution * _hillSpeed  * playerY);
+			renderBackground(_sprites.REGION_TREES, _treeOffset, _resolution * _treeSpeed  * playerY);
 			
 			/* Render road segments. */
 			for (n = 0; n < _drawDistance; n++)
@@ -317,17 +320,16 @@ package view.racing
 				s.looped = s.index < baseSegment.index;
 				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
 				
-				project(s.p1, (_playerX * _roadWidth) - x, _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-				project(s.p2, (_playerX * _roadWidth) - x - dx, _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-				
+				project(s.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				project(s.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+	
 				x = x + dx;
 				dx = dx + s.curve;
 				
-				if ((s.p1.camera.z <= _cameraDepth)	// behind us
-					|| (s.p2.screen.y >= maxY))		// clip by (already rendered) segment
-				{
+				if ((s.p1.camera.z <= _cameraDepth) || // behind us 
+					(s.p2.screen.y >= s.p1.screen.y) || // back face cull 
+					(s.p2.screen.y >= maxY))                  // clip by (already rendered) segment
 					continue;
-				}
 				
 				renderSegment(
 					s.p1.screen.x,
@@ -343,7 +345,13 @@ package view.racing
 			}
 			
 			/* Render the player sprite. */
-			renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, _bufferHeight, _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), 0);
+			renderPlayer(_roadWidth,
+				_speed / _maxSpeed,
+				_cameraDepth / _playerZ,
+				_bufferWidth / 2,
+				(_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2),
+				_speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0),
+				playerSegment.p2.world.y - playerSegment.p1.world.y);
 		}
 		
 		
@@ -529,18 +537,21 @@ package view.racing
 		{
 			_segments = new Vector.<Segment>();
 			
-			addStraight(ROAD.LENGTH.SHORT / 4);
+			addStraight(ROAD.LENGTH.SHORT / 2);
+			addHill(ROAD.LENGTH.SHORT, ROAD.HILL.LOW);
+			addLowRollingHills();
 			addSCurves();
-			addStraight(ROAD.LENGTH.LONG);
-			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
-			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
+			addBumps();
+			addLowRollingHills();
+			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
 			addStraight();
-			addSCurves();
-			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
-			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+			addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
+			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
+			addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
 			addStraight();
-			addSCurves();
-			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.EASY);
+			addDownhillToEnd();
 			
 			_segments[findSegment(_playerZ).index + 2].color = COLORS.START;
 			_segments[findSegment(_playerZ).index + 3].color = COLORS.START;
@@ -589,20 +600,73 @@ package view.racing
 		/**
 		 * @private
 		 */
+		private function addHill(num:int = ROAD.LENGTH.MEDIUM, height:int = ROAD.HILL.MEDIUM):void
+		{
+			addRoad(num, num, num, 0, height);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addLowRollingHills(num:int = ROAD.LENGTH.SHORT,
+			height:int = ROAD.HILL.LOW):void
+		{
+			addRoad(num, num, num, 0, height / 2);
+			addRoad(num, num, num, 0, -height);
+			addRoad(num, num, num, ROAD.CURVE.EASY, height);
+			addRoad(num, num, num, 0, 0);
+			addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
+			addRoad(num, num, num, 0, 0);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addBumps():void
+		{
+			addRoad(10, 10, 10, 0, 5);
+			addRoad(10, 10, 10, 0, -2);
+			addRoad(10, 10, 10, 0, -5);
+			addRoad(10, 10, 10, 0, 8);
+			addRoad(10, 10, 10, 0, 5);
+			addRoad(10, 10, 10, 0, -7);
+			addRoad(10, 10, 10, 0, 5);
+			addRoad(10, 10, 10, 0, -2);
+		}
+
+
+		/**
+		 * @private
+		 */
+		private function addDownhillToEnd(num:int = 200):void
+		{
+			addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY() / _segmentLength);
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
 		{
+			var startY:Number = lastY();
+			var endY:Number = startY + (Util.toInt(y, 0) * _segmentLength);
 			var i:uint;
+			var total:uint = enter + hold + leave;
+			
 			for (i = 0; i < enter; i++)
 			{
-				addSegment(easeIn(0, curve, i / enter));
+				addSegment(easeIn(0, curve, i / enter), easeInOut(startY, endY, i / total));
 			}
 			for (i = 0; i < hold; i++)
 			{
-				addSegment(curve);
+				addSegment(curve, easeInOut(startY, endY, (enter + i) / total));
 			}
 			for (i = 0; i < leave; i++)
 			{
-				addSegment(easeInOut(curve, 0, i / leave));
+				addSegment(easeInOut(curve, 0, i / leave), easeInOut(startY, endY, (enter + hold + i) / total));
 			}
 		}
 		
@@ -610,13 +674,13 @@ package view.racing
 		/**
 		 * @private
 		 */
-		private function addSegment(curve:Number):void
+		private function addSegment(curve:Number, y:Number):void
 		{
 			var i:uint = _segments.length;
 			var segment:Segment = new Segment();
 			segment.index = i;
-			segment.p1 = new PPoint(new PWorld(0, i * _segmentLength), new PCamera(), new PScreen());
-			segment.p2 = new PPoint(new PWorld(0, (i + 1) * _segmentLength), new PCamera(), new PScreen());
+			segment.p1 = new PPoint(new PWorld(lastY(), i * _segmentLength), new PCamera(), new PScreen());
+			segment.p2 = new PPoint(new PWorld(y, (i + 1) * _segmentLength), new PCamera(), new PScreen());
 			segment.curve = curve;
 			segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			_segments.push(segment);
@@ -629,6 +693,12 @@ package view.racing
 		private function findSegment(z:Number):Segment
 		{
 			return _segments[Math.floor(z / _segmentLength) % _segments.length];
+		}
+		
+		
+		private function lastY():Number
+		{
+			return (_segments.length == 0) ? 0 : _segments[_segments.length - 1].p2.world.y;
 		}
 		
 		
