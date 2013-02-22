@@ -730,7 +730,7 @@ package view.racing
 			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
 			if (sourceW < imageW)
 			{
-				_renderBuffer.drawImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
+				_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
 			}
 		}
 		
@@ -745,7 +745,7 @@ package view.racing
 				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
 			
 			/* Draw offroad area segment. */
-			_renderBuffer.drawRect(0, y2, _bufferWidth, y1 - y2, color.grass);
+			_renderBuffer.placeRect(0, y2, _bufferWidth, y1 - y2, color.grass);
 			
 			/* Draw the road segment. */
 			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
@@ -768,11 +768,7 @@ package view.racing
 			/* Draw fog. */
 			if (fog < 1.0)
 			{
-				//_renderBuffer.drawRect(0, y1, _bufferWidth, y1 - y2, COLORS.FOG, 1.0 - fog);
-//				ctx.globalAlpha = (1 - fog);
-//				ctx.fillStyle = COLORS.FOG;
-//				ctx.fillRect(x, y, width, height);
-//				ctx.globalAlpha = 1;
+				_renderBuffer.drawRect(0, y1, _bufferWidth, y2 - y1, COLORS.FOG, 1.0 - fog);
 			}
 		}
 		
@@ -818,7 +814,7 @@ package view.racing
 			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			if (clipH < destH)
 			{
-				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH);
+				_renderBuffer.placeImage(sprite, destX, destY, destW, destH - clipH);
 			}
 		}
 	}

@@ -29,6 +29,8 @@
 package view.racing
 {
 	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -53,6 +55,10 @@ package view.racing
 		private var _r:Rectangle;
 		/** @private */
 		private var _p:Point;
+		/** @private */
+		private var _m:Matrix;
+		/** @private */
+		private var _s:Shape;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -77,6 +83,8 @@ package view.racing
 			_buffer = [];
 			_r = new Rectangle();
 			_p = new Point();
+			_s = new Shape();
+			_m = new Matrix();
 		}
 		
 		
@@ -90,13 +98,6 @@ package view.racing
 		public function clear():void
 		{
 			fillRect(_rect, _fillColor);
-		}
-		
-		
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint):void
-		{
-			_r.setTo(x, y, w, h);
-			fillRect(_r, color);
 		}
 		
 		
@@ -121,11 +122,38 @@ package view.racing
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
+		public function placeRect(x:int, y:int, w:int, h:int, color:uint):void
+		{
+			_r.setTo(x, y, w, h);
+			fillRect(_r, color);
+		}
+		
+		
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
+		{
+			_s.graphics.clear();
+			_s.graphics.beginFill(color, alpha);
+			_s.graphics.drawRect(0, 0, w, h);
+			_s.graphics.endFill();
+			_m.identity();
+			_m.translate(x, y);
+			draw(_s, _m);
+		}
+		
+		
+		public function placeImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
 		{
 			_r.setTo(0, 0, w, h);
 			_p.setTo(x, y);
-			copyPixels(sprite, _r, _p, null, null, true);
+			copyPixels(sprite, _r, _p);
+		}
+		
+		
+		public function drawImage(sprite:BitmapData, x:int, y:int):void
+		{
+			_m.identity();
+			_m.translate(x, y);
+			draw(sprite, _m);
 		}
 		
 		
