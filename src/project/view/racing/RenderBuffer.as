@@ -48,10 +48,9 @@ package view.racing
 		/** @private */
 		private var _rect:Rectangle;
 		
-		private var buffer:Array = new Array();
-		private var r:Rectangle = new Rectangle();
-		private var sourceRect:Rectangle = new Rectangle();
-		private var destPoint:Point = new Point();
+		private var _buffer:Array = new Array();
+		private var _r:Rectangle = new Rectangle();
+		private var _p:Point = new Point();
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -88,6 +87,13 @@ package view.racing
 		}
 		
 		
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint):void
+		{
+			_r.setTo(x, y, w, h);
+			fillRect(_r, color);
+		}
+		
+		
 		/**
 		 * Draw a filled triangle
 		 * 
@@ -101,19 +107,19 @@ package view.racing
 		 */
 		public function drawPolygon(x1:int, y1:int, x2:int, y2:int, x3:int, y3:int, x4:int, y4:int, color:uint):void
 		{
-			buffer.length = 0;
-			lineTo(buffer, x1, y1, x2, y2, color);
-			lineTo(buffer, x2, y2, x3, y3, color);
-			lineTo(buffer, x3, y3, x4, y4, color);
-			lineTo(buffer, x4, y4, x1, y1, color);
+			_buffer.length = 0;
+			lineTo(_buffer, x1, y1, x2, y2, color);
+			lineTo(_buffer, x2, y2, x3, y3, color);
+			lineTo(_buffer, x3, y3, x4, y4, color);
+			lineTo(_buffer, x4, y4, x1, y1, color);
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:Number, y:Number, w:Number, h:Number):void
+		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
 		{
-			sourceRect.setTo(0, 0, w, h);
-			destPoint.setTo(x, y);
-			copyPixels(sprite, sourceRect, destPoint);
+			_r.setTo(0, 0, w, h);
+			_p.setTo(x, y);
+			copyPixels(sprite, _r, _p);
 		}
 		
 		
@@ -174,17 +180,14 @@ package view.racing
 			var fy:int = y1;
 			var px:int = 0;
 			
-			r.x = 0;
-			r.y = 0;
-			r.width = 0;
-			r.height = 1;
+			_r.setTo(0, 0, 0, 1);
 			
 			while (x++ <= xend)
 			{
 				if (steep)
 				{
-					checkLine(a, y, x, c, r);
-					if (fx != x1 && fx != xend) checkLine(a, fy, fx + 1, c, r);
+					checkLine(a, y, x, c, _r);
+					if (fx != x1 && fx != xend) checkLine(a, fy, fx + 1, c, _r);
 				}
 				
 				error += deltaY;
@@ -192,8 +195,8 @@ package view.racing
 				{
 					if (!steep)
 					{
-						checkLine(a, x - px + 1, y, c, r);
-						if (fx != xend) checkLine(a, fx + 1, fy, c, r);
+						checkLine(a, x - px + 1, y, c, _r);
+						if (fx != xend) checkLine(a, fx + 1, fy, c, _r);
 					}
 					px = 0;
 					y += ystep;
@@ -204,7 +207,7 @@ package view.racing
 				fx--;
 			}
 			
-			if (!steep) checkLine(a, x - px + 1, y, c, r);
+			if (!steep) checkLine(a, x - px + 1, y, c, _r);
 		}
 		
 		

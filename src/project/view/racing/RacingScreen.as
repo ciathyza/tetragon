@@ -619,20 +619,22 @@ package view.racing
 				l2:Number = laneMarkerWidth(w2, _lanes),
 				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
 			
-//			ctx.fillStyle = color.grass;
-//			ctx.fillRect(0, y2, _bufferWidth, y1 - y2);
+			/* Draw offroad area segment. */
+			_renderBuffer.drawRect(0, y2, _bufferWidth, y1 - y2, color.grass);
 			
+			/* Draw the road segment. */
 			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
 			renderPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
 			renderPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road);
 			
+			/* Draw lane strips. */
 			if (color.lane)
 			{
 				lanew1 = w1 * 2 / _lanes;
 				lanew2 = w2 * 2 / _lanes;
 				lanex1 = x1 - w1 + lanew1;
 				lanex2 = x2 - w2 + lanew2;
-				for (lane = 1 ; lane < _lanes ; lanex1 += lanew1, lanex2 += lanew2, lane++)
+				for (lane = 1 ;lane < _lanes; lanex1 += lanew1, lanex2 += lanew2, lane++)
 				{
 					renderPolygon(lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane);
 				}
@@ -662,7 +664,7 @@ package view.racing
 		
 		
 		private function renderPlayer(roadWidth:Number, speedPercent:Number, scale:Number,
-			destX:Number, destY:Number, steer:Number, updown:Number):void
+			destX:int, destY:int, steer:Number, updown:Number):void
 		{
 			var bounce:Number = (1.5 * Math.random() * speedPercent * _resolution) * randomChoice([-1, 1]);
 			var sprite:BitmapData;
@@ -685,14 +687,14 @@ package view.racing
 		
 		
 		private function renderSprite(roadWidth:Number, sprite:BitmapData, scale:Number,
-			destX:Number, destY:Number, offsetX:Number, offsetY:Number, clipY:Number = NaN):void
+			destX:int, destY:int, offsetX:Number, offsetY:Number, clipY:Number = NaN):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:Number = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
-			var destH:Number = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
+			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
+			var destH:int = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
 			destX = destX + (destW * (offsetX || 0));
 			destY = destY + (destH * (offsetY || 0));
-			var clipH:Number = clipY ? Math.max(0, destY + destH - clipY) : 0;
+			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			if (clipH < destH)
 			{
 				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH);
