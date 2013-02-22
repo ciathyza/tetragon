@@ -38,10 +38,12 @@ package view.racing
 	import view.racing.constants.ROAD;
 	import view.racing.parallax.ParallaxLayer;
 	import view.racing.parallax.ParallaxScroller;
+	import view.racing.vo.Car;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
 	import view.racing.vo.PScreen;
 	import view.racing.vo.PWorld;
+	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 
 	import flash.display.Bitmap;
@@ -79,6 +81,7 @@ package view.racing
 		private var _bgLayer3:ParallaxLayer;
 		
 		private var _segments:Vector.<Segment>;	// array of road segments
+		private var _cars:Vector.<Car>;			// array of cars on the road
 		
 		private var _bufferWidth:int = 1024;
 		private var _bufferHeight:int = 768;
@@ -100,7 +103,6 @@ package view.racing
 		private var _treeOffset:Number = 0;		// current tree scroll offset
 		
 		private var _playerX:Number = 0;		// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerY:Number = 0;
 		private var _playerZ:Number;			// player relative z distance from camera (computed)
 		
 		private var _roadWidth:int = 2000;		// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
@@ -108,6 +110,7 @@ package view.racing
 		private var _rumbleLength:int = 3;		// number of segments per red/white rumble strip
 		private var _trackLength:int = 200;		// z length of entire track (computed)
 		private var _lanes:int = 3;				// number of lanes
+		private var _totalCars:Number = 200;	// total number of cars on the road
 		
 		private var _accel:Number;				// acceleration rate - tuned until it 'felt' right
 		private var _breaking:Number;			// deceleration rate when braking
@@ -256,21 +259,28 @@ package view.racing
 		 */
 		private function onTick():void
 		{
+			var n:int;
+			var car:Car;
+			var carW:Number;
+			var sprite:SSprite;
+			var spriteW:Number;
 			var playerSegment:Segment = findSegment(_position + _playerZ);
+			var playerW:Number = _sprites.PLAYER_STRAIGHT.width * _sprites.SCALE;
 			var speedPercent:Number = _speed / _maxSpeed;
+			var startPosition:Number = _position;
+			
+			// at top speed, should be able to cross from left to right (-1 to 1) in 1 second
 			var dx:Number = _dt * 2 * speedPercent;
-			
-			// at top speed, should be able to cross from left to right (-1 to +1) in 1 second
+
+			updateCars(_dt, playerSegment, playerW);
+
 			_position = increase(_position, _dt * _speed, _trackLength);
-			
-			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * speedPercent, 1);
-			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * speedPercent, 1);
-			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * speedPercent, 1);
 			
 			/* Check left/right steering. */
 			if (_isSteerLeft) _playerX = _playerX - dx;
 			else if (_isSteerRight) _playerX = _playerX + dx;
 			
+			/* Update player X position. */
 			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
 			
 			/* Check acceleration and deceleration. */
@@ -279,14 +289,49 @@ package view.racing
 			else _speed = accelerate(_speed, _decel, _dt);
 			
 			/* Check if player steers off-road. */
-			if (((_playerX < -1) || (_playerX > 1)) && (_speed > _offRoadLimit))
+			if ((_playerX < -1) || (_playerX > 1))
 			{
-				_speed = accelerate(_speed, _offRoadDecel, _dt);
+				if (_speed > _offRoadLimit) _speed = accelerate(_speed, _offRoadDecel, _dt);
+				
+				for (n = 0; n < playerSegment.sprites.length; n++)
+				{
+					sprite = playerSegment.sprites[n];
+					spriteW = sprite.source.width * _sprites.SCALE;
+					
+					/* Check collision with road-side obstacles. */
+					if (overlap(_playerX, playerW, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW))
+					{
+						_speed = _maxSpeed / 5; // stop in front of sprite (at front of segment)
+						_position = increase(playerSegment.p1.world.z, -_playerZ, _trackLength);
+						break;
+					}
+				}
+			}
+			
+			/* Check collision with other cars. */
+			for (n = 0; n < playerSegment.cars.length; n++)
+			{
+				car = playerSegment.cars[n];
+				carW = car.sprite.source.width * _sprites.SCALE;
+				if (_speed > car.speed)
+				{
+					if (overlap(_playerX, playerW, car.offset, carW, 0.8))
+					{
+						_speed = car.speed * (car.speed / _speed);
+						_position = increase(car.z, -_playerZ, _trackLength);
+						break;
+					}
+				}
 			}
 			
 			/* Limit player steering bounds and max speed. */
-			_playerX = limit(_playerX, -2, 2);
+			_playerX = limit(_playerX, -3, 3);
 			_speed = limit(_speed, 0, _maxSpeed);
+			
+			/* Calculate background layers parallax offsets. */
+			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * speedPercent, 1);
+			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * speedPercent, 1);
+			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * speedPercent, 1);
 		}
 		
 		
@@ -294,6 +339,92 @@ package view.racing
 		 * @private
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
+		{
+			var baseSegment:Segment = findSegment(_position);
+			var basePercent:Number = Util.percentRemaining(_position, _segmentLength);
+			var playerSegment:Segment = findSegment(_position + _playerZ);
+			var playerPercent:Number = Util.percentRemaining(_position + _playerZ, _segmentLength);
+			var playerY:Number = Util.interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+			var maxy:Number = _bufferHeight;
+			var x:Number = 0;
+			var dx:Number = - (baseSegment.curve * basePercent);
+			
+			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number,
+				spriteX:Number, spriteY:Number;
+			
+			_renderBuffer.clear();
+			
+			/* Render background layers. */
+			renderBackground(_sprites.REGION_SKY, _skyOffset, _resolution * _skySpeed  * playerY);
+			renderBackground(_sprites.REGION_HILLS, _hillOffset, _resolution * _hillSpeed  * playerY);
+			renderBackground(_sprites.REGION_TREES, _treeOffset, _resolution * _treeSpeed  * playerY);
+			
+			/* PHASE 1: render segments, front to back and clip far segments that have been
+			 * obscured by already rendered near segments if their projected coordinates are
+			 * lower than maxy. */
+			for (n = 0; n < _drawDistance; n++)
+			{
+				segment = _segments[(baseSegment.index + n) % _segments.length];
+				segment.looped = segment.index < baseSegment.index;
+				segment.fog = Util.exponentialFog(n / _drawDistance, _fogDensity);
+				segment.clip = maxy;
+				
+				project(segment.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (segment.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				project(segment.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (segment.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				
+				x = x + dx;
+				dx = dx + segment.curve;
+				
+				if ((segment.p1.camera.z <= _cameraDepth)				// behind us
+					|| (segment.p2.screen.y >= segment.p1.screen.y)		// back face cull
+					|| (segment.p2.screen.y >= maxy))					// clip by (already rendered) hill
+				{
+					continue;
+				}
+				
+				renderSegment(segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
+				maxy = segment.p1.screen.y;
+			}
+			
+			/* PHASE 2: Back to front render the sprites. */
+			for (n = (_drawDistance - 1); n > 0; n--)
+			{
+				segment = _segments[(baseSegment.index + n) % _segments.length];
+				
+				/* Render oponents. */
+				for (i = 0; i < segment.cars.length; i++)
+				{
+					car = segment.cars[i];
+					sprite = car.sprite;
+					spriteScale = interpolate(segment.p1.screen.scale, segment.p2.screen.scale, car.percent);
+					spriteX = interpolate(segment.p1.screen.x, segment.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidth / 2);
+					spriteY = interpolate(segment.p1.screen.y, segment.p2.screen.y, car.percent);
+					renderSprite(_roadWidth, car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
+				}
+				
+				/* Render decoration and obstacle sprites. */
+				for (i = 0; i < segment.sprites.length; i++)
+				{
+					sprite = segment.sprites[i];
+					spriteScale = segment.p1.screen.scale;
+					spriteX = segment.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidth / 2);
+					spriteY = segment.p1.screen.y;
+					renderSprite(_roadWidth, sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
+				}
+				
+				/* Render player sprite. */
+				if (segment == playerSegment)
+				{
+					renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, (_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2), _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), playerSegment.p2.world.y - playerSegment.p1.world.y);
+				}
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onRenderOld(ticks:uint, ms:uint, fps:uint):void
 		{
 			var baseSegment:Segment = findSegment(_position);
 			var basePercent:Number = percentRemaining(_position, _segmentLength);
@@ -553,6 +684,9 @@ package view.racing
 			addStraight();
 			addDownhillToEnd();
 			
+			resetSprites();
+			resetCars();
+			
 			_segments[findSegment(_playerZ).index + 2].color = COLORS.START;
 			_segments[findSegment(_playerZ).index + 3].color = COLORS.START;
 			
@@ -562,6 +696,92 @@ package view.racing
 			}
 			
 			_trackLength = _segments.length * _segmentLength;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function resetSprites():void
+		{
+			var n:int;
+			var i:int;
+			var side:Number;
+			var sprite:BitmapData;
+			var offset:Number;
+			
+			addSprite(20, _sprites.BILLBOARD07, -1);
+			addSprite(40, _sprites.BILLBOARD06, -1);
+			addSprite(60, _sprites.BILLBOARD08, -1);
+			addSprite(80, _sprites.BILLBOARD09, -1);
+			addSprite(100, _sprites.BILLBOARD01, -1);
+			addSprite(120, _sprites.BILLBOARD02, -1);
+			addSprite(140, _sprites.BILLBOARD03, -1);
+			addSprite(160, _sprites.BILLBOARD04, -1);
+			addSprite(180, _sprites.BILLBOARD05, -1);
+
+			addSprite(240, _sprites.BILLBOARD07, -1.2);
+			addSprite(240, _sprites.BILLBOARD06, 1.2);
+			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
+			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
+			
+			for (n = 10; n < 200; n += 4 + Math.floor(n / 100))
+			{
+				addSprite(n, _sprites.PALM_TREE, 0.5 + Math.random() * 0.5);
+				addSprite(n, _sprites.PALM_TREE, 1 + Math.random() * 2);
+			}
+			
+			for (n = 250; n < 1000; n += 5)
+			{
+				addSprite(n, _sprites.COLUMN, 1.1);
+				addSprite(n + Util.randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
+				addSprite(n + Util.randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
+			}
+			
+			for (n = 200; n < _segments.length; n += 3)
+			{
+				addSprite(n, Util.randomChoice(_sprites.PLANTS), Util.randomChoice([1, -1]) * (2 + Math.random() * 5));
+			}
+			
+			for (n = 1000; n < (_segments.length - 50); n += 100)
+			{
+				side = Util.randomChoice([1, -1]);
+				addSprite(n + Util.randomInt(0, 50), Util.randomChoice(_sprites.BILLBOARDS), -side);
+				for (i = 0 ; i < 20 ; i++)
+				{
+					sprite = Util.randomChoice(_sprites.PLANTS);
+					offset = side * (1.5 + Math.random());
+					addSprite(n + Util.randomInt(0, 50), sprite, offset);
+				}
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function resetCars():void
+		{
+			_cars = new Vector.<Car>();
+			var n:int,
+			car:Car,
+			segment:Segment,
+			offset:Number,
+			z:Number,
+			sprite:BitmapData,
+			speed:Number;
+			
+			for (n = 0; n < _totalCars; n++)
+			{
+				offset = Math.random() * Util.randomChoice([-0.8, 0.8]);
+				z = Math.floor(Math.random() * _segments.length) * _segmentLength;
+				sprite = Util.randomChoice(_sprites.CARS);
+				speed = _maxSpeed / 4 + Math.random() * _maxSpeed / (sprite == _sprites.SEMI ? 4 : 2);
+				car = new Car(offset, z, new SSprite(sprite), speed);
+				segment = findSegment(car.z);
+				segment.cars.push(car);
+				_cars.push(car);
+			}
 		}
 		
 		
@@ -682,8 +902,20 @@ package view.racing
 			segment.p1 = new PPoint(new PWorld(lastY(), i * _segmentLength), new PCamera(), new PScreen());
 			segment.p2 = new PPoint(new PWorld(y, (i + 1) * _segmentLength), new PCamera(), new PScreen());
 			segment.curve = curve;
+			segment.sprites = new Vector.<SSprite>();
+			segment.cars = new Vector.<Car>();
 			segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			_segments.push(segment);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addSprite(n:int, sprite:BitmapData, offset:Number):void
+		{
+			var s:SSprite = new SSprite(sprite, offset);
+			_segments[n].sprites.push(s);
 		}
 		
 		
@@ -696,9 +928,100 @@ package view.racing
 		}
 		
 		
+		/**
+		 * @private
+		 */
 		private function lastY():Number
 		{
 			return (_segments.length == 0) ? 0 : _segments[_segments.length - 1].p2.world.y;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function updateCars(dt:Number, playerSegment:Segment, playerW:Number):void
+		{
+			var n:int;
+			var car:Car;
+			var oldSegment:Segment;
+			var newSegment:Segment;
+			
+			for (n = 0; n < _cars.length; n++)
+			{
+				car = _cars[n];
+				oldSegment = findSegment(car.z);
+				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
+				car.z = increase(car.z, dt * car.speed, _trackLength);
+				car.percent = percentRemaining(car.z, _segmentLength);
+				// useful for interpolation during rendering phase
+				newSegment = findSegment(car.z);
+				
+				if (oldSegment != newSegment)
+				{
+					var index:int = oldSegment.cars.indexOf(car);
+					oldSegment.cars.splice(index, 1);
+					newSegment.cars.push(car);
+				}
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function updateCarOffset(car:Car, carSegment:Segment, playerSegment:Segment, playerW:Number):Number
+		{
+			var i:int;
+			var j:int;
+			var dir:Number;
+			var segment:Segment;
+			var otherCar:Car;
+			var otherCarW:Number;
+			var lookahead:int = 20;
+			var carW:Number = car.sprite.source.width * _sprites.SCALE;
+			
+			/* Optimization: dont bother steering around other cars when 'out of sight'
+			 * of the player. */
+			if ((carSegment.index - playerSegment.index) > _drawDistance) return 0;
+			
+			for (i = 1; i < lookahead; i++)
+			{
+				segment = _segments[(carSegment.index + i) % _segments.length];
+				
+				/* Car drive-around player AI */
+				if ((segment === playerSegment)
+					&& (car.speed > _speed)
+					&& (overlap(_playerX, playerW, car.offset, carW, 1.2)))
+				{
+					if (_playerX > 0.5) dir = -1;
+					else if (_playerX < -0.5) dir = 1;
+					else dir = (car.offset > _playerX) ? 1 : -1;
+					// The closer the cars (smaller i) and the greater the speed ratio,
+					// the larger the offset.
+					return dir * 1 / i * (car.speed - _speed) / _maxSpeed;
+				}
+				
+				/* Car drive-around other car AI */
+				for (j = 0; j < segment.cars.length; j++)
+				{
+					otherCar = segment.cars[j];
+					otherCarW = otherCar.sprite.source.width * _sprites.SCALE;
+					if ((car.speed > otherCar.speed)
+						&& overlap(car.offset, carW, otherCar.offset, otherCarW, 1.2))
+					{
+						if (otherCar.offset > 0.5) dir = -1;
+						else if (otherCar.offset < -0.5) dir = 1;
+						else dir = (car.offset > otherCar.offset) ? 1 : -1;
+						return dir * 1 / i * (car.speed - otherCar.speed) / _maxSpeed;
+					}
+				}
+			}
+			
+			// if no cars ahead, but car has somehow ended up off road, then steer back on.
+			if (car.offset < -0.9) return 0.1;
+			else if (car.offset > 0.9) return -0.1;
+			else return 0;
 		}
 		
 		
@@ -797,6 +1120,17 @@ package view.racing
 		private static function percentRemaining(n:Number, total:Number):Number
 		{
 			return (n % total) / total;
+		}
+		
+		
+		private static function overlap(x1:Number, w1:Number, x2:Number, w2:Number, percent:Number = 1.0):Boolean
+		{
+			var half:Number = percent / 2;
+			var min1:Number = x1 - (w1 * half);
+			var max1:Number = x1 + (w1 * half);
+			var min2:Number = x2 - (w2 * half);
+			var max2:Number = x2 + (w2 * half);
+			return !((max1 < min2) || (min1 > max2));
 		}
 		
 		

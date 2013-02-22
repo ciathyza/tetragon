@@ -1,6 +1,6 @@
 package view.racing.vo
 {
-	import tetragon.view.render2d.display.Image2D;
+	import flash.display.BitmapData;
 	
 	
 	/**
@@ -9,11 +9,11 @@ package view.racing.vo
 	 */
 	public class SSprite
 	{
-		public var source:Image2D;
+		public var source:BitmapData;
 		public var offset:Number;
 		
 		
-		public function SSprite(source:Image2D, offset:Number = 0.0)
+		public function SSprite(source:BitmapData, offset:Number = 0.0)
 		{
 			this.source = source;
 			this.offset = offset;
