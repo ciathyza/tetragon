@@ -362,7 +362,7 @@ package view.racing
 			
 			prepareSprites();
 			
-			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x333333);
+			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, true, 0xFFFF00FF);
 			_bufferBitmap = new Bitmap(_renderBuffer);
 		}
 		
@@ -611,7 +611,7 @@ package view.racing
 		
 		
 		private function renderSegment(x1:Number, y1:Number, w1:Number, x2:Number, y2:Number,
-			w2:Number, fogNum:Number, color:ColorSet):void
+			w2:Number, fog:Number, color:ColorSet):void
 		{
 			var r1:Number = rumbleWidth(w1, _lanes),
 				r2:Number = rumbleWidth(w2, _lanes),
@@ -640,7 +640,15 @@ package view.racing
 				}
 			}
 			
-			renderFog(0, y1, _bufferWidth, y2 - y1, fogNum);
+			/* Draw fog. */
+			if (fog < 1.0)
+			{
+				_renderBuffer.drawRect(0, y1, _bufferWidth, y1 - y2, COLORS.FOG, 1.0 - fog);
+//				ctx.globalAlpha = (1 - fog);
+//				ctx.fillStyle = COLORS.FOG;
+//				ctx.fillRect(x, y, width, height);
+//				ctx.globalAlpha = 1;
+			}
 		}
 		
 		
@@ -648,18 +656,6 @@ package view.racing
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint):void
 		{
 			_renderBuffer.drawPolygon(x1, y1, x2, y2, x3, y3, x4, y4, color);
-		}
-		
-		
-		private function renderFog(x:Number, y:Number, width:Number, height:Number, fog:Number):void
-		{
-			if (fog < 1)
-			{
-//				ctx.globalAlpha = (1 - fog);
-//				ctx.fillStyle = COLORS.FOG;
-//				ctx.fillRect(x, y, width, height);
-//				ctx.globalAlpha = 1;
-			}
 		}
 		
 		

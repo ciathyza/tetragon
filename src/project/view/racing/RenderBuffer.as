@@ -28,6 +28,8 @@
  */
 package view.racing
 {
+	import com.hexagonstar.util.color.colorChannelToString;
+
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -47,10 +49,12 @@ package view.racing
 		private var _fillColor:uint;
 		/** @private */
 		private var _rect:Rectangle;
-		
-		private var _buffer:Array = new Array();
-		private var _r:Rectangle = new Rectangle();
-		private var _p:Point = new Point();
+		/** @private */
+		private var _buffer:Array;
+		/** @private */
+		private var _r:Rectangle;
+		/** @private */
+		private var _p:Point;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -69,8 +73,12 @@ package view.racing
 			fillColor:uint = 0x00000000):void
 		{
 			super(width, height, transparent, fillColor);
-			_fillColor = fillColor;
+			
+			_fillColor = 0xFFFF00FF; //fillColor;
 			_rect = rect;
+			_buffer = [];
+			_r = new Rectangle();
+			_p = new Point();
 		}
 		
 		
@@ -87,15 +95,28 @@ package view.racing
 		}
 		
 		
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint):void
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
 		{
+			//color = color | ((alpha * 0xFF) << 24);
+			//Debug.trace(colorHexToString(color));
+			
 			_r.setTo(x, y, w, h);
+			//fillRect(_r, (alpha << 24) | color);
+			color = 0x7D0000FF;
 			fillRect(_r, color);
 		}
 		
+	public function colorHexToString(color:uint):String
+	{
+		return String(
+			colorChannelToString(color >> 24 & 0xFF)
+			+ colorChannelToString(color >> 16 & 0xFF)
+			+ colorChannelToString(color >> 8 & 0xFF)
+			+ colorChannelToString(color & 0xFF)).toUpperCase();
+	}
 		
 		/**
-		 * Draw a filled triangle
+		 * Draw a filled, four-sided polygon.
 		 * 
 		 * @param x1		first point x coord
 		 * @param y1		first point y coord 
@@ -119,7 +140,7 @@ package view.racing
 		{
 			_r.setTo(0, 0, w, h);
 			_p.setTo(x, y);
-			copyPixels(sprite, _r, _p);
+			copyPixels(sprite, _r, _p, null, null, true);
 		}
 		
 		
@@ -223,14 +244,14 @@ package view.racing
 					r.width = a[y] - x;
 					r.x = x;
 					r.y = y;
-					fillRect(r, c);
+					fillRect(r, (255 << 24) | c);
 				}
 				else
 				{
 					r.width = x - a[y];
 					r.x = a[y];
 					r.y = y;
-					fillRect(r, c);
+					fillRect(r, (255 << 24) | c);
 				}
 			}
 			else
