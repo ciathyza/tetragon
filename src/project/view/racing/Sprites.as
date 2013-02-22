@@ -1,6 +1,7 @@
 package view.racing
 {
 	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 
 
 	/**
@@ -12,6 +13,10 @@ package view.racing
 		public var BG_SKY:BitmapData;
 		public var BG_HILLS:BitmapData;
 		public var BG_TREES:BitmapData;
+		
+		public var REGION_SKY:Rectangle;
+		public var REGION_HILLS:Rectangle;
+		public var REGION_TREES:Rectangle;
 		
 		public var PALM_TREE:BitmapData;
 		public var BILLBOARD08:BitmapData;

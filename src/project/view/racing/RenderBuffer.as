@@ -122,7 +122,7 @@ package view.racing
 		}
 		
 		
-		public function placeRect(x:int, y:int, w:int, h:int, color:uint):void
+		public function blitRect(x:int, y:int, w:int, h:int, color:uint):void
 		{
 			_r.setTo(x, y, w, h);
 			fillRect(_r, color);
@@ -141,7 +141,7 @@ package view.racing
 		}
 		
 		
-		public function placeImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
+		public function blitImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
 		{
 			_r.setTo(0, 0, w, h);
 			_p.setTo(x, y);
@@ -149,11 +149,11 @@ package view.racing
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:int, y:int):void
+		public function drawImage(atlas:BitmapData, sx:int, sy:int, sw:int, sh:int, dx:int, dy:int, dw:int = 0, dh:int = 0):void
 		{
-			_m.identity();
-			_m.translate(x, y);
-			draw(sprite, _m);
+			_r.setTo(sx, sy, sw, sh);
+			_p.setTo(dx, dy);
+			copyPixels(atlas, _r, _p);
 		}
 		
 		

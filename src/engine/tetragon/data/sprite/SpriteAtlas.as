@@ -136,6 +136,15 @@ package tetragon.data.sprite
 		
 		
 		/**
+		 * Returns the region rectangle for a specific sprite.
+		 */
+		public function getRegion(id:String):Rectangle
+		{
+			return _spriteRegions[id];
+		}
+		
+		
+		/**
 		 * Returns all sprites that start with a certain string, sorted alphabetically
 		 * 
 		 * @param prefix

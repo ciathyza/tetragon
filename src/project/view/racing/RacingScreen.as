@@ -44,6 +44,7 @@ package view.racing
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	
 	
 	/**
@@ -63,6 +64,7 @@ package view.racing
 		//-----------------------------------------------------------------------------------------
 		
 		private var _atlas:SpriteAtlas;
+		private var _atlasImage:BitmapData;
 		private var _renderBuffer:RenderBuffer;
 		private var _bufferBitmap:Bitmap;
 		private var _sprites:Sprites;
@@ -295,9 +297,9 @@ package view.racing
 			_renderBuffer.clear();
 			
 			/* Render background layers. */
-			renderBackground(_sprites.BG_SKY, _skyOffset);
-			renderBackground(_sprites.BG_HILLS, _hillOffset);
-			renderBackground(_sprites.BG_TREES, _treeOffset);
+			renderBackground(_sprites.REGION_SKY, _skyOffset);
+			renderBackground(_sprites.REGION_HILLS, _hillOffset);
+			renderBackground(_sprites.REGION_TREES, _treeOffset);
 			
 			/* Render road segments. */
 			for (n = 0; n < _drawDistance; n++)
@@ -374,6 +376,7 @@ package view.racing
 			
 			resourceManager.process("spriteAtlas");
 			_atlas = getResource("spriteAtlas");
+			_atlasImage = _atlas.image;
 			
 			prepareSprites();
 			
@@ -490,6 +493,11 @@ package view.racing
 			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("sprite_player_uphill_straight");
 			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("sprite_player_uphill_left");
 			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("sprite_player_uphill_right");
+			
+			_sprites.REGION_SKY = _atlas.getRegion("bg_sky");
+			_sprites.REGION_HILLS = _atlas.getRegion("bg_hills");
+			_sprites.REGION_TREES = _atlas.getRegion("bg_trees");
+			
 			_sprites.init();
 		}
 		
@@ -710,27 +718,32 @@ package view.racing
 		// Render Functions
 		//-----------------------------------------------------------------------------------------
 		
-		private function renderBackground(layer:BitmapData, rotation:Number = 0.0,
+		private function renderBackground(region:Rectangle, rotation:Number = 0.0,
 			offset:Number = 0.0):void
 		{
-			var x:Number = 0;
-			var y:Number = 0;
-			
-			var imageW:Number = layer.width / 2;
-			var imageH:Number = layer.height;
-			var sourceX:Number = x + Math.floor(layer.width * rotation);
-			var sourceY:Number = y;
-			var sourceW:Number = Math.min(imageW, x + layer.width - sourceX);
+			var imageW:Number = region.width / 2;
+			var imageH:Number = region.height;
+			var sourceX:Number = region.x + Math.floor(region.width * rotation);
+			var sourceY:Number = region.y;
+			var sourceW:Number = Math.min(imageW, region.x + region.width - sourceX);
 			var sourceH:Number = imageH;
 			var destX:Number = 0;
 			var destY:Number = offset;
 			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
 			var destH:Number = _bufferHeight;
 			
-			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
+			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY);
 			if (sourceW < imageW)
 			{
-				_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
+				_renderBuffer.drawImage(_atlasImage, region.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, _bufferWidth - destW, destH);
+			}
+			
+			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
+			//_renderBuffer.drawImage(layer, destX, destY);//, _bufferWidth - destW, destH);
+			if (sourceW < imageW)
+			{
+				//_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
+				//_renderBuffer.drawImage(layer, destW - 1, destY);//, _bufferWidth - destW, destH);
 			}
 		}
 		
@@ -745,7 +758,7 @@ package view.racing
 				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
 			
 			/* Draw offroad area segment. */
-			_renderBuffer.placeRect(0, y2, _bufferWidth, y1 - y2, color.grass);
+			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, color.grass);
 			
 			/* Draw the road segment. */
 			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
@@ -814,7 +827,7 @@ package view.racing
 			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			if (clipH < destH)
 			{
-				_renderBuffer.placeImage(sprite, destX, destY, destW, destH - clipH);
+				_renderBuffer.blitImage(sprite, destX, destY, destW, destH - clipH);
 			}
 		}
 	}
