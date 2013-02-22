@@ -36,6 +36,8 @@ package view.racing
 	import view.racing.constants.COLORS;
 	import view.racing.constants.ColorSet;
 	import view.racing.constants.ROAD;
+	import view.racing.parallax.ParallaxLayer;
+	import view.racing.parallax.ParallaxScroller;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
 	import view.racing.vo.PScreen;
@@ -45,6 +47,8 @@ package view.racing
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
+
+
 	
 	
 	/**
@@ -68,6 +72,11 @@ package view.racing
 		private var _renderBuffer:RenderBuffer;
 		private var _bufferBitmap:Bitmap;
 		private var _sprites:Sprites;
+		
+		private var _bgScroller:ParallaxScroller;
+		private var _bgLayer1:ParallaxLayer;
+		private var _bgLayer2:ParallaxLayer;
+		private var _bgLayer3:ParallaxLayer;
 		
 		private var _segments:Vector.<Segment>;	// array of road segments
 		
@@ -382,6 +391,13 @@ package view.racing
 			
 			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x000055);
 			_bufferBitmap = new Bitmap(_renderBuffer);
+			
+			_bgLayer1 = new ParallaxLayer(_sprites.BG_SKY, _skySpeed);
+			_bgLayer2 = new ParallaxLayer(_sprites.BG_HILLS, _hillSpeed);
+			_bgLayer3 = new ParallaxLayer(_sprites.BG_TREES, _treeSpeed);
+			
+			_bgScroller = new ParallaxScroller(_bufferWidth, _sprites.BG_SKY.height);
+			_bgScroller.layers = [_bgLayer1, _bgLayer2, _bgLayer3];
 		}
 		
 		
@@ -721,6 +737,10 @@ package view.racing
 		private function renderBackground(region:Rectangle, rotation:Number = 0.0,
 			offset:Number = 0.0):void
 		{
+			_bgScroller.update();
+			_renderBuffer.blitImage(_bgScroller, 0, 0, _bgScroller.width, _bgScroller.height);
+			return;
+			
 			var imageW:Number = region.width / 2;
 			var imageH:Number = region.height;
 			var sourceX:Number = region.x + Math.floor(region.width * rotation);
@@ -732,7 +752,7 @@ package view.racing
 			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
 			var destH:Number = _bufferHeight;
 			
-			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY);
+			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
 			if (sourceW < imageW)
 			{
 				_renderBuffer.drawImage(_atlasImage, region.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, _bufferWidth - destW, destH);
