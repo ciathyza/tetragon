@@ -35,6 +35,7 @@ package view.racing
 
 	import view.racing.constants.COLORS;
 	import view.racing.constants.ColorSet;
+	import view.racing.constants.ROAD;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
 	import view.racing.vo.PScreen;
@@ -102,6 +103,7 @@ package view.racing
 		private var _decel:Number;				// 'natural' deceleration rate when neither accelerating, nor braking
 		private var _offRoadDecel:Number = 0.99;// speed multiplier when off road (e.g. you lose 2% speed each update frame)
 		private var _offRoadLimit:Number;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+		private var _centrifugal:Number = 0.3;	// centrifugal force multiplier when going around curves
 		
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _speed:Number;				// current speed
@@ -243,15 +245,22 @@ package view.racing
 		 */
 		private function onTick():void
 		{
-			_position = increase(_position, _dt * _speed, _trackLength);
-			if (isNaN(_position)) _position = 0;
+			var playerSegment:Segment = findSegment(_position + _playerZ);
+			var speedPercent:Number = _speed / _maxSpeed;
+			var dx:Number = _dt * 2 * speedPercent;
 			
-			/* At top speed, should be able to cross from left to right (-1 to 1) in 1 second. */
-			var dx:Number = _dt * 2 * (_speed / _maxSpeed);
+			// at top speed, should be able to cross from left to right (-1 to +1) in 1 second
+			_position = increase(_position, _dt * _speed, _trackLength);
+			
+			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * speedPercent, 1);
+			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * speedPercent, 1);
+			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * speedPercent, 1);
 			
 			/* Check left/right steering. */
 			if (_isSteerLeft) _playerX = _playerX - dx;
 			else if (_isSteerRight) _playerX = _playerX + dx;
+			
+			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
 			
 			/* Check acceleration and deceleration. */
 			if (_isAccelerate) _speed = accelerate(_speed, _accel, _dt);
@@ -276,7 +285,10 @@ package view.racing
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
 			var baseSegment:Segment = findSegment(_position);
-			var maxy:Number = _bufferHeight;
+			var basePercent:Number = percentRemaining(_position, _segmentLength);
+			var maxY:Number = _bufferHeight;
+			var x:Number = 0;
+			var dx:Number = -(baseSegment.curve * basePercent);
 			var s:Segment;
 			var n:int;
 			
@@ -294,11 +306,14 @@ package view.racing
 				s.looped = s.index < baseSegment.index;
 				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
 				
-				project(s.p1, (_playerX * _roadWidth), _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-				project(s.p2, (_playerX * _roadWidth), _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				project(s.p1, (_playerX * _roadWidth) - x, _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				project(s.p2, (_playerX * _roadWidth) - x - dx, _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+				
+				x = x + dx;
+				dx = dx + s.curve;
 				
 				if ((s.p1.camera.z <= _cameraDepth)	// behind us
-					|| (s.p2.screen.y >= maxy))		// clip by (already rendered) segment
+					|| (s.p2.screen.y >= maxY))		// clip by (already rendered) segment
 				{
 					continue;
 				}
@@ -313,7 +328,7 @@ package view.racing
 					s.fog,
 					s.color);
 				
-				maxy = s.p2.screen.y;
+				maxY = s.p2.screen.y;
 			}
 			
 			/* Render the player sprite. */
@@ -479,6 +494,10 @@ package view.racing
 		}
 		
 		
+		//-----------------------------------------------------------------------------------------
+		// ROAD GEOMETRY CONSTRUCTION
+		//-----------------------------------------------------------------------------------------
+		
 		/**
 		 * @private
 		 */
@@ -486,17 +505,97 @@ package view.racing
 		{
 			_segments = new Vector.<Segment>();
 			
-			for (var i:int = 0; i < 500; i++)
+			addStraight(ROAD.LENGTH.SHORT / 4);
+			addSCurves();
+			addStraight(ROAD.LENGTH.LONG);
+			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
+			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+			addStraight();
+			addSCurves();
+			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
+			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM);
+			addStraight();
+			addSCurves();
+			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.EASY);
+			
+			_segments[findSegment(_playerZ).index + 2].color = COLORS.START;
+			_segments[findSegment(_playerZ).index + 3].color = COLORS.START;
+			
+			for (var n:uint = 0 ; n < _rumbleLength ; n++)
 			{
-				var segment:Segment = new Segment();
-				segment.index = i;
-				segment.p1 = new PPoint(new PWorld(0, i * _segmentLength), new PCamera(), new PScreen());
-				segment.p2 = new PPoint(new PWorld(0, (i + 1) * _segmentLength), new PCamera(), new PScreen());
-				segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
-				_segments.push(segment);
+				_segments[_segments.length - 1 - n].color = COLORS.FINISH;
 			}
 			
 			_trackLength = _segments.length * _segmentLength;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addStraight(num:int = ROAD.LENGTH.MEDIUM):void
+		{
+			addRoad(num, num, num, 0, 0);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addCurve(num:int = ROAD.LENGTH.MEDIUM, curve:int = ROAD.CURVE.MEDIUM,
+			height:int = ROAD.HILL.NONE):void
+		{
+			addRoad(num, num, num, curve, height);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addSCurves():void
+		{
+			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY);
+			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
+			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY);
+			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY);
+			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.MEDIUM);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
+		{
+			var i:uint;
+			for (i = 0; i < enter; i++)
+			{
+				addSegment(easeIn(0, curve, i / enter));
+			}
+			for (i = 0; i < hold; i++)
+			{
+				addSegment(curve);
+			}
+			for (i = 0; i < leave; i++)
+			{
+				addSegment(easeInOut(curve, 0, i / leave));
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addSegment(curve:Number):void
+		{
+			var i:uint = _segments.length;
+			var segment:Segment = new Segment();
+			segment.index = i;
+			segment.p1 = new PPoint(new PWorld(0, i * _segmentLength), new PCamera(), new PScreen());
+			segment.p2 = new PPoint(new PWorld(0, (i + 1) * _segmentLength), new PCamera(), new PScreen());
+			segment.curve = curve;
+			segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
+			_segments.push(segment);
 		}
 		
 		
@@ -580,6 +679,30 @@ package view.racing
 		private static function randomChoice(a:Array):*
 		{
 			return a[randomInt(0, a.length - 1)];
+		}
+		
+		
+		private static function easeIn(a:Number, b:Number, percent:Number):Number
+		{
+			return a + (b - a) * Math.pow(percent, 2);
+		}
+		
+		
+		private static function easeOut(a:Number, b:Number, percent:Number):Number
+		{
+			return a + (b - a) * (1 - Math.pow(1 - percent, 2));
+		}
+		
+		
+		private static function easeInOut(a:Number, b:Number, percent:Number):Number
+		{
+			return a + (b - a) * ((-Math.cos(percent * Math.PI) / 2) + 0.5);
+		}
+		
+		
+		private static function percentRemaining(n:Number, total:Number):Number
+		{
+			return (n % total) / total;
 		}
 		
 		
