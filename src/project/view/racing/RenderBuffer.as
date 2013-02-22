@@ -149,16 +149,12 @@ package view.racing
 		}
 		
 		
-		public function drawImage(atlas:BitmapData, sx:int, sy:int, sw:int, sh:int, dx:int, dy:int, dw:int = 0, dh:int = 0):void
+		public function drawImage(sprite:BitmapData, x:int, y:int, scale:Number):void
 		{
-			_r.setTo(sx, sy, sw, sh);
-			_p.setTo(0, 0);
-			var b:BitmapData = new BitmapData(dw, dh);
-			b.copyPixels(atlas, _r, _p);
-			_r.setTo(dx, dy, dw, dh);
 			_m.identity();
-			_m.translate(dx, dy);
-			draw(b, _m, null, null, _r);
+			_m.scale(scale, scale);
+			_m.translate(x, y);
+			draw(sprite, _m);
 		}
 		
 		

@@ -48,9 +48,6 @@ package view.racing
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.geom.Rectangle;
-
-
 	
 	
 	/**
@@ -123,6 +120,10 @@ package view.racing
 		private var _speed:Number;				// current speed
 		private var _maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
+		private var _currentLapTime:Number = 0; // current lap time
+		private var _lastLapTime:Number = 0;	// last lap time
+		private var _fast_lap_time:Number;
+		
 		private var _isAccelerate:Boolean;
 		private var _isBrake:Boolean;
 		private var _isSteerLeft:Boolean;
@@ -171,9 +172,10 @@ package view.racing
 			_offRoadLimit = _maxSpeed / 4;
 			_cameraDepth = 1 / Math.tan((_fieldOfView / 2) * Math.PI / 180);
 			_playerZ = (_cameraHeight * _cameraDepth);
-			_resolution = _bufferHeight / _bufferHeight;
+			_resolution = 1.6; //_bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
+			_cars = new Vector.<Car>();
 			
 			resetRoad();
 		}
@@ -259,56 +261,61 @@ package view.racing
 		 */
 		private function onTick():void
 		{
-			var n:int;
-			var car:Car;
-			var carW:Number;
-			var sprite:SSprite;
-			var spriteW:Number;
+			var n:int, car:Car, carW:Number, sprite:SSprite, spriteW:Number;
 			var playerSegment:Segment = findSegment(_position + _playerZ);
 			var playerW:Number = _sprites.PLAYER_STRAIGHT.width * _sprites.SCALE;
 			var speedPercent:Number = _speed / _maxSpeed;
-			var startPosition:Number = _position;
-			
-			// at top speed, should be able to cross from left to right (-1 to 1) in 1 second
 			var dx:Number = _dt * 2 * speedPercent;
+			
+			// at top speed, should be able to cross from left to right (-1
+			// to 1) in 1 second
+			var startPosition:Number = _position;
 
 			updateCars(_dt, playerSegment, playerW);
 
 			_position = increase(_position, _dt * _speed, _trackLength);
-			
-			/* Check left/right steering. */
-			if (_isSteerLeft) _playerX = _playerX - dx;
-			else if (_isSteerRight) _playerX = _playerX + dx;
-			
-			/* Update player X position. */
+
+			if (_isSteerLeft)
+				_playerX = _playerX - dx;
+			else if (_isSteerRight)
+				_playerX = _playerX + dx;
+
 			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
-			
-			/* Check acceleration and deceleration. */
-			if (_isAccelerate) _speed = accelerate(_speed, _accel, _dt);
-			else if (_isBrake) _speed = accelerate(_speed, _breaking, _dt);
-			else _speed = accelerate(_speed, _decel, _dt);
-			
-			/* Check if player steers off-road. */
+
+			if (_isAccelerate)
+				_speed = accelerate(_speed, _accel, _dt);
+			else if (_isBrake)
+				_speed = accelerate(_speed, _breaking, _dt);
+			else
+				_speed = accelerate(_speed, _decel, _dt);
+
 			if ((_playerX < -1) || (_playerX > 1))
 			{
-				if (_speed > _offRoadLimit) _speed = accelerate(_speed, _offRoadDecel, _dt);
-				
+				if (_speed > _offRoadLimit)
+					_speed = accelerate(_speed, _offRoadDecel, _dt);
+
 				for (n = 0; n < playerSegment.sprites.length; n++)
 				{
 					sprite = playerSegment.sprites[n];
 					spriteW = sprite.source.width * _sprites.SCALE;
-					
-					/* Check collision with road-side obstacles. */
 					if (overlap(_playerX, playerW, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW))
 					{
-						_speed = _maxSpeed / 5; // stop in front of sprite (at front of segment)
+						_speed = _maxSpeed / 5;
 						_position = increase(playerSegment.p1.world.z, -_playerZ, _trackLength);
+						// stop
+						// in
+						// front
+						// of
+						// sprite
+						// (at
+						// front
+						// of
+						// segment)
 						break;
 					}
 				}
 			}
-			
-			/* Check collision with other cars. */
+
 			for (n = 0; n < playerSegment.cars.length; n++)
 			{
 				car = playerSegment.cars[n];
@@ -323,16 +330,116 @@ package view.racing
 					}
 				}
 			}
-			
-			/* Limit player steering bounds and max speed. */
+
 			_playerX = limit(_playerX, -3, 3);
+			// dont ever let it go too far out of bounds
 			_speed = limit(_speed, 0, _maxSpeed);
-			
-			/* Calculate background layers parallax offsets. */
-			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * speedPercent, 1);
-			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * speedPercent, 1);
-			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * speedPercent, 1);
+			// or exceed maxSpeed
+
+			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
+			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
+			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
+
+			if (_position > _playerZ)
+			{
+				if (_currentLapTime && (startPosition < _playerZ))
+				{
+					_lastLapTime = _currentLapTime;
+					_currentLapTime = 0;
+					if (_lastLapTime <= toFloat(_fast_lap_time))
+					{
+					}
+					else
+					{
+					}
+				}
+				else
+				{
+					_currentLapTime += _dt;
+				}
+			}
 		}
+		
+		
+		/**
+		 * @private
+		 */
+//		private function onTickOld():void
+//		{
+//			var n:int;
+//			var car:Car;
+//			var carW:Number;
+//			var sprite:SSprite;
+//			var spriteW:Number;
+//			var playerSegment:Segment = findSegment(_position + _playerZ);
+//			var playerW:Number = _sprites.PLAYER_STRAIGHT.width * _sprites.SCALE;
+//			var speedPercent:Number = _speed / _maxSpeed;
+//			var startPosition:Number = _position;
+//			
+//			// at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+//			var dx:Number = _dt * 2 * speedPercent;
+//
+//			updateCars(_dt, playerSegment, playerW);
+//
+//			_position = increase(_position, _dt * _speed, _trackLength);
+//			
+//			/* Check left/right steering. */
+//			if (_isSteerLeft) _playerX = _playerX - dx;
+//			else if (_isSteerRight) _playerX = _playerX + dx;
+//			
+//			/* Update player X position. */
+//			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
+//			
+//			/* Check acceleration and deceleration. */
+//			if (_isAccelerate) _speed = accelerate(_speed, _accel, _dt);
+//			else if (_isBrake) _speed = accelerate(_speed, _breaking, _dt);
+//			else _speed = accelerate(_speed, _decel, _dt);
+//			
+//			/* Check if player steers off-road. */
+//			if ((_playerX < -1) || (_playerX > 1))
+//			{
+//				if (_speed > _offRoadLimit) _speed = accelerate(_speed, _offRoadDecel, _dt);
+//				
+//				for (n = 0; n < playerSegment.sprites.length; n++)
+//				{
+//					sprite = playerSegment.sprites[n];
+//					spriteW = sprite.source.width * _sprites.SCALE;
+//					
+//					/* Check collision with road-side obstacles. */
+//					if (overlap(_playerX, playerW, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW))
+//					{
+//						_speed = _maxSpeed / 5; // stop in front of sprite (at front of segment)
+//						_position = increase(playerSegment.p1.world.z, -_playerZ, _trackLength);
+//						break;
+//					}
+//				}
+//			}
+//			
+//			/* Check collision with other cars. */
+//			for (n = 0; n < playerSegment.cars.length; n++)
+//			{
+//				car = playerSegment.cars[n];
+//				carW = car.sprite.source.width * _sprites.SCALE;
+//				if (_speed > car.speed)
+//				{
+//					if (overlap(_playerX, playerW, car.offset, carW, 0.8))
+//					{
+//						_speed = car.speed * (car.speed / _speed);
+//						_position = increase(car.z, -_playerZ, _trackLength);
+//						break;
+//					}
+//				}
+//			}
+//			
+//			/* Limit player steering bounds and max speed. */
+//			_playerX = limit(_playerX, -3, 3);
+//			_speed = limit(_speed, 0, _maxSpeed);
+//			
+//			/* Calculate background layers parallax offsets. */
+//			_skyOffset = increase(_skyOffset, _skySpeed * playerSegment.curve * speedPercent, 1);
+//			_hillOffset = increase(_hillOffset, _hillSpeed * playerSegment.curve * speedPercent, 1);
+//			_treeOffset = increase(_treeOffset, _treeSpeed * playerSegment.curve * speedPercent, 1);
+//		}
 		
 		
 		/**
@@ -341,57 +448,50 @@ package view.racing
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
 			var baseSegment:Segment = findSegment(_position);
-			var basePercent:Number = Util.percentRemaining(_position, _segmentLength);
+			var basePercent:Number = percentRemaining(_position, _segmentLength);
 			var playerSegment:Segment = findSegment(_position + _playerZ);
-			var playerPercent:Number = Util.percentRemaining(_position + _playerZ, _segmentLength);
-			var playerY:Number = Util.interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
+			var playerY:Number = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
 			var maxy:Number = _bufferHeight;
-			var x:Number = 0;
-			var dx:Number = - (baseSegment.curve * basePercent);
 			
-			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number,
-				spriteX:Number, spriteY:Number;
+			var x:Number = 0;
+			var dx:Number = -(baseSegment.curve * basePercent);
 			
 			_renderBuffer.clear();
 			
-			/* Render background layers. */
-			renderBackground(_sprites.REGION_SKY, _skyOffset, _resolution * _skySpeed  * playerY);
-			renderBackground(_sprites.REGION_HILLS, _hillOffset, _resolution * _hillSpeed  * playerY);
-			renderBackground(_sprites.REGION_TREES, _treeOffset, _resolution * _treeSpeed  * playerY);
+			renderBackground(_skyOffset, _resolution * _skySpeed * playerY);
+			renderBackground(_hillOffset, _resolution * _hillSpeed * playerY);
+			renderBackground(_treeOffset, _resolution * _treeSpeed * playerY);
 			
-			/* PHASE 1: render segments, front to back and clip far segments that have been
-			 * obscured by already rendered near segments if their projected coordinates are
-			 * lower than maxy. */
+			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number, spriteX:Number, spriteY:Number;
+
 			for (n = 0; n < _drawDistance; n++)
 			{
 				segment = _segments[(baseSegment.index + n) % _segments.length];
 				segment.looped = segment.index < baseSegment.index;
-				segment.fog = Util.exponentialFog(n / _drawDistance, _fogDensity);
+				segment.fog = exponentialFog(n / _drawDistance, _fogDensity);
 				segment.clip = maxy;
-				
+
 				project(segment.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (segment.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
 				project(segment.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (segment.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-				
+
 				x = x + dx;
 				dx = dx + segment.curve;
-				
-				if ((segment.p1.camera.z <= _cameraDepth)				// behind us
-					|| (segment.p2.screen.y >= segment.p1.screen.y)		// back face cull
-					|| (segment.p2.screen.y >= maxy))					// clip by (already rendered) hill
-				{
+
+				if ((segment.p1.camera.z <= _cameraDepth) || // behind us 
+				(segment.p2.screen.y >= segment.p1.screen.y) || // back face cull 
+				(segment.p2.screen.y >= maxy)) // clip by (already rendered) hill
 					continue;
-				}
-				
+
 				renderSegment(segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.fog, segment.color);
+				
 				maxy = segment.p1.screen.y;
 			}
 			
-			/* PHASE 2: Back to front render the sprites. */
 			for (n = (_drawDistance - 1); n > 0; n--)
 			{
 				segment = _segments[(baseSegment.index + n) % _segments.length];
-				
-				/* Render oponents. */
+
 				for (i = 0; i < segment.cars.length; i++)
 				{
 					car = segment.cars[i];
@@ -402,7 +502,6 @@ package view.racing
 					renderSprite(_roadWidth, car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, segment.clip);
 				}
 				
-				/* Render decoration and obstacle sprites. */
 				for (i = 0; i < segment.sprites.length; i++)
 				{
 					sprite = segment.sprites[i];
@@ -412,7 +511,6 @@ package view.racing
 					renderSprite(_roadWidth, sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
 				}
 				
-				/* Render player sprite. */
 				if (segment == playerSegment)
 				{
 					renderPlayer(_roadWidth, _speed / _maxSpeed, _cameraDepth / _playerZ, _bufferWidth / 2, (_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2), _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0), playerSegment.p2.world.y - playerSegment.p1.world.y);
@@ -424,66 +522,164 @@ package view.racing
 		/**
 		 * @private
 		 */
-		private function onRenderOld(ticks:uint, ms:uint, fps:uint):void
-		{
-			var baseSegment:Segment = findSegment(_position);
-			var basePercent:Number = percentRemaining(_position, _segmentLength);
-			var playerSegment:Segment = findSegment(_position + _playerZ);
-			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
-			var playerY:Number = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
-			var maxY:Number = _bufferHeight;
-			var x:Number = 0;
-			var dx:Number = -(baseSegment.curve * basePercent);
-			var s:Segment;
-			var n:int;
-			
-			_renderBuffer.clear();
-			
-			/* Render background layers. */
-			renderBackground(_sprites.REGION_SKY, _skyOffset, _resolution * _skySpeed  * playerY);
-			renderBackground(_sprites.REGION_HILLS, _hillOffset, _resolution * _hillSpeed  * playerY);
-			renderBackground(_sprites.REGION_TREES, _treeOffset, _resolution * _treeSpeed  * playerY);
-			
-			/* Render road segments. */
-			for (n = 0; n < _drawDistance; n++)
-			{
-				s = _segments[(baseSegment.index + n) % _segments.length];
-				s.looped = s.index < baseSegment.index;
-				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
-				
-				project(s.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-				project(s.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
-	
-				x = x + dx;
-				dx = dx + s.curve;
-				
-				if ((s.p1.camera.z <= _cameraDepth) || // behind us 
-					(s.p2.screen.y >= s.p1.screen.y) || // back face cull 
-					(s.p2.screen.y >= maxY))                  // clip by (already rendered) segment
-					continue;
-				
-				renderSegment(
-					s.p1.screen.x,
-					s.p1.screen.y,
-					s.p1.screen.w,
-					s.p2.screen.x,
-					s.p2.screen.y,
-					s.p2.screen.w,
-					s.fog,
-					s.color);
-				
-				maxY = s.p2.screen.y;
-			}
-			
-			/* Render the player sprite. */
-			renderPlayer(_roadWidth,
-				_speed / _maxSpeed,
-				_cameraDepth / _playerZ,
-				_bufferWidth / 2,
-				(_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2),
-				_speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0),
-				playerSegment.p2.world.y - playerSegment.p1.world.y);
-		}
+//		private function onRenderOld(ticks:uint, ms:uint, fps:uint):void
+//		{
+//			var baseSegment:Segment = findSegment(_position);
+//			var basePercent:Number = percentRemaining(_position, _segmentLength);
+//			var playerSegment:Segment = findSegment(_position + _playerZ);
+//			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
+//			var playerY:Number = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+//			var maxY:Number = _bufferHeight;
+//			var x:Number = 0;
+//			var dx:Number = - (baseSegment.curve * basePercent);
+//			
+//			var n:int;
+//			var i:int;
+//			var s:Segment;
+//			var car:Car;
+//			var sprite:SSprite;
+//			var spriteScale:Number;
+//			var spriteX:Number;
+//			var spriteY:Number;
+//			
+//			_renderBuffer.clear();
+//			
+//			/* Render background layers. */
+//			renderBackground(_skyOffset, _resolution * _skySpeed  * playerY);
+//			renderBackground(_hillOffset, _resolution * _hillSpeed  * playerY);
+//			renderBackground(_treeOffset, _resolution * _treeSpeed  * playerY);
+//			
+//			/* PHASE 1: render segments, front to back and clip far segments that have been
+//			 * obscured by already rendered near segments if their projected coordinates are
+//			 * lower than maxy. */
+//			for (n = 0; n < _drawDistance; n++)
+//			{
+//				s = _segments[(baseSegment.index + n) % _segments.length];
+//				s.looped = s.index < baseSegment.index;
+//				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
+//				s.clip = maxY;
+//				
+//				project(s.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+//				project(s.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+//				
+//				x = x + dx;
+//				dx = dx + s.curve;
+//				
+//				if ((s.p1.camera.z <= _cameraDepth)				// behind us
+//					|| (s.p2.screen.y >= s.p1.screen.y)			// back face cull
+//					|| (s.p2.screen.y >= maxY))					// clip by (already rendered) hill
+//				{
+//					continue;
+//				}
+//				
+//				renderSegment(s.p1.screen.x, s.p1.screen.y, s.p1.screen.w, s.p2.screen.x, s.p2.screen.y, s.p2.screen.w, s.fog, s.color);
+//				maxY = s.p1.screen.y;
+//			}
+//			
+//			/* PHASE 2: Back to front render the sprites. */
+//			for (n = (_drawDistance - 1); n > 0; n--)
+//			{
+//				s = _segments[(baseSegment.index + n) % _segments.length];
+//				
+//				/* Render oponents. */
+//				for (i = 0; i < s.cars.length; i++)
+//				{
+//					car = s.cars[i];
+//					sprite = car.sprite;
+//					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, car.percent);
+//					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidth / 2);
+//					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, car.percent);
+//					renderSprite(_roadWidth, car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip);
+//				}
+//				
+//				/* Render decoration and obstacle sprites. */
+//				for (i = 0; i < s.sprites.length; i++)
+//				{
+//					sprite = s.sprites[i];
+//					spriteScale = s.p1.screen.scale;
+//					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidth / 2);
+//					spriteY = s.p1.screen.y;
+//					renderSprite(_roadWidth, sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, s.clip);
+//				}
+//				
+//				/* Render player sprite. */
+//				if (s == playerSegment)
+//				{
+//					renderPlayer(
+//						_roadWidth, _speed / _maxSpeed,
+//						_cameraDepth / _playerZ,
+//						_bufferWidth / 2,
+//						(_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2),
+//						_speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0),
+//						playerSegment.p2.world.y - playerSegment.p1.world.y);
+//				}
+//			}
+//		}
+		
+		
+		/**
+		 * @private
+		 */
+//		private function onRenderOld(ticks:uint, ms:uint, fps:uint):void
+//		{
+//			var baseSegment:Segment = findSegment(_position);
+//			var basePercent:Number = percentRemaining(_position, _segmentLength);
+//			var playerSegment:Segment = findSegment(_position + _playerZ);
+//			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
+//			var playerY:Number = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+//			var maxY:Number = _bufferHeight;
+//			var x:Number = 0;
+//			var dx:Number = -(baseSegment.curve * basePercent);
+//			var s:Segment;
+//			var n:int;
+//			
+//			_renderBuffer.clear();
+//			
+//			/* Render background layers. */
+//			renderBackground(_sprites.REGION_SKY, _skyOffset, _resolution * _skySpeed  * playerY);
+//			renderBackground(_sprites.REGION_HILLS, _hillOffset, _resolution * _hillSpeed  * playerY);
+//			renderBackground(_sprites.REGION_TREES, _treeOffset, _resolution * _treeSpeed  * playerY);
+//			
+//			/* Render road segments. */
+//			for (n = 0; n < _drawDistance; n++)
+//			{
+//				s = _segments[(baseSegment.index + n) % _segments.length];
+//				s.looped = s.index < baseSegment.index;
+//				s.fog = exponentialFog(n / _drawDistance, _fogDensity);
+//				
+//				project(s.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+//				project(s.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0), _cameraDepth, _bufferWidth, _bufferHeight, _roadWidth);
+//	
+//				x = x + dx;
+//				dx = dx + s.curve;
+//				
+//				if ((s.p1.camera.z <= _cameraDepth) || // behind us 
+//					(s.p2.screen.y >= s.p1.screen.y) || // back face cull 
+//					(s.p2.screen.y >= maxY))                  // clip by (already rendered) segment
+//					continue;
+//				
+//				renderSegment(
+//					s.p1.screen.x,
+//					s.p1.screen.y,
+//					s.p1.screen.w,
+//					s.p2.screen.x,
+//					s.p2.screen.y,
+//					s.p2.screen.w,
+//					s.fog,
+//					s.color);
+//				
+//				maxY = s.p2.screen.y;
+//			}
+//			
+//			/* Render the player sprite. */
+//			renderPlayer(_roadWidth,
+//				_speed / _maxSpeed,
+//				_cameraDepth / _playerZ,
+//				_bufferWidth / 2,
+//				(_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2),
+//				_speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0),
+//				playerSegment.p2.world.y - playerSegment.p1.world.y);
+//		}
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -734,24 +930,24 @@ package view.racing
 			for (n = 250; n < 1000; n += 5)
 			{
 				addSprite(n, _sprites.COLUMN, 1.1);
-				addSprite(n + Util.randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
-				addSprite(n + Util.randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
+				addSprite(n + randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
+				addSprite(n + randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
 			}
 			
 			for (n = 200; n < _segments.length; n += 3)
 			{
-				addSprite(n, Util.randomChoice(_sprites.PLANTS), Util.randomChoice([1, -1]) * (2 + Math.random() * 5));
+				addSprite(n, randomChoice(_sprites.PLANTS), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			
 			for (n = 1000; n < (_segments.length - 50); n += 100)
 			{
-				side = Util.randomChoice([1, -1]);
-				addSprite(n + Util.randomInt(0, 50), Util.randomChoice(_sprites.BILLBOARDS), -side);
+				side = randomChoice([1, -1]);
+				addSprite(n + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
 				for (i = 0 ; i < 20 ; i++)
 				{
-					sprite = Util.randomChoice(_sprites.PLANTS);
+					sprite = randomChoice(_sprites.PLANTS);
 					offset = side * (1.5 + Math.random());
-					addSprite(n + Util.randomInt(0, 50), sprite, offset);
+					addSprite(n + randomInt(0, 50), sprite, offset);
 				}
 			}
 		}
@@ -762,7 +958,6 @@ package view.racing
 		 */
 		private function resetCars():void
 		{
-			_cars = new Vector.<Car>();
 			var n:int,
 			car:Car,
 			segment:Segment,
@@ -773,9 +968,9 @@ package view.racing
 			
 			for (n = 0; n < _totalCars; n++)
 			{
-				offset = Math.random() * Util.randomChoice([-0.8, 0.8]);
+				offset = Math.random() * randomChoice([-0.8, 0.8]);
 				z = Math.floor(Math.random() * _segments.length) * _segmentLength;
-				sprite = Util.randomChoice(_sprites.CARS);
+				sprite = randomChoice(_sprites.CARS);
 				speed = _maxSpeed / 4 + Math.random() * _maxSpeed / (sprite == _sprites.SEMI ? 4 : 2);
 				car = new Car(offset, z, new SSprite(sprite), speed);
 				segment = findSegment(car.z);
@@ -872,7 +1067,7 @@ package view.racing
 		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
 		{
 			var startY:Number = lastY();
-			var endY:Number = startY + (Util.toInt(y, 0) * _segmentLength);
+			var endY:Number = startY + (toInt(y, 0) * _segmentLength);
 			var i:uint;
 			var total:uint = enter + hold + leave;
 			
@@ -1105,10 +1300,10 @@ package view.racing
 		}
 		
 		
-		private static function easeOut(a:Number, b:Number, percent:Number):Number
-		{
-			return a + (b - a) * (1 - Math.pow(1 - percent, 2));
-		}
+		//private static function easeOut(a:Number, b:Number, percent:Number):Number
+		//{
+		//	return a + (b - a) * (1 - Math.pow(1 - percent, 2));
+		//}
 		
 		
 		private static function easeInOut(a:Number, b:Number, percent:Number):Number
@@ -1134,41 +1329,61 @@ package view.racing
 		}
 		
 		
+		private static function toInt(obj:*, def:*):int
+		{
+			if (obj != null)
+			{
+				var x:int = parseInt(obj, 10);
+				if (!isNaN(x)) return x;
+			}
+			return toInt(def, 0);
+		}
+		
+		
+		private static function toFloat(obj:*, def:Number = NaN):Number
+		{
+			if (obj != null)
+			{
+				var x:Number = parseFloat(obj);
+				if (!isNaN(x)) return x;
+			}
+			return toFloat(def, 0.0);
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Render Functions
 		//-----------------------------------------------------------------------------------------
 		
-		private function renderBackground(region:Rectangle, rotation:Number = 0.0,
-			offset:Number = 0.0):void
+		private function renderBackground(rotation:Number = 0.0, offset:Number = 0.0):void
 		{
 			_bgScroller.update();
 			_renderBuffer.blitImage(_bgScroller, 0, 0, _bgScroller.width, _bgScroller.height);
-			return;
 			
-			var imageW:Number = region.width / 2;
-			var imageH:Number = region.height;
-			var sourceX:Number = region.x + Math.floor(region.width * rotation);
-			var sourceY:Number = region.y;
-			var sourceW:Number = Math.min(imageW, region.x + region.width - sourceX);
-			var sourceH:Number = imageH;
-			var destX:Number = 0;
-			var destY:Number = offset;
-			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
-			var destH:Number = _bufferHeight;
-			
-			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
-			if (sourceW < imageW)
-			{
-				_renderBuffer.drawImage(_atlasImage, region.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, _bufferWidth - destW, destH);
-			}
-			
-			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
-			//_renderBuffer.drawImage(layer, destX, destY);//, _bufferWidth - destW, destH);
-			if (sourceW < imageW)
-			{
-				//_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
-				//_renderBuffer.drawImage(layer, destW - 1, destY);//, _bufferWidth - destW, destH);
-			}
+//			var imageW:Number = region.width / 2;
+//			var imageH:Number = region.height;
+//			var sourceX:Number = region.x + Math.floor(region.width * rotation);
+//			var sourceY:Number = region.y;
+//			var sourceW:Number = Math.min(imageW, region.x + region.width - sourceX);
+//			var sourceH:Number = imageH;
+//			var destX:Number = 0;
+//			var destY:Number = offset;
+//			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
+//			var destH:Number = _bufferHeight;
+//			
+//			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
+//			if (sourceW < imageW)
+//			{
+//				_renderBuffer.drawImage(_atlasImage, region.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, _bufferWidth - destW, destH);
+//			}
+//			
+//			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
+//			//_renderBuffer.drawImage(layer, destX, destY);//, _bufferWidth - destW, destH);
+//			if (sourceW < imageW)
+//			{
+//				//_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
+//				//_renderBuffer.drawImage(layer, destW - 1, destY);//, _bufferWidth - destW, destH);
+//			}
 		}
 		
 		
@@ -1246,12 +1461,16 @@ package view.racing
 			/* Scale for projection AND relative to roadWidth. */
 			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
 			var destH:int = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * roadWidth);
+			
 			destX = destX + (destW * (offsetX || 0));
 			destY = destY + (destH * (offsetY || 0));
+			
 			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
+			
 			if (clipH < destH)
 			{
-				_renderBuffer.blitImage(sprite, destX, destY, destW, destH - clipH);
+				//_renderBuffer.blitImage(sprite, destX, destY, destW, destH - clipH);
+				_renderBuffer.drawImage(sprite, destX, destY, destW / sprite.width);
 			}
 		}
 	}
