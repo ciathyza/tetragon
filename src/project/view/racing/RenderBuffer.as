@@ -28,8 +28,6 @@
  */
 package view.racing
 {
-	import com.hexagonstar.util.color.colorChannelToString;
-
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -69,12 +67,12 @@ package view.racing
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function RenderBuffer(width:int, height:int, transparent:Boolean = true,
-			fillColor:uint = 0x00000000):void
+		public function RenderBuffer(width:int, height:int, transparent:Boolean = false,
+			fillColor:uint = 0x000000):void
 		{
 			super(width, height, transparent, fillColor);
 			
-			_fillColor = 0xFFFF00FF; //fillColor;
+			_fillColor = fillColor;
 			_rect = rect;
 			_buffer = [];
 			_r = new Rectangle();
@@ -95,21 +93,12 @@ package view.racing
 		}
 		
 		
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint):void
 		{
 			_r.setTo(x, y, w, h);
-			color = color | ((alpha * 0xFF) << 24);
 			fillRect(_r, color);
 		}
 		
-	public function colorHexToString(color:uint):String
-	{
-		return String(
-			colorChannelToString(color >> 24 & 0xFF)
-			+ colorChannelToString(color >> 16 & 0xFF)
-			+ colorChannelToString(color >> 8 & 0xFF)
-			+ colorChannelToString(color & 0xFF)).toUpperCase();
-	}
 		
 		/**
 		 * Draw a filled, four-sided polygon.
@@ -240,14 +229,14 @@ package view.racing
 					r.width = a[y] - x;
 					r.x = x;
 					r.y = y;
-					fillRect(r, (255 << 24) | c);
+					fillRect(r, c);
 				}
 				else
 				{
 					r.width = x - a[y];
 					r.x = a[y];
 					r.y = y;
-					fillRect(r, (255 << 24) | c);
+					fillRect(r, c);
 				}
 			}
 			else

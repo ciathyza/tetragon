@@ -84,9 +84,9 @@ package view.racing
 		private var _hillSpeed:Number = 0.002;	// background hill layer scroll speed when going around curve (or up hill)
 		private var _treeSpeed:Number = 0.003;	// background tree layer scroll speed when going around curve (or up hill)
 		
-		private var _skyOffset:int = 0;			// current sky scroll offset
-		private var _hillOffset:int = 0;		// current hill scroll offset
-		private var _treeOffset:int = 0;		// current tree scroll offset
+		private var _skyOffset:Number = 0;		// current sky scroll offset
+		private var _hillOffset:Number = 0;		// current hill scroll offset
+		private var _treeOffset:Number = 0;		// current tree scroll offset
 		
 		private var _playerX:Number = 0;		// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerY:Number = 0;
@@ -295,9 +295,9 @@ package view.racing
 			_renderBuffer.clear();
 			
 			/* Render background layers. */
-			renderBackgroundLayer(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * _playerY);
-			renderBackgroundLayer(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * _playerY);
+			renderBackground(_sprites.BG_SKY, _skyOffset);
+			renderBackground(_sprites.BG_HILLS, _hillOffset);
+			renderBackground(_sprites.BG_TREES, _treeOffset);
 			
 			/* Render road segments. */
 			for (n = 0; n < _drawDistance; n++)
@@ -377,7 +377,7 @@ package view.racing
 			
 			prepareSprites();
 			
-			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, true, 0xFFFF00FF);
+			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x000055);
 			_bufferBitmap = new Bitmap(_renderBuffer);
 		}
 		
@@ -710,25 +710,27 @@ package view.racing
 		// Render Functions
 		//-----------------------------------------------------------------------------------------
 		
-		private function renderBackgroundLayer(sprite:BitmapData, rotation:Number = 0.0,
+		private function renderBackground(layer:BitmapData, rotation:Number = 0.0,
 			offset:Number = 0.0):void
 		{
-			var imageW:Number = sprite.width / 2;
-			var imageH:Number = sprite.height;
-			var sourceX:Number = 0 + Math.floor(sprite.width * rotation);
-			var sourceY:Number = 0;
-			var sourceW:Number = Math.min(imageW, 0 + sprite.width - sourceX);
+			var x:Number = 0;
+			var y:Number = 0;
+			
+			var imageW:Number = layer.width / 2;
+			var imageH:Number = layer.height;
+			var sourceX:Number = x + Math.floor(layer.width * rotation);
+			var sourceY:Number = y;
+			var sourceW:Number = Math.min(imageW, x + layer.width - sourceX);
 			var sourceH:Number = imageH;
 			var destX:Number = 0;
 			var destY:Number = offset;
-			var destW:Number = Math.floor(width * (sourceW / imageW));
-			var destH:Number = height;
+			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
+			var destH:Number = _bufferHeight;
 			
-			//ctx.drawImage(atlas, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
-			_renderBuffer.draw(sprite);
+			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
 			if (sourceW < imageW)
 			{
-				//ctx.drawImage(atlas, layer.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, width - destW, destH);
+				_renderBuffer.drawImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
 			}
 		}
 		

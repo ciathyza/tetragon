@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:24d7d85a3fba7f886d7b9560b253cf6c$ -->
+<!-- $TexturePacker:SmartUpdate:074b1f77163f473139f2c8f4cd0df789$ -->
 <TextureAtlas imagePath="sprites.png">
-    <SubTexture name="bg_hills" x="2" y="484" width="1280" height="452" frameX="0" frameY="-28" frameWidth="1280" frameHeight="480"/>
-    <SubTexture name="bg_sky" x="2" y="2" width="1280" height="480"/>
-    <SubTexture name="bg_trees" x="2" y="938" width="1280" height="318" frameX="0" frameY="-162" frameWidth="1280" frameHeight="480"/>
-    <SubTexture name="sprite_billboard01" x="1273" y="1411" width="300" height="170"/>
-    <SubTexture name="sprite_billboard02" x="1810" y="808" width="215" height="220"/>
-    <SubTexture name="sprite_billboard03" x="1810" y="586" width="230" height="220"/>
-    <SubTexture name="sprite_billboard04" x="1284" y="943" width="268" height="170"/>
-    <SubTexture name="sprite_billboard05" x="1744" y="1307" width="298" height="190"/>
-    <SubTexture name="sprite_billboard06" x="987" y="1258" width="284" height="190" frameX="0" frameY="0" frameWidth="298" frameHeight="190"/>
-    <SubTexture name="sprite_billboard07" x="701" y="1258" width="284" height="190" frameX="0" frameY="0" frameWidth="298" frameHeight="190"/>
-    <SubTexture name="sprite_billboard08" x="2" y="1258" width="375" height="263" frameX="-5" frameY="-2" frameWidth="385" frameHeight="265"/>
-    <SubTexture name="sprite_billboard09" x="1284" y="364" width="322" height="280" frameX="-2" frameY="-2" frameWidth="328" frameHeight="282"/>
-    <SubTexture name="sprite_boulder1" x="1863" y="336" width="168" height="248"/>
-    <SubTexture name="sprite_boulder2" x="1575" y="1499" width="298" height="140"/>
-    <SubTexture name="sprite_boulder3" x="379" y="1258" width="320" height="220"/>
-    <SubTexture name="sprite_bush1" x="1802" y="1030" width="240" height="155"/>
-    <SubTexture name="sprite_bush2" x="1284" y="1115" width="232" height="152"/>
-    <SubTexture name="sprite_cactus" x="1797" y="1187" width="235" height="118"/>
-    <SubTexture name="sprite_car01" x="1720" y="1038" width="80" height="56"/>
-    <SubTexture name="sprite_car02" x="1720" y="918" width="80" height="59"/>
-    <SubTexture name="sprite_car03" x="1720" y="861" width="88" height="55"/>
-    <SubTexture name="sprite_car04" x="1720" y="979" width="80" height="57"/>
-    <SubTexture name="sprite_column" x="1608" y="544" width="200" height="315"/>
-    <SubTexture name="sprite_dead_tree1" x="1863" y="2" width="135" height="332"/>
-    <SubTexture name="sprite_dead_tree2" x="1568" y="861" width="150" height="260"/>
-    <SubTexture name="sprite_palm_tree" x="1646" y="2" width="215" height="540"/>
-    <SubTexture name="sprite_player_left" x="1642" y="1403" width="80" height="41"/>
-    <SubTexture name="sprite_player_right" x="1642" y="1360" width="80" height="41"/>
-    <SubTexture name="sprite_player_straight" x="1715" y="1237" width="80" height="41"/>
-    <SubTexture name="sprite_player_uphill_left" x="1715" y="1190" width="80" height="45"/>
-    <SubTexture name="sprite_player_uphill_right" x="1715" y="1143" width="80" height="45"/>
-    <SubTexture name="sprite_player_uphill_straight" x="1720" y="1096" width="80" height="45"/>
-    <SubTexture name="sprite_semi" x="1518" y="1265" width="122" height="144"/>
-    <SubTexture name="sprite_stump" x="1518" y="1123" width="195" height="140"/>
-    <SubTexture name="sprite_tree1" x="1284" y="2" width="360" height="360"/>
-    <SubTexture name="sprite_tree2" x="1284" y="646" width="282" height="295"/>
-    <SubTexture name="sprite_truck" x="1642" y="1280" width="100" height="78"/>
+    <SubTexture name="bg_hills" x="2" y="966" width="1280" height="480"/>
+    <SubTexture name="bg_sky" x="2" y="484" width="1280" height="480"/>
+    <SubTexture name="bg_trees" x="2" y="2" width="1280" height="480"/>
+    <SubTexture name="sprite_billboard01" x="1646" y="730" width="300" height="170"/>
+    <SubTexture name="sprite_billboard02" x="1823" y="286" width="215" height="220"/>
+    <SubTexture name="sprite_billboard03" x="1646" y="508" width="230" height="220"/>
+    <SubTexture name="sprite_billboard04" x="1770" y="1220" width="268" height="170"/>
+    <SubTexture name="sprite_billboard05" x="602" y="1448" width="298" height="190"/>
+    <SubTexture name="sprite_billboard06" x="302" y="1448" width="298" height="190"/>
+    <SubTexture name="sprite_billboard07" x="2" y="1448" width="298" height="190"/>
+    <SubTexture name="sprite_billboard08" x="1421" y="906" width="385" height="265"/>
+    <SubTexture name="sprite_billboard09" x="1501" y="2" width="328" height="282"/>
+    <SubTexture name="sprite_boulder1" x="1831" y="2" width="168" height="248"/>
+    <SubTexture name="sprite_boulder2" x="902" y="1537" width="298" height="140"/>
+    <SubTexture name="sprite_boulder3" x="1501" y="286" width="320" height="220"/>
+    <SubTexture name="sprite_bush1" x="1770" y="1392" width="240" height="155"/>
+    <SubTexture name="sprite_bush2" x="1202" y="1537" width="232" height="152"/>
+    <SubTexture name="sprite_cactus" x="1436" y="1549" width="235" height="118"/>
+    <SubTexture name="sprite_car01" x="1585" y="1173" width="80" height="56"/>
+    <SubTexture name="sprite_car02" x="1421" y="1173" width="80" height="59"/>
+    <SubTexture name="sprite_car03" x="1878" y="654" width="88" height="55"/>
+    <SubTexture name="sprite_car04" x="1503" y="1173" width="80" height="57"/>
+    <SubTexture name="sprite_column" x="1568" y="1232" width="200" height="315"/>
+    <SubTexture name="sprite_dead_tree1" x="1284" y="906" width="135" height="332"/>
+    <SubTexture name="sprite_dead_tree2" x="1808" y="902" width="150" height="260"/>
+    <SubTexture name="sprite_palm_tree" x="1284" y="2" width="215" height="540"/>
+    <SubTexture name="sprite_player_left" x="1948" y="844" width="80" height="41"/>
+    <SubTexture name="sprite_player_right" x="1948" y="801" width="80" height="41"/>
+    <SubTexture name="sprite_player_straight" x="1948" y="758" width="80" height="41"/>
+    <SubTexture name="sprite_player_uphill_left" x="1948" y="711" width="80" height="45"/>
+    <SubTexture name="sprite_player_uphill_right" x="1749" y="1173" width="80" height="45"/>
+    <SubTexture name="sprite_player_uphill_straight" x="1667" y="1173" width="80" height="45"/>
+    <SubTexture name="sprite_semi" x="1878" y="508" width="122" height="144"/>
+    <SubTexture name="sprite_stump" x="1673" y="1549" width="195" height="140"/>
+    <SubTexture name="sprite_tree1" x="1284" y="544" width="360" height="360"/>
+    <SubTexture name="sprite_tree2" x="1284" y="1240" width="282" height="295"/>
+    <SubTexture name="sprite_truck" x="902" y="1448" width="100" height="78"/>
 </TextureAtlas>
