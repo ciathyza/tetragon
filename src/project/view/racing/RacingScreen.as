@@ -643,7 +643,7 @@ package view.racing
 			/* Draw fog. */
 			if (fog < 1.0)
 			{
-				_renderBuffer.drawRect(0, y1, _bufferWidth, y1 - y2, COLORS.FOG, 1.0 - fog);
+				//_renderBuffer.drawRect(0, y1, _bufferWidth, y1 - y2, COLORS.FOG, 1.0 - fog);
 //				ctx.globalAlpha = (1 - fog);
 //				ctx.fillStyle = COLORS.FOG;
 //				ctx.fillRect(x, y, width, height);

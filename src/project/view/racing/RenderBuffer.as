@@ -97,12 +97,8 @@ package view.racing
 		
 		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
 		{
-			//color = color | ((alpha * 0xFF) << 24);
-			//Debug.trace(colorHexToString(color));
-			
 			_r.setTo(x, y, w, h);
-			//fillRect(_r, (alpha << 24) | color);
-			color = 0x7D0000FF;
+			color = color | ((alpha * 0xFF) << 24);
 			fillRect(_r, color);
 		}
 		
