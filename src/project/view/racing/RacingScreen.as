@@ -468,6 +468,9 @@ package view.racing
 			
 			var n:int, i:int, segment:Segment, car:Car, sprite:SSprite, spriteScale:Number, spriteX:Number, spriteY:Number;
 
+			/* PHASE 1: render segments, front to back and clip far segments that have been
+			 * obscured by already rendered near segments if their projected coordinates are
+			 * lower than maxY. */
 			for (n = 0; n < _drawDistance; n++)
 			{
 				segment = _segments[(baseSegment.index + n) % _segments.length];
@@ -491,6 +494,7 @@ package view.racing
 				maxy = segment.p1.screen.y;
 			}
 			
+			/* PHASE 2: Back to front render the sprites. */
 			for (n = (_drawDistance - 1); n > 0; n--)
 			{
 				segment = _segments[(baseSegment.index + n) % _segments.length];
@@ -1470,7 +1474,7 @@ package view.racing
 			if (clipH < destH)
 			{
 				//_renderBuffer.blitImage(sprite, destX, destY, destW, destH - clipH);
-				_renderBuffer.drawImage(sprite, destX, destY, destW / sprite.width);
+				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width);
 			}
 		}
 	}
