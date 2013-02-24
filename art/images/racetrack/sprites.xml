@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:18b28efd376d564db92ef01d0325c39e$ -->
+<TextureAtlas imagePath="sprites.png">
+    <SubTexture name="bg_hills" x="2" y="486" width="640" height="240"/>
+    <SubTexture name="bg_sky" x="2" y="244" width="640" height="240"/>
+    <SubTexture name="bg_trees" x="2" y="2" width="640" height="240"/>
+    <SubTexture name="billboard01" x="790" y="92" width="120" height="68"/>
+    <SubTexture name="billboard02" x="734" y="481" width="86" height="88"/>
+    <SubTexture name="billboard03" x="765" y="391" width="92" height="88"/>
+    <SubTexture name="billboard04" x="912" y="115" width="107" height="68"/>
+    <SubTexture name="billboard05" x="644" y="324" width="119" height="76"/>
+    <SubTexture name="billboard06" x="765" y="250" width="119" height="76"/>
+    <SubTexture name="billboard07" x="886" y="185" width="119" height="76"/>
+    <SubTexture name="billboard08" x="644" y="236" width="119" height="86"/>
+    <SubTexture name="billboard09" x="765" y="162" width="119" height="86"/>
+    <SubTexture name="bldg_boathouse" x="644" y="148" width="119" height="86"/>
+    <SubTexture name="bldg_column" x="644" y="517" width="80" height="126"/>
+    <SubTexture name="bldg_tower" x="2" y="869" width="54" height="124"/>
+    <SubTexture name="bldg_windmill" x="644" y="402" width="88" height="113"/>
+    <SubTexture name="car01" x="946" y="681" width="64" height="45"/>
+    <SubTexture name="car01_lean" x="947" y="634" width="64" height="45"/>
+    <SubTexture name="car02" x="915" y="822" width="61" height="45"/>
+    <SubTexture name="car02_lean" x="852" y="794" width="61" height="45"/>
+    <SubTexture name="car03" x="947" y="487" width="70" height="44"/>
+    <SubTexture name="car03_lean" x="947" y="441" width="70" height="44"/>
+    <SubTexture name="car04" x="946" y="775" width="63" height="45"/>
+    <SubTexture name="car04_lean" x="946" y="728" width="63" height="45"/>
+    <SubTexture name="car05" x="64" y="782" width="58" height="45"/>
+    <SubTexture name="car05_lean" x="58" y="869" width="58" height="45"/>
+    <SubTexture name="car06" x="789" y="760" width="61" height="72"/>
+    <SubTexture name="car06_lean" x="726" y="708" width="61" height="72"/>
+    <SubTexture name="player" x="644" y="692" width="80" height="41"/>
+    <SubTexture name="player_left" x="726" y="665" width="80" height="41"/>
+    <SubTexture name="player_right" x="808" y="659" width="80" height="41"/>
+    <SubTexture name="player_uphill" x="644" y="645" width="80" height="45"/>
+    <SubTexture name="player_uphill_left" x="726" y="618" width="80" height="45"/>
+    <SubTexture name="player_uphill_right" x="726" y="571" width="80" height="45"/>
+    <SubTexture name="veg_boulder1" x="947" y="533" width="67" height="99"/>
+    <SubTexture name="veg_boulder2" x="886" y="263" width="119" height="56"/>
+    <SubTexture name="veg_boulder3" x="790" y="2" width="128" height="88"/>
+    <SubTexture name="veg_bush1" x="920" y="2" width="96" height="62"/>
+    <SubTexture name="veg_bush2" x="765" y="328" width="93" height="61"/>
+    <SubTexture name="veg_cactus" x="920" y="66" width="94" height="47"/>
+    <SubTexture name="veg_deadtree1" x="890" y="659" width="54" height="133"/>
+    <SubTexture name="veg_deadtree2" x="2" y="735" width="60" height="104"/>
+    <SubTexture name="veg_palmtree" x="859" y="441" width="86" height="216"/>
+    <SubTexture name="veg_stump" x="808" y="702" width="78" height="56"/>
+    <SubTexture name="veg_tree1" x="644" y="2" width="144" height="144"/>
+    <SubTexture name="veg_tree2" x="886" y="321" width="113" height="118"/>
+</TextureAtlas>

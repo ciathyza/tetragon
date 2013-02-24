@@ -109,7 +109,7 @@ package view.racing
 		private var _segmentLength:int = 200;	// length of a single segment
 		private var _rumbleLength:int = 3;		// number of segments per red/white rumble strip
 		private var _trackLength:int = 200;		// z length of entire track (computed)
-		private var _lanes:int = 3;				// number of lanes
+		private var _lanes:int = 2;				// number of lanes
 		private var _totalCars:Number = 200;	// total number of cars on the road
 		
 		private var _accel:Number;				// acceleration rate - tuned until it 'felt' right
@@ -858,40 +858,40 @@ package view.racing
 			_sprites.BG_SKY = _atlas.getSprite("bg_sky");
 			_sprites.BG_HILLS = _atlas.getSprite("bg_hills");
 			_sprites.BG_TREES = _atlas.getSprite("bg_trees");
-			_sprites.BILLBOARD01 = _atlas.getSprite("sprite_billboard01");
-			_sprites.BILLBOARD02 = _atlas.getSprite("sprite_billboard02");
-			_sprites.BILLBOARD03 = _atlas.getSprite("sprite_billboard03");
-			_sprites.BILLBOARD04 = _atlas.getSprite("sprite_billboard04");
-			_sprites.BILLBOARD05 = _atlas.getSprite("sprite_billboard05");
-			_sprites.BILLBOARD06 = _atlas.getSprite("sprite_billboard06");
-			_sprites.BILLBOARD07 = _atlas.getSprite("sprite_billboard07");
-			_sprites.BILLBOARD08 = _atlas.getSprite("sprite_billboard08");
-			_sprites.BILLBOARD09 = _atlas.getSprite("sprite_billboard09");
-			_sprites.BOULDER1 = _atlas.getSprite("sprite_boulder1");
-			_sprites.BOULDER2 = _atlas.getSprite("sprite_boulder2");
-			_sprites.BOULDER3 = _atlas.getSprite("sprite_boulder3");
-			_sprites.BUSH1 = _atlas.getSprite("sprite_bush1");
-			_sprites.BUSH2 = _atlas.getSprite("sprite_bush2");
-			_sprites.CACTUS = _atlas.getSprite("sprite_cactus");
-			_sprites.TREE1 = _atlas.getSprite("sprite_tree1");
-			_sprites.TREE2 = _atlas.getSprite("sprite_tree2");
-			_sprites.PALM_TREE = _atlas.getSprite("sprite_palm_tree");
-			_sprites.DEAD_TREE1 = _atlas.getSprite("sprite_dead_tree1");
-			_sprites.DEAD_TREE2 = _atlas.getSprite("sprite_dead_tree2");
-			_sprites.STUMP = _atlas.getSprite("sprite_stump");
-			_sprites.COLUMN = _atlas.getSprite("sprite_column");
-			_sprites.CAR01 = _atlas.getSprite("sprite_car01");
-			_sprites.CAR02 = _atlas.getSprite("sprite_car02");
-			_sprites.CAR03 = _atlas.getSprite("sprite_car03");
-			_sprites.CAR04 = _atlas.getSprite("sprite_car04");
-			_sprites.SEMI = _atlas.getSprite("sprite_semi");
-			_sprites.TRUCK = _atlas.getSprite("sprite_truck");
-			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("sprite_player_straight");
-			_sprites.PLAYER_LEFT = _atlas.getSprite("sprite_player_left");
-			_sprites.PLAYER_RIGHT = _atlas.getSprite("sprite_player_right");
-			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("sprite_player_uphill_straight");
-			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("sprite_player_uphill_left");
-			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("sprite_player_uphill_right");
+			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01");
+			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02");
+			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03");
+			_sprites.BILLBOARD04 = _atlas.getSprite("billboard04");
+			_sprites.BILLBOARD05 = _atlas.getSprite("billboard05");
+			_sprites.BILLBOARD06 = _atlas.getSprite("billboard06");
+			_sprites.BILLBOARD07 = _atlas.getSprite("billboard07");
+			_sprites.BILLBOARD08 = _atlas.getSprite("billboard08");
+			_sprites.BILLBOARD09 = _atlas.getSprite("billboard09");
+			_sprites.BOULDER1 = _atlas.getSprite("veg_boulder1");
+			_sprites.BOULDER2 = _atlas.getSprite("veg_boulder2");
+			_sprites.BOULDER3 = _atlas.getSprite("veg_boulder3");
+			_sprites.BUSH1 = _atlas.getSprite("veg_bush1");
+			_sprites.BUSH2 = _atlas.getSprite("veg_bush2");
+			_sprites.CACTUS = _atlas.getSprite("veg_cactus");
+			_sprites.TREE1 = _atlas.getSprite("veg_tree1");
+			_sprites.TREE2 = _atlas.getSprite("veg_tree2");
+			_sprites.PALM_TREE = _atlas.getSprite("veg_palmtree");
+			_sprites.DEAD_TREE1 = _atlas.getSprite("veg_deadtree1");
+			_sprites.DEAD_TREE2 = _atlas.getSprite("veg_deadtree2");
+			_sprites.STUMP = _atlas.getSprite("veg_stump");
+			_sprites.COLUMN = _atlas.getSprite("bldg_column");
+			_sprites.CAR01 = _atlas.getSprite("car01");
+			_sprites.CAR02 = _atlas.getSprite("car02");
+			_sprites.CAR03 = _atlas.getSprite("car03");
+			_sprites.CAR04 = _atlas.getSprite("car04");
+			_sprites.TRUCK = _atlas.getSprite("car05");
+			_sprites.SEMI = _atlas.getSprite("car06");
+			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("player");
+			_sprites.PLAYER_LEFT = _atlas.getSprite("player_left");
+			_sprites.PLAYER_RIGHT = _atlas.getSprite("player_right");
+			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("player_uphill");
+			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("player_uphill_left");
+			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("player_uphill_right");
 			
 			_sprites.REGION_SKY = _atlas.getRegion("bg_sky");
 			_sprites.REGION_HILLS = _atlas.getRegion("bg_hills");
@@ -981,7 +981,7 @@ package view.racing
 			
 			for (n = 200; n < _segments.length; n += 3)
 			{
-				addSprite(n, randomChoice(_sprites.PLANTS), randomChoice([1, -1]) * (2 + Math.random() * 5));
+				addSprite(n, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			
 			for (n = 1000; n < (_segments.length - 50); n += 100)
@@ -990,7 +990,7 @@ package view.racing
 				addSprite(n + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
 				for (i = 0 ; i < 20 ; i++)
 				{
-					sprite = randomChoice(_sprites.PLANTS);
+					sprite = randomChoice(_sprites.VEGETATION);
 					offset = side * (1.5 + Math.random());
 					addSprite(n + randomInt(0, 50), sprite, offset);
 				}
