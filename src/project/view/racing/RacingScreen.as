@@ -496,7 +496,7 @@ package view.racing
 				(segment.p2.screen.y >= maxy)) // clip by (already rendered) hill
 					continue;
 
-				renderSegment(segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.haze, segment.color);
+				renderSegment(segment.p1.screen.x, segment.p1.screen.y, segment.p1.screen.w, segment.p2.screen.x, segment.p2.screen.y, segment.p2.screen.w, segment.color, segment.haze);
 				
 				maxy = segment.p1.screen.y;
 			}
@@ -1272,15 +1272,15 @@ package view.racing
 		}
 		
 		
-		private static function rumbleWidth(projectedRoadWidth:Number, lanes:int):Number
+		private function getRumbleWidth(projectedRoadWidth:Number):Number
 		{
-			return projectedRoadWidth / Math.max(6, 2 * lanes);
+			return projectedRoadWidth / Math.max(6, 2 * _lanes);
 		}
 		
 		
-		private static function laneMarkerWidth(projectedRoadWidth:Number, lanes:int):Number
+		private function getLaneMarkerWidth(projectedRoadWidth:Number):Number
 		{
-			return projectedRoadWidth / Math.max(32, 8 * lanes);
+			return projectedRoadWidth / Math.max(32, 8 * _lanes);
 		}
 		
 		
@@ -1380,33 +1380,49 @@ package view.racing
 		}
 		
 		
+		/**
+		 * Renders a segment.
+		 * 
+		 * @param x1
+		 * @param y1
+		 * @param w1
+		 * @param x2
+		 * @param y2
+		 * @param w2
+		 * @param color
+		 * @param hazeAlpha
+		 */
 		private function renderSegment(x1:Number, y1:Number, w1:Number, x2:Number, y2:Number,
-			w2:Number, hazeAlpha:Number, color:ColorSet):void
+			w2:Number, color:ColorSet, hazeAlpha:Number):void
 		{
-			var r1:Number = rumbleWidth(w1, _lanes),
-				r2:Number = rumbleWidth(w2, _lanes),
-				l1:Number = laneMarkerWidth(w1, _lanes),
-				l2:Number = laneMarkerWidth(w2, _lanes),
-				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
+			/* Calculate rumble widths for current segment. */
+			var r1:Number = getRumbleWidth(w1), r2:Number = getRumbleWidth(w2);
 			
 			/* Draw offroad area segment. */
 			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, color.grass, _hazeColor, hazeAlpha);
 			
 			/* Draw the road segment. */
-			_renderBuffer.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
+			_renderBuffer.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2,
+				color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2,
+				color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2,
+				color.road, _hazeColor, hazeAlpha);
 			
 			/* Draw lane strips. */
-			if (color.lane)
+			if (color.lane > 0)
 			{
-				lanew1 = w1 * 2 / _lanes;
-				lanew2 = w2 * 2 / _lanes;
-				lanex1 = x1 - w1 + lanew1;
-				lanex2 = x2 - w2 + lanew2;
-				for (lane = 1 ;lane < _lanes; lanex1 += lanew1, lanex2 += lanew2, lane++)
+				var l1:Number = getLaneMarkerWidth(w1),
+					l2:Number = getLaneMarkerWidth(w2),
+					lw1:Number = w1 * 2 / _lanes,
+					lw2:Number = w2 * 2 / _lanes,
+					lx1:Number = x1 - w1 + lw1,
+					lx2:Number = x2 - w2 + lw2;
+				
+				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
 				{
-					_renderBuffer.drawPolygon(lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
+					_renderBuffer.drawPolygon(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1,
+						lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
 				}
 			}
 		}
