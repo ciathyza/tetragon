@@ -68,12 +68,16 @@ package view.racing.parallax
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
-		public function update():void
+		public function update(x:int):void
 		{
 			for (var i:uint = 0; i < _layerCount; i++)
 			{
 				var layer:ParallaxLayer = _layers[i];
+				if (!layer) continue;
+				//layer.point.x = x;
+				fillRect(_rect, 0x000000);
 				copyPixels(layer.bitmapData, layer.rect, layer.point);
+				scroll(-x, 0);
 			}
 		}
 		
@@ -104,6 +108,7 @@ package view.racing.parallax
 				for (var i:uint = 0; i < _layers.length; i++)
 				{
 					var layer:ParallaxLayer = v[i];
+					if (!layer) continue;
 					layer.rect = new Rectangle(0, 0, layer.bitmapData.width, layer.bitmapData.height);
 					layer.point = new Point(0, 0);
 					_layers[i] = layer;

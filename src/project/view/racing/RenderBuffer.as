@@ -149,7 +149,7 @@ package view.racing
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int, scale:Number):void
+		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int, scale:Number = 1.0):void
 		{
 			_m.identity();
 			_m.scale(scale, scale);

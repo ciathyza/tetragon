@@ -46,7 +46,7 @@ package view.racing.vo
 		public var cars:Vector.<Car>;
 		public var color:ColorSet;
 		public var looped:Boolean;
-		public var fog:Number;
+		public var haze:Number;
 		public var clip:Number;
 	}
 }
