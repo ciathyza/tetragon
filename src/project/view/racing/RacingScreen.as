@@ -770,8 +770,8 @@ package view.racing
 			_bufferBitmap = new Bitmap(_renderBuffer);
 			
 			_bgLayer1 = new ParallaxLayer(_sprites.BG_SKY, _skySpeed);
-			//_bgLayer2 = new ParallaxLayer(_sprites.BG_HILLS, _hillSpeed);
-			//_bgLayer3 = new ParallaxLayer(_sprites.BG_TREES, _treeSpeed);
+			_bgLayer2 = new ParallaxLayer(_sprites.BG_HILLS, _hillSpeed);
+			_bgLayer3 = new ParallaxLayer(_sprites.BG_TREES, _treeSpeed);
 			
 			_bgScroller = new ParallaxScroller(_bufferWidth, _sprites.BG_SKY.height);
 			_bgScroller.layers = [_bgLayer1, _bgLayer2, _bgLayer3];
@@ -1449,21 +1449,31 @@ package view.racing
 		}
 		
 		
+		/**
+		 * Renders a sprite onto the render buffer.
+		 * 
+		 * @param sprite
+		 * @param scale
+		 * @param destX
+		 * @param destY
+		 * @param offsetX
+		 * @param offsetY
+		 * @param clipY
+		 */
 		private function renderSprite(sprite:BitmapData, scale:Number,
-			destX:int, destY:int, offsetX:Number, offsetY:Number, clipY:Number = 0):void
+			destX:int, destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
 			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
 			var destH:int = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
 			
-			destX = destX + (destW * (offsetX || 0));
-			destY = destY + (destH * (offsetY || 0));
+			destX = destX + (destW * offsetX);
+			destY = destY + (destH * offsetY);
 			
 			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
 			
 			if (clipH < destH)
 			{
-				//_renderBuffer.blitImage(sprite, destX, destY, destW, destH - clipH);
 				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width);
 			}
 		}

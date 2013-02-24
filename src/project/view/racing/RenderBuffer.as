@@ -216,23 +216,23 @@ package view.racing
 			
 			var deltaX:int = x1 - x0;
 			var deltaY:int = (y1 - y0) < 0 ? -(y1 - y0) : (y1 - y0);
+			var ysStep:int = y0 < y1 ? 1 : -1;
+			var xEnd:int = x1 - (deltaX >> 1);
 			var error:int = 0;
 			var y:int = y0;
-			var ystep:int = y0 < y1 ? 1 : -1;
 			var x:int = x0;
-			var xend:int = x1 - (deltaX >> 1);
 			var fx:int = x1;
 			var fy:int = y1;
 			var px:int = 0;
 			
 			_r.setTo(0, 0, 0, 1);
 			
-			while (x++ <= xend)
+			while (x++ <= xEnd)
 			{
 				if (steep)
 				{
 					checkLine(a, y, x, c, _r);
-					if (fx != x1 && fx != xend) checkLine(a, fy, fx + 1, c, _r);
+					if (fx != x1 && fx != xEnd) checkLine(a, fy, fx + 1, c, _r);
 				}
 				
 				error += deltaY;
@@ -241,11 +241,11 @@ package view.racing
 					if (!steep)
 					{
 						checkLine(a, x - px + 1, y, c, _r);
-						if (fx != xend) checkLine(a, fx + 1, fy, c, _r);
+						if (fx != xEnd) checkLine(a, fx + 1, fy, c, _r);
 					}
 					px = 0;
-					y += ystep;
-					fy -= ystep;
+					y += ysStep;
+					fy -= ysStep;
 					error -= deltaX;
 				}
 				px++;
