@@ -160,11 +160,9 @@ package view.racing
 		
 		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int, scale:Number = 1.0):void
 		{
-			_m.identity();
-			_m.scale(scale, scale);
-			_m.translate(x, y);
+			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
-			draw(sprite, _m, null, null, _r);
+			draw(sprite, _m, null, null, _r, false);
 		}
 		
 		

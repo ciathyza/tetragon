@@ -223,6 +223,15 @@ package view.racing
 		}
 		
 		
+		/**
+		 * @private
+		 */
+		private function get lastY():Number
+		{
+			return (_segments.length == 0) ? 0 : _segments[_segments.length - 1].p2.world.y;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -994,15 +1003,15 @@ package view.racing
 		 */
 		private function resetCars():void
 		{
-			var n:int,
-			car:Car,
-			segment:Segment,
+			var i:int,
 			offset:Number,
 			z:Number,
-			sprite:BitmapData,
-			speed:Number;
+			speed:Number,
+			car:Car,
+			segment:Segment,
+			sprite:BitmapData;
 			
-			for (n = 0; n < _totalCars; n++)
+			for (i = 0; i < _totalCars; i++)
 			{
 				offset = Math.random() * randomChoice([-0.8, 0.8]);
 				z = Math.floor(Math.random() * _segments.length) * _segmentLength;
@@ -1093,7 +1102,7 @@ package view.racing
 		 */
 		private function addDownhillToEnd(num:int = 200):void
 		{
-			addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY() / _segmentLength);
+			addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY / _segmentLength);
 		}
 		
 		
@@ -1102,10 +1111,10 @@ package view.racing
 		 */
 		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
 		{
-			var startY:Number = lastY();
+			var startY:Number = lastY;
 			var endY:Number = startY + (toInt(y, 0) * _segmentLength);
-			var i:uint;
 			var total:uint = enter + hold + leave;
+			var i:uint;
 			
 			for (i = 0; i < enter; i++)
 			{
@@ -1130,7 +1139,7 @@ package view.racing
 			var i:uint = _segments.length;
 			var segment:Segment = new Segment();
 			segment.index = i;
-			segment.p1 = new PPoint(new PWorld(lastY(), i * _segmentLength), new PCamera(), new PScreen());
+			segment.p1 = new PPoint(new PWorld(lastY, i * _segmentLength), new PCamera(), new PScreen());
 			segment.p2 = new PPoint(new PWorld(y, (i + 1) * _segmentLength), new PCamera(), new PScreen());
 			segment.curve = curve;
 			segment.sprites = new Vector.<SSprite>();
@@ -1155,16 +1164,7 @@ package view.racing
 		 */
 		private function findSegment(z:Number):Segment
 		{
-			return _segments[Math.floor(z / _segmentLength) % _segments.length];
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function lastY():Number
-		{
-			return (_segments.length == 0) ? 0 : _segments[_segments.length - 1].p2.world.y;
+			return _segments[int(z / _segmentLength) % _segments.length];
 		}
 		
 		
@@ -1460,8 +1460,8 @@ package view.racing
 		 * @param offsetY
 		 * @param clipY
 		 */
-		private function renderSprite(sprite:BitmapData, scale:Number,
-			destX:int, destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0):void
+		private function renderSprite(sprite:BitmapData, scale:Number, destX:int, destY:int,
+			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
 			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
