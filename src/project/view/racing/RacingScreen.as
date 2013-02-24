@@ -46,8 +46,6 @@ package view.racing
 	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 
-	import com.hexagonstar.util.color.mixColors;
-
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	
@@ -88,7 +86,10 @@ package view.racing
 		private var _dt:Number;					// how long is each frame (in seconds)
 		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
 		private var _drawDistance:int = 300;	// number of segments to draw
+		
 		private var _hazeDensity:int = 10;		// exponential fog density
+		private var _hazeColor:uint;
+		
 		private var _cameraHeight:Number = 1000;// z height of camera
 		private var _cameraDepth:Number;		// z distance camera is from screen (computed)
 		private var _fieldOfView:int = 100;		// angle (degrees) for field of view
@@ -181,6 +182,8 @@ package view.racing
 			_position = 0;
 			_speed = 0;
 			_cars = new Vector.<Car>();
+			
+			_hazeColor = COLORS.HAZE;
 			
 			resetRoad();
 			//resetSprites();
@@ -1360,7 +1363,15 @@ package view.racing
 		// Render Functions
 		//-----------------------------------------------------------------------------------------
 		
-		private function renderBackground(layer:BitmapData, offsetX:Number = 0.0, offsetY:Number = 0.0):void
+		/**
+		 * Renders a background layer.
+		 * 
+		 * @param layer
+		 * @param offsetX
+		 * @param offsetY
+		 */
+		private function renderBackground(layer:BitmapData, offsetX:Number = 0.0,
+			offsetY:Number = 0.0):void
 		{
 			//var sourceX:Number = 0 + Math.floor(layer.width * offsetX);
 			//if (_isSteerLeft || _isSteerRight) Debug.trace(sourceX);
@@ -1370,7 +1381,7 @@ package view.racing
 		
 		
 		private function renderSegment(x1:Number, y1:Number, w1:Number, x2:Number, y2:Number,
-			w2:Number, haze:Number, color:ColorSet):void
+			w2:Number, hazeAlpha:Number, color:ColorSet):void
 		{
 			var r1:Number = rumbleWidth(w1, _lanes),
 				r2:Number = rumbleWidth(w2, _lanes),
@@ -1379,12 +1390,12 @@ package view.racing
 				lanew1:Number, lanew2:Number, lanex1:Number, lanex2:Number, lane:int;
 			
 			/* Draw offroad area segment. */
-			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, haze < 1.0 ? mixColors(color.grass, COLORS.FOG, haze) : color.grass);
+			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, color.grass, _hazeColor, hazeAlpha);
 			
 			/* Draw the road segment. */
-			renderPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, haze);
-			renderPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, haze);
-			renderPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, haze);
+			_renderBuffer.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
 			
 			/* Draw lane strips. */
 			if (color.lane)
@@ -1395,27 +1406,9 @@ package view.racing
 				lanex2 = x2 - w2 + lanew2;
 				for (lane = 1 ;lane < _lanes; lanex1 += lanew1, lanex2 += lanew2, lane++)
 				{
-					renderPolygon(lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane, haze);
+					_renderBuffer.drawPolygon(lanex1 - l1 / 2, y1, lanex1 + l1 / 2, y1, lanex2 + l2 / 2, y2, lanex2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
 				}
 			}
-			
-			/* Draw fog. */
-			//if (haze < 1.0)
-			//{
-			//	_renderBuffer.drawRect(0, y1, _bufferWidth, y2 - y1, COLORS.FOG, 1.0 - haze);
-			//}
-		}
-		
-		
-		private function renderPolygon(x1:Number, y1:Number, x2:Number, y2:Number,
-			x3:Number, y3:Number, x4:Number, y4:Number, color:uint, haze:Number = 1.0):void
-		{
-			if (haze < 1.0)
-			{
-				color = mixColors(color, COLORS.FOG, haze);
-			}
-			
-			_renderBuffer.drawPolygon(x1, y1, x2, y2, x3, y3, x4, y4, color);
 		}
 		
 		

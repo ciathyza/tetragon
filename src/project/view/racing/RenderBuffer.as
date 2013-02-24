@@ -28,6 +28,8 @@
  */
 package view.racing
 {
+	import com.hexagonstar.util.color.mixColors;
+
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.geom.Matrix;
@@ -112,8 +114,11 @@ package view.racing
 		 * @param y4		third point y coord
 		 * @param c		color (0xaarrvvbb)
 		 */
-		public function drawPolygon(x1:int, y1:int, x2:int, y2:int, x3:int, y3:int, x4:int, y4:int, color:uint):void
+		public function drawPolygon(x1:Number, y1:Number, x2:Number, y2:Number,
+			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
+			mixColor:uint, mixAlpha:Number = 1.0):void
 		{
+			if (mixAlpha < 1.0) color = mixColors(color, mixColor, mixAlpha);
 			_buffer.length = 0;
 			lineTo(_buffer, x1, y1, x2, y2, color);
 			lineTo(_buffer, x2, y2, x3, y3, color);
@@ -122,10 +127,14 @@ package view.racing
 		}
 		
 		
-		public function blitRect(x:int, y:int, w:int, h:int, color:uint):void
+		/**
+		 * Blits a rectangle onto the render buffer.
+		 */
+		public function blitRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint,
+			mixAlpha:Number = 1.0):void
 		{
 			_r.setTo(x, y, w, h);
-			fillRect(_r, color);
+			fillRect(_r, mixAlpha < 1.0 ? mixColors(color, mixColor, mixAlpha) : color);
 		}
 		
 		
