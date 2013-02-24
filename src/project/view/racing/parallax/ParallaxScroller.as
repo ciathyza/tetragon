@@ -77,7 +77,7 @@ package view.racing.parallax
 				//layer.point.x = x;
 				fillRect(_rect, 0x000000);
 				copyPixels(layer.bitmapData, layer.rect, layer.point);
-				scroll(-x, 0);
+				//scroll(-x, 0);
 			}
 		}
 		

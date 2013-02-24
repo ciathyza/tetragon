@@ -47,7 +47,6 @@ package view.racing
 	import view.racing.vo.Segment;
 
 	import com.hexagonstar.util.color.mixColors;
-	import com.hexagonstar.util.debug.Debug;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -1363,62 +1362,10 @@ package view.racing
 		
 		private function renderBackground(layer:BitmapData, offsetX:Number = 0.0, offsetY:Number = 0.0):void
 		{
-			var sourceX:Number = 0 + Math.floor(layer.width * offsetX);
-			if (_isSteerLeft || _isSteerRight)
-			{
-				Debug.trace(sourceX);
-			}
-			
-			_bgScroller.update(sourceX);
-			_renderBuffer.blitImage(_bgScroller, 0, 0, _bgScroller.width, _bgScroller.height);
-			
-			return;
-			
-			var imageW:Number = layer.width / 2;
-			var imageH:Number = layer.height;
-
 			//var sourceX:Number = 0 + Math.floor(layer.width * offsetX);
-			var sourceY:Number = 0;
-			var sourceW:Number = Math.min(imageW, 0 + layer.width - sourceX);
-			var sourceH:Number = imageH;
-			
-			var destX:Number = 0;
-			var destY:Number = offsetY;
-			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
-			var destH:Number = _bufferHeight;
-			
-			_renderBuffer.drawImage(layer, destX, destY, destW, destH);
-			//_renderBuffer.drawImage(sprite, x, y, w, h, scale);
-			
-			if (sourceW < imageW)
-			{
-				_renderBuffer.drawImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
-			}
-			
-//			var imageW:Number = region.width / 2;
-//			var imageH:Number = region.height;
-//			var sourceX:Number = region.x + Math.floor(region.width * rotation);
-//			var sourceY:Number = region.y;
-//			var sourceW:Number = Math.min(imageW, region.x + region.width - sourceX);
-//			var sourceH:Number = imageH;
-//			var destX:Number = 0;
-//			var destY:Number = offset;
-//			var destW:Number = Math.floor(_bufferWidth * (sourceW / imageW));
-//			var destH:Number = _bufferHeight;
-//			
-//			_renderBuffer.drawImage(_atlasImage, sourceX, sourceY, sourceW, sourceH, destX, destY, destW, destH);
-//			if (sourceW < imageW)
-//			{
-//				_renderBuffer.drawImage(_atlasImage, region.x, sourceY, imageW - sourceW, sourceH, destW - 1, destY, _bufferWidth - destW, destH);
-//			}
-//			
-//			//_renderBuffer.drawImage(layer, destX, destY, destW, destH);
-//			//_renderBuffer.drawImage(layer, destX, destY);//, _bufferWidth - destW, destH);
-//			if (sourceW < imageW)
-//			{
-//				//_renderBuffer.placeImage(layer, destW - 1, destY, _bufferWidth - destW, destH);
-//				//_renderBuffer.drawImage(layer, destW - 1, destY);//, _bufferWidth - destW, destH);
-//			}
+			//if (_isSteerLeft || _isSteerRight) Debug.trace(sourceX);
+			_bgScroller.update(0);
+			_renderBuffer.blitImage(_bgScroller, 0, 0, _bgScroller.width, _bgScroller.height);
 		}
 		
 		
