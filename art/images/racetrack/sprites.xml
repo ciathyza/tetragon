@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:18b28efd376d564db92ef01d0325c39e$ -->
+<!-- $TexturePacker:SmartUpdate:3a504d36e10695e508701c8445db07bf$ -->
 <TextureAtlas imagePath="sprites.png">
     <SubTexture name="bg_hills" x="2" y="486" width="640" height="240"/>
     <SubTexture name="bg_sky" x="2" y="244" width="640" height="240"/>

@@ -33,6 +33,7 @@ package tetragon.data.sprite
 	import tetragon.file.resource.ResourceIndex;
 
 	import flash.display.BitmapData;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -74,7 +75,9 @@ package tetragon.data.sprite
 		
 		/** @private */
 		private static var _point:Point;
-			
+		/** @private */
+		private static var _matrix:Matrix;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -121,17 +124,28 @@ package tetragon.data.sprite
 		 * Retrieves a sprite by name. Returns <code>null</code> if it is not found.
 		 * 
 		 * @param id
+		 * @param scale scaling factor
 		 * @return BitmapData or null.
 		 */
-		public function getSprite(id:String):BitmapData
+		public function getSprite(id:String, scale:Number = 1.0):BitmapData
 		{
 			var region:Rectangle = _spriteRegions[id];
 			if (!_image || !region) return ResourceIndex.getPlaceholderImage();
 			if (!_point) _point = new Point(0, 0);
-			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent,
-				_backgroundColor);
+			
+			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent, _backgroundColor);
 			sprite.copyPixels(_image, region, _point);
-			return sprite;
+			
+			if (scale == 1.0) return sprite;
+			
+			var w:int = Math.round(region.width * scale);
+			var h:int = Math.round(region.height * scale);
+			
+			var scaled:BitmapData = new BitmapData(w, h, _transparent, _backgroundColor);
+			if (!_matrix) _matrix = new Matrix();
+			_matrix.setTo(scale, 0, 0, scale, 0, 0);
+			scaled.draw(sprite, _matrix);
+			return scaled;
 		}
 		
 		

@@ -855,37 +855,40 @@ package view.racing
 		private function prepareSprites():void
 		{
 			_sprites = new Sprites();
-			_sprites.BG_SKY = _atlas.getSprite("bg_sky");
-			_sprites.BG_HILLS = _atlas.getSprite("bg_hills");
-			_sprites.BG_TREES = _atlas.getSprite("bg_trees");
-			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01");
-			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02");
-			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03");
-			_sprites.BILLBOARD04 = _atlas.getSprite("billboard04");
-			_sprites.BILLBOARD05 = _atlas.getSprite("billboard05");
-			_sprites.BILLBOARD06 = _atlas.getSprite("billboard06");
-			_sprites.BILLBOARD07 = _atlas.getSprite("billboard07");
-			_sprites.BILLBOARD08 = _atlas.getSprite("billboard08");
-			_sprites.BILLBOARD09 = _atlas.getSprite("billboard09");
-			_sprites.BOULDER1 = _atlas.getSprite("veg_boulder1");
-			_sprites.BOULDER2 = _atlas.getSprite("veg_boulder2");
-			_sprites.BOULDER3 = _atlas.getSprite("veg_boulder3");
-			_sprites.BUSH1 = _atlas.getSprite("veg_bush1");
-			_sprites.BUSH2 = _atlas.getSprite("veg_bush2");
-			_sprites.CACTUS = _atlas.getSprite("veg_cactus");
-			_sprites.TREE1 = _atlas.getSprite("veg_tree1");
-			_sprites.TREE2 = _atlas.getSprite("veg_tree2");
-			_sprites.PALM_TREE = _atlas.getSprite("veg_palmtree");
-			_sprites.DEAD_TREE1 = _atlas.getSprite("veg_deadtree1");
-			_sprites.DEAD_TREE2 = _atlas.getSprite("veg_deadtree2");
-			_sprites.STUMP = _atlas.getSprite("veg_stump");
-			_sprites.COLUMN = _atlas.getSprite("bldg_column");
-			_sprites.CAR01 = _atlas.getSprite("car01");
-			_sprites.CAR02 = _atlas.getSprite("car02");
-			_sprites.CAR03 = _atlas.getSprite("car03");
-			_sprites.CAR04 = _atlas.getSprite("car04");
-			_sprites.TRUCK = _atlas.getSprite("car05");
-			_sprites.SEMI = _atlas.getSprite("car06");
+			_sprites.BG_SKY = _atlas.getSprite("bg_sky", 2.0);
+			_sprites.BG_HILLS = _atlas.getSprite("bg_hills", 2.0);
+			_sprites.BG_TREES = _atlas.getSprite("bg_trees", 2.0);
+			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01", 2.5);
+			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02", 2.5);
+			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03", 2.5);
+			_sprites.BILLBOARD04 = _atlas.getSprite("billboard04", 2.5);
+			_sprites.BILLBOARD05 = _atlas.getSprite("billboard05", 2.5);
+			_sprites.BILLBOARD06 = _atlas.getSprite("billboard06", 2.5);
+			_sprites.BILLBOARD07 = _atlas.getSprite("billboard07", 2.5);
+			_sprites.BILLBOARD08 = _atlas.getSprite("billboard08", 2.5);
+			_sprites.BILLBOARD09 = _atlas.getSprite("billboard09", 2.5);
+			_sprites.BOULDER1 = _atlas.getSprite("veg_boulder1", 2.5);
+			_sprites.BOULDER2 = _atlas.getSprite("veg_boulder2", 2.5);
+			_sprites.BOULDER3 = _atlas.getSprite("veg_boulder3", 2.5);
+			_sprites.BUSH1 = _atlas.getSprite("veg_bush1", 2.5);
+			_sprites.BUSH2 = _atlas.getSprite("veg_bush2", 2.5);
+			_sprites.CACTUS = _atlas.getSprite("veg_cactus", 2.5);
+			_sprites.TREE1 = _atlas.getSprite("veg_tree1", 2.5);
+			_sprites.TREE2 = _atlas.getSprite("veg_tree2", 2.5);
+			_sprites.PALM_TREE = _atlas.getSprite("veg_palmtree", 2.5);
+			_sprites.DEAD_TREE1 = _atlas.getSprite("veg_deadtree1", 2.5);
+			_sprites.DEAD_TREE2 = _atlas.getSprite("veg_deadtree2", 2.5);
+			_sprites.STUMP = _atlas.getSprite("veg_stump", 2.5);
+			_sprites.COLUMN = _atlas.getSprite("bldg_column", 3.0);
+			_sprites.TOWER = _atlas.getSprite("bldg_tower", 10.0);
+			_sprites.BOATHOUSE = _atlas.getSprite("bldg_boathouse", 3.0);
+			_sprites.WINDMILL = _atlas.getSprite("bldg_windmill", 4.0);
+			_sprites.CAR01 = _atlas.getSprite("car01", 1.25);
+			_sprites.CAR02 = _atlas.getSprite("car02", 1.25);
+			_sprites.CAR03 = _atlas.getSprite("car03", 1.25);
+			_sprites.CAR04 = _atlas.getSprite("car04", 1.25);
+			_sprites.TRUCK = _atlas.getSprite("car05", 1.7);
+			_sprites.SEMI = _atlas.getSprite("car06", 2.0);
 			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("player");
 			_sprites.PLAYER_LEFT = _atlas.getSprite("player_left");
 			_sprites.PLAYER_RIGHT = _atlas.getSprite("player_right");
@@ -945,8 +948,8 @@ package view.racing
 		 */
 		private function resetSprites():void
 		{
-			var n:int;
 			var i:int;
+			var j:int;
 			var side:Number;
 			var sprite:BitmapData;
 			var offset:Number;
@@ -966,33 +969,38 @@ package view.racing
 			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
 			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
 			
-			for (n = 10; n < 200; n += 4 + Math.floor(n / 100))
+			for (i = 10; i < 200; i += 4 + Math.floor(i / 100))
 			{
-				addSprite(n, _sprites.PALM_TREE, 0.5 + Math.random() * 0.5);
-				addSprite(n, _sprites.PALM_TREE, 1 + Math.random() * 2);
+				addSprite(i, _sprites.PALM_TREE, 0.5 + Math.random() * 0.5);
+				addSprite(i, _sprites.PALM_TREE, 1 + Math.random() * 2);
 			}
 			
-			for (n = 250; n < 1000; n += 5)
+			for (i = 250; i < 1000; i += 5)
 			{
-				addSprite(n, _sprites.COLUMN, 1.1);
-				addSprite(n + randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
-				addSprite(n + randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
+				addSprite(i, _sprites.COLUMN, 1.1);
+				addSprite(i + randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
+				addSprite(i + randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
 			}
 			
-			for (n = 200; n < _segments.length; n += 3)
+			for (i = 200; i < _segments.length; i += 3)
 			{
-				addSprite(n, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
+				addSprite(i, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			
-			for (n = 1000; n < (_segments.length - 50); n += 100)
+			for (i = 800; i < _segments.length; i += 20)
+			{
+				addSprite(i, randomChoice(_sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
+			}
+			
+			for (i = 1000; i < (_segments.length - 50); i += 100)
 			{
 				side = randomChoice([1, -1]);
-				addSprite(n + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
-				for (i = 0 ; i < 20 ; i++)
+				addSprite(i + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
+				for (j = 0 ; j < 20 ; j++)
 				{
 					sprite = randomChoice(_sprites.VEGETATION);
 					offset = side * (1.5 + Math.random());
-					addSprite(n + randomInt(0, 50), sprite, offset);
+					addSprite(i + randomInt(0, 50), sprite, offset);
 				}
 			}
 		}
@@ -1152,10 +1160,10 @@ package view.racing
 		/**
 		 * @private
 		 */
-		private function addSprite(n:int, sprite:BitmapData, offset:Number):void
+		private function addSprite(segNum:int, sprite:BitmapData, offset:Number):void
 		{
 			var s:SSprite = new SSprite(sprite, offset);
-			_segments[n].sprites.push(s);
+			_segments[segNum].sprites.push(s);
 		}
 		
 		
