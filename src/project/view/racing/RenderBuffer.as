@@ -32,6 +32,7 @@ package view.racing
 
 	import flash.display.BitmapData;
 	import flash.display.Shape;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -61,6 +62,8 @@ package view.racing
 		private var _m:Matrix;
 		/** @private */
 		private var _s:Shape;
+		/** @private */
+		private var _ct:ColorTransform;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -87,6 +90,7 @@ package view.racing
 			_p = new Point();
 			_s = new Shape();
 			_m = new Matrix();
+			_ct = new ColorTransform();
 		}
 		
 		
@@ -158,14 +162,45 @@ package view.racing
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int, scale:Number = 1.0):void
+		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int,
+			scale:Number = 1.0, mixColor:uint = 0, mixAlpha:Number = 1.0):void
 		{
 			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
+			
+			if (mixAlpha < 1.0)
+			{
+				mixAlpha = 1 - mixAlpha;
+				_ct.redMultiplier = _ct.greenMultiplier = _ct.blueMultiplier = 1 - mixAlpha;
+				_ct.redOffset = ((mixColor >> 16) & 0xFF) * mixAlpha;
+				_ct.greenOffset = ((mixColor >> 8) & 0xFF) * mixAlpha;
+				_ct.blueOffset = (mixColor & 0xFF) * mixAlpha;
+				draw(sprite, _m, _ct, null, _r, false);
+				return;
+			}
+			
 			draw(sprite, _m, null, null, _r, false);
 		}
 		
 		
+		/**
+		 * RGBColorTransform Create an instance of the information.
+		 * 
+		 * @param rgb RGB integer value that indicates (0x000000 - 0xFFFFFF)
+		 * @param amount of fill adaptive value (0.0 - 1.0)
+		 * @param alpha transparency (0.0 - 1.0)
+		 * @return a new instance ColorTransform
+		 * */
+		public static function getColorTransform(rgb:uint = 0, amount:Number = 1.0):ColorTransform
+		{
+			var r:Number = ((rgb >> 16) & 0xFF) * amount;
+			var g:Number = ((rgb >> 8) & 0xFF) * amount;
+			var b:Number = (rgb & 0xFF) * amount;
+			var a:Number = 1 - amount;
+			return new ColorTransform(a, a, a, 1.0, r, g, b, 0);
+		}
+		
+				
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------

@@ -524,7 +524,7 @@ package view.racing
 					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, car.percent);
 					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidth / 2);
 					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, car.percent);
-					renderSprite(car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip);
+					renderSprite(car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
 				}
 				
 				/* Render roadside objects. */
@@ -534,7 +534,7 @@ package view.racing
 					spriteScale = s.p1.screen.scale;
 					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidth / 2);
 					spriteY = s.p1.screen.y;
-					renderSprite(sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, s.clip);
+					renderSprite(sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, s.clip, s.haze);
 				}
 				
 				/* Render the player sprite. */
@@ -1459,9 +1459,10 @@ package view.racing
 		 * @param offsetX
 		 * @param offsetY
 		 * @param clipY
+		 * @param hazeAlpha
 		 */
 		private function renderSprite(sprite:BitmapData, scale:Number, destX:int, destY:int,
-			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0):void
+			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
 			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
@@ -1474,7 +1475,7 @@ package view.racing
 			
 			if (clipH < destH)
 			{
-				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width);
+				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width, _hazeColor, hazeAlpha);
 			}
 		}
 	}
