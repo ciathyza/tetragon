@@ -109,7 +109,7 @@ package view.racing
 		private var _segmentLength:int = 200;	// length of a single segment
 		private var _rumbleLength:int = 3;		// number of segments per red/white rumble strip
 		private var _trackLength:int = 200;		// z length of entire track (computed)
-		private var _lanes:int = 2;				// number of lanes
+		private var _lanes:int = 3;				// number of lanes
 		private var _totalCars:Number = 200;	// total number of cars on the road
 		
 		private var _accel:Number;				// acceleration rate - tuned until it 'felt' right
@@ -365,7 +365,7 @@ package view.racing
 				{
 					_lastLapTime = _currentLapTime;
 					_currentLapTime = 0;
-					if (_lastLapTime <= toFloat(_fast_lap_time))
+					if (_lastLapTime <= _fast_lap_time)
 					{
 					}
 					else
@@ -1120,7 +1120,7 @@ package view.racing
 		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
 		{
 			var startY:Number = lastY;
-			var endY:Number = startY + (toInt(y, 0) * _segmentLength);
+			var endY:Number = startY + (int(y) * _segmentLength);
 			var total:uint = enter + hold + leave;
 			var i:uint;
 			
@@ -1363,28 +1363,6 @@ package view.racing
 			var min2:Number = x2 - (w2 * half);
 			var max2:Number = x2 + (w2 * half);
 			return !((max1 < min2) || (min1 > max2));
-		}
-		
-		
-		private function toInt(obj:*, def:*):int
-		{
-			if (obj != null)
-			{
-				var x:int = parseInt(obj, 10);
-				if (!isNaN(x)) return x;
-			}
-			return toInt(def, 0);
-		}
-		
-		
-		private function toFloat(obj:*, def:Number = NaN):Number
-		{
-			if (obj != null)
-			{
-				var x:Number = parseFloat(obj);
-				if (!isNaN(x)) return x;
-			}
-			return toFloat(def, 0.0);
 		}
 		
 		
