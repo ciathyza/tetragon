@@ -124,10 +124,10 @@ package view.racing
 		{
 			if (mixAlpha < 1.0) color = mixColors(color, mixColor, mixAlpha);
 			_buffer.length = 0;
-			lineTo(_buffer, x1, y1, x2, y2, color);
-			lineTo(_buffer, x2, y2, x3, y3, color);
-			lineTo(_buffer, x3, y3, x4, y4, color);
-			lineTo(_buffer, x4, y4, x1, y1, color);
+			lineTo(x1, y1, x2, y2, color);
+			lineTo(x2, y2, x3, y3, color);
+			lineTo(x3, y3, x4, y4, color);
+			lineTo(x4, y4, x1, y1, color);
 		}
 		
 		
@@ -142,16 +142,16 @@ package view.racing
 		}
 		
 		
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
-		{
-			_s.graphics.clear();
-			_s.graphics.beginFill(color, alpha);
-			_s.graphics.drawRect(0, 0, w, h);
-			_s.graphics.endFill();
-			_m.identity();
-			_m.translate(x, y);
-			draw(_s, _m);
-		}
+		//public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
+		//{
+		//	_s.graphics.clear();
+		//	_s.graphics.beginFill(color, alpha);
+		//	_s.graphics.drawRect(0, 0, w, h);
+		//	_s.graphics.endFill();
+		//	_m.identity();
+		//	_m.translate(x, y);
+		//	draw(_s, _m);
+		//}
 		
 		
 		public function blitImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
@@ -165,6 +165,8 @@ package view.racing
 		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0, mixAlpha:Number = 1.0):void
 		{
+			//return;
+			
 			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
 			
@@ -183,24 +185,6 @@ package view.racing
 		}
 		
 		
-		/**
-		 * RGBColorTransform Create an instance of the information.
-		 * 
-		 * @param rgb RGB integer value that indicates (0x000000 - 0xFFFFFF)
-		 * @param amount of fill adaptive value (0.0 - 1.0)
-		 * @param alpha transparency (0.0 - 1.0)
-		 * @return a new instance ColorTransform
-		 * */
-		public static function getColorTransform(rgb:uint = 0, amount:Number = 1.0):ColorTransform
-		{
-			var r:Number = ((rgb >> 16) & 0xFF) * amount;
-			var g:Number = ((rgb >> 8) & 0xFF) * amount;
-			var b:Number = (rgb & 0xFF) * amount;
-			var a:Number = 1 - amount;
-			return new ColorTransform(a, a, a, 1.0, r, g, b, 0);
-		}
-		
-				
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
@@ -222,7 +206,7 @@ package view.racing
 		/**
 		 * Special line for filled triangle
 		 */
-		private function lineTo(a:Array, x0:int, y0:int, x1:int, y1:int, c:uint):void
+		private function lineTo(x0:int, y0:int, x1:int, y1:int, c:uint):void
 		{
 			var steep:Boolean = (y1 - y0) * (y1 - y0) > (x1 - x0) * (x1 - x0);
 			var swap:int;
@@ -264,8 +248,8 @@ package view.racing
 			{
 				if (steep)
 				{
-					checkLine(a, y, x, c, _r);
-					if (fx != x1 && fx != xEnd) checkLine(a, fy, fx + 1, c, _r);
+					checkLine(y, x, c, _r);
+					if (fx != x1 && fx != xEnd) checkLine(fy, fx + 1, c, _r);
 				}
 				
 				error += deltaY;
@@ -273,8 +257,8 @@ package view.racing
 				{
 					if (!steep)
 					{
-						checkLine(a, x - px + 1, y, c, _r);
-						if (fx != xEnd) checkLine(a, fx + 1, fy, c, _r);
+						checkLine(x - px + 1, y, c, _r);
+						if (fx != xEnd) checkLine(fx + 1, fy, c, _r);
 					}
 					px = 0;
 					y += ysStep;
@@ -285,35 +269,35 @@ package view.racing
 				fx--;
 			}
 			
-			if (!steep) checkLine(a, x - px + 1, y, c, _r);
+			if (!steep) checkLine(x - px + 1, y, c, _r);
 		}
 		
 		
 		/**
 		 * Check a triangle line
 		 */
-		private function checkLine(a:Array, x:int, y:int, c:uint, r:Rectangle):void
+		private function checkLine(x:int, y:int, c:uint, r:Rectangle):void
 		{
-			if (a[y])
+			if (_buffer[y])
 			{
-				if (a[y] > x)
+				if (_buffer[y] > x)
 				{
-					r.width = a[y] - x;
+					r.width = _buffer[y] - x;
 					r.x = x;
 					r.y = y;
 					fillRect(r, c);
 				}
 				else
 				{
-					r.width = x - a[y];
-					r.x = a[y];
+					r.width = x - _buffer[y];
+					r.x = _buffer[y];
 					r.y = y;
 					fillRect(r, c);
 				}
 			}
 			else
 			{
-				a[y] = x;
+				_buffer[y] = x;
 			}
 		}
 	}

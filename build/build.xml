@@ -372,6 +372,7 @@
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
 			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<addTelemetry/>
 		</sequential>
 	</macrodef>
 	
