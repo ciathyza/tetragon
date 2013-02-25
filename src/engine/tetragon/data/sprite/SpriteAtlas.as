@@ -133,15 +133,14 @@ package tetragon.data.sprite
 			if (!_image || !region) return ResourceIndex.getPlaceholderImage();
 			if (!_point) _point = new Point(0, 0);
 			
-			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent, _backgroundColor);
+			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent,
+				_backgroundColor);
 			sprite.copyPixels(_image, region, _point);
 			
 			if (scale == 1.0) return sprite;
 			
-			var w:int = Math.round(region.width * scale);
-			var h:int = Math.round(region.height * scale);
-			
-			var scaled:BitmapData = new BitmapData(w, h, _transparent, _backgroundColor);
+			var scaled:BitmapData = new BitmapData(Math.round(region.width * scale),
+				Math.round(region.height * scale), _transparent, _backgroundColor);
 			if (!_matrix) _matrix = new Matrix();
 			_matrix.setTo(scale, 0, 0, scale, 0, 0);
 			scaled.draw(sprite, _matrix);
