@@ -1058,9 +1058,9 @@ package view.racing
 			p.camera.y = (p.world.y || 0) - cameraY;
 			p.camera.z = (p.world.z || 0) - cameraZ;
 			p.screen.scale = _cameraDepth / p.camera.z;
-			p.screen.x = Math.round((_bufferWidth / 2) + (p.screen.scale * p.camera.x * _bufferWidth / 2));
-			p.screen.y = Math.round((_bufferHeight / 2) - (p.screen.scale * p.camera.y * _bufferHeight / 2));
-			p.screen.w = Math.round((p.screen.scale * _roadWidth * _bufferWidth / 2));
+			p.screen.x = mathRound((_bufferWidth / 2) + (p.screen.scale * p.camera.x * _bufferWidth / 2));
+			p.screen.y = mathRound((_bufferHeight / 2) - (p.screen.scale * p.camera.y * _bufferHeight / 2));
+			p.screen.w = mathRound((p.screen.scale * _roadWidth * _bufferWidth / 2));
 		}
 		
 		
@@ -1082,9 +1082,9 @@ package view.racing
 		}
 		
 		
-		private function randomInt(min:Number, max:Number):int
+		private function randomInt(min:int, max:int):int
 		{
-			return Math.round(interpolate(min, max, Math.random()));
+			return mathRound(interpolate(min, max, Math.random()));
 		}
 		
 		
@@ -1136,6 +1136,12 @@ package view.racing
 		private function mathMin(a:Number, b:Number):Number
 		{
 			return (a < b) ? a : b;
+		}
+		
+		
+		private function mathRound(n:Number):int
+		{
+			return n + (n < 0 ? -0.5 : +0.5) >> 0;
 		}
 		
 		
