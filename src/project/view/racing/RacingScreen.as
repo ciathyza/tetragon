@@ -385,15 +385,22 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			var baseSegment:Segment = findSegment(_position);
-			var basePercent:Number = percentRemaining(_position, _segmentLength);
-			var playerSegment:Segment = findSegment(_position + _playerZ);
-			var playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength);
-			var playerY:int = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
-			var maxY:int = _bufferHeight;
-			var x:Number = 0;
-			var dx:Number = -(baseSegment.curve * basePercent);
-			var i:int, j:int, s:Segment, car:Car, sprite:SSprite, spriteScale:Number, spriteX:Number, spriteY:Number;
+			var baseSegment:Segment = findSegment(_position),
+				basePercent:Number = percentRemaining(_position, _segmentLength),
+				playerSegment:Segment = findSegment(_position + _playerZ),
+				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
+				playerY:int = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent),
+				s:Segment,
+				car:Car,
+				sprite:SSprite,
+				maxY:int = _bufferHeight,
+				x:Number = 0,
+				dx:Number = -(baseSegment.curve * basePercent),
+				i:int,
+				j:int,
+				spriteScale:Number,
+				spriteX:Number,
+				spriteY:Number;
 			
 			_renderBuffer.clear();
 			
@@ -401,7 +408,7 @@ package view.racing
 			renderBackground(_sprites.BG_SKY, _skyOffset, _resolution * _skySpeed * playerY);
 			//renderBackground(_sprites.BG_HILLS, _hillOffset, _resolution * _hillSpeed * playerY);
 			//renderBackground(_sprites.BG_TREES, _treeOffset, _resolution * _treeSpeed * playerY);
-
+			
 			/* PHASE 1: render segments, front to back and clip far segments that have been
 			 * obscured by already rendered near segments if their projected coordinates are
 			 * lower than maxY. */
@@ -725,7 +732,7 @@ package view.racing
 			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
 			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
 			
-			for (i = 10; i < 200; i += 4 + Math.floor(i / 100))
+			for (i = 10; i < 200; i += 4 + int(i / 100))
 			{
 				addSprite(i, _sprites.PALM_TREE, 0.5 + Math.random() * 0.5);
 				addSprite(i, _sprites.PALM_TREE, 1 + Math.random() * 2);
@@ -778,7 +785,7 @@ package view.racing
 			for (i = 0; i < _totalCars; i++)
 			{
 				offset = Math.random() * randomChoice([-0.8, 0.8]);
-				z = Math.floor(Math.random() * _segments.length) * _segmentLength;
+				z = int(Math.random() * _segments.length) * _segmentLength;
 				sprite = randomChoice(_sprites.CARS);
 				speed = _maxSpeed / 4 + Math.random() * _maxSpeed / (sprite == _sprites.SEMI ? 4 : 2);
 				car = new Car(offset, z, new SSprite(sprite), speed);
@@ -908,7 +915,7 @@ package view.racing
 			segment.curve = curve;
 			segment.sprites = new Vector.<SSprite>();
 			segment.cars = new Vector.<Car>();
-			segment.color = Math.floor(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
+			segment.color = int(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			_segments.push(segment);
 		}
 		
