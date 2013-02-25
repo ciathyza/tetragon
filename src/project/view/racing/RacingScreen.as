@@ -46,6 +46,8 @@ package view.racing
 	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	
@@ -720,7 +722,9 @@ package view.racing
 			var side:Number;
 			var sprite:BitmapData;
 			var offset:Number;
+			var density:int = 10;
 			
+			/* Add row of billboards right after start line. */
 			addSprite(20, _sprites.BILLBOARD07, -1);
 			addSprite(40, _sprites.BILLBOARD06, -1);
 			addSprite(60, _sprites.BILLBOARD08, -1);
@@ -730,31 +734,29 @@ package view.racing
 			addSprite(140, _sprites.BILLBOARD03, -1);
 			addSprite(160, _sprites.BILLBOARD04, -1);
 			addSprite(180, _sprites.BILLBOARD05, -1);
-
 			addSprite(240, _sprites.BILLBOARD07, -1.2);
 			addSprite(240, _sprites.BILLBOARD06, 1.2);
+			
+			/* Add some billboards at end of track. */
 			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
 			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
 			
-			for (i = 10; i < 200; i += 4 + int(i / 100))
-			{
-				addSprite(i, _sprites.PALM_TREE, 0.5 + Math.random() * 0.5);
-				addSprite(i, _sprites.PALM_TREE, 1 + Math.random() * 2);
-			}
+			/* Add palm trees at start of track. */
+			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
+			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
 			
-			for (i = 250; i < 1000; i += 5)
-			{
-				addSprite(i, _sprites.COLUMN, 1.1);
-				addSprite(i + randomInt(0, 5), _sprites.TREE1, -1 - (Math.random() * 2));
-				addSprite(i + randomInt(0, 5), _sprites.TREE2, -1 - (Math.random() * 2));
-			}
+			/* Add a long row of columns on right side and trees on left side. */
+			addSprites(_sprites.COLUMN, 250, 1000, null, 5, 0, 1.1);
+			addSprites(_sprites.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
+			addSprites(_sprites.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
 			
+			// TODO
 			for (i = 200; i < _segments.length; i += 3)
 			{
 				addSprite(i, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			
-			for (i = 800; i < _segments.length; i += 20)
+			for (i = 1600; i < _segments.length; i += 20)
 			{
 				addSprite(i, randomChoice(_sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
@@ -770,6 +772,46 @@ package view.racing
 					addSprite(i + randomInt(0, 50), sprite, offset);
 				}
 			}
+		}
+		
+		
+		/**
+		 * @param sprite The sprite to add.
+		 * @param start The start segment number.
+		 * @param end The end segment number.
+		 * 
+		 * @private
+		 */
+		private function addSprites(sprite:BitmapData, start:int, end:int,
+			segmentRandRange:Array, stepSize:int,
+			stepInc:int, offset:Number, postOffset:Number = 0.0, offsetMode:String = "add"):void
+		{
+			for (var i:int = start; i < end; i += stepSize + int(i / stepInc))
+			{
+				if (postOffset == 0.0)
+				{
+					if (segmentRandRange) addSprite(i + randomInt(segmentRandRange[0], segmentRandRange[1]), sprite, offset);
+					else addSprite(i, sprite, offset);
+				}
+				else
+				{
+					var offs:Number = offset;
+					if (offsetMode == "add") offs = offset + Math.random() * postOffset;
+					else if (offsetMode == "sub") offs = offset - Math.random() * postOffset;
+					if (segmentRandRange) addSprite(i + randomInt(segmentRandRange[0], segmentRandRange[1]), sprite, offs);
+					else addSprite(i, sprite, offset + Math.random() * postOffset);
+				}
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function addSprite(segNum:int, sprite:BitmapData, offset:Number):void
+		{
+			var s:SSprite = new SSprite(sprite, offset);
+			_segments[segNum].sprites.push(s);
 		}
 		
 		
@@ -921,16 +963,6 @@ package view.racing
 			segment.cars = new Vector.<Car>();
 			segment.color = int(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			_segments.push(segment);
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function addSprite(segNum:int, sprite:BitmapData, offset:Number):void
-		{
-			var s:SSprite = new SSprite(sprite, offset);
-			_segments[segNum].sprites.push(s);
 		}
 		
 		
