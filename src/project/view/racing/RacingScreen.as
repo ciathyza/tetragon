@@ -1112,7 +1112,7 @@ package view.racing
 		
 		private function easeInOut(a:Number, b:Number, percent:Number):Number
 		{
-			return a + (b - a) * ((-Math.cos(percent * Math.PI) / 2) + 0.5);
+			return a + (b - a) * ((-Math.cos(percent * 3.141592653589793) / 2) + 0.5);
 		}
 		
 		
@@ -1182,8 +1182,8 @@ package view.racing
 		 * @param color
 		 * @param hazeAlpha
 		 */
-		private function renderSegment(x1:Number, y1:Number, w1:Number, x2:Number, y2:Number,
-			w2:Number, color:ColorSet, hazeAlpha:Number):void
+		private function renderSegment(x1:int, y1:int, w1:int, x2:int, y2:int, w2:int,
+			color:ColorSet, hazeAlpha:Number):void
 		{
 			/* Calculate rumble widths for current segment. */
 			var r1:Number = getRumbleWidth(w1), r2:Number = getRumbleWidth(w2);

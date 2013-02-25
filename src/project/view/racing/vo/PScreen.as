@@ -6,9 +6,9 @@ package view.racing.vo
 	 */
 	public class PScreen
 	{
-		public var x:Number = 0;
-		public var y:Number = 0;
-		public var w:Number = 0;
+		public var x:int = 0;
+		public var y:int = 0;
+		public var w:int = 0;
 		public var scale:Number;
 	}
 }
