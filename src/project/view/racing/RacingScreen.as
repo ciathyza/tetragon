@@ -46,8 +46,6 @@ package view.racing
 	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 
-	import com.hexagonstar.util.debug.Debug;
-
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	
