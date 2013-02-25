@@ -1357,12 +1357,10 @@ package view.racing
 		
 		private function overlap(x1:Number, w1:Number, x2:Number, w2:Number, percent:Number = 1.0):Boolean
 		{
-			var half:Number = percent / 2;
-			var min1:Number = x1 - (w1 * half);
-			var max1:Number = x1 + (w1 * half);
-			var min2:Number = x2 - (w2 * half);
-			var max2:Number = x2 + (w2 * half);
-			return !((max1 < min2) || (min1 > max2));
+			var half:Number = percent * 0.5;
+			/* return !((max1 < min2) || (min1 > max2)) */
+			return !(((x1 + (w1 * half)) < (x2 - (w2 * half)))
+				|| ((x1 - (w1 * half)) > (x2 + (w2 * half))));
 		}
 		
 		
