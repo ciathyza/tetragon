@@ -1048,7 +1048,7 @@ package view.racing
 		
 		private function limit(value:Number, min:Number, max:Number):Number
 		{
-			return Math.max(min, Math.min(value, max));
+			return mathMax(min, mathMin(value, max));
 		}
 		
 		
@@ -1066,13 +1066,13 @@ package view.racing
 		
 		private function getRumbleWidth(projectedRoadWidth:Number):Number
 		{
-			return projectedRoadWidth / Math.max(6, 2 * _lanes);
+			return projectedRoadWidth / mathMax(6, 2 * _lanes);
 		}
 		
 		
 		private function getLaneMarkerWidth(projectedRoadWidth:Number):Number
 		{
-			return projectedRoadWidth / Math.max(32, 8 * _lanes);
+			return projectedRoadWidth / mathMax(32, 8 * _lanes);
 		}
 		
 		
@@ -1124,6 +1124,18 @@ package view.racing
 			/* return !((max1 < min2) || (min1 > max2)) */
 			return !(((x1 + (w1 * half)) < (x2 - (w2 * half)))
 				|| ((x1 - (w1 * half)) > (x2 + (w2 * half))));
+		}
+		
+		
+		private function mathMax(a:Number, b:Number):Number
+		{
+			return (a > b) ? a : b;
+		}
+		
+		
+		private function mathMin(a:Number, b:Number):Number
+		{
+			return (a < b) ? a : b;
 		}
 		
 		
@@ -1218,7 +1230,7 @@ package view.racing
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);
 			
-			var clipH:int = clipY ? Math.max(0, destY + destH - clipY) : 0;
+			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
 			
 			if (clipH < destH)
 			{
