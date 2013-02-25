@@ -82,6 +82,8 @@ package view.racing
 		
 		private var _bufferWidth:int = 1024;
 		private var _bufferHeight:int = 640;
+		private var _bufferWidthHalf:int;
+		private var _bufferHeightHalf:int;
 		
 		private var _dt:Number;					// how long is each frame (in seconds)
 		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
@@ -181,6 +183,8 @@ package view.racing
 			_resolution = 1.6; //_bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
+			_bufferWidthHalf = _bufferWidth * 0.5;
+			_bufferHeightHalf = _bufferHeight * 0.5;
 			_cars = new Vector.<Car>();
 			
 			_hazeColor = COLORS.HAZE;
@@ -448,7 +452,7 @@ package view.racing
 					car = s.cars[j];
 					sprite = car.sprite;
 					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, car.percent);
-					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidth / 2);
+					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidthHalf);
 					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, car.percent);
 					renderSprite(car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
 				}
@@ -458,7 +462,7 @@ package view.racing
 				{
 					sprite = s.sprites[j];
 					spriteScale = s.p1.screen.scale;
-					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidth / 2);
+					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidthHalf);
 					spriteY = s.p1.screen.y;
 					renderSprite(sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, s.clip, s.haze);
 				}
@@ -487,8 +491,8 @@ package view.racing
 					
 					renderSprite(spr,
 						_cameraDepth / _playerZ,
-						_bufferWidth / 2,
-						((_bufferHeight / 2) - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeight / 2)) + bounce,
+						_bufferWidthHalf,
+						(_bufferHeightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeightHalf)) + bounce,
 						-0.5,
 						-1);
 				}
@@ -1058,9 +1062,9 @@ package view.racing
 			p.camera.y = (p.world.y || 0) - cameraY;
 			p.camera.z = (p.world.z || 0) - cameraZ;
 			p.screen.scale = _cameraDepth / p.camera.z;
-			p.screen.x = mathRound((_bufferWidth / 2) + (p.screen.scale * p.camera.x * _bufferWidth / 2));
-			p.screen.y = mathRound((_bufferHeight / 2) - (p.screen.scale * p.camera.y * _bufferHeight / 2));
-			p.screen.w = mathRound((p.screen.scale * _roadWidth * _bufferWidth / 2));
+			p.screen.x = mathRound(_bufferWidthHalf + (p.screen.scale * p.camera.x * _bufferWidthHalf));
+			p.screen.y = mathRound(_bufferHeightHalf - (p.screen.scale * p.camera.y * _bufferHeightHalf));
+			p.screen.w = mathRound((p.screen.scale * _roadWidth * _bufferWidthHalf));
 		}
 		
 		
@@ -1230,8 +1234,8 @@ package view.racing
 			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (sprite.width * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
-			var destH:int = (sprite.height * scale * _bufferWidth / 2) * (_sprites.SCALE * _roadWidth);
+			var destW:int = (sprite.width * scale * _bufferWidthHalf) * (_sprites.SCALE * _roadWidth);
+			var destH:int = (sprite.height * scale * _bufferWidthHalf) * (_sprites.SCALE * _roadWidth);
 			
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);
