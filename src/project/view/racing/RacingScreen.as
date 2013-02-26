@@ -605,6 +605,8 @@ package view.racing
 			_bgLayer2 = new ParallaxLayer(_sprites.BG_HILLS, 3);
 			_bgLayer3 = new ParallaxLayer(_sprites.BG_TREES, 4);
 			
+			// TODO add feature to apply fog to bg layer for better realism!
+			
 			_bgScroller = new ParallaxScroller(_bufferWidth, _sprites.BG_SKY.height);
 			_bgScroller.layers = [_bgLayer1, _bgLayer2, _bgLayer3];
 		}
