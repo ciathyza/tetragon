@@ -29,8 +29,6 @@
 package view.racing.parallax
 {
 	import flash.display.BitmapData;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	
 	
 	/**
@@ -44,10 +42,14 @@ package view.racing.parallax
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		public var bitmapData:BitmapData;
-		public var rect:Rectangle;
-		public var point:Point;
-		public var speed:Number;
+		public var source:BitmapData;
+		public var width:int;
+		public var height:int;
+		public var speed:int;
+		public var offsetFactorX:Number;
+		public var offsetFactorY:Number;
+		public var prevScrollX:int;
+		public var prevScrollY:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -57,10 +59,14 @@ package view.racing.parallax
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function ParallaxLayer(bitmapData:BitmapData, speed:Number)
+		public function ParallaxLayer(source:BitmapData, speed:int = 1, offsetFactorX:int = 0, offsetFactorY:int = 0)
 		{
-			this.bitmapData = bitmapData;
+			this.source = source;
 			this.speed = speed;
+			this.offsetFactorX = offsetFactorX;
+			this.offsetFactorY = offsetFactorY;
+			width = source.width;
+			height = source.height;
 		}
 	}
 }

@@ -46,7 +46,10 @@ package view.racing.parallax
 		
 		private var _layers:Vector.<ParallaxLayer>;
 		private var _layerCount:uint;
+		private var _buffer:BitmapData;
+		private var _clearRect:Rectangle;
 		private var _rect:Rectangle;
+		private var _point:Point;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -59,8 +62,10 @@ package view.racing.parallax
 		public function ParallaxScroller(width:int, height:int, layers:Array = null)
 		{
 			super(width, height, false, 0x000000);
-			_rect = rect;
 			this.layers = layers;
+			
+			_rect = new Rectangle();
+			_point = new Point();
 		}
 		
 		
@@ -68,17 +73,122 @@ package view.racing.parallax
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
-		public function update(x:int):void
+		public function update():void
 		{
-			//fillRect(_rect, 0x000000);
 			for (var i:uint = 0; i < _layerCount; i++)
 			{
-				var layer:ParallaxLayer = _layers[i];
-				if (!layer) continue;
-				//layer.point.x = x;
-				copyPixels(layer.bitmapData, layer.rect, layer.point);
-				//scroll(-x, 0);
+				offsetLayer(_layers[i]);
 			}
+		}
+		
+		
+		public function offsetLayer(layer:ParallaxLayer):void
+		{
+			if (!layer) return;
+			
+			var distX:int = layer.offsetFactorX * layer.width;
+//			var distY:int = layer.offsetFactorY * layer.height;
+			
+			if (distX != layer.prevScrollX)
+			{
+				var scrollX:int = (distX - layer.prevScrollX) * layer.speed;
+				/* Ignore scroll if scrollX is too large (might happen if factor wraps around)! */
+				if (Math.abs(scrollX) <= layer.width)
+				{
+					scrollLayerBy(layer, scrollX, 0);
+				}
+			}
+			
+			// TODO add vertical scrolling!
+//			if (distY != layer.prevScrollY)
+//			{
+//				var scrollY:int = (distY - layer.prevScrollY) * layer.speed;
+//				/* Ignore scroll if scrollX is too large (might happen if factor wraps around)! */
+//				if (Math.abs(scrollY) <= layer.height)
+//				{
+//					scrollLayerBy(layer, 0, scrollY);
+//				}
+//			}
+			
+			layer.prevScrollX = distX;
+//			layer.prevScrollY = distY;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		public function scaleNumber(value:Number, src0:Number, src1:Number, dst0:Number, dst1:Number):Number
+		{
+			return ((value - src0) / (src1 - src0)) * (dst1 - dst0) + dst0;
+		}
+		
+		
+		/**
+		 * Scrolls a layer by <x> and <y> pixels.
+		 */
+		private function scrollLayerBy(layer:ParallaxLayer, pixelX:int, pixelY:int):void
+		{
+			if (!layer) return;
+			
+			/* Reset rect & point. */
+			_rect.setTo(0, 0, layer.width, layer.height);
+			_point.setTo(0, 0);
+			
+			/* Determine the region that needs to be copied to the buffer. */
+			if (pixelX > 0)
+			{
+				_rect.width = pixelX;
+			}
+			else if (pixelX < 0)
+			{
+				_rect.x = layer.width + pixelX;
+				_rect.width = -pixelX;
+			}
+			if (pixelY > 0)
+			{
+				_rect.height = pixelY;
+			}
+			else if (pixelY < 0)
+			{
+				_rect.y = layer.height + pixelY;
+				_rect.height = -pixelY;
+			}
+			
+			/* Copy scrolling-out part from source to buffer. */
+			_buffer.fillRect(_clearRect, 0x00000000);
+			_buffer.copyPixels(layer.source, _rect, _point);
+			
+			/* Scroll the source by <speed> pixels. */
+			layer.source.scroll(-pixelX, -pixelY);
+			
+			/* Determine the region to copy back from the buffer to the source. */
+			if (pixelX > 0)
+			{
+				_point.x = layer.width - pixelX;
+			}
+			else if (pixelX < 0)
+			{
+				_rect.x = _point.x = 0;
+			}
+			if (pixelY > 0)
+			{
+				_point.y = layer.height - pixelY;
+			}
+			else if (pixelY < 0)
+			{
+				_rect.y = _point.y = 0;
+			}
+			
+			/* Copy scrolled-out part from buffer back to scroll-in area on source. */
+			layer.source.copyPixels(_buffer, _rect, _point);
+			
+			/* Reset rect & point. */
+			_rect.setTo(0, 0, layer.width, layer.height);
+			_point.setTo(0, 0);
+			
+			/* Copy source to canvas. */
+			copyPixels(layer.source, _rect, _point);
 		}
 		
 		
@@ -98,23 +208,44 @@ package view.racing.parallax
 		}
 		public function set layers(v:Array):void
 		{
+			var i:uint;
 			if (!v)
 			{
 				_layers = null;
 			}
 			else
 			{
+				var w:int = 0;
+				var h:int = 0;
 				_layers = new Vector.<ParallaxLayer>(v.length, true);
-				for (var i:uint = 0; i < _layers.length; i++)
+				for (i = 0; i < _layers.length; i++)
 				{
 					var layer:ParallaxLayer = v[i];
-					if (!layer) continue;
-					layer.rect = new Rectangle(0, 0, layer.bitmapData.width, layer.bitmapData.height);
-					layer.point = new Point(0, 0);
+					if (!layer || !layer.source) continue;
+					/* find the width & height of the largest layer. */
+					if (layer.source.width > w) w = layer.source.width;
+					if (layer.source.height > h) h = layer.source.height;
 					_layers[i] = layer;
 				}
 			}
 			_layerCount = !_layers ? 0 : _layers.length;
+			
+			/* Create buffer of largest layer width & height. */
+			if (w > 0 && h > 0)
+			{
+				_buffer = new BitmapData(w, h, true, 0x00000000);
+				_clearRect = _buffer.rect;
+				for (i = 0; i < _layers.length; i++)
+				{
+					scrollLayerBy(_layers[i], 0, 0);
+				}
+			}
 		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
 	}
 }
