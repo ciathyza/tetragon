@@ -35,11 +35,11 @@ package view.racing
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 	import tetragon.view.render.buffers.SoftwareRenderBuffer;
+	import tetragon.view.render.scroll.ParallaxLayer;
+	import tetragon.view.render.scroll.ParallaxScroller;
 	import view.racing.constants.COLORS;
 	import view.racing.constants.ColorSet;
 	import view.racing.constants.ROAD;
-	import view.racing.parallax.ParallaxLayer;
-	import view.racing.parallax.ParallaxScroller;
 	import view.racing.vo.Car;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;

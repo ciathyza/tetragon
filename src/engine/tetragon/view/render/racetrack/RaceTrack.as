@@ -30,15 +30,13 @@ package tetragon.view.render.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.sprite.SpriteAtlas;
-	import tetragon.input.KeyMode;
-	import tetragon.util.display.centerChild;
 	import tetragon.view.render.buffers.SoftwareRenderBuffer;
+	import tetragon.view.render.scroll.ParallaxLayer;
+	import tetragon.view.render.scroll.ParallaxScroller;
 
 	import view.racing.constants.COLORS;
 	import view.racing.constants.ColorSet;
 	import view.racing.constants.ROAD;
-	import view.racing.parallax.ParallaxLayer;
-	import view.racing.parallax.ParallaxScroller;
 	import view.racing.vo.Car;
 	import view.racing.vo.PCamera;
 	import view.racing.vo.PPoint;
@@ -50,6 +48,8 @@ package tetragon.view.render.racetrack
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+
+
 	
 	
 	/**
@@ -61,12 +61,13 @@ package tetragon.view.render.racetrack
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _atlas:SpriteAtlas;
-		private var _atlasImage:BitmapData;
 		private var _renderBuffer:SoftwareRenderBuffer;
 		private var _bufferBitmap:Bitmap;
-		private var _sprites:Sprites;
+		private var _atlas:SpriteAtlas;
 		private var _bgScroller:ParallaxScroller;
+		private var _bgLayers:Vector.<ParallaxLayer>;
+		
+		private var _sprites:Sprites;
 		private var _bgLayer1:ParallaxLayer;
 		private var _bgLayer2:ParallaxLayer;
 		private var _bgLayer3:ParallaxLayer;
@@ -74,10 +75,12 @@ package tetragon.view.render.racetrack
 		// array of road segments
 		private var _cars:Vector.<Car>;
 		// array of cars on the road
-		private var _bufferWidth:int = 1024;
-		private var _bufferHeight:int = 640;
-		private var _bufferWidthHalf:int;
-		private var _bufferHeightHalf:int;
+		
+		private var _width:int;
+		private var _height:int;
+		private var _widthHalf:int;
+		private var _heightHalf:int;
+		
 		private var _dt:Number;
 		// how long is each frame (in seconds)
 		private var _resolution:Number;
@@ -151,6 +154,27 @@ package tetragon.view.render.racetrack
 		// -----------------------------------------------------------------------------------------
 		
 		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new instance of the class.
+		 * 
+		 * @param width
+		 * @param height
+		 */
+		public function RaceTrack(width:int, height:int, atlas:SpriteAtlas)
+		{
+			_width = width;
+			_height = height;
+			_atlas = atlas;
+			
+			setup();
+			prepareSprites();
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
@@ -181,8 +205,8 @@ package tetragon.view.render.racetrack
 			// _bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
-			_bufferWidthHalf = _bufferWidth * 0.5;
-			_bufferHeightHalf = _bufferHeight * 0.5;
+			_widthHalf = _width * 0.5;
+			_heightHalf = _height * 0.5;
 			_cars = new Vector.<Car>();
 
 			_hazeColor = COLORS.HAZE;
@@ -303,7 +327,7 @@ package tetragon.view.render.racetrack
 				s:Segment,
 				car:Car,
 				sprite:SSprite,
-				maxY:int = _bufferHeight,
+				maxY:int = _height,
 				x:Number = 0,
 				dx:Number = -(baseSegment.curve * basePercent),
 				i:int,
@@ -362,7 +386,7 @@ package tetragon.view.render.racetrack
 					car = s.cars[j];
 					sprite = car.sprite;
 					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, car.percent);
-					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _bufferWidthHalf);
+					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _widthHalf);
 					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, car.percent);
 					renderSprite(car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
 				}
@@ -372,7 +396,7 @@ package tetragon.view.render.racetrack
 				{
 					sprite = s.sprites[j];
 					spriteScale = s.p1.screen.scale;
-					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _bufferWidthHalf);
+					spriteX = s.p1.screen.x + (spriteScale * sprite.offset * _roadWidth * _widthHalf);
 					spriteY = s.p1.screen.y;
 					renderSprite(sprite.source, spriteScale, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, s.clip, s.haze);
 				}
@@ -399,7 +423,7 @@ package tetragon.view.render.racetrack
 						spr = (updown > 0) ? _sprites.PLAYER_UPHILL_STRAIGHT : _sprites.PLAYER_STRAIGHT;
 					}
 
-					renderSprite(spr, _cameraDepth / _playerZ, _bufferWidthHalf, (_bufferHeightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _bufferHeightHalf)) + bounce, -0.5, -1);
+					renderSprite(spr, _cameraDepth / _playerZ, _widthHalf, (_heightHalf - (_cameraDepth / _playerZ * interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent) * _heightHalf)) + bounce, -0.5, -1);
 				}
 			}
 		}
@@ -416,6 +440,58 @@ package tetragon.view.render.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		public function get width():int
+		{
+			return _width;
+		}
+		public function set width(v:int):void
+		{
+			_width = v;
+		}
+		
+		
+		public function get height():int
+		{
+			return _height;
+		}
+		public function set height(v:int):void
+		{
+			_height = v;
+		}
+		
+		
+		/**
+		 * An array of ParallaxLayer objects. Internally the layers are stored in
+		 * a vector.
+		 */
+		public function get bgLayers():Array
+		{
+			if (!_bgLayers) return null;
+			var a:Array = [];
+			for (var i:uint = 0; i < _bgLayers.length; i++)
+			{
+				a.push(_bgLayers[i]);
+			}
+			return a;
+		}
+		public function set bgLayers(v:Array):void
+		{
+			if (!v)
+			{
+				_bgLayers = null;
+			}
+			else
+			{
+				_bgLayers = new Vector.<ParallaxLayer>(v.length, true);
+				for (var i:uint = 0; i < _bgLayers.length; i++)
+				{
+					var layer:ParallaxLayer = v[i];
+					if (!layer || !layer.source) continue;
+					_bgLayers[i] = layer;
+				}
+			}
+		}
 		
 		
 		/**
@@ -480,172 +556,70 @@ package tetragon.view.render.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
+		
 		/**
-		 * @inheritDoc
+		 * @private
 		 */
-		override protected function setup():void
+		protected function setup():void
 		{
-			super.setup();
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerResources():void
-		{
-			registerResource("spriteAtlas");
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function createChildren():void
-		{
-			main.keyInputManager.assign("CURSORUP", KeyMode.DOWN, onKeyDown, "u");
-			main.keyInputManager.assign("CURSORDOWN", KeyMode.DOWN, onKeyDown, "d");
-			main.keyInputManager.assign("CURSORLEFT", KeyMode.DOWN, onKeyDown, "l");
-			main.keyInputManager.assign("CURSORRIGHT", KeyMode.DOWN, onKeyDown, "r");
-			main.keyInputManager.assign("CURSORUP", KeyMode.UP, onKeyUp, "u");
-			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
-			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
-			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
-
-			resourceManager.process("spriteAtlas");
-			_atlas = getResource("spriteAtlas");
-			_atlasImage = _atlas.image;
-
-			prepareSprites();
-
-			_renderBuffer = new SoftwareRenderBuffer(_bufferWidth, _bufferHeight, false, 0x000055);
+			_renderBuffer = new SoftwareRenderBuffer(_width, _height, false, 0xFF00FF);
 			_bufferBitmap = new Bitmap(_renderBuffer);
-
-			_bgLayer1 = new ParallaxLayer(_sprites.BG_SKY, 2);
-			_bgLayer2 = new ParallaxLayer(_sprites.BG_HILLS, 3);
-			_bgLayer3 = new ParallaxLayer(_sprites.BG_TREES, 4);
-			
-			// TODO add feature to apply fog to bg layer for better realism!
-			
-			_bgScroller = new ParallaxScroller(_bufferWidth, _sprites.BG_SKY.height);
-			_bgScroller.layers = [_bgLayer1, _bgLayer2, _bgLayer3];
+			_bgScroller = new ParallaxScroller(_width, _sprites.BG_SKY.height, bgLayers);
 		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function registerChildren():void
-		{
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function addChildren():void
-		{
-			addChild(_bufferBitmap);
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function addListeners():void
-		{
-			main.gameLoop.tickSignal.add(onTick);
-			main.gameLoop.renderSignal.add(onRender);
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function removeListeners():void
-		{
-			main.gameLoop.tickSignal.remove(onTick);
-			main.gameLoop.renderSignal.remove(onRender);
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function executeBeforeStart():void
-		{
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function updateDisplayText():void
-		{
-		}
-
-
-		/**
-		 * @inheritDoc
-		 */
-		override protected function layoutChildren():void
-		{
-			centerChild(_bufferBitmap);
-		}
-
-
+		
+		
 		/**
 		 * @private
 		 */
 		private function prepareSprites():void
 		{
-			_sprites = new Sprites();
-			_sprites.BG_SKY = _atlas.getSprite("bg_sky", 2.0);
-			_sprites.BG_HILLS = _atlas.getSprite("bg_hills", 2.0);
-			_sprites.BG_TREES = _atlas.getSprite("bg_trees", 2.0);
-			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01", 2.5);
-			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02", 2.5);
-			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03", 2.5);
-			_sprites.BILLBOARD04 = _atlas.getSprite("billboard04", 2.5);
-			_sprites.BILLBOARD05 = _atlas.getSprite("billboard05", 2.5);
-			_sprites.BILLBOARD06 = _atlas.getSprite("billboard06", 2.5);
-			_sprites.BILLBOARD07 = _atlas.getSprite("billboard07", 2.5);
-			_sprites.BILLBOARD08 = _atlas.getSprite("billboard08", 2.5);
-			_sprites.BILLBOARD09 = _atlas.getSprite("billboard09", 2.5);
-			_sprites.BOULDER1 = _atlas.getSprite("veg_boulder1", 2.5);
-			_sprites.BOULDER2 = _atlas.getSprite("veg_boulder2", 2.5);
-			_sprites.BOULDER3 = _atlas.getSprite("veg_boulder3", 2.5);
-			_sprites.BUSH1 = _atlas.getSprite("veg_bush1", 2.5);
-			_sprites.BUSH2 = _atlas.getSprite("veg_bush2", 2.5);
-			_sprites.CACTUS = _atlas.getSprite("veg_cactus", 2.5);
-			_sprites.TREE1 = _atlas.getSprite("veg_tree1", 2.5);
-			_sprites.TREE2 = _atlas.getSprite("veg_tree2", 2.5);
-			_sprites.PALM_TREE = _atlas.getSprite("veg_palmtree", 2.5);
-			_sprites.DEAD_TREE1 = _atlas.getSprite("veg_deadtree1", 2.5);
-			_sprites.DEAD_TREE2 = _atlas.getSprite("veg_deadtree2", 2.5);
-			_sprites.STUMP = _atlas.getSprite("veg_stump", 2.5);
-			_sprites.COLUMN = _atlas.getSprite("bldg_column", 3.0);
-			_sprites.TOWER = _atlas.getSprite("bldg_tower", 10.0);
-			_sprites.BOATHOUSE = _atlas.getSprite("bldg_boathouse", 3.0);
-			_sprites.WINDMILL = _atlas.getSprite("bldg_windmill", 4.0);
-			_sprites.CAR01 = _atlas.getSprite("car01", 1.25);
-			_sprites.CAR02 = _atlas.getSprite("car02", 1.25);
-			_sprites.CAR03 = _atlas.getSprite("car03", 1.25);
-			_sprites.CAR04 = _atlas.getSprite("car04", 1.25);
-			_sprites.TRUCK = _atlas.getSprite("car05", 1.7);
-			_sprites.SEMI = _atlas.getSprite("car06", 2.0);
-			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("player");
-			_sprites.PLAYER_LEFT = _atlas.getSprite("player_left");
-			_sprites.PLAYER_RIGHT = _atlas.getSprite("player_right");
-			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("player_uphill");
-			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("player_uphill_left");
-			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("player_uphill_right");
-
-			_sprites.REGION_SKY = _atlas.getRegion("bg_sky");
-			_sprites.REGION_HILLS = _atlas.getRegion("bg_hills");
-			_sprites.REGION_TREES = _atlas.getRegion("bg_trees");
-
-			_sprites.init();
+//			_sprites = new Sprites();
+//			_sprites.BG_SKY = _atlas.getSprite("bg_sky", 2.0);
+//			_sprites.BG_HILLS = _atlas.getSprite("bg_hills", 2.0);
+//			_sprites.BG_TREES = _atlas.getSprite("bg_trees", 2.0);
+//			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01", 2.5);
+//			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02", 2.5);
+//			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03", 2.5);
+//			_sprites.BILLBOARD04 = _atlas.getSprite("billboard04", 2.5);
+//			_sprites.BILLBOARD05 = _atlas.getSprite("billboard05", 2.5);
+//			_sprites.BILLBOARD06 = _atlas.getSprite("billboard06", 2.5);
+//			_sprites.BILLBOARD07 = _atlas.getSprite("billboard07", 2.5);
+//			_sprites.BILLBOARD08 = _atlas.getSprite("billboard08", 2.5);
+//			_sprites.BILLBOARD09 = _atlas.getSprite("billboard09", 2.5);
+//			_sprites.BOULDER1 = _atlas.getSprite("veg_boulder1", 2.5);
+//			_sprites.BOULDER2 = _atlas.getSprite("veg_boulder2", 2.5);
+//			_sprites.BOULDER3 = _atlas.getSprite("veg_boulder3", 2.5);
+//			_sprites.BUSH1 = _atlas.getSprite("veg_bush1", 2.5);
+//			_sprites.BUSH2 = _atlas.getSprite("veg_bush2", 2.5);
+//			_sprites.CACTUS = _atlas.getSprite("veg_cactus", 2.5);
+//			_sprites.TREE1 = _atlas.getSprite("veg_tree1", 2.5);
+//			_sprites.TREE2 = _atlas.getSprite("veg_tree2", 2.5);
+//			_sprites.PALM_TREE = _atlas.getSprite("veg_palmtree", 2.5);
+//			_sprites.DEAD_TREE1 = _atlas.getSprite("veg_deadtree1", 2.5);
+//			_sprites.DEAD_TREE2 = _atlas.getSprite("veg_deadtree2", 2.5);
+//			_sprites.STUMP = _atlas.getSprite("veg_stump", 2.5);
+//			_sprites.COLUMN = _atlas.getSprite("bldg_column", 3.0);
+//			_sprites.TOWER = _atlas.getSprite("bldg_tower", 10.0);
+//			_sprites.BOATHOUSE = _atlas.getSprite("bldg_boathouse", 3.0);
+//			_sprites.WINDMILL = _atlas.getSprite("bldg_windmill", 4.0);
+//			_sprites.CAR01 = _atlas.getSprite("car01", 1.25);
+//			_sprites.CAR02 = _atlas.getSprite("car02", 1.25);
+//			_sprites.CAR03 = _atlas.getSprite("car03", 1.25);
+//			_sprites.CAR04 = _atlas.getSprite("car04", 1.25);
+//			_sprites.TRUCK = _atlas.getSprite("car05", 1.7);
+//			_sprites.SEMI = _atlas.getSprite("car06", 2.0);
+//			_sprites.PLAYER_STRAIGHT = _atlas.getSprite("player");
+//			_sprites.PLAYER_LEFT = _atlas.getSprite("player_left");
+//			_sprites.PLAYER_RIGHT = _atlas.getSprite("player_right");
+//			_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getSprite("player_uphill");
+//			_sprites.PLAYER_UPHILL_LEFT = _atlas.getSprite("player_uphill_left");
+//			_sprites.PLAYER_UPHILL_RIGHT = _atlas.getSprite("player_uphill_right");
+//
+//			_sprites.REGION_SKY = _atlas.getRegion("bg_sky");
+//			_sprites.REGION_HILLS = _atlas.getRegion("bg_hills");
+//			_sprites.REGION_TREES = _atlas.getRegion("bg_trees");
+//
+//			_sprites.init();
 		}
 
 
@@ -700,53 +674,53 @@ package tetragon.view.render.racetrack
 			var density:int = 10;
 
 			/* Add row of billboards right after start line. */
-			addSprite(20, _sprites.BILLBOARD07, -1);
-			addSprite(40, _sprites.BILLBOARD06, -1);
-			addSprite(60, _sprites.BILLBOARD08, -1);
-			addSprite(80, _sprites.BILLBOARD09, -1);
-			addSprite(100, _sprites.BILLBOARD01, -1);
-			addSprite(120, _sprites.BILLBOARD02, -1);
-			addSprite(140, _sprites.BILLBOARD03, -1);
-			addSprite(160, _sprites.BILLBOARD04, -1);
-			addSprite(180, _sprites.BILLBOARD05, -1);
-			addSprite(240, _sprites.BILLBOARD07, -1.2);
-			addSprite(240, _sprites.BILLBOARD06, 1.2);
-
-			/* Add some billboards at end of track. */
-			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
-			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
-
-			/* Add palm trees at start of track. */
-			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
-			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
-
-			/* Add a long row of columns on right side and trees on left side. */
-			addSprites(_sprites.COLUMN, 250, 1000, null, 5, 0, 1.1);
-			addSprites(_sprites.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
-			addSprites(_sprites.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
-
-			// TODO
-			for (i = 200; i < _segments.length; i += 3)
-			{
-				addSprite(i, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
-			}
-
-			for (i = 1600; i < _segments.length; i += 20)
-			{
-				addSprite(i, randomChoice(_sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
-			}
-
-			for (i = 1000; i < (_segments.length - 50); i += 100)
-			{
-				side = randomChoice([1, -1]);
-				addSprite(i + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
-				for (j = 0 ; j < 20 ; j++)
-				{
-					sprite = randomChoice(_sprites.VEGETATION);
-					offset = side * (1.5 + Math.random());
-					addSprite(i + randomInt(0, 50), sprite, offset);
-				}
-			}
+//			addSprite(20, _sprites.BILLBOARD07, -1);
+//			addSprite(40, _sprites.BILLBOARD06, -1);
+//			addSprite(60, _sprites.BILLBOARD08, -1);
+//			addSprite(80, _sprites.BILLBOARD09, -1);
+//			addSprite(100, _sprites.BILLBOARD01, -1);
+//			addSprite(120, _sprites.BILLBOARD02, -1);
+//			addSprite(140, _sprites.BILLBOARD03, -1);
+//			addSprite(160, _sprites.BILLBOARD04, -1);
+//			addSprite(180, _sprites.BILLBOARD05, -1);
+//			addSprite(240, _sprites.BILLBOARD07, -1.2);
+//			addSprite(240, _sprites.BILLBOARD06, 1.2);
+//
+//			/* Add some billboards at end of track. */
+//			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
+//			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
+//
+//			/* Add palm trees at start of track. */
+//			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
+//			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
+//
+//			/* Add a long row of columns on right side and trees on left side. */
+//			addSprites(_sprites.COLUMN, 250, 1000, null, 5, 0, 1.1);
+//			addSprites(_sprites.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
+//			addSprites(_sprites.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
+//
+//			// TODO
+//			for (i = 200; i < _segments.length; i += 3)
+//			{
+//				addSprite(i, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
+//			}
+//
+//			for (i = 1600; i < _segments.length; i += 20)
+//			{
+//				addSprite(i, randomChoice(_sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
+//			}
+//
+//			for (i = 1000; i < (_segments.length - 50); i += 100)
+//			{
+//				side = randomChoice([1, -1]);
+//				addSprite(i + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
+//				for (j = 0 ; j < 20 ; j++)
+//				{
+//					sprite = randomChoice(_sprites.VEGETATION);
+//					offset = side * (1.5 + Math.random());
+//					addSprite(i + randomInt(0, 50), sprite, offset);
+//				}
+//			}
 		}
 
 
@@ -1062,9 +1036,9 @@ package tetragon.view.render.racetrack
 			p.camera.y = (p.world.y || 0) - cameraY;
 			p.camera.z = (p.world.z || 0) - cameraZ;
 			p.screen.scale = _cameraDepth / p.camera.z;
-			p.screen.x = mathRound(_bufferWidthHalf + (p.screen.scale * p.camera.x * _bufferWidthHalf));
-			p.screen.y = mathRound(_bufferHeightHalf - (p.screen.scale * p.camera.y * _bufferHeightHalf));
-			p.screen.w = mathRound((p.screen.scale * _roadWidth * _bufferWidthHalf));
+			p.screen.x = mathRound(_widthHalf + (p.screen.scale * p.camera.x * _widthHalf));
+			p.screen.y = mathRound(_heightHalf - (p.screen.scale * p.camera.y * _heightHalf));
+			p.screen.w = mathRound((p.screen.scale * _roadWidth * _widthHalf));
 		}
 
 
@@ -1167,7 +1141,7 @@ package tetragon.view.render.racetrack
 			var r1:Number = getRumbleWidth(w1), r2:Number = getRumbleWidth(w2);
 
 			/* Draw offroad area segment. */
-			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, color.grass, _hazeColor, hazeAlpha);
+			_renderBuffer.blitRect(0, y2, _width, y1 - y2, color.grass, _hazeColor, hazeAlpha);
 
 			/* Draw the road segment. */
 			_renderBuffer.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
@@ -1207,8 +1181,8 @@ package tetragon.view.render.racetrack
 		private function renderSprite(sprite:BitmapData, scale:Number, destX:int, destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (sprite.width * scale * _bufferWidthHalf) * (_sprites.SCALE * _roadWidth);
-			var destH:int = (sprite.height * scale * _bufferWidthHalf) * (_sprites.SCALE * _roadWidth);
+			var destW:int = (sprite.width * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
+			var destH:int = (sprite.height * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
 
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);

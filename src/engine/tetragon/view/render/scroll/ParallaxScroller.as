@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package view.racing.parallax
+package tetragon.view.render.scroll
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;

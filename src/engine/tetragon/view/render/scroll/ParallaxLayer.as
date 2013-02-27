@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package view.racing.parallax
+package tetragon.view.render.scroll
 {
 	import flash.display.BitmapData;
 	
@@ -62,6 +62,7 @@ package view.racing.parallax
 		public function ParallaxLayer(source:BitmapData, speed:int = 1, offsetFactorX:int = 0,
 			offsetFactorY:int = 0)
 		{
+			// TODO add feature to apply fog to bg layer for better realism!
 			this.source = source;
 			this.speed = speed;
 			this.offsetFactorX = offsetFactorX;
