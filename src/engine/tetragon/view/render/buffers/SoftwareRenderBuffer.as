@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package view.racing
+package tetragon.view.render.buffers
 {
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
@@ -38,10 +38,9 @@ package view.racing
 	
 	
 	/**
-	 * A RenderBuffer is a rectangular bitmap area which is used to render any other
-	 * display objects to a common buffer.
+	 * A render buffer that draws objects onto a bitmapdata.
 	 */
-	public class RenderBuffer extends BitmapData
+	public class SoftwareRenderBuffer extends BitmapData
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -77,7 +76,7 @@ package view.racing
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function RenderBuffer(width:int, height:int, transparent:Boolean = false,
+		public function SoftwareRenderBuffer(width:int, height:int, transparent:Boolean = false,
 			fillColor:uint = 0x000000):void
 		{
 			super(width, height, transparent, fillColor);

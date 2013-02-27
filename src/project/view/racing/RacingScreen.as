@@ -28,11 +28,13 @@
  */
 package view.racing
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
-
+	import tetragon.view.render.buffers.SoftwareRenderBuffer;
 	import view.racing.constants.COLORS;
 	import view.racing.constants.ColorSet;
 	import view.racing.constants.ROAD;
@@ -46,8 +48,7 @@ package view.racing
 	import view.racing.vo.SSprite;
 	import view.racing.vo.Segment;
 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
+
 
 
 	/**
@@ -64,7 +65,7 @@ package view.racing
 		// -----------------------------------------------------------------------------------------
 		private var _atlas:SpriteAtlas;
 		private var _atlasImage:BitmapData;
-		private var _renderBuffer:RenderBuffer;
+		private var _renderBuffer:SoftwareRenderBuffer;
 		private var _bufferBitmap:Bitmap;
 		private var _sprites:Sprites;
 		private var _bgScroller:ParallaxScroller;
@@ -598,7 +599,7 @@ package view.racing
 
 			prepareSprites();
 
-			_renderBuffer = new RenderBuffer(_bufferWidth, _bufferHeight, false, 0x000055);
+			_renderBuffer = new SoftwareRenderBuffer(_bufferWidth, _bufferHeight, false, 0x000055);
 			_bufferBitmap = new Bitmap(_renderBuffer);
 
 			_bgLayer1 = new ParallaxLayer(_sprites.BG_SKY, 2);
