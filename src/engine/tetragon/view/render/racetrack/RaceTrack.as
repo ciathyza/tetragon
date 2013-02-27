@@ -68,87 +68,57 @@ package tetragon.view.render.racetrack
 		private var _bgLayers:Vector.<ParallaxLayer>;
 		
 		private var _sprites:Sprites;
-		private var _bgLayer1:ParallaxLayer;
-		private var _bgLayer2:ParallaxLayer;
-		private var _bgLayer3:ParallaxLayer;
-		private var _segments:Vector.<Segment>;
-		// array of road segments
-		private var _cars:Vector.<Car>;
-		// array of cars on the road
+		private var _segments:Vector.<Segment>;			// array of road segments
+		private var _cars:Vector.<Car>;					// array of cars on the road
 		
 		private var _width:int;
 		private var _height:int;
 		private var _widthHalf:int;
 		private var _heightHalf:int;
 		
-		private var _dt:Number;
-		// how long is each frame (in seconds)
-		private var _resolution:Number;
-		// scaling factor to provide resolution independence (computed)
-		private var _drawDistance:int = 300;
-		// number of segments to draw
-		private var _hazeDensity:int = 10;
-		// exponential fog density
+		private var _dt:Number;						// how long is each frame (in seconds)
+		private var _resolution:Number;				// scaling factor to provide resolution independence (computed)
+		private var _drawDistance:int;				// number of segments to draw
+		private var _hazeDensity:int;				// exponential haze density
 		private var _hazeColor:uint;
-		private var _cameraHeight:Number = 1000;
-		// z height of camera (500 - 5000)
-		private var _cameraDepth:Number;
-		// z distance camera is from screen (computed)
-		private var _fieldOfView:int = 100;
-		// angle (degrees) for field of view (80 - 140)
+		
+		private var _cameraHeight:Number = 1000;	// z height of camera (500 - 5000)
+		private var _cameraDepth:Number;			// z distance camera is from screen (computed)
+		private var _fieldOfView:int = 100;			// angle (degrees) for field of view (80 - 140)
 		private var _bgSpeedMult:Number = 0.001;
-		// background sky layer scroll speed when going around curve (or up hill)
-		private var _skyOffset:Number = 0;
-		// current sky scroll offset
-		private var _hillOffset:Number = 0;
-		// current hill scroll offset
-		private var _treeOffset:Number = 0;
-		// current tree scroll offset
-		private var _playerX:Number = 0;
-		// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerZ:Number;
-		// player relative z distance from camera (computed)
-		private var _roadWidth:int = 2000;
-		// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-		private var _segmentLength:int = 200;
-		// length of a single segment
-		private var _rumbleLength:int = 3;
-		// number of segments per red/white rumble strip
-		private var _trackLength:int = 200;
-		// z length of entire track (computed)
-		private var _lanes:int = 3;
-		// number of lanes
-		private var _totalCars:Number = 200;
-		// total number of cars on the road
-		private var _accel:Number;
-		// acceleration rate - tuned until it 'felt' right
-		private var _breaking:Number;
-		// deceleration rate when braking
-		private var _decel:Number;
-		// 'natural' deceleration rate when neither accelerating, nor braking
-		private var _offRoadDecel:Number = 0.99;
-		// speed multiplier when off road (e.g. you lose 2% speed each update frame)
-		private var _offRoadLimit:Number;
-		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
-		private var _centrifugal:Number = 0.3;
-		// centrifugal force multiplier when going around curves
-		private var _position:Number;
-		// current camera Z position (add playerZ to get player's absolute Z position)
-		private var _speed:Number;
-		// current speed
-		private var _maxSpeed:Number;
-		// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
-		private var _currentLapTime:Number = 0;
-		// current lap time
-		private var _lastLapTime:Number = 0;
-		// last lap time
+		
+		private var _playerX:Number = 0;			// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerY:int;					// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerZ:Number;				// player relative z distance from camera (computed)
+		
+		private var _roadWidth:int = 2000;			// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+		private var _segmentLength:int = 200;		// length of a single segment
+		private var _rumbleLength:int = 3;			// number of segments per red/white rumble strip
+		private var _trackLength:int = 200;			// z length of entire track (computed)
+		private var _lanes:int = 3;					// number of lanes
+		private var _totalCars:Number = 200;		// total number of cars on the road
+		
+		private var _accel:Number;					// acceleration rate - tuned until it 'felt' right
+		private var _breaking:Number;				// deceleration rate when braking
+		private var _decel:Number;					// 'natural' deceleration rate when neither accelerating, nor braking
+		private var _offRoadDecel:Number = 0.99;	// speed multiplier when off road (e.g. you lose 2% speed each update frame)
+		private var _offRoadLimit:Number;			// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+		private var _centrifugal:Number = 0.3;		// centrifugal force multiplier when going around curves
+		
+		private var _position:Number;				// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _speed:Number;					// current speed
+		private var _maxSpeed:Number;				// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+		
+		private var _currentLapTime:Number = 0;		// current lap time
+		private var _lastLapTime:Number = 0;		// last lap time
 		private var _fast_lap_time:Number;
+		
 		private var _isAccelerate:Boolean;
 		private var _isBrake:Boolean;
 		private var _isSteerLeft:Boolean;
 		private var _isSteerRight:Boolean;
-
-
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Signals
 		// -----------------------------------------------------------------------------------------
@@ -231,7 +201,8 @@ package tetragon.view.render.racetrack
 				playerW:Number = _sprites.PLAYER_STRAIGHT.width * _sprites.SCALE,
 				speedPercent:Number = _speed / _maxSpeed,
 				dx:Number = _dt * 2 * speedPercent,
-				startPosition:Number = _position;
+				startPosition:Number = _position,
+				bgLayer:ParallaxLayer;
 			
 			updateCars(_dt, playerSegment, playerW);
 			_position = increase(_position, _dt * _speed, _trackLength);
@@ -288,9 +259,15 @@ package tetragon.view.render.racetrack
 			_speed = limit(_speed, 0, _maxSpeed);	// or exceed maxSpeed.
 			
 			/* Calculate scroll offsets for BG layers. */
-			_skyOffset = increase(_skyOffset, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
-			_hillOffset = increase(_hillOffset, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
-			_treeOffset = increase(_treeOffset, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1);
+			if (_bgLayers)
+			{
+				for (i = 0; i < _bgLayers.length; i++)
+				{
+					bgLayer = _bgLayers[i];
+					bgLayer.offsetFactorX = increase(bgLayer.offsetFactorX, _bgSpeedMult * playerSegment.curve * (_position - startPosition) / _segmentLength, 1.0);
+					bgLayer.offsetFactorY = _resolution * _bgSpeedMult * _playerY;
+				}
+			}
 			
 			/* Update track time stats. */
 			if (_position > _playerZ)
@@ -323,7 +300,6 @@ package tetragon.view.render.racetrack
 				basePercent:Number = percentRemaining(_position, _segmentLength),
 				playerSegment:Segment = findSegment(_position + _playerZ),
 				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
-				playerY:int = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent),
 				s:Segment,
 				car:Car,
 				sprite:SSprite,
@@ -336,14 +312,11 @@ package tetragon.view.render.racetrack
 				spriteX:Number,
 				spriteY:Number;
 			
+			_playerY = interpolate(playerSegment.p1.world.y, playerSegment.p2.world.y, playerPercent);
+			
 			_renderBuffer.clear();
 			
-			/* Render background layers. */
-			_bgLayer1.offsetFactorX = _skyOffset;
-			_bgLayer1.offsetFactorY = _resolution * _bgSpeedMult * playerY;
-			_bgLayer2.offsetFactorX = _hillOffset;
-			_bgLayer3.offsetFactorX = _treeOffset;
-			
+			/* Update background layers and blit them to render buffer. */
 			_bgScroller.update();
 			_renderBuffer.blitImage(_bgScroller, 0, 0, _bgScroller.width, _bgScroller.height);
 			
@@ -358,8 +331,8 @@ package tetragon.view.render.racetrack
 				s.haze = 1 / (Math.pow(2.718281828459045, ((i / _drawDistance) * (i / _drawDistance) * _hazeDensity)));
 				s.clip = maxY;
 
-				project(s.p1, (_playerX * _roadWidth) - x, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
-				project(s.p2, (_playerX * _roadWidth) - x - dx, playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
+				project(s.p1, (_playerX * _roadWidth) - x, _playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
+				project(s.p2, (_playerX * _roadWidth) - x - dx, _playerY + _cameraHeight, _position - (s.looped ? _trackLength : 0));
 
 				x = x + dx;
 				dx = dx + s.curve;
@@ -495,6 +468,49 @@ package tetragon.view.render.racetrack
 		
 		
 		/**
+		 * Determines the number of road segments to draw.
+		 * 
+		 * @default 300
+		 */
+		public function get drawDistance():int
+		{
+			return _drawDistance;
+		}
+		public function set drawDistance(v:int):void
+		{
+			_drawDistance = v;
+		}
+		
+		
+		/**
+		 * Determines haze color.
+		 */
+		public function get hazeColor():uint
+		{
+			return _hazeColor;
+		}
+		public function set hazeColor(v:uint):void
+		{
+			_hazeColor = v;
+		}
+		
+		
+		/**
+		 * The exponential density of haze.
+		 * 
+		 * @default 10
+		 */
+		public function get hazeDensity():int
+		{
+			return _hazeDensity;
+		}
+		public function set hazeDensity(v:int):void
+		{
+			_hazeDensity = v;
+		}
+		
+		
+		/**
 		 * @private
 		 */
 		private function get lastY():Number
@@ -562,6 +578,12 @@ package tetragon.view.render.racetrack
 		 */
 		protected function setup():void
 		{
+			/* Set default. */
+			_drawDistance = 300;
+			_hazeDensity = 10;
+			_hazeColor = 0x333333;
+			_playerX = _playerY = _playerZ = 0;
+			
 			_renderBuffer = new SoftwareRenderBuffer(_width, _height, false, 0xFF00FF);
 			_bufferBitmap = new Bitmap(_renderBuffer);
 			_bgScroller = new ParallaxScroller(_width, _sprites.BG_SKY.height, bgLayers);
