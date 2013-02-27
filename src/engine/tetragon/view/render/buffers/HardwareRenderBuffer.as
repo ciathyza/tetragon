@@ -96,6 +96,8 @@ package tetragon.view.render.buffers
 		 */
 		public function render():void
 		{
+			if (!_context) return;
+			
 			_stage3DProxy.clear();
 			
 			// vertex position to attribute register 0

@@ -81,9 +81,6 @@ package view.racing
 		override public function start():void
 		{
 			super.start();
-			reset();
-			main.statsMonitor.toggle();
-			main.gameLoop.start();
 		}
 		
 		
@@ -310,6 +307,9 @@ package view.racing
 		 */
 		override protected function executeBeforeStart():void
 		{
+			reset();
+			main.statsMonitor.toggle();
+			main.gameLoop.start();
 		}
 
 
