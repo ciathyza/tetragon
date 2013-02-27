@@ -35,18 +35,19 @@ package view.racing
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 	import tetragon.view.render.buffers.SoftwareRenderBuffer;
+	import tetragon.view.render.racetrack.Sprites;
+	import tetragon.view.render.racetrack.constants.COLORS;
+	import tetragon.view.render.racetrack.constants.ColorSet;
+	import tetragon.view.render.racetrack.constants.ROAD;
+	import tetragon.view.render.racetrack.vo.Car;
+	import tetragon.view.render.racetrack.vo.PCamera;
+	import tetragon.view.render.racetrack.vo.PPoint;
+	import tetragon.view.render.racetrack.vo.PScreen;
+	import tetragon.view.render.racetrack.vo.PWorld;
+	import tetragon.view.render.racetrack.vo.SSprite;
+	import tetragon.view.render.racetrack.vo.Segment;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render.scroll.ParallaxScroller;
-	import view.racing.constants.COLORS;
-	import view.racing.constants.ColorSet;
-	import view.racing.constants.ROAD;
-	import view.racing.vo.Car;
-	import view.racing.vo.PCamera;
-	import view.racing.vo.PPoint;
-	import view.racing.vo.PScreen;
-	import view.racing.vo.PWorld;
-	import view.racing.vo.SSprite;
-	import view.racing.vo.Segment;
 
 
 

@@ -1,4 +1,4 @@
-package view.racing.vo
+package tetragon.view.render.racetrack.vo
 {
 	import tetragon.view.render2d.display.Image2D;
 

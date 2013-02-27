@@ -1,4 +1,4 @@
-package view.racing
+package tetragon.view.render.racetrack
 {
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
