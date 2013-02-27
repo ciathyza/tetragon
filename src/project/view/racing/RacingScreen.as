@@ -32,6 +32,7 @@ package view.racing
 	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
+	import tetragon.view.render.buffers.HardwareRenderBuffer;
 	import tetragon.view.render.racetrack.RaceTrackRenderer;
 	import tetragon.view.render.scroll.ParallaxLayer;
 
@@ -55,6 +56,8 @@ package view.racing
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
+		
+		private var _hwRenderBuffer:HardwareRenderBuffer;
 		
 		private var _raceTrackRenderer:RaceTrackRenderer;
 		private var _renderBitmap:Bitmap;
@@ -139,6 +142,7 @@ package view.racing
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -153,7 +157,7 @@ package view.racing
 		 */
 		private function onTick():void
 		{
-			_raceTrackRenderer.tick();
+			//_raceTrackRenderer.tick();
 		}
 		
 		
@@ -162,7 +166,8 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			_raceTrackRenderer.render();
+			//_raceTrackRenderer.render();
+			_hwRenderBuffer.render();
 		}
 		
 		
@@ -258,6 +263,8 @@ package view.racing
 			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
+			
+			_hwRenderBuffer = new HardwareRenderBuffer(640, 400);
 		}
 		
 		
@@ -274,7 +281,7 @@ package view.racing
 		 */
 		override protected function addChildren():void
 		{
-			addChild(_renderBitmap);
+			//addChild(_renderBitmap);
 		}
 
 
