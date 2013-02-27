@@ -59,7 +59,8 @@ package view.racing.parallax
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function ParallaxLayer(source:BitmapData, speed:int = 1, offsetFactorX:int = 0, offsetFactorY:int = 0)
+		public function ParallaxLayer(source:BitmapData, speed:int = 1, offsetFactorX:int = 0,
+			offsetFactorY:int = 0)
 		{
 			this.source = source;
 			this.speed = speed;

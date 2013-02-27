@@ -1250,9 +1250,9 @@ package view.racing
 			_renderBuffer.blitRect(0, y2, _bufferWidth, y1 - y2, color.grass, _hazeColor, hazeAlpha);
 
 			/* Draw the road segment. */
-			_renderBuffer.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawPolygon(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
+			_renderBuffer.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawQuad(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
 
 			/* Draw lane strips. */
 			if (color.lane > 0)
@@ -1266,7 +1266,7 @@ package view.racing
 
 				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
 				{
-					_renderBuffer.drawPolygon(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
+					_renderBuffer.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
 				}
 			}
 		}

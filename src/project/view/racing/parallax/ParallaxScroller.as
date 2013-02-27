@@ -116,18 +116,9 @@ package view.racing.parallax
 		
 		
 		/**
-		 * @private
-		 */
-//		public function scaleNumber(value:Number, src0:Number, src1:Number, dst0:Number, dst1:Number):Number
-//		{
-//			return ((value - src0) / (src1 - src0)) * (dst1 - dst0) + dst0;
-//		}
-		
-		
-		/**
 		 * Scrolls a layer by <x> and <y> pixels.
 		 */
-		private function scrollLayerBy(layer:ParallaxLayer, pixelX:int, pixelY:int):void
+		public function scrollLayerBy(layer:ParallaxLayer, pixelX:int, pixelY:int):void
 		{
 			if (!layer) return;
 			
@@ -241,11 +232,5 @@ package view.racing.parallax
 				}
 			}
 		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Private Methods
-		//-----------------------------------------------------------------------------------------
-		
 	}
 }

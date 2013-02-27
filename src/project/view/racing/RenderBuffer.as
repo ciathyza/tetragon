@@ -31,6 +31,7 @@ package view.racing
 	import com.hexagonstar.util.color.mixColors;
 
 	import flash.display.BitmapData;
+	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
@@ -86,6 +87,7 @@ package view.racing
 			_fillColor = fillColor;
 			_rect = rect;
 			_buffer = [];
+			
 			_r = new Rectangle();
 			_p = new Point();
 			_s = new Shape();
@@ -108,7 +110,7 @@ package view.racing
 		
 		
 		/**
-		 * Draw a filled, four-sided polygon.
+		 * Draws a filled, four-sided polygon onto the render buffer.
 		 * 
 		 * @param x1		first point x coord
 		 * @param y1		first point y coord 
@@ -116,9 +118,11 @@ package view.racing
 		 * @param y2		second point y coord
 		 * @param x3		third point x coord
 		 * @param y4		third point y coord
-		 * @param c		color (0xaarrvvbb)
+		 * @param color		color (0xRRGGBB)
+		 * @param mixColor
+		 * @param mixAlpha
 		 */
-		public function drawPolygon(x1:Number, y1:Number, x2:Number, y2:Number,
+		public function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
 			mixColor:uint, mixAlpha:Number = 1.0):void
 		{
@@ -132,9 +136,17 @@ package view.racing
 		
 		
 		/**
-		 * Blits a rectangle onto the render buffer.
+		 * Fast method to blit a rectangle onto the render buffer.
+		 * 
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 * @param color
+		 * @param mixColor
+		 * @param mixAlpha
 		 */
-		public function blitRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint,
+		public function blitRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
 			mixAlpha:Number = 1.0):void
 		{
 			_r.setTo(x, y, w, h);
@@ -142,31 +154,60 @@ package view.racing
 		}
 		
 		
-		//public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
-		//{
-		//	_s.graphics.clear();
-		//	_s.graphics.beginFill(color, alpha);
-		//	_s.graphics.drawRect(0, 0, w, h);
-		//	_s.graphics.endFill();
-		//	_m.identity();
-		//	_m.translate(x, y);
-		//	draw(_s, _m);
-		//}
-		
-		
-		public function blitImage(sprite:BitmapData, x:int, y:int, w:int, h:int):void
+		/**
+		 * Draws a rectangle shape onmto the render buffer, using the draw API.
+		 * 
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 * @param color
+		 * @param alpha
+		 */
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
 		{
-			_r.setTo(0, 0, w, h);
-			_p.setTo(x, y);
-			copyPixels(sprite, _r, _p);
+			_s.graphics.clear();
+			_s.graphics.beginFill(color, alpha);
+			_s.graphics.drawRect(0, 0, w, h);
+			_s.graphics.endFill();
+			_m.identity();
+			_m.translate(x, y);
+			draw(_s, _m);
 		}
 		
 		
-		public function drawImage(sprite:BitmapData, x:int, y:int, w:int, h:int,
-			scale:Number = 1.0, mixColor:uint = 0, mixAlpha:Number = 1.0):void
+		/**
+		 * Fast method to blit a bitmap onto the render buffer.
+		 * 
+		 * @param image
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 */
+		public function blitImage(image:BitmapData, x:int, y:int, w:int, h:int):void
 		{
-			//return;
-			
+			_r.setTo(0, 0, w, h);
+			_p.setTo(x, y);
+			copyPixels(image, _r, _p);
+		}
+		
+		
+		/**
+		 * Draws a display object onto the render buffer using the draw API.
+		 * 
+		 * @param image
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 * @param scale
+		 * @param mixColor
+		 * @param mixAlpha
+		 */
+		public function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
+			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
+		{
 			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
 			
@@ -177,11 +218,11 @@ package view.racing
 				_ct.redOffset = ((mixColor >> 16) & 0xFF) * mixAlpha;
 				_ct.greenOffset = ((mixColor >> 8) & 0xFF) * mixAlpha;
 				_ct.blueOffset = (mixColor & 0xFF) * mixAlpha;
-				draw(sprite, _m, _ct, null, _r, false);
+				draw(image, _m, _ct, null, _r, false);
 				return;
 			}
 			
-			draw(sprite, _m, null, null, _r, false);
+			draw(image, _m, null, null, _r, false);
 		}
 		
 		
@@ -189,6 +230,9 @@ package view.racing
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * The fill color of the render buffer.
+		 */
 		public function get fillColor():uint
 		{
 			return _fillColor;
@@ -204,7 +248,14 @@ package view.racing
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Special line for filled triangle
+		 * Draws special line for filled quad polygon.
+		 * @private
+		 * 
+		 * @param x0
+		 * @param y0
+		 * @param x1
+		 * @param y1
+		 * @param c
 		 */
 		private function lineTo(x0:int, y0:int, x1:int, y1:int, c:uint):void
 		{
@@ -233,11 +284,11 @@ package view.racing
 			
 			var deltaX:int = x1 - x0;
 			var deltaY:int = (y1 - y0) < 0 ? -(y1 - y0) : (y1 - y0);
-			var ysStep:int = y0 < y1 ? 1 : -1;
+			var yStep:int = y0 < y1 ? 1 : -1;
 			var xEnd:int = x1 - (deltaX >> 1);
 			var error:int = 0;
-			var y:int = y0;
 			var x:int = x0;
+			var y:int = y0;
 			var fx:int = x1;
 			var fy:int = y1;
 			var px:int = 0;
@@ -248,8 +299,8 @@ package view.racing
 			{
 				if (steep)
 				{
-					checkLine(y, x, c, _r);
-					if (fx != x1 && fx != xEnd) checkLine(fy, fx + 1, c, _r);
+					checkLine(y, x, c);
+					if (fx != x1 && fx != xEnd) checkLine(fy, fx + 1, c);
 				}
 				
 				error += deltaY;
@@ -257,42 +308,47 @@ package view.racing
 				{
 					if (!steep)
 					{
-						checkLine(x - px + 1, y, c, _r);
-						if (fx != xEnd) checkLine(fx + 1, fy, c, _r);
+						checkLine(x - px + 1, y, c);
+						if (fx != xEnd) checkLine(fx + 1, fy, c);
 					}
 					px = 0;
-					y += ysStep;
-					fy -= ysStep;
+					y += yStep;
+					fy -= yStep;
 					error -= deltaX;
 				}
 				px++;
 				fx--;
 			}
 			
-			if (!steep) checkLine(x - px + 1, y, c, _r);
+			if (!steep) checkLine(x - px + 1, y, c);
 		}
 		
 		
 		/**
-		 * Check a triangle line
+		 * Checks a quad line.
+		 * @private
+		 * 
+		 * @param x
+		 * @param y
+		 * @param c
 		 */
-		private function checkLine(x:int, y:int, c:uint, r:Rectangle):void
+		private function checkLine(x:int, y:int, c:uint):void
 		{
 			if (_buffer[y])
 			{
 				if (_buffer[y] > x)
 				{
-					r.width = _buffer[y] - x;
-					r.x = x;
-					r.y = y;
-					fillRect(r, c);
+					_r.width = _buffer[y] - x;
+					_r.x = x;
+					_r.y = y;
+					fillRect(_r, c);
 				}
 				else
 				{
-					r.width = x - _buffer[y];
-					r.x = _buffer[y];
-					r.y = y;
-					fillRect(r, c);
+					_r.width = x - _buffer[y];
+					_r.x = _buffer[y];
+					_r.y = y;
+					fillRect(_r, c);
 				}
 			}
 			else
