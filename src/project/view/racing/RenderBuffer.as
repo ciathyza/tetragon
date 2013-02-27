@@ -28,8 +28,6 @@
  */
 package view.racing
 {
-	import com.hexagonstar.util.color.mixColors;
-
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
@@ -355,6 +353,23 @@ package view.racing
 			{
 				_buffer[y] = x;
 			}
+		}
+		
+		
+		/**
+		 * Mixes two colors and returns the hexadecimal color value of the result.
+		 * @private
+		 * 
+		 * @param color1 bottom color.
+		 * @param color2 top color.
+		 * @param alpha Alpha value (0.0 - 1.0) of color2.
+		 * @return uint
+		 */
+	    private function mixColors(color1:uint, color2:uint, alpha:Number):uint
+		{
+			return (((color2 >> 16 & 0xFF) * (1 - alpha) + (color1 >> 16 & 0xFF) * alpha) << 16)
+				+ (((color2 >> 8 & 0xFF) * (1 - alpha) + (color1 >> 8 & 0xFF) * alpha) << 8)
+				+ ((color2 & 0xFF) * (1 - alpha) + (color1 & 0xFF) * alpha);
 		}
 	}
 }
