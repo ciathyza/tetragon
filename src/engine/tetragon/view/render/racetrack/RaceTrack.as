@@ -68,55 +68,55 @@ package tetragon.view.render.racetrack
 		private var _bgLayers:Vector.<ParallaxLayer>;
 		
 		private var _sprites:Sprites;
-		private var _segments:Vector.<Segment>;			// array of road segments
-		private var _cars:Vector.<Car>;					// array of cars on the road
+		private var _segments:Vector.<Segment>;	// array of road segments
+		private var _opponents:Vector.<Car>;	// array of cars on the road
 		
 		private var _width:int;
 		private var _height:int;
 		private var _widthHalf:int;
 		private var _heightHalf:int;
 		
-		private var _dt:Number;						// how long is each frame (in seconds)
-		private var _resolution:Number;				// scaling factor to provide resolution independence (computed)
-		private var _drawDistance:int;				// number of segments to draw
-		private var _hazeDensity:int;				// exponential haze density
+		private var _dt:Number;					// how long is each frame (in seconds)
+		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
+		private var _drawDistance:int;			// number of segments to draw
+		private var _hazeDensity:int;			// exponential haze density
 		private var _hazeColor:uint;
 		
-		private var _cameraHeight:Number = 1000;	// z height of camera (500 - 5000)
-		private var _cameraDepth:Number;			// z distance camera is from screen (computed)
-		private var _fieldOfView:int = 100;			// angle (degrees) for field of view (80 - 140)
-		private var _bgSpeedMult:Number = 0.001;
+		private var _cameraHeight:Number;		// z height of camera (500 - 5000)
+		private var _cameraDepth:Number;		// z distance camera is from screen (computed)
+		private var _fieldOfView:int;			// angle (degrees) for field of view (80 - 140)
+		private var _bgSpeedMult:Number;
 		
-		private var _playerX:Number = 0;			// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerY:int;					// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
-		private var _playerZ:Number;				// player relative z distance from camera (computed)
+		private var _roadWidth:int;				// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+		private var _segmentLength:int;			// length of a single segment
+		private var _rumbleLength:int;			// number of segments per red/white rumble strip
+		private var _trackLength:int;			// z length of entire track (computed)
+		private var _lanes:int;					// number of lanes
+		private var _opponentsTotal:int;		// total number of cars on the road
 		
-		private var _roadWidth:int = 2000;			// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-		private var _segmentLength:int = 200;		// length of a single segment
-		private var _rumbleLength:int = 3;			// number of segments per red/white rumble strip
-		private var _trackLength:int = 200;			// z length of entire track (computed)
-		private var _lanes:int = 3;					// number of lanes
-		private var _totalCars:Number = 200;		// total number of cars on the road
+		private var _acceleration:Number;		// acceleration rate - tuned until it 'felt' right
+		private var _deceleration:Number;		// 'natural' deceleration rate when neither accelerating, nor braking
+		private var _braking:Number;			// deceleration rate when braking
+		private var _offRoadDecel:Number;		// speed multiplier when off road (e.g. you lose 2% speed each update frame)
+		private var _offRoadLimit:Number;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+		private var _centrifugal:Number;		// centrifugal force multiplier when going around curves
 		
-		private var _accel:Number;					// acceleration rate - tuned until it 'felt' right
-		private var _breaking:Number;				// deceleration rate when braking
-		private var _decel:Number;					// 'natural' deceleration rate when neither accelerating, nor braking
-		private var _offRoadDecel:Number = 0.99;	// speed multiplier when off road (e.g. you lose 2% speed each update frame)
-		private var _offRoadLimit:Number;			// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
-		private var _centrifugal:Number = 0.3;		// centrifugal force multiplier when going around curves
+		private var _playerX:Number;			// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerY:int;				// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+		private var _playerZ:Number;			// player relative z distance from camera (computed)
 		
-		private var _position:Number;				// current camera Z position (add playerZ to get player's absolute Z position)
-		private var _speed:Number;					// current speed
-		private var _maxSpeed:Number;				// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
+		private var _speed:Number;				// current speed
+		private var _maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
-		private var _currentLapTime:Number = 0;		// current lap time
-		private var _lastLapTime:Number = 0;		// last lap time
-		private var _fast_lap_time:Number;
+		private var _currentLapTime:Number;		// current lap time
+		private var _lastLapTime:Number;		// last lap time
+		private var _fastestLapTime:Number;
 		
-		private var _isAccelerate:Boolean;
-		private var _isBrake:Boolean;
-		private var _isSteerLeft:Boolean;
-		private var _isSteerRight:Boolean;
+		private var _isAccelerating:Boolean;
+		private var _isBraking:Boolean;
+		private var _isSteeringLeft:Boolean;
+		private var _isSteeringRight:Boolean;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -165,9 +165,9 @@ package tetragon.view.render.racetrack
 		{
 			_dt = 1 / Main.instance.gameLoop.frameRate;
 			_maxSpeed = _segmentLength / _dt;
-			_accel = _maxSpeed / 5;
-			_breaking = -_maxSpeed;
-			_decel = -_maxSpeed / 5;
+			_acceleration = _maxSpeed / 5;
+			_braking = -_maxSpeed;
+			_deceleration = -_maxSpeed / 5;
 			_offRoadLimit = _maxSpeed / 4;
 			_cameraDepth = 1 / Math.tan((_fieldOfView / 2) * Math.PI / 180);
 			_playerZ = (_cameraHeight * _cameraDepth);
@@ -177,9 +177,13 @@ package tetragon.view.render.racetrack
 			_speed = 0;
 			_widthHalf = _width * 0.5;
 			_heightHalf = _height * 0.5;
-			_cars = new Vector.<Car>();
+			_opponents = new Vector.<Car>();
 
 			_hazeColor = COLORS.HAZE;
+			
+			_currentLapTime = 0.0;
+			_lastLapTime = 0.0;
+			_fastestLapTime = 0.0;
 
 			resetRoad();
 			resetSprites();
@@ -208,15 +212,15 @@ package tetragon.view.render.racetrack
 			_position = increase(_position, _dt * _speed, _trackLength);
 			
 			/* Update left/right steering. */
-			if (_isSteerLeft) _playerX = _playerX - dx;
-			else if (_isSteerRight) _playerX = _playerX + dx;
+			if (_isSteeringLeft) _playerX = _playerX - dx;
+			else if (_isSteeringRight) _playerX = _playerX + dx;
 			
 			_playerX = _playerX - (dx * speedPercent * playerSegment.curve * _centrifugal);
 			
 			/* Update acceleration & decceleration. */
-			if (_isAccelerate) _speed = accelerate(_speed, _accel, _dt);
-			else if (_isBrake) _speed = accelerate(_speed, _breaking, _dt);
-			else _speed = accelerate(_speed, _decel, _dt);
+			if (_isAccelerating) _speed = accelerate(_speed, _acceleration, _dt);
+			else if (_isBraking) _speed = accelerate(_speed, _braking, _dt);
+			else _speed = accelerate(_speed, _deceleration, _dt);
 			
 			/* Check if player drives onto off-road area. */
 			if ((_playerX < -1) || (_playerX > 1))
@@ -276,7 +280,7 @@ package tetragon.view.render.racetrack
 				{
 					_lastLapTime = _currentLapTime;
 					_currentLapTime = 0;
-					if (_lastLapTime <= _fast_lap_time)
+					if (_lastLapTime <= _fastestLapTime)
 					{
 					}
 					else
@@ -379,7 +383,7 @@ package tetragon.view.render.racetrack
 				{
 					/* Calculate player sprite bouncing depending on speed percentage. */
 					var bounce:Number = (1.5 * Math.random() * (_speed / _maxSpeed) * _resolution) * randomChoice([-1, 1]);
-					var steering:int = _speed * (_isSteerLeft ? -1 : _isSteerRight ? 1 : 0);
+					var steering:int = _speed * (_isSteeringLeft ? -1 : _isSteeringRight ? 1 : 0);
 					var updown:Number = playerSegment.p2.world.y - playerSegment.p1.world.y;
 					var spr:BitmapData;
 
@@ -511,6 +515,36 @@ package tetragon.view.render.racetrack
 		
 		
 		/**
+		 * Z height of camera (usable range is 500 - 5000).
+		 * 
+		 * @default 1000
+		 */
+		public function get cameraHeight():Number
+		{
+			return _cameraHeight;
+		}
+		public function set cameraHeight(v:Number):void
+		{
+			_cameraHeight = v;
+		}
+		
+		
+		/**
+		 * Angle (degrees) for field of view (usable range is 80 - 140).
+		 * 
+		 * @default 100
+		 */
+		public function get fieldOfView():int
+		{
+			return _fieldOfView;
+		}
+		public function set fieldOfView(v:int):void
+		{
+			_fieldOfView = v;
+		}
+		
+		
+		/**
 		 * @private
 		 */
 		private function get lastY():Number
@@ -531,16 +565,16 @@ package tetragon.view.render.racetrack
 			switch (key)
 			{
 				case "u":
-					_isAccelerate = true;
+					_isAccelerating = true;
 					break;
 				case "d":
-					_isBrake = true;
+					_isBraking = true;
 					break;
 				case "l":
-					_isSteerLeft = true;
+					_isSteeringLeft = true;
 					break;
 				case "r":
-					_isSteerRight = true;
+					_isSteeringRight = true;
 					break;
 			}
 		}
@@ -554,16 +588,16 @@ package tetragon.view.render.racetrack
 			switch (key)
 			{
 				case "u":
-					_isAccelerate = false;
+					_isAccelerating = false;
 					break;
 				case "d":
-					_isBrake = false;
+					_isBraking = false;
 					break;
 				case "l":
-					_isSteerLeft = false;
+					_isSteeringLeft = false;
 					break;
 				case "r":
-					_isSteerRight = false;
+					_isSteeringRight = false;
 					break;
 			}
 		}
@@ -582,6 +616,20 @@ package tetragon.view.render.racetrack
 			_drawDistance = 300;
 			_hazeDensity = 10;
 			_hazeColor = 0x333333;
+			_cameraHeight = 1000;
+			_fieldOfView = 100;
+			_bgSpeedMult = 0.001;
+			
+			_roadWidth = 2000;
+			_segmentLength = 200;
+			_rumbleLength = 3;
+			_trackLength = 200;
+			_lanes = 3;
+			_opponentsTotal = 200;
+			
+			_offRoadDecel = 0.99;
+			_centrifugal = 0.3;
+			
 			_playerX = _playerY = _playerZ = 0;
 			
 			_renderBuffer = new SoftwareRenderBuffer(_width, _height, false, 0xFF00FF);
@@ -797,7 +845,7 @@ package tetragon.view.render.racetrack
 			segment:Segment,
 			sprite:BitmapData;
 
-			for (i = 0; i < _totalCars; i++)
+			for (i = 0; i < _opponentsTotal; i++)
 			{
 				offset = Math.random() * randomChoice([-0.8, 0.8]);
 				z = int(Math.random() * _segments.length) * _segmentLength;
@@ -806,7 +854,7 @@ package tetragon.view.render.racetrack
 				car = new Car(offset, z, new SSprite(sprite), speed);
 				segment = findSegment(car.z);
 				segment.cars.push(car);
-				_cars.push(car);
+				_opponents.push(car);
 			}
 		}
 
@@ -952,9 +1000,9 @@ package tetragon.view.render.racetrack
 			var oldSegment:Segment;
 			var newSegment:Segment;
 
-			for (n = 0; n < _cars.length; n++)
+			for (n = 0; n < _opponents.length; n++)
 			{
-				car = _cars[n];
+				car = _opponents[n];
 				oldSegment = findSegment(car.z);
 				car.offset = car.offset + updateCarOffset(car, oldSegment, playerSegment, playerW);
 				car.z = increase(car.z, dt * car.speed, _trackLength);
