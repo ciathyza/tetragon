@@ -51,14 +51,14 @@ package tetragon.view.render.racetrack
 	/**
 	 * @author Hexagon
 	 */
-	public class RaceTrack
+	public class RaceTrackRenderer
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
 		private var _renderBuffer:SoftwareRenderBuffer;
-		private var _bufferBitmap:Bitmap;
+		private var _renderBitmap:Bitmap;
 		private var _atlas:SpriteAtlas;
 		private var _bgScroller:ParallaxScroller;
 		private var _bgLayers:Vector.<ParallaxLayer>;
@@ -66,6 +66,8 @@ package tetragon.view.render.racetrack
 		private var _sprites:Sprites;
 		private var _segments:Vector.<Segment>;	// array of road segments
 		private var _opponents:Vector.<Car>;	// array of cars on the road
+		
+		private var _bgColor:uint;
 		
 		private var _width:int;
 		private var _height:int;
@@ -129,12 +131,16 @@ package tetragon.view.render.racetrack
 		 * 
 		 * @param width
 		 * @param height
+		 * @param atlas
+		 * @param backgroundColor
 		 */
-		public function RaceTrack(width:int, height:int, atlas:SpriteAtlas)
+		public function RaceTrackRenderer(width:int, height:int, atlas:SpriteAtlas,
+			backgroundColor:uint = 0x000055)
 		{
 			_width = width;
 			_height = height;
 			_atlas = atlas;
+			_bgColor = backgroundColor;
 			
 			setup();
 			prepareSprites();
@@ -144,15 +150,6 @@ package tetragon.view.render.racetrack
 		// -----------------------------------------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function start():void
-		{
-			reset();
-		}
-		
 		
 		/**
 		 * @inheritDoc
@@ -182,7 +179,7 @@ package tetragon.view.render.racetrack
 
 			resetRoad();
 			resetSprites();
-			resetCars();
+			resetOpponents();
 		}
 		
 		
@@ -437,7 +434,7 @@ package tetragon.view.render.racetrack
 		 * An array of ParallaxLayer objects. Internally the layers are stored in
 		 * a vector.
 		 */
-		public function get bgLayers():Array
+		public function get backgroundLayers():Array
 		{
 			if (!_bgLayers) return null;
 			var a:Array = [];
@@ -447,7 +444,7 @@ package tetragon.view.render.racetrack
 			}
 			return a;
 		}
-		public function set bgLayers(v:Array):void
+		public function set backgroundLayers(v:Array):void
 		{
 			if (!v)
 			{
@@ -462,6 +459,7 @@ package tetragon.view.render.racetrack
 					if (!layer || !layer.source) continue;
 					_bgLayers[i] = layer;
 				}
+				if (_bgScroller) _bgScroller.layers = v;
 			}
 		}
 		
@@ -536,6 +534,29 @@ package tetragon.view.render.racetrack
 		public function set fieldOfView(v:int):void
 		{
 			_fieldOfView = v;
+		}
+		
+		
+		/**
+		 * The color with that the render buffer is cleared before each frame render.
+		 */
+		public function get backgroundColor():uint
+		{
+			return _bgColor;
+		}
+		public function set backgroundColor(v:uint):void
+		{
+			_bgColor = v;
+			if (_renderBuffer) _renderBuffer.fillColor = _bgColor;
+		}
+		
+		
+		/**
+		 * The bitmap onto which the racetrack is rendered.
+		 */
+		public function get renderBitmap():Bitmap
+		{
+			return _renderBitmap;
 		}
 		
 		
@@ -622,9 +643,9 @@ package tetragon.view.render.racetrack
 			
 			_playerX = _playerY = _playerZ = 0;
 			
-			_renderBuffer = new SoftwareRenderBuffer(_width, _height, false, 0xFF00FF);
-			_bufferBitmap = new Bitmap(_renderBuffer);
-			_bgScroller = new ParallaxScroller(_width, _sprites.BG_SKY.height, bgLayers);
+			_renderBuffer = new SoftwareRenderBuffer(_width, _height, false, _bgColor);
+			_renderBitmap = new Bitmap(_renderBuffer);
+			_bgScroller = new ParallaxScroller(_width, _height * 0.5, backgroundLayers);
 		}
 		
 		
@@ -634,9 +655,6 @@ package tetragon.view.render.racetrack
 		private function prepareSprites():void
 		{
 			_sprites = new Sprites();
-			_sprites.BG_SKY = _atlas.getSprite("bg_sky", 2.0);
-			_sprites.BG_HILLS = _atlas.getSprite("bg_hills", 2.0);
-			_sprites.BG_TREES = _atlas.getSprite("bg_trees", 2.0);
 			_sprites.BILLBOARD01 = _atlas.getSprite("billboard01", 2.5);
 			_sprites.BILLBOARD02 = _atlas.getSprite("billboard02", 2.5);
 			_sprites.BILLBOARD03 = _atlas.getSprite("billboard03", 2.5);
@@ -911,13 +929,13 @@ package tetragon.view.render.racetrack
 		/**
 		 * @private
 		 */
-		private function resetCars():void
+		private function resetOpponents():void
 		{
 			var i:int,
 			offset:Number,
 			z:Number,
 			speed:Number,
-			car:Car,
+			opponent:Car,
 			segment:Segment,
 			sprite:BitmapData;
 
@@ -927,10 +945,10 @@ package tetragon.view.render.racetrack
 				z = int(Math.random() * _segments.length) * _segmentLength;
 				sprite = randomChoice(_sprites.CARS);
 				speed = _maxSpeed / 4 + Math.random() * _maxSpeed / (sprite == _sprites.SEMI ? 4 : 2);
-				car = new Car(offset, z, new SSprite(sprite), speed);
-				segment = findSegment(car.z);
-				segment.cars.push(car);
-				_opponents.push(car);
+				opponent = new Car(offset, z, new SSprite(sprite), speed);
+				segment = findSegment(opponent.z);
+				segment.cars.push(opponent);
+				_opponents.push(opponent);
 			}
 		}
 
@@ -1055,15 +1073,92 @@ package tetragon.view.render.racetrack
 			segment.color = int(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
 			_segments.push(segment);
 		}
+		
+		
+		// -----------------------------------------------------------------------------------------
+		// Render Functions
+		// -----------------------------------------------------------------------------------------
+		
+		/**
+		 * Renders a segment.
+		 * 
+		 * @param x1
+		 * @param y1
+		 * @param w1
+		 * @param x2
+		 * @param y2
+		 * @param w2
+		 * @param color
+		 * @param hazeAlpha
+		 */
+		private function renderSegment(x1:int, y1:int, w1:int, x2:int, y2:int, w2:int,
+			color:ColorSet, hazeAlpha:Number):void
+		{
+			/* Calculate rumble widths for current segment. */
+			var r1:Number = calcRumbleWidth(w1), r2:Number = calcRumbleWidth(w2);
 
+			/* Draw offroad area segment. */
+			_renderBuffer.blitRect(0, y2, _width, y1 - y2, color.grass, _hazeColor, hazeAlpha);
 
+			/* Draw the road segment. */
+			_renderBuffer.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
+			_renderBuffer.drawQuad(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
+
+			/* Draw lane strips. */
+			if (color.lane > 0)
+			{
+				var l1:Number = calcLaneMarkerWidth(w1),
+				l2:Number = calcLaneMarkerWidth(w2),
+				lw1:Number = w1 * 2 / _lanes,
+				lw2:Number = w2 * 2 / _lanes,
+				lx1:Number = x1 - w1 + lw1,
+				lx2:Number = x2 - w2 + lw2;
+
+				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
+				{
+					_renderBuffer.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
+				}
+			}
+		}
+		
+		
+		/**
+		 * Renders a sprite onto the render buffer.
+		 * 
+		 * @param sprite
+		 * @param scale
+		 * @param destX
+		 * @param destY
+		 * @param offsetX
+		 * @param offsetY
+		 * @param clipY
+		 * @param hazeAlpha
+		 */
+		private function renderSprite(sprite:BitmapData, scale:Number, destX:int, destY:int,
+			offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0,
+			hazeAlpha:Number = 1.0):void
+		{
+			/* Scale for projection AND relative to roadWidth. */
+			var destW:int = (sprite.width * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
+			var destH:int = (sprite.height * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
+
+			destX = destX + (destW * offsetX);
+			destY = destY + (destH * offsetY);
+
+			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
+
+			if (clipH < destH)
+			{
+				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width, _hazeColor, hazeAlpha);
+			}
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Util Functions
 		// -----------------------------------------------------------------------------------------
 		
-		/**
-		 * @private
-		 */
 		private function findSegment(z:Number):Segment
 		{
 			return _segments[int(z / _segmentLength) % _segments.length];
@@ -1180,83 +1275,6 @@ package tetragon.view.render.racetrack
 		private function mathRound(n:Number):int
 		{
 			return n + (n < 0 ? -0.5 : +0.5) >> 0;
-		}
-
-
-		// -----------------------------------------------------------------------------------------
-		// Render Functions
-		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * Renders a segment.
-		 * 
-		 * @param x1
-		 * @param y1
-		 * @param w1
-		 * @param x2
-		 * @param y2
-		 * @param w2
-		 * @param color
-		 * @param hazeAlpha
-		 */
-		private function renderSegment(x1:int, y1:int, w1:int, x2:int, y2:int, w2:int, color:ColorSet, hazeAlpha:Number):void
-		{
-			/* Calculate rumble widths for current segment. */
-			var r1:Number = calcRumbleWidth(w1), r2:Number = calcRumbleWidth(w2);
-
-			/* Draw offroad area segment. */
-			_renderBuffer.blitRect(0, y2, _width, y1 - y2, color.grass, _hazeColor, hazeAlpha);
-
-			/* Draw the road segment. */
-			_renderBuffer.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
-			_renderBuffer.drawQuad(x1 - w1, y1, x1 + w1, y1, x2 + w2, y2, x2 - w2, y2, color.road, _hazeColor, hazeAlpha);
-
-			/* Draw lane strips. */
-			if (color.lane > 0)
-			{
-				var l1:Number = calcLaneMarkerWidth(w1),
-				l2:Number = calcLaneMarkerWidth(w2),
-				lw1:Number = w1 * 2 / _lanes,
-				lw2:Number = w2 * 2 / _lanes,
-				lx1:Number = x1 - w1 + lw1,
-				lx2:Number = x2 - w2 + lw2;
-
-				for (var lane:int = 1 ;lane < _lanes; lx1 += lw1, lx2 += lw2, lane++)
-				{
-					_renderBuffer.drawQuad(lx1 - l1 / 2, y1, lx1 + l1 / 2, y1, lx2 + l2 / 2, y2, lx2 - l2 / 2, y2, color.lane, _hazeColor, hazeAlpha);
-				}
-			}
-		}
-
-
-		/**
-		 * Renders a sprite onto the render buffer.
-		 * 
-		 * @param sprite
-		 * @param scale
-		 * @param destX
-		 * @param destY
-		 * @param offsetX
-		 * @param offsetY
-		 * @param clipY
-		 * @param hazeAlpha
-		 */
-		private function renderSprite(sprite:BitmapData, scale:Number, destX:int, destY:int, offsetX:Number = 0.0, offsetY:Number = 0.0, clipY:Number = 0.0, hazeAlpha:Number = 1.0):void
-		{
-			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (sprite.width * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
-			var destH:int = (sprite.height * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
-
-			destX = destX + (destW * offsetX);
-			destY = destY + (destH * offsetY);
-
-			var clipH:int = clipY ? mathMax(0, destY + destH - clipY) : 0;
-
-			if (clipH < destH)
-			{
-				_renderBuffer.drawImage(sprite, destX, destY, destW, destH - clipH, destW / sprite.width, _hazeColor, hazeAlpha);
-			}
 		}
 	}
 }

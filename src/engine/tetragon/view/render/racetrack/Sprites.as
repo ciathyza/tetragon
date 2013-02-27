@@ -10,10 +10,6 @@ package tetragon.view.render.racetrack
 	 */
 	public class Sprites
 	{
-		public var BG_SKY:BitmapData;
-		public var BG_HILLS:BitmapData;
-		public var BG_TREES:BitmapData;
-		
 		public var REGION_SKY:Rectangle;
 		public var REGION_HILLS:Rectangle;
 		public var REGION_TREES:Rectangle;
