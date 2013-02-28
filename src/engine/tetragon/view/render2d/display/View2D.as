@@ -30,11 +30,9 @@ package tetragon.view.render2d.display
 {
 	import tetragon.Main;
 	import tetragon.core.GameLoop;
-	import tetragon.data.texture.TextureAtlas;
 	import tetragon.view.IView;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.textures.Texture2D;
 
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -224,21 +222,10 @@ package tetragon.view.render2d.display
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 			
-			var textureAtlas:TextureAtlas = _main.resourceManager.resourceIndex.getResourceContent("textureAtlas");
-			var texture:Texture2D = textureAtlas.texture;
-			var quadBatch:QuadBatch2D = new QuadBatch2D();
-			var image:Image2D = new Image2D(texture);
-			//quadBatch.addImage(image);
-			var quad:Quad2D = new Quad2D(100, 100, Math.random() * 0xFFFFFF);
-			quadBatch.addQuad(quad);
-			for (var i:int = 0; i < 100; ++i)
-			{
-				quad.x += 10;
-				quad.y += 10;
-				quadBatch.addQuad(quad);
-			}
-			
-			addChild(quadBatch);
+			var p:Polygon2D = new Polygon2D(100, 4, 0xFF0000);
+			p.x = 200;
+			p.y = 200;
+			addChild(p);
 		}
 		
 		

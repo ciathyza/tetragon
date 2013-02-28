@@ -46,9 +46,9 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "11877";}
+		public function get build():String {return "11881";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "01-March-2013 00:00";}
+		public function get buildDate():String {return "01-March-2013 01:18";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */

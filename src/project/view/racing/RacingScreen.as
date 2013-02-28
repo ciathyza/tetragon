@@ -292,7 +292,7 @@ package view.racing
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
 			
 			_view2D = new View2D();
-			_view2D.background = new Quad2D(10, 10, 0xFF00FF);
+			_view2D.background = new Quad2D(10, 10, 0x000033);
 			_render2D = new Render2D(_view2D);
 		}
 		
