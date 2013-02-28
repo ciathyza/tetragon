@@ -116,7 +116,7 @@ package tetragon.view.render.scroll
 		
 		
 		/**
-		 * Scrolls a layer by <x> and <y> pixels.
+		 * Scrolls a layer by x and y pixels.
 		 */
 		public function scrollLayerBy(layer:ParallaxLayer, pixelX:int, pixelY:int):void
 		{
