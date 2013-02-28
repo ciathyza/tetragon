@@ -54,7 +54,8 @@ package tetragon.view.render2d.display
 	import flash.utils.getQualifiedClassName;
 	
 	
-	/** Optimizes rendering of a number of quads with an identical state.
+	/**
+	 * 	Optimizes rendering of a number of quads with an identical state.
 	 * 
 	 *  <p>The majority of all rendered objects in Render2D are quads. In fact, all the default
 	 *  leaf nodes of Render2D are quads (the Image and Quad classes). The rendering of those 
@@ -82,7 +83,16 @@ package tetragon.view.render2d.display
 	 */
 	public class QuadBatch2D extends DisplayObject2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
 		private static const QUAD_PROGRAM_NAME:String = "QB_q";
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
 		
 		private var _numQuads:int;
 		private var _syncRequired:Boolean;
@@ -99,8 +109,12 @@ package tetragon.view.render2d.display
 		private static var _renderAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
 		private static var _renderMatrix:Matrix3D = new Matrix3D();
 		private static var _programNameCache:Dictionary = new Dictionary();
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
 		/** Creates a new QuadBatch instance with empty batch data. */
 		public function QuadBatch2D()
 		{
@@ -113,10 +127,15 @@ package tetragon.view.render2d.display
 			// Handle lost context. We use the conventional event here (not the one from Render2D)
 			// so we're able to create a weak event listener; this avoids memory leaks when people
 			// forget to call "dispose" on the QuadBatch.
-			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated, false, 0, true);
+			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
+				onContextCreated, false, 0, true);
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/** Disposes vertex- and index-buffer. */
 		public override function dispose():void
 		{
@@ -127,15 +146,8 @@ package tetragon.view.render2d.display
 
 			super.dispose();
 		}
-
-
-		private function onContextCreated(event:Object):void
-		{
-			createBuffers();
-			registerPrograms();
-		}
-
-
+		
+		
 		/** Creates a duplicate of the QuadBatch object. */
 		public function clone():QuadBatch2D
 		{
@@ -151,70 +163,8 @@ package tetragon.view.render2d.display
 			clone.alpha = alpha;
 			return clone;
 		}
-
-
-		private function expand(newCapacity:int = -1):void
-		{
-			var oldCapacity:int = capacity;
-
-			if (newCapacity < 0) newCapacity = oldCapacity * 2;
-			if (newCapacity == 0) newCapacity = 16;
-			if (newCapacity <= oldCapacity) return;
-
-			_vertexData.numVertices = newCapacity * 4;
-
-			for (var i:int = oldCapacity; i < newCapacity; ++i)
-			{
-				_indexData[int(i * 6)] = i * 4;
-				_indexData[int(i * 6 + 1)] = i * 4 + 1;
-				_indexData[int(i * 6 + 2)] = i * 4 + 2;
-				_indexData[int(i * 6 + 3)] = i * 4 + 1;
-				_indexData[int(i * 6 + 4)] = i * 4 + 3;
-				_indexData[int(i * 6 + 5)] = i * 4 + 2;
-			}
-
-			createBuffers();
-			registerPrograms();
-		}
-
-
-		private function createBuffers():void
-		{
-			var numVertices:int = _vertexData.numVertices;
-			var numIndices:int = _indexData.length;
-			var context:Context3D = Render2D.context;
-
-			if (_vertexBuffer) _vertexBuffer.dispose();
-			if (_indexBuffer) _indexBuffer.dispose();
-			if (numVertices == 0) return;
-			if (context == null) throw new MissingContext3DException();
-
-			_vertexBuffer = context.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
-			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
-
-			_indexBuffer = context.createIndexBuffer(numIndices);
-			_indexBuffer.uploadFromVector(_indexData, 0, numIndices);
-
-			_syncRequired = false;
-		}
-
-
-		/** Uploads the raw data of all batched quads to the vertex buffer. */
-		private function syncBuffers():void
-		{
-			if (_vertexBuffer == null)
-				createBuffers();
-			else
-			{
-				// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware (iOS!),
-				// this is slower than updating the complete buffer.
-
-				_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
-				_syncRequired = false;
-			}
-		}
-
-
+		
+		
 		/** Renders the current batch with custom settings for model-view-projection matrix, alpha 
 		 *  and blend mode. This makes it possible to render batches that are not part of the 
 		 *  display list. */
@@ -393,9 +343,135 @@ package tetragon.view.render2d.display
 		{
 			compileObject(object, quadBatches, -1, new Matrix());
 		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get numQuads():int
+		{
+			return _numQuads;
+		}
 
 
-		private static function compileObject(object:DisplayObject2D, quadBatches:Vector.<QuadBatch2D>, quadBatchID:int, transformationMatrix:Matrix, alpha:Number = 1.0, blendMode:String = null, ignoreCurrentFilter:Boolean = false):int
+		public function get tinted():Boolean
+		{
+			return _tinted;
+		}
+
+
+		public function get texture():Texture2D
+		{
+			return _texture;
+		}
+
+
+		public function get smoothing():String
+		{
+			return _smoothing;
+		}
+
+
+		private function get capacity():int
+		{
+			return _vertexData.numVertices / 4;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function onContextCreated(e:Object):void
+		{
+			createBuffers();
+			registerPrograms();
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function expand(newCapacity:int = -1):void
+		{
+			var oldCapacity:int = capacity;
+
+			if (newCapacity < 0) newCapacity = oldCapacity * 2;
+			if (newCapacity == 0) newCapacity = 16;
+			if (newCapacity <= oldCapacity) return;
+
+			_vertexData.numVertices = newCapacity * 4;
+
+			for (var i:int = oldCapacity; i < newCapacity; ++i)
+			{
+				_indexData[int(i * 6)] = i * 4;
+				_indexData[int(i * 6 + 1)] = i * 4 + 1;
+				_indexData[int(i * 6 + 2)] = i * 4 + 2;
+				_indexData[int(i * 6 + 3)] = i * 4 + 1;
+				_indexData[int(i * 6 + 4)] = i * 4 + 3;
+				_indexData[int(i * 6 + 5)] = i * 4 + 2;
+			}
+
+			createBuffers();
+			registerPrograms();
+		}
+
+
+		/**
+		 * @private
+		 */
+		private function createBuffers():void
+		{
+			var numVertices:int = _vertexData.numVertices;
+			var numIndices:int = _indexData.length;
+			var context:Context3D = Render2D.context;
+			
+			if (_vertexBuffer) _vertexBuffer.dispose();
+			if (_indexBuffer) _indexBuffer.dispose();
+			if (numVertices == 0) return;
+			if (!context) throw new MissingContext3DException();
+			
+			_vertexBuffer = context.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
+			
+			_indexBuffer = context.createIndexBuffer(numIndices);
+			_indexBuffer.uploadFromVector(_indexData, 0, numIndices);
+			
+			_syncRequired = false;
+		}
+		
+		
+		/** Uploads the raw data of all batched quads to the vertex buffer. */
+		private function syncBuffers():void
+		{
+			if (!_vertexBuffer)
+			{
+				createBuffers();
+			}
+			else
+			{
+				// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware (iOS!),
+				// this is slower than updating the complete buffer.
+				_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
+				_syncRequired = false;
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private static function compileObject(object:DisplayObject2D,
+			quadBatches:Vector.<QuadBatch2D>, quadBatchID:int, transformationMatrix:Matrix,
+			alpha:Number = 1.0, blendMode:String = null, ignoreCurrentFilter:Boolean = false):int
 		{
 			var i:int;
 			var quadBatch:QuadBatch2D;
@@ -503,49 +579,17 @@ package tetragon.view.render2d.display
 
 			return quadBatchID;
 		}
-
-
-		// properties
-		public function get numQuads():int
-		{
-			return _numQuads;
-		}
-
-
-		public function get tinted():Boolean
-		{
-			return _tinted;
-		}
-
-
-		public function get texture():Texture2D
-		{
-			return _texture;
-		}
-
-
-		public function get smoothing():String
-		{
-			return _smoothing;
-		}
-
-
-		private function get capacity():int
-		{
-			return _vertexData.numVertices / 4;
-		}
-
-
-		// program management
+		
+		
+		/**
+		 * @private
+		 */
 		private static function registerPrograms():void
 		{
 			var target:Render2D = Render2D.current;
-			if (target.hasProgram(QUAD_PROGRAM_NAME)) return;
-			// already registered
-
-			var assembler:AGALMiniAssembler = new AGALMiniAssembler();
-			var vertexProgramCode:String;
-			var fragmentProgramCode:String;
+			if (target.hasProgram(QUAD_PROGRAM_NAME)) return; // already registered
+			
+			var agal:AGALMiniAssembler = new AGALMiniAssembler();
 
 			// this is the input data we'll pass to the shaders:
 			//
@@ -557,38 +601,47 @@ package tetragon.view.render2d.display
 			// fs0 -> texture
 
 			// Quad:
+			var vertexASM:String =
+				"m44 op, va0, vc1 \n" +	// 4x4 matrix transform to output clipspace 
+				"mul v0, va1, vc0 \n";	// multiply alpha (vc0) with color (va1)
 
-			vertexProgramCode = "m44 op, va0, vc1 \n" + // 4x4 matrix transform to output clipspace 
-			"mul v0, va1, vc0 \n";
-			// multiply alpha (vc0) with color (va1)
-
-			fragmentProgramCode = "mov oc, v0       \n";
-			// output color
-
-			target.registerProgram(QUAD_PROGRAM_NAME, assembler.assemble(Context3DProgramType.VERTEX, vertexProgramCode), assembler.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode));
-
+			var fragmentASM:String =
+				"mov oc, v0       \n";	// output color
+			
+			target.registerProgram(QUAD_PROGRAM_NAME,
+				agal.assemble(Context3DProgramType.VERTEX, vertexASM),
+				agal.assemble(Context3DProgramType.FRAGMENT, fragmentASM));
+			
 			// Image:
 			// Each combination of tinted/repeat/mipmap/smoothing has its own fragment shader.
-
 			for each (var tinted:Boolean in [true, false])
 			{
-				vertexProgramCode = tinted ? "m44 op, va0, vc1 \n" + // 4x4 matrix transform to output clipspace 
-				"mul v0, va1, vc0 \n" + // multiply alpha (vc0) with color (va1) 
-				"mov v1, va2      \n"   // pass texture coordinates to fragment program
-				: "m44 op, va0, vc1 \n" + // 4x4 matrix transform to output clipspace 
-				"mov v1, va2      \n";
-				// pass texture coordinates to fragment program
-
-				fragmentProgramCode = tinted ? "tex ft1,  v1, fs0 <???> \n" + // sample texture 0 
-				"mul  oc, ft1,  v0       \n"   // multiply color with texel color
-				: "tex  oc,  v1, fs0 <???> \n";
-				// sample texture 0
-
-				var smoothingTypes:Array = [TextureSmoothing2D.NONE, TextureSmoothing2D.BILINEAR, TextureSmoothing2D.TRILINEAR];
-
-				var formats:Array = [Context3DTextureFormat.BGRA, Context3DTextureFormat.COMPRESSED, "compressedAlpha"// use explicit string for compatibility
+				vertexASM = tinted
+					? "m44 op, va0, vc1 \n" +	// 4x4 matrix transform to output clipspace 
+					  "mul v0, va1, vc0 \n" +	// multiply alpha (vc0) with color (va1) 
+					  "mov v1, va2      \n"		// pass texture coordinates to fragment program
+					: "m44 op, va0, vc1 \n" +	// 4x4 matrix transform to output clipspace 
+					  "mov v1, va2      \n";	// pass texture coordinates to fragment program
+				
+				fragmentASM = tinted
+					? "tex ft1,  v1, fs0 <???> \n" +	// sample texture 0 
+					  "mul  oc, ft1,  v0       \n"		// multiply color with texel color
+					: "tex  oc,  v1, fs0 <???> \n";		// sample texture 0
+				
+				var smoothingTypes:Array =
+				[
+					TextureSmoothing2D.NONE,
+					TextureSmoothing2D.BILINEAR,
+					TextureSmoothing2D.TRILINEAR
 				];
 
+				var formats:Array =
+				[
+					Context3DTextureFormat.BGRA,
+					Context3DTextureFormat.COMPRESSED,
+					Context3DTextureFormat.COMPRESSED_ALPHA
+				];
+				
 				for each (var repeat:Boolean in [true, false])
 				{
 					for each (var mipmap:Boolean in [true, false])
@@ -601,51 +654,53 @@ package tetragon.view.render2d.display
 
 								if (format == Context3DTextureFormat.COMPRESSED)
 									options.push("dxt1");
-								else if (format == "compressedAlpha")
+								else if (format == Context3DTextureFormat.COMPRESSED_ALPHA)
 									options.push("dxt5");
-
+								
 								if (smoothing == TextureSmoothing2D.NONE)
 									options.push("nearest", mipmap ? "mipnearest" : "mipnone");
 								else if (smoothing == TextureSmoothing2D.BILINEAR)
 									options.push("linear", mipmap ? "mipnearest" : "mipnone");
 								else
 									options.push("linear", mipmap ? "miplinear" : "mipnone");
-
-								target.registerProgram(getImageProgramName(tinted, mipmap, repeat, format, smoothing), assembler.assemble(Context3DProgramType.VERTEX, vertexProgramCode), assembler.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode.replace("???", options.join())));
+								
+								target.registerProgram(getImageProgramName(tinted, mipmap, repeat,
+									format, smoothing), agal.assemble(Context3DProgramType.VERTEX,
+										vertexASM), agal.assemble(Context3DProgramType.FRAGMENT,
+										fragmentASM.replace("???", options.join())));
 							}
 						}
 					}
 				}
 			}
 		}
-
-
-		private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = true, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
+		
+		
+		/**
+		 * @private
+		 */
+		private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = true,
+			repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
 		{
 			var bitField:uint = 0;
-
+			
 			if (tinted) bitField |= 1;
 			if (mipMap) bitField |= 1 << 1;
 			if (repeat) bitField |= 1 << 2;
-
-			if (smoothing == TextureSmoothing2D.NONE)
-				bitField |= 1 << 3;
-			else if (smoothing == TextureSmoothing2D.TRILINEAR)
-				bitField |= 1 << 4;
-
-			if (format == Context3DTextureFormat.COMPRESSED)
-				bitField |= 1 << 5;
-			else if (format == "compressedAlpha")
-				bitField |= 1 << 6;
-
+			
+			if (smoothing == TextureSmoothing2D.NONE) bitField |= 1 << 3;
+			else if (smoothing == TextureSmoothing2D.TRILINEAR) bitField |= 1 << 4;
+			
+			if (format == Context3DTextureFormat.COMPRESSED) bitField |= 1 << 5;
+			else if (format == Context3DTextureFormat.COMPRESSED_ALPHA) bitField |= 1 << 6;
+			
 			var name:String = _programNameCache[bitField];
-
 			if (name == null)
 			{
 				name = "QB_i." + bitField.toString(16);
 				_programNameCache[bitField] = name;
 			}
-
+			
 			return name;
 		}
 	}
