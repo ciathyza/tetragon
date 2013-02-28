@@ -116,7 +116,7 @@ package tetragon.view.stage3d
 			_stage3D.y = 0;
 			_stage3D.visible = true;
 			_viewPort = new Rectangle();
-			_enableDepthAndStencil = true;
+			_enableDepthAndStencil = false;
 			
 			_activeVertexBuffers = new Vector.<VertexBuffer3D>(8, true);
 			_activeTextures = new Vector.<TextureBase>(8, true);

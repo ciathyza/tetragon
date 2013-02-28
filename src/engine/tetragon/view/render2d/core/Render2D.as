@@ -28,6 +28,22 @@
  */
 package tetragon.view.render2d.core
 {
+	import tetragon.Main;
+	import tetragon.core.GameLoop;
+	import tetragon.debug.Log;
+	import tetragon.view.render2d.animation.Juggler2D;
+	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.display.Stage2D;
+	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.events.Event2D;
+	import tetragon.view.render2d.events.EventDispatcher2D;
+	import tetragon.view.render2d.events.KeyboardEvent2D;
+	import tetragon.view.render2d.events.ResizeEvent2D;
+	import tetragon.view.render2d.touch.TouchPhase2D;
+	import tetragon.view.render2d.touch.TouchProcessor2D;
+	import tetragon.view.stage3d.Stage3DEvent;
+	import tetragon.view.stage3d.Stage3DProxy;
+
 	import flash.display.Stage;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
@@ -52,19 +68,6 @@ package tetragon.view.render2d.core
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 	import flash.utils.setTimeout;
-	import tetragon.Main;
-	import tetragon.debug.Log;
-	import tetragon.view.render2d.animation.Juggler2D;
-	import tetragon.view.render2d.display.DisplayObject2D;
-	import tetragon.view.render2d.display.Stage2D;
-	import tetragon.view.render2d.display.View2D;
-	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.events.EventDispatcher2D;
-	import tetragon.view.render2d.events.KeyboardEvent2D;
-	import tetragon.view.render2d.events.ResizeEvent2D;
-	import tetragon.view.render2d.touch.TouchPhase2D;
-	import tetragon.view.render2d.touch.TouchProcessor2D;
-	import tetragon.view.stage3d.Stage3DProxy;
 
 	
 	
@@ -194,11 +197,17 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
+		private var _main:Main;
+		/** @private */
+		private var _stage3DProxy:Stage3DProxy;
+		/** @private */
 		private var _stage3D:Stage3D;
 		/** @private */
 		private var _stage2D:Stage2D;
 		/** @private */
 		private var _context:Context3D;
+		/** @private */
+		private var _gameLoop:GameLoop;
 		
 		/** @private */
 		private var _stage:Stage;
@@ -266,21 +275,26 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(rootView:View2D, stage3DProxy:Stage3DProxy,
+		public function Render2D(rootView:View2D, stage3DProxy:Stage3DProxy = null,
 			renderMode:String = "auto", profile:String = "baselineConstrained")
 		{
-			_stage = Main.instance.stage;
+			_main = Main.instance;
+			_stage = _main.stage;
+			_stage3DProxy = stage3DProxy || _main.stage3DManager.getFreeStage3DProxy();
+			_gameLoop = _main.gameLoop;
+			
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
 			_rootView = rootView;
-			_stage3D = stage3DProxy.stage3D;
+			_stage3D = _stage3DProxy.stage3D;
 			
-			_viewPort = new Rectangle(0, 0, stage3DProxy.width, stage3DProxy.height);
+			_viewPort = new Rectangle(0, 0, _stage3DProxy.width, _stage3DProxy.height);
 			_previousViewPort = new Rectangle();
 			
-			_stage2D = new Stage2D(stage3DProxy.width, stage3DProxy.height, stage3DProxy.color);
+			_stage2D = new Stage2D(_stage3DProxy.width, _stage3DProxy.height, _stage3DProxy.color);
+			
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
 			_renderSupport = new RenderSupport2D();
@@ -303,14 +317,17 @@ package tetragon.view.render2d.core
 			}
 			
 			/* Register other event handlers. */
-			_stage.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			_gameLoop.renderSignal.add(onGameLoopRender);
 			_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 			_stage.addEventListener(Event.RESIZE, onResize);
 			_stage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
-			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 10);
 			_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
+			
+			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
+			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
+			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
 			
 			/* If we already got a context3D and it's not disposed. */
 			if (_stage3D.context3D && _stage3D.context3D.driverInfo != "Disposed")
@@ -323,19 +340,7 @@ package tetragon.view.render2d.core
 			else
 			{
 				_shareContext = false;
-				try
-				{
-					/* "Context3DProfile" is only available starting with Flash Player
-					 * 11.4/AIR 3.4. to stay compatible with older versions, we check if
-					 * the parameter is available. */
-					var requestContext3D:Function = _stage3D.requestContext3D;
-					if (requestContext3D.length == 1) requestContext3D(renderMode);
-					else requestContext3D(renderMode, profile);
-				}
-				catch (err:Error)
-				{
-					showOnScreenError("Context3D error: " + err.message);
-				}
+				_stage3DProxy.requestContext3D();
 			}
 		}
 		
@@ -352,13 +357,15 @@ package tetragon.view.render2d.core
 		{
 			stop();
 			
-			_stage.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			_gameLoop.renderSignal.remove(onGameLoopRender);
 			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_stage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
 			_stage.removeEventListener(Event.RESIZE, onResize);
 			_stage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
-			_stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
 			_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
 			
 			for each (var touchEventType:String in touchEventTypes)
@@ -928,7 +935,7 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
-		private function onContextCreated(e:Event):void
+		private function onContextCreated(e:Stage3DEvent):void
 		{
 			if (!Render2D.handleLostContext && _context)
 			{
@@ -948,7 +955,23 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
-		private function onEnterFrame(e:Event):void
+		private function onContextRecreated(e:Stage3DEvent):void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onContextDisposed(e:Stage3DEvent):void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onGameLoopRender(ticks:uint, ms:uint, fps:uint):void
 		{
 			/* On mobile, the native display list is only updated on stage3D draw calls.
 			 * Thus, we render even when Render2D is paused. */

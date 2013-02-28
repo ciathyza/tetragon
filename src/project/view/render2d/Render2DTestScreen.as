@@ -170,7 +170,7 @@ package view.render2d
 //			view3.background = new Quad2D(10, 10, 0x888888);
 //			view3.touchable = false;
 			
-			_render2D1 = new Render2D(view1, _stage3DProxy);
+			_render2D1 = new Render2D(view1);
 			//_render2D1.simulateMultitouch = true;
 			//_render2D1.enableErrorChecking = true;
 			//_render2D1.antiAliasing = 2;

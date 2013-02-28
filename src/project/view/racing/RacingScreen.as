@@ -28,13 +28,18 @@
  */
 package view.racing
 {
+	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
-	import tetragon.view.render.buffers.HardwareRenderBuffer;
 	import tetragon.view.render.racetrack.RaceTrackRenderer;
 	import tetragon.view.render.scroll.ParallaxLayer;
+	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.events.Event2D;
+
+	import com.hexagonstar.util.debug.Debug;
 
 	import flash.display.Bitmap;
 
@@ -57,7 +62,8 @@ package view.racing
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _hwRenderBuffer:HardwareRenderBuffer;
+		private var _render2D:Render2D;
+		private var _view2D:View2D;
 		
 		private var _raceTrackRenderer:RaceTrackRenderer;
 		private var _renderBitmap:Bitmap;
@@ -152,6 +158,15 @@ package view.racing
 		/**
 		 * @private
 		 */
+		private function onRoot2DCreated(e:Event2D):void
+		{
+			Debug.trace("Root2D Created!");
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function onTick():void
 		{
 			//_raceTrackRenderer.tick();
@@ -164,7 +179,7 @@ package view.racing
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
 			//_raceTrackRenderer.render();
-			_hwRenderBuffer.render();
+			//_hwRenderBuffer.render();
 		}
 		
 		
@@ -261,7 +276,9 @@ package view.racing
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
 			
-			_hwRenderBuffer = new HardwareRenderBuffer(640, 400);
+			_view2D = new View2D();
+			_view2D.background = new Quad2D(10, 10, 0xFF00FF);
+			_render2D = new Render2D(_view2D);
 		}
 		
 		
@@ -287,11 +304,13 @@ package view.racing
 		 */
 		override protected function addListeners():void
 		{
+			_render2D.addEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
+			
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
 		}
-
-
+		
+		
 		/**
 		 * @inheritDoc
 		 */
