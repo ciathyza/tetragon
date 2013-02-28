@@ -39,7 +39,6 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
-	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.geom.MatrixUtil;
 	import com.hexagonstar.util.geom.RectangleUtil;
@@ -54,8 +53,6 @@ package tetragon.view.render2d.filters
 	import flash.errors.IllegalOperationError;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.utils.getQualifiedClassName;
 
 
 	/** The FragmentFilter class is the base class for all filter effects in Render2D.
@@ -85,183 +82,407 @@ package tetragon.view.render2d.filters
 	 */
 	public class FragmentFilter2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
 		/** All filter processing is expected to be done with premultiplied alpha. */
 		protected const PMA:Boolean = true;
-		/** The standard vertex shader code. It will be used automatically if you don't create
-		 *  a custom vertex shader yourself. */
-		protected const STD_VERTEX_SHADER:String = "m44 op, va0, vc0 \n" + // 4x4 matrix transform to output space 
-		"mov v0, va1      \n";
-		// pass texture coordinates to fragment program
-		/** The standard fragment shader code. It just forwards the texture color to the output. */
-		protected const STD_FRAGMENT_SHADER:String = "tex oc, v0, fs0 <2d, clamp, linear, mipnone>";
-		// just forward texture color
-		private var mVertexPosAtID:int = 0;
-		private var mTexCoordsAtID:int = 1;
-		private var mBaseTextureID:int = 0;
-		private var mMvpConstantID:int = 0;
-		private var mNumPasses:int;
-		private var mPassTextures:Vector.<Texture2D>;
-		private var mMode:String;
-		private var mResolution:Number;
-		private var mMarginX:Number;
-		private var mMarginY:Number;
-		private var mOffsetX:Number;
-		private var mOffsetY:Number;
-		private var mVertexData:VertexData2D;
-		private var mVertexBuffer:VertexBuffer3D;
-		private var mIndexData:Vector.<uint>;
-		private var mIndexBuffer:IndexBuffer3D;
-		private var mCacheRequested:Boolean;
-		private var mCache:QuadBatch2D;
+		
+		/**
+		 * The standard vertex shader code. It will be used automatically if you don't create
+		 * a custom vertex shader yourself.
+		 */
+		protected const STD_VERTEX_SHADER:String =
+			"m44 op, va0, vc0 \n" +	// 4x4 matrix transform to output space 
+			"mov v0, va1      \n";	// pass texture coordinates to fragment program
+		
+		/**
+		 * The standard fragment shader code. It just forwards the texture color to the output.
+		 */
+		protected const STD_FRAGMENT_SHADER:String =
+			"tex oc, v0, fs0 <2d, clamp, linear, mipnone>";	// just forward texture color
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _vertexPosAtID:int = 0;
+		private var _texCoordsAtID:int = 1;
+		private var _baseTextureID:int = 0;
+		private var _mvpConstantID:int = 0;
+		private var _numPasses:int;
+		private var _passTextures:Vector.<Texture2D>;
+		private var _mode:String;
+		private var _resolution:Number;
+		private var _marginX:Number;
+		private var _marginY:Number;
+		private var _offsetX:Number;
+		private var _offsetY:Number;
+		private var _vertexData:VertexData2D;
+		private var _vertexBuffer:VertexBuffer3D;
+		private var _indexData:Vector.<uint>;
+		private var _indexBuffer:IndexBuffer3D;
+		private var _cacheRequested:Boolean;
+		private var _cache:QuadBatch2D;
+		
 		/** helper objects. */
-		private var mProjMatrix:Matrix = new Matrix();
-		private static var sBounds:Rectangle = new Rectangle();
-		private static var sStageBounds:Rectangle = new Rectangle();
-		private static var sTransformationMatrix:Matrix = new Matrix();
-
-
-		/** Creates a new Fragment filter with the specified number of passes and resolution.
-		 *  This constructor may only be called by the constructor of a subclass. */
+		private var _projMatrix:Matrix = new Matrix();
+		private static var _bounds:Rectangle = new Rectangle();
+		private static var _stageBounds:Rectangle = new Rectangle();
+		private static var _transformationMatrix:Matrix = new Matrix();
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new Fragment filter with the specified number of passes and resolution.
+		 * This constructor may only be called by the constructor of a subclass.
+		 * 
+		 * @param numPasses
+		 * @param resolution
+		 */
 		public function FragmentFilter2D(numPasses:int = 1, resolution:Number = 1.0)
 		{
-			if (Capabilities.isDebugger && getQualifiedClassName(this) == "Render2D.filters::FragmentFilter")
-			{
-				throw new AbstractClassException(this);
-			}
-
 			if (numPasses < 1) throw new ArgumentError("At least one pass is required.");
-
-			mNumPasses = numPasses;
-			mMarginX = mMarginY = 0.0;
-			mOffsetX = mOffsetY = 0;
-			mResolution = resolution;
-			mMode = FragmentFilterMode2D.REPLACE;
-
-			mVertexData = new VertexData2D(4);
-			mVertexData.setTexCoords(0, 0, 0);
-			mVertexData.setTexCoords(1, 1, 0);
-			mVertexData.setTexCoords(2, 0, 1);
-			mVertexData.setTexCoords(3, 1, 1);
-
-			mIndexData = new <uint>[0, 1, 2, 1, 3, 2];
-			mIndexData.fixed = true;
-
+			
+			_numPasses = numPasses;
+			_resolution = resolution;
+			
+			_marginX = _marginY = 0.0;
+			_offsetX = _offsetY = 0.0;
+			_mode = FragmentFilterMode2D.REPLACE;
+			
+			_vertexData = new VertexData2D(4);
+			_vertexData.setTexCoords(0, 0, 0);
+			_vertexData.setTexCoords(1, 1, 0);
+			_vertexData.setTexCoords(2, 0, 1);
+			_vertexData.setTexCoords(3, 1, 1);
+			
+			_indexData = new <uint>[0, 1, 2, 1, 3, 2];
+			_indexData.fixed = true;
+			
 			createPrograms();
-
+			
 			// Handle lost context. By using the conventional event, we can make it weak; this
 			// avoids memory leaks when people forget to call "dispose" on the filter.
-			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated, false, 0, true);
+			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
+				onContextCreated, false, 0, true);
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/** Disposes the filter (programs, buffers, textures). */
 		public function dispose():void
 		{
 			Render2D.current.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
-			if (mVertexBuffer) mVertexBuffer.dispose();
-			if (mIndexBuffer) mIndexBuffer.dispose();
+			if (_vertexBuffer) _vertexBuffer.dispose();
+			if (_indexBuffer) _indexBuffer.dispose();
 			disposePassTextures();
+			disposeCache();
+		}
+		
+		
+		/** Applies the filter on a certain display object, rendering the output into the current 
+		 *  render target. This method is called automatically by Render2D's rendering system 
+		 *  for the object the filter is attached to. */
+		public function render(object:DisplayObject2D, support:RenderSupport2D,
+			parentAlpha:Number):void
+		{
+			// bottom layer
+			if (mode == FragmentFilterMode2D.ABOVE)
+			{
+				object.render(support, parentAlpha);
+			}
+			// center layer
+			if (_cacheRequested)
+			{
+				_cacheRequested = false;
+				_cache = renderPasses(object, support, 1.0, true);
+				disposePassTextures();
+			}
+			
+			if (_cache) _cache.render(support, parentAlpha);
+			else renderPasses(object, support, parentAlpha, false);
+			
+			// top layer
+			if (mode == FragmentFilterMode2D.BELOW)
+			{
+				object.render(support, parentAlpha);
+			}
+		}
+		
+		
+		/** Caches the filter output into a texture. An uncached filter is rendered in every frame;
+		 *  a cached filter only once. However, if the filtered object or the filter settings
+		 *  change, it has to be updated manually; to do that, call "cache" again. */
+		public function cache():void
+		{
+			_cacheRequested = true;
 			disposeCache();
 		}
 
 
+		/** Clears the cached output of the filter. After calling this method, the filter will
+		 *  be executed once per frame again. */
+		public function clearCache():void
+		{
+			_cacheRequested = false;
+			disposeCache();
+		}
+
+
+		/** @private */
+		public function compile(object:DisplayObject2D):QuadBatch2D
+		{
+			if (_cache) return _cache;
+			else
+			{
+				var renderSupport:RenderSupport2D;
+				var stage:Stage2D = object.stage;
+
+				if (stage == null)
+					throw new Error("Filtered object must be on the stage.");
+
+				renderSupport = new RenderSupport2D();
+				object.getTransformationMatrix(stage, renderSupport.modelViewMatrix);
+				return renderPasses(object, renderSupport, 1.0, true);
+			}
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		/** Indicates if the filter is cached (via the "cache" method). */
+		public function get isCached():Boolean
+		{
+			return (_cache != null) || _cacheRequested;
+		}
+
+
+		/** The resolution of the filter texture. "1" means stage resolution, "0.5" half the
+		 *  stage resolution. A lower resolution saves memory and execution time (depending on 
+		 *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
+		 *  such values might make sense for a cached filter when it is scaled up. @default 1 */
+		public function get resolution():Number
+		{
+			return _resolution;
+		}
+		public function set resolution(v:Number):void
+		{
+			if (v <= 0) throw new ArgumentError("Resolution must be > 0");
+			else _resolution = v;
+		}
+
+
+		/** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
+		 *  class. @default "replace" */
+		public function get mode():String
+		{
+			return _mode;
+		}
+		public function set mode(v:String):void
+		{
+			_mode = v;
+		}
+
+
+		/** Use the x-offset to move the filter output to the right or left. */
+		public function get offsetX():Number
+		{
+			return _offsetX;
+		}
+		public function set offsetX(v:Number):void
+		{
+			_offsetX = v;
+		}
+
+
+		/** Use the y-offset to move the filter output to the top or bottom. */
+		public function get offsetY():Number
+		{
+			return _offsetY;
+		}
+		public function set offsetY(v:Number):void
+		{
+			_offsetY = v;
+		}
+
+
+		/** The x-margin will extend the size of the filter texture along the x-axis.
+		 *  Useful when the filter will "grow" the rendered object. */
+		protected function get marginX():Number
+		{
+			return _marginX;
+		}
+		protected function set marginX(v:Number):void
+		{
+			_marginX = v;
+		}
+
+
+		/** The y-margin will extend the size of the filter texture along the y-axis.
+		 *  Useful when the filter will "grow" the rendered object. */
+		protected function get marginY():Number
+		{
+			return _marginY;
+		}
+		protected function set marginY(v:Number):void
+		{
+			_marginY = v;
+		}
+
+
+		/** The number of passes the filter is applied. The "activate" and "deactivate" methods
+		 *  will be called that often. */
+		protected function set numPasses(v:int):void
+		{
+			_numPasses = v;
+		}
+		protected function get numPasses():int
+		{
+			return _numPasses;
+		}
+
+
+		/** The ID of the vertex buffer attribute that stores the vertex position. */
+		protected final function get vertexPosAtID():int
+		{
+			return _vertexPosAtID;
+		}
+		protected final function set vertexPosAtID(v:int):void
+		{
+			_vertexPosAtID = v;
+		}
+
+
+		/** The ID of the vertex buffer attribute that stores the texture coordinates. */
+		protected final function get texCoordsAtID():int
+		{
+			return _texCoordsAtID;
+		}
+		protected final function set texCoordsAtID(v:int):void
+		{
+			_texCoordsAtID = v;
+		}
+
+
+		/** The ID (sampler) of the input texture (containing the output of the previous pass). */
+		protected final function get baseTextureID():int
+		{
+			return _baseTextureID;
+		}
+		protected final function set baseTextureID(v:int):void
+		{
+			_baseTextureID = v;
+		}
+
+
+		/** The ID of the first register of the modelview-projection constant (a 4x4 matrix). */
+		protected final function get mvpConstantID():int
+		{
+			return _mvpConstantID;
+		}
+		protected final function set mvpConstantID(v:int):void
+		{
+			_mvpConstantID = v;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
 		private function onContextCreated(event:Object):void
 		{
-			mVertexBuffer = null;
-			mIndexBuffer = null;
-			mPassTextures = null;
-
+			_vertexBuffer = null;
+			_indexBuffer = null;
+			_passTextures = null;
 			createPrograms();
 		}
-
-
-		/** Applies the filter on a certain display object, rendering the output into the current 
-		 *  render target. This method is called automatically by Render2D's rendering system 
-		 *  for the object the filter is attached to. */
-		public function render(object:DisplayObject2D, support:RenderSupport2D, parentAlpha:Number):void
-		{
-			// bottom layer
-
-			if (mode == FragmentFilterMode2D.ABOVE)
-				object.render(support, parentAlpha);
-
-			// center layer
-
-			if (mCacheRequested)
-			{
-				mCacheRequested = false;
-				mCache = renderPasses(object, support, 1.0, true);
-				disposePassTextures();
-			}
-
-			if (mCache)
-				mCache.render(support, parentAlpha);
-			else
-				renderPasses(object, support, parentAlpha, false);
-
-			// top layer
-
-			if (mode == FragmentFilterMode2D.BELOW)
-				object.render(support, parentAlpha);
-		}
-
-
-		private function renderPasses(object:DisplayObject2D, support:RenderSupport2D, parentAlpha:Number, intoCache:Boolean = false):QuadBatch2D
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function renderPasses(object:DisplayObject2D, support:RenderSupport2D,
+			parentAlpha:Number, intoCache:Boolean = false):QuadBatch2D
 		{
 			var cacheTexture:Texture2D = null;
 			var stage:Stage2D = object.stage;
 			var context:Context3D = Render2D.context;
 			var scale:Number = Render2D.current.contentScaleFactor;
-
-			if (stage == null) throw new Error("Filtered object must be on the stage.");
-			if (context == null) throw new MissingContext3DException();
-
+			
+			if (!stage) throw new Error("Filtered object must be on the stage.");
+			if (!context) throw new MissingContext3DException();
+			
 			// the bounds of the object in stage coordinates
-			calculateBounds(object, stage, !intoCache, sBounds);
-
-			if (sBounds.isEmpty())
+			calculateBounds(object, stage, !intoCache, _bounds);
+			
+			if (_bounds.isEmpty())
 			{
 				disposePassTextures();
 				return intoCache ? new QuadBatch2D() : null;
 			}
 
-			updateBuffers(context, sBounds);
-			updatePassTextures(sBounds.width, sBounds.height, mResolution * scale);
+			updateBuffers(context, _bounds);
+			updatePassTextures(_bounds.width, _bounds.height, _resolution * scale);
 
 			support.finishQuadBatch();
-			support.raiseDrawCount(mNumPasses);
+			support.raiseDrawCount(_numPasses);
 			support.pushMatrix();
 
 			// save original projection matrix and render target
-			mProjMatrix.copyFrom(support.projectionMatrix);
+			_projMatrix.copyFrom(support.projectionMatrix);
 			var previousRenderTarget:Texture2D = support.renderTarget;
 
 			if (previousRenderTarget)
-				throw new IllegalOperationError("It's currently not possible to stack filters! " + "This limitation will be removed in a future Stage3D version.");
+			{
+				throw new IllegalOperationError("It's currently not possible to stack filters! "
+					+ "This limitation will be removed in a future Stage3D version.");
+			}
 
 			if (intoCache)
-				cacheTexture = Texture2D.empty(sBounds.width, sBounds.height, PMA, true, mResolution * scale);
+			{
+				cacheTexture = Texture2D.empty(_bounds.width, _bounds.height, PMA, true,
+					_resolution * scale);
+			}
 
 			// draw the original object into a texture
-			support.renderTarget = mPassTextures[0];
+			support.renderTarget = _passTextures[0];
 			support.clear();
 			support.blendMode = BlendMode2D.NORMAL;
-			support.setOrthographicProjection(sBounds.x, sBounds.y, sBounds.width, sBounds.height);
+			support.setOrthographicProjection(_bounds.x, _bounds.y, _bounds.width, _bounds.height);
 			object.render(support, parentAlpha);
 			support.finishQuadBatch();
 
 			// prepare drawing of actual filter passes
 			RenderSupport2D.setBlendFactors(PMA);
 			support.loadIdentity();
+			
 			// now we'll draw in stage coordinates!
-
-			context.setVertexBufferAt(mVertexPosAtID, mVertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			context.setVertexBufferAt(mTexCoordsAtID, mVertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context.setVertexBufferAt(_vertexPosAtID, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context.setVertexBufferAt(_texCoordsAtID, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 
 			// draw all passes
-			for (var i:int = 0; i < mNumPasses; ++i)
+			for (var i:int = 0; i < _numPasses; ++i)
 			{
-				if (i < mNumPasses - 1) // intermediate pass
+				if (i < _numPasses - 1) // intermediate pass
 				{
 					// draw into pass texture
 					support.renderTarget = getPassTexture(i + 1);
@@ -279,9 +500,9 @@ package tetragon.view.render2d.filters
 					{
 						// draw into back buffer, at original (stage) coordinates
 						support.renderTarget = previousRenderTarget;
-						support.projectionMatrix.copyFrom(mProjMatrix);
+						support.projectionMatrix.copyFrom(_projMatrix);
 						// restore projection matrix
-						support.translateMatrix(mOffsetX, mOffsetY);
+						support.translateMatrix(_offsetX, _offsetY);
 						support.blendMode = object.blendMode;
 						support.applyBlendMode(PMA);
 					}
@@ -289,18 +510,18 @@ package tetragon.view.render2d.filters
 
 				var passTexture:Texture2D = getPassTexture(i);
 
-				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, mMvpConstantID, support.mvpMatrix3D, true);
-				context.setTextureAt(mBaseTextureID, passTexture.base);
+				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, _mvpConstantID, support.mvpMatrix3D, true);
+				context.setTextureAt(_baseTextureID, passTexture.base);
 
 				activate(i, context, passTexture);
-				context.drawTriangles(mIndexBuffer, 0, 2);
+				context.drawTriangles(_indexBuffer, 0, 2);
 				deactivate(i, context, passTexture);
 			}
 
 			// reset shader attributes
-			context.setVertexBufferAt(mVertexPosAtID, null);
-			context.setVertexBufferAt(mTexCoordsAtID, null);
-			context.setTextureAt(mBaseTextureID, null);
+			context.setVertexBufferAt(_vertexPosAtID, null);
+			context.setVertexBufferAt(_texCoordsAtID, null);
+			context.setTextureAt(_baseTextureID, null);
 
 			support.popMatrix();
 
@@ -308,7 +529,7 @@ package tetragon.view.render2d.filters
 			{
 				// restore support settings
 				support.renderTarget = previousRenderTarget;
-				support.projectionMatrix.copyFrom(mProjMatrix);
+				support.projectionMatrix.copyFrom(_projMatrix);
 
 				// Create an image containing the cache. To have a display object that contains
 				// the filter output in object coordinates, we wrap it in a QuadBatch: that way,
@@ -317,9 +538,9 @@ package tetragon.view.render2d.filters
 				var quadBatch:QuadBatch2D = new QuadBatch2D();
 				var image:Image2D = new Image2D(cacheTexture);
 
-				stage.getTransformationMatrix(object, sTransformationMatrix);
-				MatrixUtil.prependTranslation(sTransformationMatrix, sBounds.x + mOffsetX, sBounds.y + mOffsetY);
-				quadBatch.addImage(image, 1.0, sTransformationMatrix);
+				stage.getTransformationMatrix(object, _transformationMatrix);
+				MatrixUtil.prependTranslation(_transformationMatrix, _bounds.x + _offsetX, _bounds.y + _offsetY);
+				quadBatch.addImage(image, 1.0, _transformationMatrix);
 
 				return quadBatch;
 			}
@@ -330,51 +551,51 @@ package tetragon.view.render2d.filters
 		// helper methods
 		private function updateBuffers(context:Context3D, bounds:Rectangle):void
 		{
-			mVertexData.setPosition(0, bounds.x, bounds.y);
-			mVertexData.setPosition(1, bounds.right, bounds.y);
-			mVertexData.setPosition(2, bounds.x, bounds.bottom);
-			mVertexData.setPosition(3, bounds.right, bounds.bottom);
+			_vertexData.setPosition(0, bounds.x, bounds.y);
+			_vertexData.setPosition(1, bounds.right, bounds.y);
+			_vertexData.setPosition(2, bounds.x, bounds.bottom);
+			_vertexData.setPosition(3, bounds.right, bounds.bottom);
 
-			if (mVertexBuffer == null)
+			if (_vertexBuffer == null)
 			{
-				mVertexBuffer = context.createVertexBuffer(4, VertexData2D.ELEMENTS_PER_VERTEX);
-				mIndexBuffer = context.createIndexBuffer(6);
-				mIndexBuffer.uploadFromVector(mIndexData, 0, 6);
+				_vertexBuffer = context.createVertexBuffer(4, VertexData2D.ELEMENTS_PER_VERTEX);
+				_indexBuffer = context.createIndexBuffer(6);
+				_indexBuffer.uploadFromVector(_indexData, 0, 6);
 			}
 
-			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
+			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, 4);
 		}
 
 
 		private function updatePassTextures(width:int, height:int, scale:Number):void
 		{
-			var numPassTextures:int = mNumPasses > 1 ? 2 : 1;
+			var numPassTextures:int = _numPasses > 1 ? 2 : 1;
 
-			var needsUpdate:Boolean = mPassTextures == null || mPassTextures.length != numPassTextures || mPassTextures[0].width != width || mPassTextures[0].height != height;
+			var needsUpdate:Boolean = _passTextures == null || _passTextures.length != numPassTextures || _passTextures[0].width != width || _passTextures[0].height != height;
 
 			if (needsUpdate)
 			{
-				if (mPassTextures)
+				if (_passTextures)
 				{
-					for each (var texture:Texture2D in mPassTextures)
+					for each (var texture:Texture2D in _passTextures)
 						texture.dispose();
 
-					mPassTextures.length = numPassTextures;
+					_passTextures.length = numPassTextures;
 				}
 				else
 				{
-					mPassTextures = new Vector.<Texture2D>(numPassTextures);
+					_passTextures = new Vector.<Texture2D>(numPassTextures);
 				}
 
 				for (var i:int = 0; i < numPassTextures; ++i)
-					mPassTextures[i] = Texture2D.empty(width, height, PMA, true, scale);
+					_passTextures[i] = Texture2D.empty(width, height, PMA, true, scale);
 			}
 		}
 
 
 		private function getPassTexture(pass:int):Texture2D
 		{
-			return mPassTextures[pass % 2];
+			return _passTextures[pass % 2];
 		}
 
 
@@ -390,8 +611,8 @@ package tetragon.view.render2d.filters
 
 			if (intersectWithStage)
 			{
-				sStageBounds.setTo(0, 0, stage.stageWidth, stage.stageHeight);
-				RectangleUtil.intersect(resultRect, sStageBounds, resultRect);
+				_stageBounds.setTo(0, 0, stage.stageWidth, stage.stageHeight);
+				RectangleUtil.intersect(resultRect, _stageBounds, resultRect);
 			}
 
 			if (!resultRect.isEmpty())
@@ -399,34 +620,34 @@ package tetragon.view.render2d.filters
 				// the bounds are a rectangle around the object, in stage coordinates,
 				// and with an optional margin. To fit into a POT-texture, it will grow towards
 				// the right and bottom.
-				var deltaMargin:Number = mResolution == 1.0 ? 0.0 : 1.0 / mResolution;
+				var deltaMargin:Number = _resolution == 1.0 ? 0.0 : 1.0 / _resolution;
 				// avoid hard edges
-				resultRect.x -= mMarginX + deltaMargin;
-				resultRect.y -= mMarginY + deltaMargin;
-				resultRect.width += 2 * (mMarginX + deltaMargin);
-				resultRect.height += 2 * (mMarginY + deltaMargin);
-				resultRect.width = nextPowerOfTwo(resultRect.width * mResolution) / mResolution;
-				resultRect.height = nextPowerOfTwo(resultRect.height * mResolution) / mResolution;
+				resultRect.x -= _marginX + deltaMargin;
+				resultRect.y -= _marginY + deltaMargin;
+				resultRect.width += 2 * (_marginX + deltaMargin);
+				resultRect.height += 2 * (_marginY + deltaMargin);
+				resultRect.width = nextPowerOfTwo(resultRect.width * _resolution) / _resolution;
+				resultRect.height = nextPowerOfTwo(resultRect.height * _resolution) / _resolution;
 			}
 		}
 
 
 		private function disposePassTextures():void
 		{
-			for each (var texture:Texture2D in mPassTextures)
+			for each (var texture:Texture2D in _passTextures)
 				texture.dispose();
 
-			mPassTextures = null;
+			_passTextures = null;
 		}
 
 
 		private function disposeCache():void
 		{
-			if (mCache)
+			if (_cache)
 			{
-				if (mCache.texture) mCache.texture.dispose();
-				mCache.dispose();
-				mCache = null;
+				if (_cache.texture) _cache.texture.dispose();
+				_cache.dispose();
+				_cache = null;
 			}
 		}
 
@@ -471,214 +692,21 @@ package tetragon.view.render2d.filters
 		}
 
 
-		/** Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. 
-		 *  If any argument is  null, it is replaced by the class constants STD_FRAGMENT_SHADER or
-		 *  STD_VERTEX_SHADER, respectively. */
-		protected function assembleAgal(fragmentShader:String = null, vertexShader:String = null):Program3D
+		/**
+		 * Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. 
+		 * If any argument is  null, it is replaced by the class constants STD_FRAGMENT_SHADER or
+		 * STD_VERTEX_SHADER, respectively.
+		 * 
+		 * @param fragmentShader
+		 * @param vertexShader
+		 * @return Program3D
+		 */
+		protected function assembleAgal(fragmentShader:String = null,
+			vertexShader:String = null):Program3D
 		{
-			if (fragmentShader == null) fragmentShader = STD_FRAGMENT_SHADER;
-			if (vertexShader == null) vertexShader = STD_VERTEX_SHADER;
-
+			if (!fragmentShader) fragmentShader = STD_FRAGMENT_SHADER;
+			if (!vertexShader) vertexShader = STD_VERTEX_SHADER;
 			return RenderSupport2D.assembleAgal(vertexShader, fragmentShader);
-		}
-
-
-		// cache
-		/** Caches the filter output into a texture. An uncached filter is rendered in every frame;
-		 *  a cached filter only once. However, if the filtered object or the filter settings
-		 *  change, it has to be updated manually; to do that, call "cache" again. */
-		public function cache():void
-		{
-			mCacheRequested = true;
-			disposeCache();
-		}
-
-
-		/** Clears the cached output of the filter. After calling this method, the filter will
-		 *  be executed once per frame again. */
-		public function clearCache():void
-		{
-			mCacheRequested = false;
-			disposeCache();
-		}
-
-
-		// flattening
-		/** @private */
-		public function compile(object:DisplayObject2D):QuadBatch2D
-		{
-			if (mCache) return mCache;
-			else
-			{
-				var renderSupport:RenderSupport2D;
-				var stage:Stage2D = object.stage;
-
-				if (stage == null)
-					throw new Error("Filtered object must be on the stage.");
-
-				renderSupport = new RenderSupport2D();
-				object.getTransformationMatrix(stage, renderSupport.modelViewMatrix);
-				return renderPasses(object, renderSupport, 1.0, true);
-			}
-		}
-
-
-		// properties
-		/** Indicates if the filter is cached (via the "cache" method). */
-		public function get isCached():Boolean
-		{
-			return (mCache != null) || mCacheRequested;
-		}
-
-
-		/** The resolution of the filter texture. "1" means stage resolution, "0.5" half the
-		 *  stage resolution. A lower resolution saves memory and execution time (depending on 
-		 *  the GPU), but results in a lower output quality. Values greater than 1 are allowed;
-		 *  such values might make sense for a cached filter when it is scaled up. @default 1 */
-		public function get resolution():Number
-		{
-			return mResolution;
-		}
-
-
-		public function set resolution(value:Number):void
-		{
-			if (value <= 0) throw new ArgumentError("Resolution must be > 0");
-			else mResolution = value;
-		}
-
-
-		/** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
-		 *  class. @default "replace" */
-		public function get mode():String
-		{
-			return mMode;
-		}
-
-
-		public function set mode(value:String):void
-		{
-			mMode = value;
-		}
-
-
-		/** Use the x-offset to move the filter output to the right or left. */
-		public function get offsetX():Number
-		{
-			return mOffsetX;
-		}
-
-
-		public function set offsetX(value:Number):void
-		{
-			mOffsetX = value;
-		}
-
-
-		/** Use the y-offset to move the filter output to the top or bottom. */
-		public function get offsetY():Number
-		{
-			return mOffsetY;
-		}
-
-
-		public function set offsetY(value:Number):void
-		{
-			mOffsetY = value;
-		}
-
-
-		/** The x-margin will extend the size of the filter texture along the x-axis.
-		 *  Useful when the filter will "grow" the rendered object. */
-		protected function get marginX():Number
-		{
-			return mMarginX;
-		}
-
-
-		protected function set marginX(value:Number):void
-		{
-			mMarginX = value;
-		}
-
-
-		/** The y-margin will extend the size of the filter texture along the y-axis.
-		 *  Useful when the filter will "grow" the rendered object. */
-		protected function get marginY():Number
-		{
-			return mMarginY;
-		}
-
-
-		protected function set marginY(value:Number):void
-		{
-			mMarginY = value;
-		}
-
-
-		/** The number of passes the filter is applied. The "activate" and "deactivate" methods
-		 *  will be called that often. */
-		protected function set numPasses(value:int):void
-		{
-			mNumPasses = value;
-		}
-
-
-		protected function get numPasses():int
-		{
-			return mNumPasses;
-		}
-
-
-		/** The ID of the vertex buffer attribute that stores the vertex position. */
-		protected final function get vertexPosAtID():int
-		{
-			return mVertexPosAtID;
-		}
-
-
-		protected final function set vertexPosAtID(value:int):void
-		{
-			mVertexPosAtID = value;
-		}
-
-
-		/** The ID of the vertex buffer attribute that stores the texture coordinates. */
-		protected final function get texCoordsAtID():int
-		{
-			return mTexCoordsAtID;
-		}
-
-
-		protected final function set texCoordsAtID(value:int):void
-		{
-			mTexCoordsAtID = value;
-		}
-
-
-		/** The ID (sampler) of the input texture (containing the output of the previous pass). */
-		protected final function get baseTextureID():int
-		{
-			return mBaseTextureID;
-		}
-
-
-		protected final function set baseTextureID(value:int):void
-		{
-			mBaseTextureID = value;
-		}
-
-
-		/** The ID of the first register of the modelview-projection constant (a 4x4 matrix). */
-		protected final function get mvpConstantID():int
-		{
-			return mMvpConstantID;
-		}
-
-
-		protected final function set mvpConstantID(value:int):void
-		{
-			mMvpConstantID = value;
 		}
 	}
 }
