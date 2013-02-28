@@ -28,15 +28,15 @@
  */
 package view.racing
 {
-	import tetragon.data.texture.TextureAtlas;
-	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.data.sprite.SpriteAtlas;
+	import tetragon.data.texture.TextureAtlas;
 	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 	import tetragon.view.render.racetrack.RaceTrackRenderer;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 
@@ -159,6 +159,17 @@ package view.racing
 		/**
 		 * @private
 		 */
+		private function onContext3DCreated(e:Event2D):void
+		{
+			/* Texture can only be processed after we have a Context3D! */
+			resourceManager.process("textureAtlas");
+			main.gameLoop.start();
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function onRoot2DCreated(e:Event2D):void
 		{
 			Debug.trace("Root2D Created!");
@@ -258,7 +269,6 @@ package view.racing
 		override protected function createChildren():void
 		{
 			resourceManager.process("spriteAtlas");
-			resourceManager.process("textureAtlas");
 			
 			var spriteAtlas:SpriteAtlas = getResource("spriteAtlas");
 			var textureAtlas:TextureAtlas = getResource("textureAtlas");
@@ -309,6 +319,7 @@ package view.racing
 		 */
 		override protected function addListeners():void
 		{
+			_render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
 			_render2D.addEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
 			
 			main.gameLoop.tickSignal.add(onTick);
@@ -333,7 +344,6 @@ package view.racing
 		{
 			reset();
 			main.statsMonitor.toggle();
-			main.gameLoop.start();
 		}
 
 

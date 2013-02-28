@@ -1098,7 +1098,7 @@ package tetragon.view.render2d.core
 		{
 			makeCurrent();
 			initializeGraphicsAPI();
-			initializeRoot();
+			initializeRootView();
 			
 			_touchProcessor.simulateMultitouch = _simulateMultitouch;
 			_lastFrameTimestamp = getTimer() / 1000.0;
@@ -1126,7 +1126,7 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
-		private function initializeRoot():void
+		private function initializeRootView():void
 		{
 			_stage2D.addChildAt(_rootView, 0);
 			dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
