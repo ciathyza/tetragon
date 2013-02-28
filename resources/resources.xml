@@ -60,6 +60,7 @@
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
 		<file id="spriteAtlasFile" path="data/spriteatlas.xml" packageID="resourcePackage"/>
+		<file id="textureAtlasFile" path="data/textureatlas.xml" packageID="resourcePackage"/>
 	</dataFiles>
 	
 	
@@ -84,6 +85,7 @@
 			<resource id="spriteAtlasPNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<atf>
+			<resource id="spriteAtlasATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</atf>
 		<swf/>
 		<shader>
@@ -125,10 +127,10 @@
 		<group type="Settings">
 			<resource id="settings" fileID="settingsFile"/>
 		</group>
-		<!-- Data type group for Texture Atlas resource.
+		<!-- Data type group for Texture Atlas resource. -->
 		<group type="TextureAtlas" fileID="textureAtlasFile">
 			<resource id="textureAtlas"/>
-		</group> -->
+		</group>
 		<!-- Data type group for Sprite Atlas resource. -->
 		<group type="SpriteAtlas" fileID="spriteAtlasFile">
 			<resource id="spriteAtlas"/>

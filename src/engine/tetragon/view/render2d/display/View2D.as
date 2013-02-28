@@ -34,6 +34,8 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -221,6 +223,7 @@ package tetragon.view.render2d.display
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+			Debug.trace("added to stage!");
 		}
 		
 		

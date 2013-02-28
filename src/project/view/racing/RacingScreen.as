@@ -28,6 +28,7 @@
  */
 package view.racing
 {
+	import tetragon.data.texture.TextureAtlas;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.data.sprite.SpriteAtlas;
 	import tetragon.input.KeyMode;
@@ -247,6 +248,7 @@ package view.racing
 		override protected function registerResources():void
 		{
 			registerResource("spriteAtlas");
+			registerResource("textureAtlas");
 		}
 
 
@@ -256,13 +258,16 @@ package view.racing
 		override protected function createChildren():void
 		{
 			resourceManager.process("spriteAtlas");
-			var atlas:SpriteAtlas = getResource("spriteAtlas");
+			resourceManager.process("textureAtlas");
 			
-			_bgLayer1 = new ParallaxLayer(atlas.getSprite("bg_sky", 2.0), 2);
-			_bgLayer2 = new ParallaxLayer(atlas.getSprite("bg_hills", 2.0), 3);
-			_bgLayer3 = new ParallaxLayer(atlas.getSprite("bg_trees", 2.0), 4);
+			var spriteAtlas:SpriteAtlas = getResource("spriteAtlas");
+			var textureAtlas:TextureAtlas = getResource("textureAtlas");
 			
-			_raceTrackRenderer = new RaceTrackRenderer(1024, 640, atlas);
+			_bgLayer1 = new ParallaxLayer(spriteAtlas.getSprite("bg_sky", 2.0), 2);
+			_bgLayer2 = new ParallaxLayer(spriteAtlas.getSprite("bg_hills", 2.0), 3);
+			_bgLayer3 = new ParallaxLayer(spriteAtlas.getSprite("bg_trees", 2.0), 4);
+			
+			_raceTrackRenderer = new RaceTrackRenderer(1024, 640, spriteAtlas);
 			_raceTrackRenderer.backgroundLayers = [_bgLayer1, _bgLayer2, _bgLayer3];
 			
 			_renderBitmap = _raceTrackRenderer.renderBitmap;
