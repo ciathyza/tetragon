@@ -104,8 +104,8 @@ package view.render2d
 			//_tile2.scaleX = _tile2.scaleY = 2.0;
 			//_tile3.scaleX = _tile3.scaleY = 2.0;
 			
-			_tile2.paralax = 2;
-			_tile3.paralax = 4;
+			_tile2.parallax = 2;
+			_tile3.parallax = 4;
 			
 			_scrollImage = new ScrollImage2D(_frameWidth, _tile1.height);
 			_scrollImage.smoothing = TextureSmoothing2D.NONE;

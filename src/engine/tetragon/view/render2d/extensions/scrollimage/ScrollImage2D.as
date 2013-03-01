@@ -849,8 +849,8 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function calculateMatrix(layer:ScrollTile2D, matrix:Matrix3D):Matrix3D
 		{
-			var pOffset:Number = _parallaxOffset ? layer.paralax : 1;
-			var pScale:Number = _parallaxScale ? layer.paralax : 1;
+			var pOffset:Number = _parallaxOffset ? layer.parallax : 1;
+			var pScale:Number = _parallaxScale ? layer.parallax : 1;
 			var angle:Number = layer.rotation + tilesRotation;
 
 			matrix.identity();
@@ -993,35 +993,31 @@ package tetragon.view.render2d.extensions.scrollimage
 		 * @param format
 		 * @return
 		 */
-		private static function getImageProgramName(tinted:Boolean = false, mipMap:Boolean = true, smoothing:String = "bilinear", format:String = "bgra", useBaseTexture:Boolean = false):String
+		private static function getImageProgramName(tinted:Boolean = false, mipMap:Boolean = false,
+			smoothing:String = "bilinear", format:String = "bgra",
+			useBaseTexture:Boolean = false):String
 		{
 			var bitField:uint = 0;
-
+			
 			if (tinted) bitField |= 1;
 			if (mipMap) bitField |= 2;
-
-			if (smoothing == TextureSmoothing.NONE)
-				bitField |= 1 << 3;
-			else if (smoothing == TextureSmoothing.TRILINEAR)
-				bitField |= 1 << 4;
-
-			if (format == Context3DTextureFormat.COMPRESSED)
-				bitField |= 1 << 5;
-			else if (format == "compressedAlpha")
-				bitField |= 1 << 6;
-
-			if ( useBaseTexture )
-				bitField |= 1 << 7;
-			else
-				bitField |= 1 << 8;
-
+			
+			if (smoothing == TextureSmoothing.NONE) bitField |= 1 << 3;
+			else if (smoothing == TextureSmoothing.TRILINEAR) bitField |= 1 << 4;
+			
+			if (format == Context3DTextureFormat.COMPRESSED) bitField |= 1 << 5;
+			else if (format == Context3DTextureFormat.COMPRESSED_ALPHA) bitField |= 1 << 6;
+			
+			if (useBaseTexture) bitField |= 1 << 7;
+			else bitField |= 1 << 8;
+			
 			var name:String = _programNameCache[bitField];
-
 			if (name == null)
 			{
 				name = "SImage_i." + bitField.toString(16);
 				_programNameCache[bitField] = name;
 			}
+			
 			return name;
 		}
 	}

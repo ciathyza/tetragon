@@ -40,23 +40,29 @@ package tetragon.view.render2d.extensions.scrollimage
 	 */
 	public class ScrollTile2D
 	{
-		// members
-		private var mSubTexture:SubTexture2D;
-		private var mBaseClipping:Rectangle;
-		private var mBaseTexture:Texture2D;
-		// properties
-		private var mColor:uint;
-		private var mAlpha:Number;
-		private var mColorTrans:Vector.<Number>;
-		private var mParalax:Number = 1;
-		// transform
-		private var mOffsetX:Number = 0;
-		private var mOffsetY:Number = 0;
-		private var mRotation:Number = 0;
-		private var mScaleX:Number = 1;
-		private var mScaleY:Number = 1;
-
-
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		public var parallax:Number = 1.0;
+		public var offsetX:Number = 0.0;
+		public var offsetY:Number = 0.0;
+		public var rotation:Number = 0.0;
+		public var scaleX:Number = 1.0;
+		public var scaleY:Number = 1.0;
+		
+		private var _subTexture:SubTexture2D;
+		private var _baseTexture:Texture2D;
+		private var _baseClipping:Rectangle;
+		private var _color:uint;
+		private var _alpha:Number;
+		private var _colorTrans:Vector.<Number>;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
 		/**
 		 * Creates a tile from texture.
 		 * 
@@ -65,76 +71,83 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function ScrollTile2D(texture:Texture2D, autoCrop:Boolean = false)
 		{
-			if ( texture == null ) throw new ArgumentError("Texture cannot be null");
-
-			if ( texture is ConcreteTexture2D )
+			if (!texture)
 			{
-				mSubTexture = new SubTexture2D(texture, null);
+				throw new ArgumentError("Texture cannot be null");
+			}
+			else if (texture is ConcreteTexture2D)
+			{
+				_subTexture = new SubTexture2D(texture, null);
 			}
 			else
 			{
-				mSubTexture = SubTexture2D(texture);
+				_subTexture = texture as SubTexture2D;
 			}
-
-			mBaseTexture = mSubTexture.parent;
-
-			while ( mBaseTexture is SubTexture2D )
+			
+			_baseTexture = _subTexture.parent;
+			
+			while (_baseTexture is SubTexture2D)
 			{
-				mBaseTexture = SubTexture2D(mBaseTexture).parent;
+				_baseTexture = (_baseTexture as SubTexture2D).parent;
 			}
-
-			var propClippX:Number = mSubTexture.parent.width / mBaseTexture.width;
-			var propClippY:Number = mSubTexture.parent.height / mBaseTexture.height;
-
-			mBaseClipping = new Rectangle(mSubTexture.clipping.x * propClippX, mSubTexture.clipping.y * propClippY, mSubTexture.clipping.width * propClippX, mSubTexture.clipping.height * propClippY);
-
-			if ( autoCrop ) crop(1, 1);
-			mColorTrans = new Vector.<Number>(4);
-
+			
+			var pcx:Number = _subTexture.parent.width / _baseTexture.width;
+			var pcy:Number = _subTexture.parent.height / _baseTexture.height;
+			
+			_baseClipping = new Rectangle(_subTexture.clipping.x * pcx, _subTexture.clipping.y * pcy,
+				_subTexture.clipping.width * pcx, _subTexture.clipping.height * pcy);
+			
+			if (autoCrop) crop(1, 1);
+			_colorTrans = new Vector.<Number>(4, true);
+			
 			alpha = 1;
 			color = 0xFFFFFF;
 		}
-
-
+		
+		
 		/**
 		 * Set crop inside of texture - helps with borders artefact.
+		 * 
 		 * @param x
 		 * @param y
 		 */
 		public function crop(x:Number = 2, y:Number = 2):void
 		{
-			var dx:Number = x * 2 < mSubTexture.width ? -x / mBaseTexture.width : 0;
-			var dy:Number = y * 2 < mSubTexture.height ? -y / mBaseTexture.height : 0;
-
-			mBaseClipping.inflate(dx, dy);
+			var dx:Number = x * 2 < _subTexture.width ? -x / _baseTexture.width : 0;
+			var dy:Number = y * 2 < _subTexture.height ? -y / _baseTexture.height : 0;
+			_baseClipping.inflate(dx, dy);
 		}
-
-
+		
+		
 		/**
 		 * Dispose
 		 */
 		public function dispose():void
 		{
-			mSubTexture = null;
-			mBaseTexture = null;
+			_subTexture = null;
+			_baseTexture = null;
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
 		/**
 		 * Return texture.
 		 */
 		public function get baseTexture():Texture2D
 		{
-			return mBaseTexture;
+			return _baseTexture;
 		}
-
-
+		
+		
 		/**
 		 * Return texure clipping
 		 */
 		public function get baseClipping():Rectangle
 		{
-			return mBaseClipping;
+			return _baseClipping;
 		}
 
 
@@ -143,21 +156,15 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function get color():uint
 		{
-			return mColor;
+			return _color;
 		}
-
-
-		/**
-		 * Set color of tile.
-		 * @param value
-		 */
-		public function set color(value:uint):void
+		public function set color(v:uint):void
 		{
-			mColor = value;
+			_color = v;
 
-			mColorTrans[0] = ((value >> 16) & 0xff) / 255.0;
-			mColorTrans[1] = ((value >> 8) & 0xff) / 255.0;
-			mColorTrans[2] = ( value & 0xff) / 255.0;
+			_colorTrans[0] = ((v >> 16) & 0xff) / 255.0;
+			_colorTrans[1] = ((v >> 8) & 0xff) / 255.0;
+			_colorTrans[2] = ( v & 0xff) / 255.0;
 		}
 
 
@@ -166,27 +173,21 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function get alpha():Number
 		{
-			return mAlpha;
+			return _alpha;
 		}
-
-
-		/**
-		 * Set alpha of tile.
-		 * @param value
-		 */
-		public function set alpha(value:Number):void
+		public function set alpha(v:Number):void
 		{
-			mAlpha = value;
-			mColorTrans[3] = value;
+			_alpha = v;
+			_colorTrans[3] = v;
 		}
-
-
+		
+		
 		/**
 		 * Alpha and color as Vector
 		 */
 		internal function get colorTrans():Vector.<Number>
 		{
-			return mColorTrans;
+			return _colorTrans;
 		}
 
 
@@ -195,7 +196,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function get width():Number
 		{
-			return mSubTexture.width;
+			return _subTexture.width;
 		}
 
 
@@ -204,115 +205,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function get height():Number
 		{
-			return mSubTexture.height;
-		}
-
-
-		/**
-		 * The scaleX of tile.
-		 */
-		public function get scaleX():Number
-		{
-			return mScaleX;
-		}
-
-
-		/**
-		 * The scaleX of tile.
-		 */
-		public function set scaleX(value:Number):void
-		{
-			mScaleX = value;
-		}
-
-
-		/**
-		 * The scaleY of tile
-		 */
-		public function get scaleY():Number
-		{
-			return mScaleY;
-		}
-
-
-		/**
-		 * The scaleY of tile
-		 */
-		public function set scaleY(value:Number):void
-		{
-			mScaleY = value;
-		}
-
-
-		/**
-		 * The x offset of tile in pixels.
-		 */
-		public function get offsetX():Number
-		{
-			return mOffsetX;
-		}
-
-
-		/**
-		 * The x offset of tile in pixels.
-		 */
-		public function set offsetX(value:Number):void
-		{
-			mOffsetX = value;
-		}
-
-
-		/**
-		 * The x offset of tile in pixels.
-		 */
-		public function get offsetY():Number
-		{
-			return mOffsetY;
-		}
-
-
-		/**
-		 * The x offset of tile in pixels.
-		 */
-		public function set offsetY(value:Number):void
-		{
-			mOffsetY = value;
-		}
-
-
-		/**
-		 * The rotation of the tile in radians.
-		 */
-		public function get rotation():Number
-		{
-			return mRotation;
-		}
-
-
-		/**
-		 * The rotation of the tile in radians.
-		 */
-		public function set rotation(value:Number):void
-		{
-			mRotation = value;
-		}
-
-
-		/**
-		 * The paralx effect. Value == 1 means that there's no paralax effect.
-		 */
-		public function get paralax():Number
-		{
-			return mParalax;
-		}
-
-
-		/**
-		 * The paralx effect. Value == 1 means that there's no paralax effect.
-		 */
-		public function set paralax(value:Number):void
-		{
-			mParalax = value;
+			return _subTexture.height;
 		}
 	}
 }
