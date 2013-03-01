@@ -10,7 +10,7 @@
 	<screenScale>1.0</screenScale>
 	<!-- The ID of the first-opening screen. If the splash screen is defined and
 	enabled, it will open before the initial screen opens. -->
-	<initialScreenID>racingScreen</initialScreenID>
+	<initialScreenID>render2DTestScreen</initialScreenID>
 	<!-- The ID of the used UI theme. -->
 	<themeID>default</themeID>
 	

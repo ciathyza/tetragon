@@ -29,6 +29,7 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.Main;
+	import tetragon.file.resource.ResourceIndex;
 	import tetragon.view.IView;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
@@ -57,6 +58,9 @@ package tetragon.view.render2d.display
 		
 		protected var _frameWidth:int;
 		protected var _frameHeight:int;
+		
+		/** @private */
+		private static var _resourceIndex:ResourceIndex;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -208,6 +212,13 @@ package tetragon.view.render2d.display
 		}
 		
 		
+		public static function get resourceIndex():ResourceIndex
+		{
+			if (!_resourceIndex) _resourceIndex = Main.instance.resourceManager.resourceIndex;
+			return _resourceIndex;
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
@@ -253,6 +264,12 @@ package tetragon.view.render2d.display
 				_background.width = _frameWidth;
 				_background.height = _frameHeight;
 			}
+		}
+		
+		
+		protected static function getResource(resourceID:String):*
+		{
+			return resourceIndex.getResourceContent(resourceID);
 		}
 	}
 }

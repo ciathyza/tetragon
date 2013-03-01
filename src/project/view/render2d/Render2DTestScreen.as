@@ -31,7 +31,6 @@ package view.render2d
 	import tetragon.view.Screen;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 
 	
@@ -52,7 +51,7 @@ package view.render2d
 		//-----------------------------------------------------------------------------------------
 		
 		private var _render2D:Render2D;
-		private var _view2D:View2D;
+		private var _view:ScrollImage2DTestView;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -168,6 +167,7 @@ package view.render2d
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
+			_view.updateRender();
 		}
 		
 		
@@ -189,6 +189,7 @@ package view.render2d
 		 */
 		override protected function registerResources():void
 		{
+			registerResource("textureAtlas");
 		}
 		
 		
@@ -197,9 +198,9 @@ package view.render2d
 		 */
 		override protected function createChildren():void
 		{
-			_view2D = new View2D();
-			_view2D.background = new Quad2D(10, 10, 0x000033);
-			_render2D = new Render2D(_view2D);
+			_view = new ScrollImage2DTestView();
+			_view.background = new Quad2D(10, 10, 0x000055);
+			_render2D = new Render2D(_view);
 		}
 		
 		
