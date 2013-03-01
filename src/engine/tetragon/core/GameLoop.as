@@ -90,6 +90,8 @@ package tetragon.core
 		private var _renderLast:uint;
 		/** @private */
 		private var _renderFPS:uint;
+		/** @private */
+		private var _started:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -137,12 +139,16 @@ package tetragon.core
 		
 		public function start():void
 		{
+			if (_started) return;
+			_started = true;
 			_main.contextView.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		
 		public function stop():void
 		{
+			if (!_started) return;
+			_started = false;
 			_main.contextView.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		

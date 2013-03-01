@@ -30,6 +30,8 @@ package view.racing
 {
 	import tetragon.data.atlas.Atlas;
 	import tetragon.input.KeyMode;
+	import tetragon.systems.racetrack.Racetrack;
+	import tetragon.systems.racetrack.RacetrackFactory;
 	import tetragon.systems.racetrack.RacetrackSystem;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
@@ -64,6 +66,9 @@ package view.racing
 		private var _atlas:Atlas;
 		
 		private var _racetrackSystem:RacetrackSystem;
+		private var _racetrackFactory:RacetrackFactory;
+		private var _racetrack:Racetrack;
+		
 		private var _renderBitmap:Bitmap;
 		private var _bgLayer1:ParallaxLayer;
 		private var _bgLayer2:ParallaxLayer;
@@ -85,6 +90,15 @@ package view.racing
 		override public function start():void
 		{
 			super.start();
+			
+			main.keyInputManager.assign("CURSORUP", KeyMode.DOWN, onKeyDown, "u");
+			main.keyInputManager.assign("CURSORDOWN", KeyMode.DOWN, onKeyDown, "d");
+			main.keyInputManager.assign("CURSORLEFT", KeyMode.DOWN, onKeyDown, "l");
+			main.keyInputManager.assign("CURSORRIGHT", KeyMode.DOWN, onKeyDown, "r");
+			main.keyInputManager.assign("CURSORUP", KeyMode.UP, onKeyUp, "u");
+			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
+			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
+			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
 			main.gameLoop.start();
 		}
 		
@@ -159,12 +173,7 @@ package view.racing
 		 */
 		private function onContext3DCreated(e:Event2D):void
 		{
-			/* Texture can only be processed after we have a Context3D! */
-			resourceManager.process("textureAtlas");
-			_atlas = getResource("textureAtlas");
-			_racetrackSystem = new RacetrackSystem(1024, 640, _atlas, _useRender2D);
-			_racetrackSystem.init();
-			reset();
+			setupRacetrackSystem();
 			main.gameLoop.start();
 		}
 		
@@ -268,35 +277,27 @@ package view.racing
 		 */
 		override protected function createChildren():void
 		{
-			main.keyInputManager.assign("CURSORUP", KeyMode.DOWN, onKeyDown, "u");
-			main.keyInputManager.assign("CURSORDOWN", KeyMode.DOWN, onKeyDown, "d");
-			main.keyInputManager.assign("CURSORLEFT", KeyMode.DOWN, onKeyDown, "l");
-			main.keyInputManager.assign("CURSORRIGHT", KeyMode.DOWN, onKeyDown, "r");
-			main.keyInputManager.assign("CURSORUP", KeyMode.UP, onKeyUp, "u");
-			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
-			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
-			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
+			_racetrackFactory = new RacetrackFactory();
 			
-			if (!_useRender2D)
+			if (_useRender2D)
+			{
+				_view = new RacingView();
+				_view.background = new Quad2D(10, 10, 0xFF00FF);
+				_render2D = new Render2D(_view);
+			}
+			else
 			{
 				resourceManager.process("spriteAtlas");
-				
 				_atlas = getResource("spriteAtlas");
 				
 				_bgLayer1 = new ParallaxLayer(_atlas.getImage("bg_sky", 2.0), 2);
 				_bgLayer2 = new ParallaxLayer(_atlas.getImage("bg_hills", 2.0), 3);
 				_bgLayer3 = new ParallaxLayer(_atlas.getImage("bg_trees", 2.0), 4);
 				
-				_racetrackSystem = new RacetrackSystem(1024, 640, _atlas, _useRender2D);
+				_racetrack = _racetrackFactory.createDemoRacetrack(_atlas);
+				_racetrackSystem = new RacetrackSystem(1024, 640, _racetrack, _atlas, _useRender2D);
 				_racetrackSystem.backgroundLayers = [_bgLayer1, _bgLayer2, _bgLayer3];
-				
 				_renderBitmap = _racetrackSystem.renderBitmap;
-			}
-			else
-			{
-				_view = new RacingView();
-				_view.background = new Quad2D(10, 10, 0xFF00FF);
-				_render2D = new Render2D(_view);
 			}
 		}
 		
@@ -372,6 +373,28 @@ package view.racing
 		override protected function layoutChildren():void
 		{
 			centerChild(_renderBitmap);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function setupRacetrackSystem():void
+		{
+			if (_useRender2D)
+			{
+				/* Texture can only be processed after we have a Context3D! */
+				resourceManager.process("textureAtlas");
+				_atlas = getResource("textureAtlas");
+				_racetrack = _racetrackFactory.createDemoRacetrack(_atlas);
+				_racetrackSystem = new RacetrackSystem(1024, 640, _racetrack, _atlas, _useRender2D);
+				_racetrackSystem.init();
+				reset();
+			}
+			else
+			{
+				
+			}
 		}
 	}
 }

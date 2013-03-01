@@ -43,7 +43,7 @@ package tetragon.systems.racetrack.vo
 		public var p2:PPoint;
 		public var curve:Number;
 		public var sprites:Vector.<SSprite>;
-		public var cars:Vector.<Car>;
+		public var cars:Vector.<Opponent>;
 		public var color:ColorSet;
 		public var looped:Boolean;
 		public var haze:Number;

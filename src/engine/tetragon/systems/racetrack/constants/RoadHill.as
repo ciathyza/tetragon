@@ -10,5 +10,6 @@ package tetragon.systems.racetrack.constants
 		public const LOW:int = 20;
 		public const MEDIUM:int = 40;
 		public const HIGH:int = 60;
+		public const EXTREME:int = 100;
 	}
 }

@@ -60,15 +60,10 @@ package tetragon.systems.racetrack
 		public var VEGETATION:Array;
 		public var BUILDINGS:Array;
 		public var CARS:Array;
-
-		public var SCALE:Number;
 		
 		
 		public function init():void
 		{
-			// the reference sprite width should be 1/3rd the (half-)roadWidth
-			SCALE = 0.3 * (1 / PLAYER_STRAIGHT.width);
-			
 			BILLBOARDS = [BILLBOARD01, BILLBOARD02, BILLBOARD03, BILLBOARD04, BILLBOARD05, BILLBOARD06, BILLBOARD07, BILLBOARD08, BILLBOARD09];
 			VEGETATION = [TREE1, TREE2, DEAD_TREE1, DEAD_TREE2, PALM_TREE, BUSH1, BUSH2, CACTUS, STUMP, BOULDER1, BOULDER2, BOULDER3];
 			CARS = [CAR01, CAR02, CAR03, CAR04, SEMI, TRUCK];

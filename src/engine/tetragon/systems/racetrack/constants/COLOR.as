@@ -27,7 +27,7 @@
  */
 package tetragon.systems.racetrack.constants
 {
-	public final class COLORS
+	public final class COLOR
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants

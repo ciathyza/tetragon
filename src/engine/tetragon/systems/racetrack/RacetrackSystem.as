@@ -28,16 +28,10 @@
  */
 package tetragon.systems.racetrack
 {
-	import tetragon.Main;
 	import tetragon.data.atlas.Atlas;
-	import tetragon.systems.racetrack.constants.COLORS;
 	import tetragon.systems.racetrack.constants.ColorSet;
-	import tetragon.systems.racetrack.constants.ROAD;
-	import tetragon.systems.racetrack.vo.Car;
-	import tetragon.systems.racetrack.vo.PCamera;
+	import tetragon.systems.racetrack.vo.Opponent;
 	import tetragon.systems.racetrack.vo.PPoint;
-	import tetragon.systems.racetrack.vo.PScreen;
-	import tetragon.systems.racetrack.vo.PWorld;
 	import tetragon.systems.racetrack.vo.SSprite;
 	import tetragon.systems.racetrack.vo.Segment;
 	import tetragon.view.render.buffers.IRenderBuffer;
@@ -67,41 +61,17 @@ package tetragon.systems.racetrack
 		private var _bgScroller:ParallaxScroller;
 		private var _bgLayers:Vector.<ParallaxLayer>;
 		
-		private var _sprites:Sprites;
-		private var _segments:Vector.<Segment>;	// array of road segments
-		private var _opponents:Vector.<Car>;	// array of cars on the road
+		private var _racetrack:Racetrack;
 		
 		private var _bgColor:uint;
-		
 		private var _width:int;
 		private var _height:int;
 		private var _widthHalf:int;
 		private var _heightHalf:int;
 		
-		private var _dt:Number;					// how long is each frame (in seconds)
 		private var _resolution:Number;			// scaling factor to provide resolution independence (computed)
 		private var _drawDistance:int;			// number of segments to draw
-		private var _hazeDensity:int;			// exponential haze density
-		private var _hazeColor:uint;
-		
-		private var _cameraHeight:Number;		// z height of camera (500 - 5000)
-		private var _cameraDepth:Number;		// z distance camera is from screen (computed)
-		private var _fieldOfView:int;			// angle (degrees) for field of view (80 - 140)
 		private var _bgSpeedMult:Number;
-		
-		private var _roadWidth:int;				// actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
-		private var _segmentLength:int;			// length of a single segment
-		private var _rumbleLength:int;			// number of segments per red/white rumble strip
-		private var _trackLength:int;			// z length of entire track (computed)
-		private var _lanes:int;					// number of lanes
-		private var _opponentsTotal:int;		// total number of cars on the road
-		
-		private var _acceleration:Number;		// acceleration rate - tuned until it 'felt' right
-		private var _deceleration:Number;		// 'natural' deceleration rate when neither accelerating, nor braking
-		private var _braking:Number;			// deceleration rate when braking
-		private var _offRoadDecel:Number;		// speed multiplier when off road (e.g. you lose 2% speed each update frame)
-		private var _offRoadLimit:Number;		// limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
-		private var _centrifugal:Number;		// centrifugal force multiplier when going around curves
 		
 		private var _playerX:Number;			// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
 		private var _playerY:int;				// player x offset from center of road (-1 to 1 to stay independent of roadWidth)
@@ -109,7 +79,6 @@ package tetragon.systems.racetrack
 		
 		private var _position:Number;			// current camera Z position (add playerZ to get player's absolute Z position)
 		private var _speed:Number;				// current speed
-		private var _maxSpeed:Number;			// top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
 		
 		private var _currentLapTime:Number;		// current lap time
 		private var _lastLapTime:Number;		// last lap time
@@ -119,6 +88,29 @@ package tetragon.systems.racetrack
 		private var _isBraking:Boolean;
 		private var _isSteeringLeft:Boolean;
 		private var _isSteeringRight:Boolean;
+		
+		/* Racetrack properties */
+		private var _roadWidth:int;
+		private var _segmentLength:int;
+		private var _trackLength:int;
+		private var _lanes:int;
+		private var _hazeDensity:int;
+		private var _hazeColor:uint;
+		private var _acceleration:Number;
+		private var _deceleration:Number;
+		private var _braking:Number;
+		private var _offRoadDecel:Number;
+		private var _offRoadLimit:Number;
+		private var _centrifugal:Number;
+		private var _maxSpeed:Number;
+		private var _dt:Number;
+		private var _fieldOfView:int;
+		private var _cameraHeight:Number;
+		private var _cameraDepth:Number;
+		private var _segments:Vector.<Segment>;
+		private var _opponents:Vector.<Opponent>;
+		private var _sprites:Sprites;
+		private var _spriteScale:Number;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -135,10 +127,11 @@ package tetragon.systems.racetrack
 		 * 
 		 * @param width
 		 * @param height
+		 * @param racetrack
 		 * @param atlas
 		 * @param backgroundColor
 		 */
-		public function RacetrackSystem(width:int, height:int, atlas:Atlas,
+		public function RacetrackSystem(width:int, height:int, racetrack:Racetrack, atlas:Atlas,
 			useRender2D:Boolean, backgroundColor:uint = 0x000055)
 		{
 			_width = width;
@@ -146,6 +139,8 @@ package tetragon.systems.racetrack
 			_atlas = atlas;
 			_useRender2D = useRender2D;
 			_bgColor = backgroundColor;
+			
+			this.racetrack = racetrack;
 			
 			if (!_useRender2D) init();
 		}
@@ -161,7 +156,6 @@ package tetragon.systems.racetrack
 		public function init():void
 		{
 			setup();
-			prepareSprites();
 		}
 		
 		
@@ -170,30 +164,18 @@ package tetragon.systems.racetrack
 		 */
 		public function reset():void
 		{
-			_dt = 1 / Main.instance.gameLoop.frameRate;
-			_maxSpeed = _segmentLength / _dt;
-			_acceleration = _maxSpeed / 5;
-			_braking = -_maxSpeed;
-			_deceleration = -_maxSpeed / 5;
-			_offRoadLimit = _maxSpeed / 4;
-			_cameraDepth = 1 / Math.tan((_fieldOfView / 2) * Math.PI / 180);
-			_playerZ = (_cameraHeight * _cameraDepth);
+			_racetrack.reset();
+			
+			_playerZ = _racetrack.playerZ;
 			_resolution = 1.6; // _bufferHeight / _bufferHeight;
 			_position = 0;
 			_speed = 0;
 			_widthHalf = _width * 0.5;
 			_heightHalf = _height * 0.5;
-			_opponents = new Vector.<Car>();
-
-			_hazeColor = COLORS.HAZE;
 			
 			_currentLapTime = 0.0;
 			_lastLapTime = 0.0;
 			_fastestLapTime = 0.0;
-
-			resetRoad();
-			resetSprites();
-			resetOpponents();
 		}
 		
 		
@@ -203,12 +185,12 @@ package tetragon.systems.racetrack
 		public function tick():void
 		{
 			var i:int,
-				car:Car,
+				car:Opponent,
 				carW:Number,
 				sprite:SSprite,
 				spriteW:Number,
 				playerSegment:Segment = findSegment(_position + _playerZ),
-				playerW:Number = _sprites.PLAYER_STRAIGHT.width * _sprites.SCALE,
+				playerW:Number = _sprites.PLAYER_STRAIGHT.width * _spriteScale,
 				speedPercent:Number = _speed / _maxSpeed,
 				dx:Number = _dt * 2 * speedPercent,
 				startPosition:Number = _position,
@@ -239,7 +221,7 @@ package tetragon.systems.racetrack
 				for (i = 0; i < playerSegment.sprites.length; i++)
 				{
 					sprite = playerSegment.sprites[i];
-					spriteW = sprite.source.width * _sprites.SCALE;
+					spriteW = sprite.source.width * _spriteScale;
 					if (overlap(_playerX, playerW, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW))
 					{
 						_speed = _maxSpeed / 5;
@@ -253,7 +235,7 @@ package tetragon.systems.racetrack
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
 				car = playerSegment.cars[i];
-				carW = car.sprite.source.width * _sprites.SCALE;
+				carW = car.sprite.source.width * _spriteScale;
 				if (_speed > car.speed)
 				{
 					if (overlap(_playerX, playerW, car.offset, carW, 0.8))
@@ -311,7 +293,7 @@ package tetragon.systems.racetrack
 				playerSegment:Segment = findSegment(_position + _playerZ),
 				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
 				s:Segment,
-				car:Car,
+				car:Opponent,
 				sprite:SSprite,
 				maxY:int = _height,
 				x:Number = 0,
@@ -444,6 +426,38 @@ package tetragon.systems.racetrack
 		}
 		
 		
+		public function get racetrack():Racetrack
+		{
+			return _racetrack;
+		}
+		public function set racetrack(v:Racetrack):void
+		{
+			_racetrack = v;
+			
+			_roadWidth = _racetrack.roadWidth;
+			_segmentLength = _racetrack.segmentLength;
+			_trackLength = _racetrack.trackLength;
+			_lanes = _racetrack.lanes;
+			_hazeDensity = _racetrack.hazeDensity;
+			_hazeColor = _racetrack.hazeColor;
+			_acceleration = _racetrack.acceleration;
+			_deceleration = _racetrack.deceleration;
+			_braking = _racetrack.braking;
+			_offRoadDecel = _racetrack.offRoadDecel;
+			_offRoadLimit = _racetrack.offRoadLimit;
+			_centrifugal = _racetrack.centrifugal;
+			_maxSpeed = _racetrack.maxSpeed;
+			_dt = _racetrack.dt;
+			_fieldOfView = _racetrack.fieldOfView;
+			_cameraHeight = _racetrack.cameraHeight;
+			_cameraDepth = _racetrack.cameraDepth;
+			_segments = _racetrack.segments;
+			_opponents = _racetrack.opponents;
+			_sprites = _racetrack.sprites;
+			_spriteScale = _racetrack.spriteScale;
+		}
+		
+		
 		/**
 		 * An array of ParallaxLayer objects. Internally the layers are stored in
 		 * a vector.
@@ -490,34 +504,6 @@ package tetragon.systems.racetrack
 		public function set drawDistance(v:int):void
 		{
 			_drawDistance = v;
-		}
-		
-		
-		/**
-		 * Determines haze color.
-		 */
-		public function get hazeColor():uint
-		{
-			return _hazeColor;
-		}
-		public function set hazeColor(v:uint):void
-		{
-			_hazeColor = v;
-		}
-		
-		
-		/**
-		 * The exponential density of haze.
-		 * 
-		 * @default 10
-		 */
-		public function get hazeDensity():int
-		{
-			return _hazeDensity;
-		}
-		public function set hazeDensity(v:int):void
-		{
-			_hazeDensity = v;
 		}
 		
 		
@@ -614,15 +600,6 @@ package tetragon.systems.racetrack
 		}
 		
 		
-		/**
-		 * @private
-		 */
-		private function get lastY():Number
-		{
-			return (_segments.length == 0) ? 0 : _segments[_segments.length - 1].p2.world.y;
-		}
-		
-		
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
@@ -639,22 +616,7 @@ package tetragon.systems.racetrack
 		{
 			/* Set default. */
 			_drawDistance = 300;
-			_hazeDensity = 10;
-			_hazeColor = 0x333333;
-			_cameraHeight = 1000;
-			_fieldOfView = 100;
 			_bgSpeedMult = 0.001;
-			
-			_roadWidth = 2000;
-			_segmentLength = 200;
-			_rumbleLength = 3;
-			_trackLength = 200;
-			_lanes = 3;
-			_opponentsTotal = 200;
-			
-			_offRoadDecel = 0.99;
-			_centrifugal = 0.3;
-			
 			_playerX = _playerY = _playerZ = 0;
 			
 			if (!_useRender2D)
@@ -673,84 +635,28 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function prepareSprites():void
-		{
-			_sprites = new Sprites();
-			
-			if (_atlas)
-			{
-				_sprites.BILLBOARD01 = _atlas.getImage("billboard01", 2.5);
-				_sprites.BILLBOARD02 = _atlas.getImage("billboard02", 2.5);
-				_sprites.BILLBOARD03 = _atlas.getImage("billboard03", 2.5);
-				_sprites.BILLBOARD04 = _atlas.getImage("billboard04", 2.5);
-				_sprites.BILLBOARD05 = _atlas.getImage("billboard05", 2.5);
-				_sprites.BILLBOARD06 = _atlas.getImage("billboard06", 2.5);
-				_sprites.BILLBOARD07 = _atlas.getImage("billboard07", 2.5);
-				_sprites.BILLBOARD08 = _atlas.getImage("billboard08", 2.5);
-				_sprites.BILLBOARD09 = _atlas.getImage("billboard09", 2.5);
-				_sprites.BOULDER1 = _atlas.getImage("veg_boulder1", 2.5);
-				_sprites.BOULDER2 = _atlas.getImage("veg_boulder2", 2.5);
-				_sprites.BOULDER3 = _atlas.getImage("veg_boulder3", 2.5);
-				_sprites.BUSH1 = _atlas.getImage("veg_bush1", 2.5);
-				_sprites.BUSH2 = _atlas.getImage("veg_bush2", 2.5);
-				_sprites.CACTUS = _atlas.getImage("veg_cactus", 2.5);
-				_sprites.TREE1 = _atlas.getImage("veg_tree1", 2.5);
-				_sprites.TREE2 = _atlas.getImage("veg_tree2", 2.5);
-				_sprites.PALM_TREE = _atlas.getImage("veg_palmtree", 2.5);
-				_sprites.DEAD_TREE1 = _atlas.getImage("veg_deadtree1", 2.5);
-				_sprites.DEAD_TREE2 = _atlas.getImage("veg_deadtree2", 2.5);
-				_sprites.STUMP = _atlas.getImage("veg_stump", 2.5);
-				_sprites.COLUMN = _atlas.getImage("bldg_column", 3.0);
-				_sprites.TOWER = _atlas.getImage("bldg_tower", 10.0);
-				_sprites.BOATHOUSE = _atlas.getImage("bldg_boathouse", 3.0);
-				_sprites.WINDMILL = _atlas.getImage("bldg_windmill", 4.0);
-				_sprites.CAR01 = _atlas.getImage("car01", 1.25);
-				_sprites.CAR02 = _atlas.getImage("car02", 1.25);
-				_sprites.CAR03 = _atlas.getImage("car03", 1.25);
-				_sprites.CAR04 = _atlas.getImage("car04", 1.25);
-				_sprites.TRUCK = _atlas.getImage("car05", 1.7);
-				_sprites.SEMI = _atlas.getImage("car06", 2.0);
-				_sprites.PLAYER_STRAIGHT = _atlas.getImage("player");
-				_sprites.PLAYER_LEFT = _atlas.getImage("player_left");
-				_sprites.PLAYER_RIGHT = _atlas.getImage("player_right");
-				_sprites.PLAYER_UPHILL_STRAIGHT = _atlas.getImage("player_uphill");
-				_sprites.PLAYER_UPHILL_LEFT = _atlas.getImage("player_uphill_left");
-				_sprites.PLAYER_UPHILL_RIGHT = _atlas.getImage("player_uphill_right");
-	
-				_sprites.REGION_SKY = _atlas.getRegion("bg_sky");
-				_sprites.REGION_HILLS = _atlas.getRegion("bg_hills");
-				_sprites.REGION_TREES = _atlas.getRegion("bg_trees");
-			}
-
-			_sprites.init();
-		}
-
-
-		/**
-		 * @private
-		 */
 		private function updateOpponents(dt:Number, playerSegment:Segment, playerW:Number):void
 		{
-			var i:int;
-			var car:Car;
-			var oldSegment:Segment;
-			var newSegment:Segment;
+			var i:int,
+				op:Opponent,
+				oldSegment:Segment,
+				newSegment:Segment;
 			
 			for (i = 0; i < _opponents.length; i++)
 			{
-				car = _opponents[i];
-				oldSegment = findSegment(car.z);
-				car.offset = car.offset + updateOpponentOffset(car, oldSegment, playerSegment, playerW);
-				car.z = increase(car.z, dt * car.speed, _trackLength);
-				car.percent = percentRemaining(car.z, _segmentLength);
+				op = _opponents[i];
+				oldSegment = findSegment(op.z);
+				op.offset = op.offset + updateOpponentOffset(op, oldSegment, playerSegment, playerW);
+				op.z = increase(op.z, dt * op.speed, _trackLength);
+				op.percent = percentRemaining(op.z, _segmentLength);
 				// useful for interpolation during rendering phase
-				newSegment = findSegment(car.z);
+				newSegment = findSegment(op.z);
 
 				if (oldSegment != newSegment)
 				{
-					var index:int = oldSegment.cars.indexOf(car);
+					var index:int = oldSegment.cars.indexOf(op);
 					oldSegment.cars.splice(index, 1);
-					newSegment.cars.push(car);
+					newSegment.cars.push(op);
 				}
 			}
 		}
@@ -759,18 +665,18 @@ package tetragon.systems.racetrack
 		/**
 		 * @private
 		 */
-		private function updateOpponentOffset(opponent:Car, opponentSegment:Segment,
+		private function updateOpponentOffset(op:Opponent, opponentSegment:Segment,
 			playerSegment:Segment, playerW:Number):Number
 		{
-			var i:int;
-			var j:int;
-			var dir:Number;
-			var segment:Segment;
-			var otherCar:Car;
-			var otherCarW:Number;
-			var lookahead:int = 20;
-			var carW:Number = opponent.sprite.source.width * _sprites.SCALE;
-
+			var i:int,
+				j:int,
+				dir:Number,
+				segment:Segment,
+				otherOp:Opponent,
+				otherOpW:Number,
+				lookahead:int = 20,
+				opW:Number = op.sprite.source.width * _spriteScale;
+			
 			/* Optimization: dont bother steering around other cars when 'out of sight'
 			 * of the player. */
 			if ((opponentSegment.index - playerSegment.index) > _drawDistance) return 0;
@@ -780,323 +686,35 @@ package tetragon.systems.racetrack
 				segment = _segments[(opponentSegment.index + i) % _segments.length];
 
 				/* Car drive-around player AI */
-				if ((segment === playerSegment) && (opponent.speed > _speed) && (overlap(_playerX, playerW, opponent.offset, carW, 1.2)))
+				if ((segment === playerSegment) && (op.speed > _speed) && (overlap(_playerX, playerW, op.offset, opW, 1.2)))
 				{
 					if (_playerX > 0.5) dir = -1;
 					else if (_playerX < -0.5) dir = 1;
-					else dir = (opponent.offset > _playerX) ? 1 : -1;
+					else dir = (op.offset > _playerX) ? 1 : -1;
 					// The closer the cars (smaller i) and the greater the speed ratio,
 					// the larger the offset.
-					return dir * 1 / i * (opponent.speed - _speed) / _maxSpeed;
+					return dir * 1 / i * (op.speed - _speed) / _maxSpeed;
 				}
 
 				/* Car drive-around other car AI */
 				for (j = 0; j < segment.cars.length; j++)
 				{
-					otherCar = segment.cars[j];
-					otherCarW = otherCar.sprite.source.width * _sprites.SCALE;
-					if ((opponent.speed > otherCar.speed) && overlap(opponent.offset, carW, otherCar.offset, otherCarW, 1.2))
+					otherOp = segment.cars[j];
+					otherOpW = otherOp.sprite.source.width * _spriteScale;
+					if ((op.speed > otherOp.speed) && overlap(op.offset, opW, otherOp.offset, otherOpW, 1.2))
 					{
-						if (otherCar.offset > 0.5) dir = -1;
-						else if (otherCar.offset < -0.5) dir = 1;
-						else dir = (opponent.offset > otherCar.offset) ? 1 : -1;
-						return dir * 1 / i * (opponent.speed - otherCar.speed) / _maxSpeed;
+						if (otherOp.offset > 0.5) dir = -1;
+						else if (otherOp.offset < -0.5) dir = 1;
+						else dir = (op.offset > otherOp.offset) ? 1 : -1;
+						return dir * 1 / i * (op.speed - otherOp.speed) / _maxSpeed;
 					}
 				}
 			}
 
 			// if no cars ahead, but car has somehow ended up off road, then steer back on.
-			if (opponent.offset < -0.9) return 0.1;
-			else if (opponent.offset > 0.9) return -0.1;
+			if (op.offset < -0.9) return 0.1;
+			else if (op.offset > 0.9) return -0.1;
 			else return 0;
-		}
-		
-		
-		// -----------------------------------------------------------------------------------------
-		// ROAD GEOMETRY CONSTRUCTION
-		// -----------------------------------------------------------------------------------------
-		/**
-		 * @private
-		 */
-		private function resetRoad():void
-		{
-			_segments = new Vector.<Segment>();
-
-			addStraight(ROAD.LENGTH.SHORT / 2);
-			addHill(ROAD.LENGTH.SHORT, ROAD.HILL.LOW);
-			addLowRollingHills();
-			addSCurves();
-			addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
-			addBumps();
-			addLowRollingHills();
-			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-			addStraight();
-			addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-			addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
-			addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
-			addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
-			addStraight();
-			addDownhillToEnd();
-
-			_segments[findSegment(_playerZ).index + 2].color = COLORS.START;
-			_segments[findSegment(_playerZ).index + 3].color = COLORS.START;
-
-			for (var n:uint = 0 ; n < _rumbleLength ; n++)
-			{
-				_segments[_segments.length - 1 - n].color = COLORS.FINISH;
-			}
-
-			_trackLength = _segments.length * _segmentLength;
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function resetSprites():void
-		{
-			var i:int;
-			var j:int;
-			var side:Number;
-			var sprite:BitmapData;
-			var offset:Number;
-			var density:int = 10;
-
-			/* Add row of billboards right after start line. */
-			addSprite(20, _sprites.BILLBOARD07, -1);
-			addSprite(40, _sprites.BILLBOARD06, -1);
-			addSprite(60, _sprites.BILLBOARD08, -1);
-			addSprite(80, _sprites.BILLBOARD09, -1);
-			addSprite(100, _sprites.BILLBOARD01, -1);
-			addSprite(120, _sprites.BILLBOARD02, -1);
-			addSprite(140, _sprites.BILLBOARD03, -1);
-			addSprite(160, _sprites.BILLBOARD04, -1);
-			addSprite(180, _sprites.BILLBOARD05, -1);
-			addSprite(240, _sprites.BILLBOARD07, -1.2);
-			addSprite(240, _sprites.BILLBOARD06, 1.2);
-
-			/* Add some billboards at end of track. */
-			addSprite(_segments.length - 25, _sprites.BILLBOARD07, -1.2);
-			addSprite(_segments.length - 25, _sprites.BILLBOARD06, 1.2);
-
-			/* Add palm trees at start of track. */
-			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
-			addSprites(_sprites.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
-
-			/* Add a long row of columns on right side and trees on left side. */
-			addSprites(_sprites.COLUMN, 250, 1000, null, 5, 0, 1.1);
-			addSprites(_sprites.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
-			addSprites(_sprites.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
-
-			// TODO
-			for (i = 200; i < _segments.length; i += 3)
-			{
-				addSprite(i, randomChoice(_sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
-			}
-
-			for (i = 1600; i < _segments.length; i += 20)
-			{
-				addSprite(i, randomChoice(_sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
-			}
-
-			for (i = 1000; i < (_segments.length - 50); i += 100)
-			{
-				side = randomChoice([1, -1]);
-				addSprite(i + randomInt(0, 50), randomChoice(_sprites.BILLBOARDS), -side);
-				for (j = 0 ; j < 20 ; j++)
-				{
-					sprite = randomChoice(_sprites.VEGETATION);
-					offset = side * (1.5 + Math.random());
-					addSprite(i + randomInt(0, 50), sprite, offset);
-				}
-			}
-		}
-
-
-		/**
-		 * @param sprite The sprite to add.
-		 * @param start The start segment number.
-		 * @param end The end segment number.
-		 * 
-		 * @private
-		 */
-		private function addSprites(sprite:BitmapData, start:int, end:int, segmentRandRange:Array, stepSize:int, stepInc:int, offset:Number, postOffset:Number = 0.0, offsetMode:String = "add"):void
-		{
-			for (var i:int = start; i < end; i += stepSize + int(i / stepInc))
-			{
-				if (postOffset == 0.0)
-				{
-					if (segmentRandRange) addSprite(i + randomInt(segmentRandRange[0], segmentRandRange[1]), sprite, offset);
-					else addSprite(i, sprite, offset);
-				}
-				else
-				{
-					var offs:Number = offset;
-					if (offsetMode == "add") offs = offset + Math.random() * postOffset;
-					else if (offsetMode == "sub") offs = offset - Math.random() * postOffset;
-					if (segmentRandRange) addSprite(i + randomInt(segmentRandRange[0], segmentRandRange[1]), sprite, offs);
-					else addSprite(i, sprite, offset + Math.random() * postOffset);
-				}
-			}
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addSprite(segNum:int, sprite:BitmapData, offset:Number):void
-		{
-			var s:SSprite = new SSprite(sprite, offset);
-			_segments[segNum].sprites.push(s);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function resetOpponents():void
-		{
-			var i:int,
-			offset:Number,
-			z:Number,
-			speed:Number,
-			opponent:Car,
-			segment:Segment,
-			sprite:BitmapData;
-
-			for (i = 0; i < _opponentsTotal; i++)
-			{
-				offset = Math.random() * randomChoice([-0.8, 0.8]);
-				z = int(Math.random() * _segments.length) * _segmentLength;
-				sprite = randomChoice(_sprites.CARS);
-				speed = _maxSpeed / 4 + Math.random() * _maxSpeed / (sprite == _sprites.SEMI ? 4 : 2);
-				opponent = new Car(offset, z, new SSprite(sprite), speed);
-				segment = findSegment(opponent.z);
-				segment.cars.push(opponent);
-				_opponents.push(opponent);
-			}
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addStraight(num:int = ROAD.LENGTH.MEDIUM):void
-		{
-			addRoad(num, num, num, 0, 0);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addCurve(num:int = ROAD.LENGTH.MEDIUM, curve:int = ROAD.CURVE.MEDIUM, height:int = ROAD.HILL.NONE):void
-		{
-			addRoad(num, num, num, curve, height);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addSCurves():void
-		{
-			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY);
-			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM);
-			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY);
-			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY);
-			addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.MEDIUM);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addHill(num:int = ROAD.LENGTH.MEDIUM, height:int = ROAD.HILL.MEDIUM):void
-		{
-			addRoad(num, num, num, 0, height);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addLowRollingHills(num:int = ROAD.LENGTH.SHORT, height:int = ROAD.HILL.LOW):void
-		{
-			addRoad(num, num, num, 0, height / 2);
-			addRoad(num, num, num, 0, -height);
-			addRoad(num, num, num, ROAD.CURVE.EASY, height);
-			addRoad(num, num, num, 0, 0);
-			addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
-			addRoad(num, num, num, 0, 0);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addBumps():void
-		{
-			addRoad(10, 10, 10, 0, 5);
-			addRoad(10, 10, 10, 0, -2);
-			addRoad(10, 10, 10, 0, -5);
-			addRoad(10, 10, 10, 0, 8);
-			addRoad(10, 10, 10, 0, 5);
-			addRoad(10, 10, 10, 0, -7);
-			addRoad(10, 10, 10, 0, 5);
-			addRoad(10, 10, 10, 0, -2);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addDownhillToEnd(num:int = 200):void
-		{
-			addRoad(num, num, num, -ROAD.CURVE.EASY, -lastY / _segmentLength);
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addRoad(enter:int, hold:int, leave:int, curve:Number, y:Number = NaN):void
-		{
-			var startY:Number = lastY;
-			var endY:Number = startY + (int(y) * _segmentLength);
-			var total:uint = enter + hold + leave;
-			var i:uint;
-
-			for (i = 0; i < enter; i++)
-			{
-				addSegment(easeIn(0, curve, i / enter), easeInOut(startY, endY, i / total));
-			}
-			for (i = 0; i < hold; i++)
-			{
-				addSegment(curve, easeInOut(startY, endY, (enter + i) / total));
-			}
-			for (i = 0; i < leave; i++)
-			{
-				addSegment(easeInOut(curve, 0, i / leave), easeInOut(startY, endY, (enter + hold + i) / total));
-			}
-		}
-
-
-		/**
-		 * @private
-		 */
-		private function addSegment(curve:Number, y:Number):void
-		{
-			var i:uint = _segments.length;
-			var segment:Segment = new Segment();
-			segment.index = i;
-			segment.p1 = new PPoint(new PWorld(lastY, i * _segmentLength), new PCamera(), new PScreen());
-			segment.p2 = new PPoint(new PWorld(y, (i + 1) * _segmentLength), new PCamera(), new PScreen());
-			segment.curve = curve;
-			segment.sprites = new Vector.<SSprite>();
-			segment.cars = new Vector.<Car>();
-			segment.color = int(i / _rumbleLength) % 2 ? COLORS.DARK : COLORS.LIGHT;
-			_segments.push(segment);
 		}
 		
 		
@@ -1165,9 +783,9 @@ package tetragon.systems.racetrack
 			hazeAlpha:Number = 1.0):void
 		{
 			/* Scale for projection AND relative to roadWidth. */
-			var destW:int = (sprite.width * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
-			var destH:int = (sprite.height * scale * _widthHalf) * (_sprites.SCALE * _roadWidth);
-
+			var destW:int = (sprite.width * scale * _widthHalf) * (_spriteScale * _roadWidth);
+			var destH:int = (sprite.height * scale * _widthHalf) * (_spriteScale * _roadWidth);
+			
 			destX = destX + (destW * offsetX);
 			destY = destY + (destH * offsetY);
 
@@ -1251,26 +869,8 @@ package tetragon.systems.racetrack
 		{
 			return a[randomInt(0, a.length - 1)];
 		}
-
-
-		private function easeIn(a:Number, b:Number, percent:Number):Number
-		{
-			return a + (b - a) * Math.pow(percent, 2);
-		}
-
-
-		// private static function easeOut(a:Number, b:Number, percent:Number):Number
-		// {
-		// return a + (b - a) * (1 - Math.pow(1 - percent, 2));
-		// }
 		
 		
-		private function easeInOut(a:Number, b:Number, percent:Number):Number
-		{
-			return a + (b - a) * ((-Math.cos(percent * 3.141592653589793) / 2) + 0.5);
-		}
-
-
 		private function percentRemaining(n:Number, total:Number):Number
 		{
 			return (n % total) / total;
