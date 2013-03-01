@@ -67,6 +67,10 @@ package tetragon.view.render2d.core
 	 */
 	public class VertexData2D
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
 		/** The total number of elements (Numbers) stored per vertex. */
 		public static const ELEMENTS_PER_VERTEX:int = 8;
 		/** The offset of position data (x, y) within a vertex. */
@@ -76,14 +80,23 @@ package tetragon.view.render2d.core
 		/** The offset of texture coordinate (u, v) within a vertex. */
 		public static const TEXCOORD_OFFSET:int = 6;
 		
+		
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		private var _rawData:Vector.<Number>;
 		private var _premultipliedAlpha:Boolean;
 		private var _numVertices:int;
 		
 		/** Helper object. */
 		private static var _helperPoint:Point = new Point();
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
 		/** Create a new VertexData object with a specified number of vertices. */
 		public function VertexData2D(numVertices:int, premultipliedAlpha:Boolean = false)
 		{
@@ -91,8 +104,12 @@ package tetragon.view.render2d.core
 			_premultipliedAlpha = premultipliedAlpha;
 			this.numVertices = numVertices;
 		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/** Creates a duplicate of either the complete vertex data object, or of a subset. 
 		 *  To clone all vertices, set 'numVertices' to '-1'. */
 		public function clone(vertexID:int = 0, numVertices:int = -1):VertexData2D
@@ -304,14 +321,8 @@ package tetragon.view.render2d.core
 					_rawData[int(offset + i * ELEMENTS_PER_VERTEX)] *= alpha;
 			}
 		}
-
-
-		private function getOffset(vertexID:int):int
-		{
-			return vertexID * ELEMENTS_PER_VERTEX;
-		}
-
-
+		
+		
 		/** Calculates the bounds of the vertices, which are optionally transformed by a matrix. 
 		 *  If you pass a 'resultRect', the result will be stored in this rectangle 
 		 *  instead of creating a new object. To use all vertices for the calculation, set
@@ -362,24 +373,6 @@ package tetragon.view.render2d.core
 		}
 
 
-		// properties
-		/** Indicates if any vertices have a non-white color or are not fully opaque. */
-		public function get tinted():Boolean
-		{
-			var offset:int = COLOR_OFFSET;
-
-			for (var i:int = 0; i < _numVertices; ++i)
-			{
-				for (var j:int = 0; j < 4; ++j)
-					if (_rawData[int(offset + j)] != 1.0) return true;
-
-				offset += ELEMENTS_PER_VERTEX;
-			}
-
-			return false;
-		}
-
-
 		/** Changes the way alpha and color values are stored. Updates all exisiting vertices. */
 		public function setPremultipliedAlpha(value:Boolean, updateData:Boolean = true):void
 		{
@@ -406,8 +399,29 @@ package tetragon.view.render2d.core
 
 			_premultipliedAlpha = value;
 		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		/** Indicates if any vertices have a non-white color or are not fully opaque. */
+		public function get tinted():Boolean
+		{
+			var offset:int = COLOR_OFFSET;
 
+			for (var i:int = 0; i < _numVertices; ++i)
+			{
+				for (var j:int = 0; j < 4; ++j)
+					if (_rawData[int(offset + j)] != 1.0) return true;
 
+				offset += ELEMENTS_PER_VERTEX;
+			}
+
+			return false;
+		}
+		
+		
 		/** Indicates if the rgb values are stored premultiplied with the alpha value. */
 		public function get premultipliedAlpha():Boolean
 		{
@@ -420,31 +434,39 @@ package tetragon.view.render2d.core
 		{
 			return _numVertices;
 		}
-
-
-		public function set numVertices(value:int):void
+		public function set numVertices(v:int):void
 		{
 			_rawData.fixed = false;
-
-			var i:int;
-			var delta:int = value - _numVertices;
-
+			var i:int, delta:int = v - _numVertices;
 			for (i = 0; i < delta; ++i)
-				_rawData.push(0, 0, 0, 0, 0, 1, 0, 0);
-			// alpha should be '1' per default
-
+			{
+				_rawData.push(0, 0, 0, 0, 0, 1, 0, 0); // alpha should be '1' per default
+			}
 			for (i = 0; i < -(delta * ELEMENTS_PER_VERTEX); ++i)
+			{
 				_rawData.pop();
-
-			_numVertices = value;
+			}
+			_numVertices = v;
 			_rawData.fixed = true;
 		}
-
-
+		
+		
 		/** The raw vertex data; not a copy! */
 		public function get rawData():Vector.<Number>
 		{
 			return _rawData;
+		}
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function getOffset(vertexID:int):int
+		{
+			return vertexID * ELEMENTS_PER_VERTEX;
 		}
 	}
 }
