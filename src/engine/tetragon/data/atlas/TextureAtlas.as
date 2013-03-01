@@ -34,9 +34,43 @@ package tetragon.data.atlas
 	
 	
 	/**
-	 * TextureAtlas class
-	 *
-	 * @author Hexagon
+	 * A texture atlas is a collection of many smaller textures in one big image. This class
+	 *  is used to access textures from such an atlas.
+	 *  
+	 *  <p>Using a texture atlas for your textures solves two problems:</p>
+	 *  
+	 *  <ul>
+	 *    <li>There is always one texture active at a given moment. Whenever you change the active
+	 *        texture, a "texture-switch" has to be executed, and that switch takes time.</li>
+	 *    <li>Any Stage3D texture has to have side lengths that are powers of two. Render2D hides 
+	 *        this limitation from you, but at the cost of additional graphics memory.</li>
+	 *  </ul>
+	 *  
+	 *  <p>By using a texture atlas, you avoid both texture switches and the power-of-two 
+	 *  limitation. All textures are within one big "super-texture", and Render2D takes care that 
+	 *  the correct part of this texture is displayed.</p>
+	 *  
+	 *  <p>There are several ways to create a texture atlas. A great multi-platform 
+	 *  alternative is the commercial tool <a href="http://www.texturepacker.com">
+	 *  Texture Packer</a>.</p>
+	 *  
+	 *  <p>Whatever tool you use, Render2D expects the following file format:</p>
+	 * 
+	 *  <listing>
+	 * 	&lt;TextureAtlas imagePath='atlas.png'&gt;
+	 * 	  &lt;SubTexture name='texture_1' x='0'  y='0' width='50' height='50'/&gt;
+	 * 	  &lt;SubTexture name='texture_2' x='50' y='0' width='20' height='30'/&gt; 
+	 * 	&lt;/TextureAtlas&gt;
+	 *  </listing>
+	 *  
+	 *  <p>If your images have transparent areas at their edges, you can make use of the 
+	 *  <code>frame</code> property of the Texture class. Trim the texture by removing the 
+	 *  transparent edges and specify the original texture size like this:</p>
+	 * 
+	 *  <listing>
+	 * 	&lt;SubTexture name='trimmed' x='0' y='0' height='10' width='10'
+	 * 	    frameX='-10' frameY='-10' frameWidth='30' frameHeight='30'/&gt;
+	 *  </listing>
 	 */
 	public class TextureAtlas extends Atlas
 	{
