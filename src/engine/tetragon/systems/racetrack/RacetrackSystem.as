@@ -185,8 +185,8 @@ package tetragon.systems.racetrack
 		public function tick():void
 		{
 			var i:int,
-				car:Opponent,
-				carW:Number,
+				op:Opponent,
+				opW:Number,
 				sprite:SSprite,
 				spriteW:Number,
 				playerSegment:Segment = findSegment(_position + _playerZ),
@@ -217,7 +217,7 @@ package tetragon.systems.racetrack
 				{
 					_speed = accel(_speed, _offRoadDecel, _dt);
 				}
-				/* Check player collision with opponents. */
+				/* Check player collision with obstacles. */
 				for (i = 0; i < playerSegment.sprites.length; i++)
 				{
 					sprite = playerSegment.sprites[i];
@@ -232,16 +232,17 @@ package tetragon.systems.racetrack
 				}
 			}
 			
+			/* Check player collision with opponents. */
 			for (i = 0; i < playerSegment.cars.length; i++)
 			{
-				car = playerSegment.cars[i];
-				carW = car.sprite.source.width * _spriteScale;
-				if (_speed > car.speed)
+				op = playerSegment.cars[i];
+				opW = op.sprite.source.width * _spriteScale;
+				if (_speed > op.speed)
 				{
-					if (overlap(_playerX, playerW, car.offset, carW, 0.8))
+					if (overlap(_playerX, playerW, op.offset, opW, 0.8))
 					{
-						_speed = car.speed * (car.speed / _speed);
-						_position = increase(car.z, -_playerZ, _trackLength);
+						_speed = op.speed * (op.speed / _speed);
+						_position = increase(op.z, -_playerZ, _trackLength);
 						break;
 					}
 				}
@@ -293,7 +294,7 @@ package tetragon.systems.racetrack
 				playerSegment:Segment = findSegment(_position + _playerZ),
 				playerPercent:Number = percentRemaining(_position + _playerZ, _segmentLength),
 				s:Segment,
-				car:Opponent,
+				op:Opponent,
 				sprite:SSprite,
 				maxY:int = _height,
 				x:Number = 0,
@@ -348,12 +349,12 @@ package tetragon.systems.racetrack
 				/* Render opponent cars. */
 				for (j = 0; j < s.cars.length; j++)
 				{
-					car = s.cars[j];
-					sprite = car.sprite;
-					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, car.percent);
-					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, car.percent) + (spriteScale * car.offset * _roadWidth * _widthHalf);
-					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, car.percent);
-					renderSprite(car.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
+					op = s.cars[j];
+					sprite = op.sprite;
+					spriteScale = interpolate(s.p1.screen.scale, s.p2.screen.scale, op.percent);
+					spriteX = interpolate(s.p1.screen.x, s.p2.screen.x, op.percent) + (spriteScale * op.offset * _roadWidth * _widthHalf);
+					spriteY = interpolate(s.p1.screen.y, s.p2.screen.y, op.percent);
+					renderSprite(op.sprite.source, spriteScale, spriteX, spriteY, -0.5, -1, s.clip, s.haze);
 				}
 
 				/* Render roadside objects. */
