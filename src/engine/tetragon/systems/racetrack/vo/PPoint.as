@@ -1,4 +1,4 @@
-package tetragon.view.render.racetrack.vo
+package tetragon.systems.racetrack.vo
 {
 	/**
 	 * PPoint

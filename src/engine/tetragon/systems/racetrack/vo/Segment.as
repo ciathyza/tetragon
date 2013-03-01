@@ -26,9 +26,9 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.racetrack.vo
+package tetragon.systems.racetrack.vo
 {
-	import tetragon.view.render.racetrack.constants.ColorSet;
+	import tetragon.systems.racetrack.constants.ColorSet;
 	
 	
 	/**

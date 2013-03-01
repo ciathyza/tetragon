@@ -1,4 +1,4 @@
-package tetragon.view.render.racetrack.constants
+package tetragon.systems.racetrack.constants
 {
 	/**
 	 * RoadCurve

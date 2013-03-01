@@ -26,35 +26,34 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.racetrack
+package tetragon.systems.racetrack
 {
 	import tetragon.Main;
 	import tetragon.data.atlas.Atlas;
+	import tetragon.systems.racetrack.constants.COLORS;
+	import tetragon.systems.racetrack.constants.ColorSet;
+	import tetragon.systems.racetrack.constants.ROAD;
+	import tetragon.systems.racetrack.vo.Car;
+	import tetragon.systems.racetrack.vo.PCamera;
+	import tetragon.systems.racetrack.vo.PPoint;
+	import tetragon.systems.racetrack.vo.PScreen;
+	import tetragon.systems.racetrack.vo.PWorld;
+	import tetragon.systems.racetrack.vo.SSprite;
+	import tetragon.systems.racetrack.vo.Segment;
 	import tetragon.view.render.buffers.IRenderBuffer;
 	import tetragon.view.render.buffers.Render2DRenderBuffer;
 	import tetragon.view.render.buffers.SoftwareRenderBuffer;
-	import tetragon.view.render.racetrack.constants.COLORS;
-	import tetragon.view.render.racetrack.constants.ColorSet;
-	import tetragon.view.render.racetrack.constants.ROAD;
-	import tetragon.view.render.racetrack.vo.Car;
-	import tetragon.view.render.racetrack.vo.PCamera;
-	import tetragon.view.render.racetrack.vo.PPoint;
-	import tetragon.view.render.racetrack.vo.PScreen;
-	import tetragon.view.render.racetrack.vo.PWorld;
-	import tetragon.view.render.racetrack.vo.SSprite;
-	import tetragon.view.render.racetrack.vo.Segment;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render.scroll.ParallaxScroller;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-
 	
 	
 	/**
 	 * @author Hexagon
 	 */
-	public class RaceTrackRenderer
+	public class RacetrackSystem
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
@@ -139,7 +138,7 @@ package tetragon.view.render.racetrack
 		 * @param atlas
 		 * @param backgroundColor
 		 */
-		public function RaceTrackRenderer(width:int, height:int, atlas:Atlas,
+		public function RacetrackSystem(width:int, height:int, atlas:Atlas,
 			useRender2D:Boolean, backgroundColor:uint = 0x000055)
 		{
 			_width = width;

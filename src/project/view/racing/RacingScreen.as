@@ -30,16 +30,15 @@ package view.racing
 {
 	import tetragon.data.atlas.Atlas;
 	import tetragon.input.KeyMode;
+	import tetragon.systems.racetrack.RacetrackSystem;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
-	import tetragon.view.render.racetrack.RaceTrackRenderer;
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.events.Event2D;
 
 	import flash.display.Bitmap;
-
 	
 	
 	/**
@@ -64,7 +63,7 @@ package view.racing
 		
 		private var _atlas:Atlas;
 		
-		private var _raceTrackRenderer:RaceTrackRenderer;
+		private var _racetrackSystem:RacetrackSystem;
 		private var _renderBitmap:Bitmap;
 		private var _bgLayer1:ParallaxLayer;
 		private var _bgLayer2:ParallaxLayer;
@@ -105,7 +104,7 @@ package view.racing
 		override public function reset():void
 		{
 			super.reset();
-			if (_raceTrackRenderer) _raceTrackRenderer.reset();
+			if (_racetrackSystem) _racetrackSystem.reset();
 		}
 		
 		
@@ -125,7 +124,7 @@ package view.racing
 		override public function dispose():void
 		{
 			super.dispose();
-			if (_raceTrackRenderer) _raceTrackRenderer.dispose();
+			if (_racetrackSystem) _racetrackSystem.dispose();
 		}
 		
 		
@@ -163,8 +162,8 @@ package view.racing
 			/* Texture can only be processed after we have a Context3D! */
 			resourceManager.process("textureAtlas");
 			_atlas = getResource("textureAtlas");
-			_raceTrackRenderer = new RaceTrackRenderer(1024, 640, _atlas, _useRender2D);
-			_raceTrackRenderer.init();
+			_racetrackSystem = new RacetrackSystem(1024, 640, _atlas, _useRender2D);
+			_racetrackSystem.init();
 			reset();
 			main.gameLoop.start();
 		}
@@ -183,7 +182,7 @@ package view.racing
 		 */
 		private function onTick():void
 		{
-			_raceTrackRenderer.tick();
+			_racetrackSystem.tick();
 		}
 		
 		
@@ -192,7 +191,7 @@ package view.racing
 		 */
 		private function onRender(ticks:uint, ms:uint, fps:uint):void
 		{
-			_raceTrackRenderer.render();
+			_racetrackSystem.render();
 		}
 		
 		
@@ -204,16 +203,16 @@ package view.racing
 			switch (key)
 			{
 				case "u":
-					_raceTrackRenderer.isAccelerating = true;
+					_racetrackSystem.isAccelerating = true;
 					break;
 				case "d":
-					_raceTrackRenderer.isBraking = true;
+					_racetrackSystem.isBraking = true;
 					break;
 				case "l":
-					_raceTrackRenderer.isSteeringLeft = true;
+					_racetrackSystem.isSteeringLeft = true;
 					break;
 				case "r":
-					_raceTrackRenderer.isSteeringRight = true;
+					_racetrackSystem.isSteeringRight = true;
 					break;
 			}
 		}
@@ -227,16 +226,16 @@ package view.racing
 			switch (key)
 			{
 				case "u":
-					_raceTrackRenderer.isAccelerating = false;
+					_racetrackSystem.isAccelerating = false;
 					break;
 				case "d":
-					_raceTrackRenderer.isBraking = false;
+					_racetrackSystem.isBraking = false;
 					break;
 				case "l":
-					_raceTrackRenderer.isSteeringLeft = false;
+					_racetrackSystem.isSteeringLeft = false;
 					break;
 				case "r":
-					_raceTrackRenderer.isSteeringRight = false;
+					_racetrackSystem.isSteeringRight = false;
 					break;
 			}
 		}
@@ -288,10 +287,10 @@ package view.racing
 				_bgLayer2 = new ParallaxLayer(_atlas.getImage("bg_hills", 2.0), 3);
 				_bgLayer3 = new ParallaxLayer(_atlas.getImage("bg_trees", 2.0), 4);
 				
-				_raceTrackRenderer = new RaceTrackRenderer(1024, 640, _atlas, _useRender2D);
-				_raceTrackRenderer.backgroundLayers = [_bgLayer1, _bgLayer2, _bgLayer3];
+				_racetrackSystem = new RacetrackSystem(1024, 640, _atlas, _useRender2D);
+				_racetrackSystem.backgroundLayers = [_bgLayer1, _bgLayer2, _bgLayer3];
 				
-				_renderBitmap = _raceTrackRenderer.renderBitmap;
+				_renderBitmap = _racetrackSystem.renderBitmap;
 			}
 			else
 			{
