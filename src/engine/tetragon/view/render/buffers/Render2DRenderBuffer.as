@@ -28,6 +28,8 @@
  */
 package tetragon.view.render.buffers
 {
+	import tetragon.view.render2d.textures.RenderTexture2D;
+
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
@@ -38,20 +40,14 @@ package tetragon.view.render.buffers
 	
 	
 	/**
-	 * A render buffer that draws objects onto a bitmapdata.
+	 * 
 	 */
-	public class SoftwareRenderBuffer extends BitmapData implements IRenderBuffer
+	public class Render2DRenderBuffer extends RenderTexture2D implements IRenderBuffer
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/** @private */
-		private var _fillColor:uint;
-		/** @private */
-		private var _rect:Rectangle;
-		/** @private */
-		private var _buffer:Array;
 		/** @private */
 		private var _r:Rectangle;
 		/** @private */
@@ -76,35 +72,15 @@ package tetragon.view.render.buffers
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function SoftwareRenderBuffer(width:int, height:int, fillColor:uint = 0x000000,
-			transparent:Boolean = false):void
+		public function Render2DRenderBuffer(width:int, height:int, fillColor:uint = 0x000000):void
 		{
-			super(width, height, transparent, fillColor);
-			
-			_fillColor = fillColor;
-			_rect = rect;
-			_buffer = [];
-			
-			_r = new Rectangle();
-			_p = new Point();
-			_s = new Shape();
-			_m = new Matrix();
-			_ct = new ColorTransform();
+			super(width, height, false);
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Clears the render buffer.
-		 */
-		public function clear():void
-		{
-			fillRect(_rect, _fillColor);
-		}
-		
 		
 		/**
 		 * Draws a filled, four-sided polygon onto the render buffer.
@@ -123,12 +99,6 @@ package tetragon.view.render.buffers
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
 			mixColor:uint, mixAlpha:Number = 1.0):void
 		{
-			if (mixAlpha < 1.0) color = mixColors(color, mixColor, mixAlpha);
-			_buffer.length = 0;
-			lineTo(x1, y1, x2, y2, color);
-			lineTo(x2, y2, x3, y3, color);
-			lineTo(x3, y3, x4, y4, color);
-			lineTo(x4, y4, x1, y1, color);
 		}
 		
 		
@@ -146,8 +116,6 @@ package tetragon.view.render.buffers
 		public function blitRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
 			mixAlpha:Number = 1.0):void
 		{
-			_r.setTo(x, y, w, h);
-			fillRect(_r, mixAlpha < 1.0 ? mixColors(color, mixColor, mixAlpha) : color);
 		}
 		
 		
@@ -163,13 +131,6 @@ package tetragon.view.render.buffers
 		 */
 		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
 		{
-			_s.graphics.clear();
-			_s.graphics.beginFill(color, alpha);
-			_s.graphics.drawRect(0, 0, w, h);
-			_s.graphics.endFill();
-			_m.identity();
-			_m.translate(x, y);
-			draw(_s, _m);
 		}
 		
 		
@@ -184,9 +145,6 @@ package tetragon.view.render.buffers
 		 */
 		public function blitImage(image:BitmapData, x:int, y:int, w:int, h:int):void
 		{
-			_r.setTo(0, 0, w, h);
-			_p.setTo(x, y);
-			copyPixels(image, _r, _p);
 		}
 		
 		
@@ -208,18 +166,7 @@ package tetragon.view.render.buffers
 			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
 			
-			if (mixAlpha < 1.0)
-			{
-				mixAlpha = 1 - mixAlpha;
-				_ct.redMultiplier = _ct.greenMultiplier = _ct.blueMultiplier = 1 - mixAlpha;
-				_ct.redOffset = ((mixColor >> 16) & 0xFF) * mixAlpha;
-				_ct.greenOffset = ((mixColor >> 8) & 0xFF) * mixAlpha;
-				_ct.blueOffset = (mixColor & 0xFF) * mixAlpha;
-				draw(image, _m, _ct, null, _r, false);
-				return;
-			}
-			
-			draw(image, _m, null, null, _r, false);
+			//draw(image, _m);
 		}
 		
 		
@@ -227,133 +174,18 @@ package tetragon.view.render.buffers
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * The fill color of the render buffer.
-		 */
 		public function get fillColor():uint
 		{
-			return _fillColor;
+			return 0;
 		}
 		public function set fillColor(v:uint):void
 		{
-			_fillColor = v;
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Draws special line for filled quad polygon.
-		 * @private
-		 * 
-		 * @param x0
-		 * @param y0
-		 * @param x1
-		 * @param y1
-		 * @param c
-		 */
-		private function lineTo(x0:int, y0:int, x1:int, y1:int, c:uint):void
-		{
-			var steep:Boolean = (y1 - y0) * (y1 - y0) > (x1 - x0) * (x1 - x0);
-			var swap:int;
-			
-			if (steep)
-			{
-				swap = x0;
-				x0 = y0;
-				y0 = swap;
-				swap = x1;
-				x1 = y1;
-				y1 = swap;
-			}
-			
-			if (x0 > x1)
-			{
-				x0 ^= x1;
-				x1 ^= x0;
-				x0 ^= x1;
-				y0 ^= y1;
-				y1 ^= y0;
-				y0 ^= y1;
-			}
-			
-			var deltaX:int = x1 - x0;
-			var deltaY:int = (y1 - y0) < 0 ? -(y1 - y0) : (y1 - y0);
-			var yStep:int = y0 < y1 ? 1 : -1;
-			var xEnd:int = x1 - (deltaX >> 1);
-			var error:int = 0;
-			var x:int = x0;
-			var y:int = y0;
-			var fx:int = x1;
-			var fy:int = y1;
-			var px:int = 0;
-			
-			_r.setTo(0, 0, 0, 1);
-			
-			while (x++ <= xEnd)
-			{
-				if (steep)
-				{
-					checkLine(y, x, c);
-					if (fx != x1 && fx != xEnd) checkLine(fy, fx + 1, c);
-				}
-				
-				error += deltaY;
-				if ((error << 1) >= deltaX)
-				{
-					if (!steep)
-					{
-						checkLine(x - px + 1, y, c);
-						if (fx != xEnd) checkLine(fx + 1, fy, c);
-					}
-					px = 0;
-					y += yStep;
-					fy -= yStep;
-					error -= deltaX;
-				}
-				px++;
-				fx--;
-			}
-			
-			if (!steep) checkLine(x - px + 1, y, c);
-		}
-		
-		
-		/**
-		 * Checks a quad line.
-		 * @private
-		 * 
-		 * @param x
-		 * @param y
-		 * @param c
-		 */
-		private function checkLine(x:int, y:int, c:uint):void
-		{
-			if (_buffer[y])
-			{
-				if (_buffer[y] > x)
-				{
-					_r.width = _buffer[y] - x;
-					_r.x = x;
-					_r.y = y;
-					fillRect(_r, c);
-				}
-				else
-				{
-					_r.width = x - _buffer[y];
-					_r.x = _buffer[y];
-					_r.y = y;
-					fillRect(_r, c);
-				}
-			}
-			else
-			{
-				_buffer[y] = x;
-			}
-		}
-		
 		
 		/**
 		 * Mixes two colors and returns the hexadecimal color value of the result.
