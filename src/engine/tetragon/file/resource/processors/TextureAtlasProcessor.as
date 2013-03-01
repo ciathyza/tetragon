@@ -28,13 +28,13 @@
  */
 package tetragon.file.resource.processors
 {
-	import tetragon.data.texture.SubTextureBounds;
-	import tetragon.data.texture.TextureAtlas;
-	import tetragon.view.render2d.textures.Texture2D;
-
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
+	import tetragon.data.atlas.SubTextureBounds;
+	import tetragon.data.atlas.TextureAtlas;
+	import tetragon.view.render2d.textures.Texture2D;
+
 	
 	
 	/**
@@ -75,7 +75,7 @@ package tetragon.file.resource.processors
 				
 				if (image is BitmapData)
 				{
-					textureAtlas.texture = Texture2D.fromBitmapData(image);
+					textureAtlas.source = Texture2D.fromBitmapData(image);
 				}
 				else if (image is ByteArray)
 				{
@@ -83,7 +83,7 @@ package tetragon.file.resource.processors
 					var sig:String = String.fromCharCode(bytes[0], bytes[1], bytes[2]);
 					if (sig == "ATF")
 					{
-						textureAtlas.texture = Texture2D.fromATFData(bytes);
+						textureAtlas.source = Texture2D.fromATFData(bytes);
 					}
 					else
 					{

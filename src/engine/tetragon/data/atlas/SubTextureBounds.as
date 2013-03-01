@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.data.texture
+package tetragon.data.atlas
 {
 	/**
 	 * A VO that stores the boundaries for a subtexture on a texture- or sprite atlas.

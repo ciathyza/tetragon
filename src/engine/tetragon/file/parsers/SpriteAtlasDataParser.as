@@ -28,8 +28,8 @@
  */
 package tetragon.file.parsers
 {
-	import tetragon.data.sprite.SpriteAtlas;
-	import tetragon.data.texture.SubTextureBounds;
+	import tetragon.data.atlas.SpriteAtlas;
+	import tetragon.data.atlas.SubTextureBounds;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
 

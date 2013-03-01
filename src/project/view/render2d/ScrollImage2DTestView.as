@@ -28,7 +28,7 @@
  */
 package view.render2d
 {
-	import tetragon.data.texture.TextureAtlas;
+	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
@@ -95,9 +95,9 @@ package view.render2d
 			var atlas:TextureAtlas = getResource("textureAtlas");
 			if (!atlas) return;
 			
-			_tile1 = new ScrollTile2D(atlas.getTexture("bg_sky"));
-			_tile2 = new ScrollTile2D(atlas.getTexture('bg_hills'));
-			_tile3 = new ScrollTile2D(atlas.getTexture('bg_trees'));
+			_tile1 = new ScrollTile2D(atlas.getImage("bg_sky"));
+			_tile2 = new ScrollTile2D(atlas.getImage('bg_hills'));
+			_tile3 = new ScrollTile2D(atlas.getImage('bg_trees'));
 			
 			_tile2.parallax = 2;
 			_tile3.parallax = 4;

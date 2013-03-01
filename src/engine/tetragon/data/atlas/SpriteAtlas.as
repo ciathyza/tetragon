@@ -26,26 +26,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.data.texture
+package tetragon.data.atlas
 {
-	import tetragon.data.DataObject;
-	import tetragon.view.render2d.textures.Texture2D;
+	import tetragon.file.resource.ResourceIndex;
 
+	import flash.display.BitmapData;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	
 	/**
-	 * TextureAtlas class
+	 * SpriteAtlas class
 	 *
 	 * @author Hexagon
 	 */
-	public class TextureAtlas extends DataObject
+	public class SpriteAtlas extends Atlas
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const TEXTURE_ATLAS:String = "TextureAtlas";
+		public static const SPRITE_ATLAS:String = "SpriteAtlas";
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -53,17 +55,9 @@ package tetragon.data.texture
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		private var _imageID:String;
+		protected var _backgroundColor:uint;
 		/** @private */
-		private var _subTextureBounds:Vector.<SubTextureBounds>;
-		/** @private */
-		private var _texture:Texture2D;
-		/** @private */
-		private var _textureRegions:Object;
-		/** @private */
-		private var _textureFrames:Object;
-		/** @private */
-		private var _processed:Boolean;
+		protected var _transparent:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -76,15 +70,17 @@ package tetragon.data.texture
 		 * @param id
 		 * @param imageID
 		 * @param subTextureBounds
+		 * @param transparent
+		 * @param backgroundColor
 		 */
-		public function TextureAtlas(id:String, imageID:String,
-			subTextureBounds:Vector.<SubTextureBounds>)
+		public function SpriteAtlas(id:String, imageID:String,
+			subTextureBounds:Vector.<SubTextureBounds>, transparent:Boolean = false,
+			backgroundColor:uint = 0xFF00FF)
 		{
-			_id = id;
-			_imageID = imageID;
-			_subTextureBounds = subTextureBounds;
-			_textureRegions = {};
-			_textureFrames = {};
+			super(id, imageID, subTextureBounds);
+			
+			_transparent = transparent;
+			_backgroundColor = backgroundColor;
 		}
 		
 		
@@ -97,89 +93,62 @@ package tetragon.data.texture
 		 */
 		override public function dispose():void
 		{
-			if (!_texture) return;
-			_texture.dispose();
+			if (!_source) return;
+			(_source as BitmapData).dispose();
 		}
 		
 		
 		/**
-		 * Retrieves a subtexture by name. Returns <code>null</code> if it is not found.
+		 * Retrieves a sprite by name. Returns <code>null</code> if it is not found.
 		 * 
 		 * @param id
-		 * @return Texture2D or null.
+		 * @param scale scaling factor
+		 * @return BitmapData or null.
 		 */
-		public function getTexture(id:String):Texture2D
+		override public function getImage(id:String, scale:Number = 1.0):*
 		{
-			var region:Rectangle = _textureRegions[id];
-			if (!region) return null;
-			return Texture2D.fromTexture(_texture, region, _textureFrames[id]);
+			var region:Rectangle = _regions[id];
+			if (!_source || !region) return ResourceIndex.getPlaceholderImage();
+			if (!_point) _point = new Point(0, 0);
+			
+			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent,
+				_backgroundColor);
+			sprite.copyPixels(_source, region, _point);
+			
+			if (scale == 1.0) return sprite;
+			
+			var scaled:BitmapData = new BitmapData(Math.round(region.width * scale),
+				Math.round(region.height * scale), _transparent, _backgroundColor);
+			if (!_matrix) _matrix = new Matrix();
+			_matrix.setTo(scale, 0, 0, scale, 0, 0);
+			scaled.draw(sprite, _matrix);
+			return scaled;
 		}
 		
 		
 		/**
-		 * Returns all textures that start with a certain string, sorted alphabetically
-		 * (especially useful for "MovieClip").
+		 * Returns all sprites that start with a certain string, sorted alphabetically
 		 * 
 		 * @param prefix
-		 * @return Vector
+		 * @return A Vector of BitmapDatas.
 		 */
-		public function getTextures(prefix:String = ""):Vector.<Texture2D>
+		override public function getImages(prefix:String = "", scale:Number = 1.0):*
 		{
-			var textures:Vector.<Texture2D> = new <Texture2D>[];
+			var sprites:Vector.<BitmapData> = new <BitmapData>[];
 			var names:Vector.<String> = new <String>[];
 			var name:String;
 			
-			for (name in _textureRegions)
+			for (name in _regions)
 			{
 				if (name.indexOf(prefix) == 0) names.push(name);
 			}
 			names.sort(Array.CASEINSENSITIVE);
 			for each (name in names)
 			{
-				textures.push(getTexture(name));
+				sprites.push(getImage(name, scale));
 			}
 			
-			return textures;
-		}
-		
-		
-		/**
-		 * Creates a region for a subtexture and gives it a name.
-		 * 
-		 * @param id
-		 * @param region
-		 * @param frame
-		 */
-		public function addRegion(id:String, region:Rectangle, frame:Rectangle = null):void
-		{
-			_textureRegions[id] = region;
-			if (frame) _textureFrames[id] = frame;
-		}
-		
-		
-		/**
-		 * Removes a region with a certain name.
-		 * 
-		 * @param id
-		 */
-		public function removeRegion(id:String):void
-		{
-			delete _textureRegions[id];
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function dump():String
-		{
-			var s:String = toString();
-			for (var i:uint = 0; i < _subTextureBounds.length; i++)
-			{
-				var stb:SubTextureBounds = _subTextureBounds[i];
-				s += "\n\t" + stb.id;
-			}
-			return s;
+			return sprites;
 		}
 		
 		
@@ -187,54 +156,23 @@ package tetragon.data.texture
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
-		public function get subTextureBounds():Vector.<SubTextureBounds>
+		public function get backgroundColor():uint
 		{
-			return _subTextureBounds;
+			return _backgroundColor;
+		}
+		public function set backgroundColor(v:uint):void
+		{
+			_backgroundColor = v;
 		}
 		
 		
-		public function get subTextureCount():uint
+		public function get transparent():Boolean
 		{
-			if (!_subTextureBounds) return 0;
-			return _subTextureBounds.length;
+			return _transparent;
 		}
-		
-		
-		public function get imageID():String
+		public function set transparent(v:Boolean):void
 		{
-			return _imageID;
-		}
-		
-		
-		public function get texture():Texture2D
-		{
-			return _texture;
-		}
-		public function set texture(v:Texture2D):void
-		{
-			_texture = v;
-		}
-		
-		
-		public function get textureRegions():Object
-		{
-			return _textureRegions;
-		}
-		
-		
-		public function get textureFrames():Object
-		{
-			return _textureFrames;
-		}
-		
-		
-		public function get processed():Boolean
-		{
-			return _processed;
-		}
-		public function set processed(v:Boolean):void
-		{
-			_processed = v;
+			_transparent = v;
 		}
 	}
 }

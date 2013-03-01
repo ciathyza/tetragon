@@ -28,11 +28,11 @@
  */
 package tetragon.file.resource.processors
 {
-	import tetragon.data.sprite.SpriteAtlas;
-	import tetragon.data.texture.SubTextureBounds;
-
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
+	import tetragon.data.atlas.SpriteAtlas;
+	import tetragon.data.atlas.SubTextureBounds;
+
 	
 	
 	/**
@@ -73,7 +73,7 @@ package tetragon.file.resource.processors
 				
 				if (image is BitmapData)
 				{
-					spriteAtlas.image = image;
+					spriteAtlas.source = image;
 				}
 				else if (image == null)
 				{

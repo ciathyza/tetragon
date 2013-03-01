@@ -28,8 +28,7 @@
  */
 package view.racing
 {
-	import tetragon.data.sprite.SpriteAtlas;
-	import tetragon.data.texture.TextureAtlas;
+	import tetragon.data.atlas.Atlas;
 	import tetragon.input.KeyMode;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
@@ -40,6 +39,7 @@ package view.racing
 	import tetragon.view.render2d.events.Event2D;
 
 	import flash.display.Bitmap;
+
 	
 	
 	/**
@@ -58,9 +58,11 @@ package view.racing
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _useRender2D:Boolean = true;
+		private var _useRender2D:Boolean = false;
 		private var _render2D:Render2D;
 		private var _view:RacingView;
+		
+		private var _atlas:Atlas;
 		
 		private var _raceTrackRenderer:RaceTrackRenderer;
 		private var _renderBitmap:Bitmap;
@@ -160,8 +162,8 @@ package view.racing
 		{
 			/* Texture can only be processed after we have a Context3D! */
 			resourceManager.process("textureAtlas");
-			var atlas:TextureAtlas = getResource("textureAtlas");
-			_raceTrackRenderer = new RaceTrackRenderer(1024, 640, atlas, _useRender2D);
+			_atlas = getResource("textureAtlas");
+			_raceTrackRenderer = new RaceTrackRenderer(1024, 640, _atlas, _useRender2D);
 			_raceTrackRenderer.init();
 			reset();
 			main.gameLoop.start();
@@ -280,13 +282,13 @@ package view.racing
 			{
 				resourceManager.process("spriteAtlas");
 				
-				var atlas:SpriteAtlas = getResource("spriteAtlas");
+				_atlas = getResource("spriteAtlas");
 				
-				_bgLayer1 = new ParallaxLayer(atlas.getSprite("bg_sky", 2.0), 2);
-				_bgLayer2 = new ParallaxLayer(atlas.getSprite("bg_hills", 2.0), 3);
-				_bgLayer3 = new ParallaxLayer(atlas.getSprite("bg_trees", 2.0), 4);
+				_bgLayer1 = new ParallaxLayer(_atlas.getImage("bg_sky", 2.0), 2);
+				_bgLayer2 = new ParallaxLayer(_atlas.getImage("bg_hills", 2.0), 3);
+				_bgLayer3 = new ParallaxLayer(_atlas.getImage("bg_trees", 2.0), 4);
 				
-				_raceTrackRenderer = new RaceTrackRenderer(1024, 640, atlas, _useRender2D);
+				_raceTrackRenderer = new RaceTrackRenderer(1024, 640, _atlas, _useRender2D);
 				_raceTrackRenderer.backgroundLayers = [_bgLayer1, _bgLayer2, _bgLayer3];
 				
 				_renderBitmap = _raceTrackRenderer.renderBitmap;
