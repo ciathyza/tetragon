@@ -32,10 +32,7 @@ package view.render2d
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.View2D;
-	import tetragon.view.stage3d.Stage3DEvent;
-	import tetragon.view.stage3d.Stage3DProxy;
-
-	import flash.events.Event;
+	import tetragon.view.render2d.events.Event2D;
 
 	
 	/**
@@ -54,13 +51,8 @@ package view.render2d
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		//private var _stage3DManager:Stage3D;
-		
-		private var _stage3DProxy:Stage3DProxy;
-		
-		private var _render2D1:Render2D;
-		private var _render2D2:Render2D;
-		private var _render2D3:Render2D;
+		private var _render2D:Render2D;
+		private var _view2D:View2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -78,7 +70,6 @@ package view.render2d
 		override public function start():void
 		{
 			super.start();
-			main.statsMonitor.toggle();
 		}
 		
 		
@@ -106,6 +97,7 @@ package view.render2d
 		override public function stop():void
 		{
 			super.stop();
+			main.gameLoop.stop();
 		}
 		
 		
@@ -144,60 +136,39 @@ package view.render2d
 		}
 		
 		
-		private function onContext3DCreated(e:Stage3DEvent):void
+		/**
+		 * @private
+		 */
+		private function onContext3DCreated(e:Event2D):void
 		{
-			var view1:View2D = new BenchmarkView();
-			view1.x = 10;
-			view1.y = 10;
-			view1.frameWidth = (main.stage.stageWidth * 0.5) - 20;
-			view1.frameHeight = (main.stage.stageHeight) - 20;
-			view1.background = new Quad2D(10, 10, 0x888888);
-			view1.touchable = false;
-			
-//			var view2:View2D = new BenchmarkView();
-//			view2.x = view1.x + view1.frameWidth + 10;
-//			view2.y = 10;
-//			view2.frameWidth = (main.stage.stageWidth * 0.5) - 10;
-//			view2.frameHeight = (main.stage.stageHeight * 0.5) - 20;
-//			view2.background = new Quad2D(10, 10, 0x888888);
-//			view2.touchable = false;
-			
-//			var view3:View2D = new BenchmarkView();
-//			view3.x = view2.x;
-//			view3.y = view2.y + view2.frameHeight + 10;
-//			view3.frameWidth = (main.stage.stageWidth * 0.5) - 10;
-//			view3.frameHeight = (main.stage.stageHeight * 0.5) - 10;
-//			view3.background = new Quad2D(10, 10, 0x888888);
-//			view3.touchable = false;
-			
-			_render2D1 = new Render2D(view1);
-			//_render2D1.simulateMultitouch = true;
-			//_render2D1.enableErrorChecking = true;
-			//_render2D1.antiAliasing = 2;
-			_render2D1.start();
-			
-			//_render2D2 = new Render2D(view2, _stage3DProxy);
-			//_render2D2.simulateMultitouch = true;
-			//_render2D2.enableErrorChecking = true;
-			//_render2D2.antiAliasing = 2;
-			//_render2D2.start();
-			
-			//_render2D3 = new Render2D(view3, _stage3DProxy);
-			//_render2D3.simulateMultitouch = true;
-			//_render2D3.enableErrorChecking = true;
-			//_render2D3.antiAliasing = 2;
-			//_render2D3.start();
-			
-			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			/* Texture can only be processed after we have a Context3D! */
+			resourceManager.process("textureAtlas");
+			main.gameLoop.start();
 		}
 		
 		
-		private function onEnterFrame(event:Event):void
+		/**
+		 * @private
+		 */
+		private function onRoot2DCreated(e:Event2D):void
 		{
-			_render2D1.nextFrame();
-			if (_render2D2) _render2D2.nextFrame();
-			if (_render2D3) _render2D3.nextFrame();
-		}		
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onTick():void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onRender(ticks:uint, ms:uint, fps:uint):void
+		{
+		}
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -226,11 +197,9 @@ package view.render2d
 		 */
 		override protected function createChildren():void
 		{
-			_stage3DProxy = main.stage3DManager.getFreeStage3DProxy();
-			_stage3DProxy.antiAlias = 2;
-			_stage3DProxy.color = 0x000000;
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContext3DCreated);
-			_stage3DProxy.requestContext3D();
+			_view2D = new View2D();
+			_view2D.background = new Quad2D(10, 10, 0x000033);
+			_render2D = new Render2D(_view2D);
 		}
 		
 		
@@ -255,6 +224,10 @@ package view.render2d
 		 */
 		override protected function addListeners():void
 		{
+			_render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
+			_render2D.addEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
+			main.gameLoop.tickSignal.add(onTick);
+			main.gameLoop.renderSignal.add(onRender);
 		}
 		
 		
@@ -263,6 +236,10 @@ package view.render2d
 		 */
 		override protected function removeListeners():void
 		{
+			_render2D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
+			_render2D.removeEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
+			main.gameLoop.tickSignal.remove(onTick);
+			main.gameLoop.renderSignal.remove(onRender);
 		}
 		
 		
@@ -271,7 +248,7 @@ package view.render2d
 		 */
 		override protected function executeBeforeStart():void
 		{
-			main.gameLoop.start();
+			main.statsMonitor.toggle();
 		}
 		
 		

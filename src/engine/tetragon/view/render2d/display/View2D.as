@@ -29,7 +29,6 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.Main;
-	import tetragon.core.GameLoop;
 	import tetragon.view.IView;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
@@ -50,7 +49,6 @@ package tetragon.view.render2d.display
 		// -----------------------------------------------------------------------------------------
 		
 		protected var _main:Main;
-		protected var _gameLoop:GameLoop;
 		
 		protected var _clipRect:Rectangle;
 		protected var _background:Quad2D;
@@ -71,7 +69,6 @@ package tetragon.view.render2d.display
 		public function View2D()
 		{
 			_main = Main.instance;
-			_gameLoop = _main.gameLoop;
 			_frameWidth = _main.stage.stageWidth;
 			_frameHeight = _main.stage.stageHeight;
 			
@@ -221,19 +218,6 @@ package tetragon.view.render2d.display
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			
-			var p:Polygon2D = new Polygon2D(100, 4, 0xFF0000);
-			p.x = 200;
-			p.y = 200;
-			addChild(p);
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		protected function onRender(ticks:uint, ms:uint, fps:uint):void
-		{
 		}
 		
 		
