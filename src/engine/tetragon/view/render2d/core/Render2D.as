@@ -535,54 +535,6 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * Displays the statistics box at a certain position.
-		 * 
-		 * TODO To be removed! render2D stats should be integrated with Tetragon's Stats Monitor!
-		 * 
-		 * @param hAlign
-		 * @param vAlign
-		 * @param scale
-		 */
-		//public function showStatsAt(hAlign:String = "left", vAlign:String = "top",
-		//	scale:Number = 1.0):void
-		//{
-		//	if (!_context)
-		//	{
-		//		// Render2D is not yet ready - we postpone this until it's initialized.
-		//		addEventListener(Event2D.ROOT_CREATED, onRootCreated);
-		//	}
-		//	else
-		//	{
-		//		if (_statsDisplay == null)
-		//		{
-		//			_statsDisplay = new StatsDisplay2D();
-		//			_statsDisplay.touchable = false;
-		//			_stage2D.addChild(_statsDisplay);
-		//		}
-		//
-		//		var stageWidth:int = _stage2D.stageWidth;
-		//		var stageHeight:int = _stage2D.stageHeight;
-		//
-		//		_statsDisplay.scaleX = _statsDisplay.scaleY = scale;
-		//
-		//		if (hAlign == HAlign.LEFT) _statsDisplay.x = 0;
-		//		else if (hAlign == HAlign.RIGHT) _statsDisplay.x = stageWidth - _statsDisplay.width;
-		//		else _statsDisplay.x = int((stageWidth - _statsDisplay.width) / 2);
-		//
-		//		if (vAlign == VAlign.TOP) _statsDisplay.y = 0;
-		//		else if (vAlign == VAlign.BOTTOM) _statsDisplay.y = stageHeight - _statsDisplay.height;
-		//		else _statsDisplay.y = int((stageHeight - _statsDisplay.height) / 2);
-		//	}
-		//
-		//	function onRootCreated():void
-		//	{
-		//		showStatsAt(hAlign, vAlign, scale);
-		//		removeEventListener(Event2D.ROOT_CREATED, onRootCreated);
-		//	}
-		//}
-		
-		
-		/**
 		 * Returns a String Representation of the class.
 		 * 
 		 * @return A String Representation of the class.
@@ -1181,6 +1133,7 @@ package tetragon.view.render2d.core
 		
 		/**
 		 * TODO To be moved out of Render2D and into a more common display space!
+		 * Possibly move to ScreenManager.
 		 * @private
 		 */
 		private function showOnScreenError(message:String):void
