@@ -33,6 +33,7 @@ package tetragon.view.render2d.extensions.scrollimage
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.textures.Texture2D;
+	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import com.hexagonstar.constants.TextureSmoothing;
 	import com.hexagonstar.exception.MissingContext3DException;
@@ -57,114 +58,116 @@ package tetragon.view.render2d.extensions.scrollimage
 	 */
 	public class ScrollImage2D extends DisplayObject2D
 	{
-		private var mSyncRequired:Boolean;
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
+		private static const MAX_LAYERS_AMOUNT:uint = 16;
+		// 0,1,2,3 - transform matrix, 4 - alpha, must start from vc5
+		private static const REGISTER:uint = 5;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
 		// vertex data
-		private var mVertexData:VertexData2D;
-		private var mVertexBuffer:VertexBuffer3D;
+		private var _vertexData:VertexData2D;
+		private var _vertexBuffer:VertexBuffer3D;
+		
 		// ShaderConstand and clipping index data
-		private var mExtraBuffer:VertexBuffer3D;
-		private var mExtraData:Vector.<Number>;
+		private var _extraBuffer:VertexBuffer3D;
+		private var _extraData:Vector.<Number>;
+		
 		// index data
-		private var mIndexData:Vector.<uint>;
-		private var mIndexBuffer:IndexBuffer3D;
-		private var mTexture:Texture2D;
-		// helper objects (to avoid temporary objects)
-		private var sRenderColorAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
-		private var sMatrix:Matrix3D = new Matrix3D();
-		private var sPremultipliedAlpha:Boolean;
-		private var sRegister:uint;
-		private static var sProgramNameCache:Dictionary = new Dictionary();
+		private var _indexData:Vector.<uint>;
+		private var _indexBuffer:IndexBuffer3D;
+		private var _texture:Texture2D;
+		
 		// properties
-		private var mCanvasWidth:Number;
-		private var mCanvasHeight:Number;
-		private var mTextureWidth:Number = 0;
-		private var mTextureHeight:Number = 0;
-		private var maxU:Number;
-		private var maxV:Number;
-		private var mColor:uint;
-		private var tempWidth:Number;
-		private var tempHeight:Number;
-		private var mMaxLayersAmount:uint;
-		private var mSmoothing:String = TextureSmoothing.BILINEAR;
-		private var mMipMapping:Boolean = false;
-		private var mBaseProgram:String;
-		// layers
-		private var mLayers:Vector.<ScrollTile2D> = new Vector.<ScrollTile2D>();
-		private var mLayersMatrix:Vector.<Matrix3D> = new Vector.<Matrix3D>();
-		private var mMainLayer:ScrollTile2D;
-		private var mLayerVertexData:VertexData2D;
-		private var mFreez:Boolean;
-		// paralax
-		private var mPar:Boolean = true;
-		private var mParOffset:Boolean = true;
-		private var mParScale:Boolean = true;
+		private var _smoothing:String = TextureSmoothing2D.NONE;
+		private var _baseProgram:String;
+		
+		private var _canvasWidth:Number;
+		private var _canvasHeight:Number;
+		private var _textureWidth:Number = 0.0;
+		private var _textureHeight:Number = 0.0;
+		private var _tempWidth:Number;
+		private var _tempHeight:Number;
+		private var _maxU:Number;
+		private var _maxV:Number;
+		private var _color:uint;
+		
+		private var _layers:Vector.<ScrollTile2D>;
+		private var _layersMatrix:Vector.<Matrix3D>;
+		private var _mainLayer:ScrollTile2D;
+		private var _layerVertexData:VertexData2D;
+		
 		// transform
-		private var mTilesOffsetX:Number = 0;
-		private var mTilesOffsetY:Number = 0;
-		private var mTilesRotation:Number = 0;
-		private var mTilesScaleX:Number = 1;
-		private var mTilesScaleY:Number = 1;
-		private var mTilesPivotX:Number = 0;
-		private var mTilesPivotY:Number = 0;
-		private var mTextureRatio:Number;
-		private var mUseBaseTexture:Boolean;
-
-
+		private var _tilesOffsetX:Number = 0.0;
+		private var _tilesOffsetY:Number = 0.0;
+		private var _tilesRotation:Number = 0.0;
+		private var _tilesScaleX:Number = 1.0;
+		private var _tilesScaleY:Number = 1.0;
+		private var _tilesPivotX:Number = 0.0;
+		private var _tilesPivotY:Number = 0.0;
+		private var _textureRatio:Number;
+		
+		private var _syncRequired:Boolean;
+		private var _useBaseTexture:Boolean;
+		private var _premultipliedAlpha:Boolean;
+		private var _mipMapping:Boolean;
+		private var _freeze:Boolean;
+		private var _parallax:Boolean = true;
+		private var _parallaxOffset:Boolean = true;
+		private var _parallaxScale:Boolean = true;
+		
+		// helper objects (to avoid temporary objects)
+		private var _renderColorAlpha:Vector.<Number>;
+		private var _matrix:Matrix3D;
+		private static var _programNameCache:Dictionary = new Dictionary();
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
 		/**
-		 * Creates an object with tiled texture. Default without mipMapping to avoid some borders anrtefacts. Property use BaseTexture determinant using whole texture (without UV clipping) - use it for better performance special on mobile.
+		 * Creates an object with tiled texture. Default without mipMapping to avoid some
+		 * borders anrtefacts. Property use BaseTexture determinant using whole texture
+		 * (without UV clipping) - use it for better performance special on mobile.
+		 * 
 		 * @param width
 		 * @param height
 		 * @param useBaseTexture
 		 */
 		public function ScrollImage2D(width:Number, height:Number, useBaseTexture:Boolean = false)
 		{
-			this.mUseBaseTexture = useBaseTexture;
-			// 0,1,2,3 - transform matrix, 4 - alpha, must start from vc5
-			sRegister = 5;
-
-			// maximum amount of layers
-			mMaxLayersAmount = 16;
-
+			_layers = new Vector.<ScrollTile2D>();
+			_layersMatrix = new Vector.<Matrix3D>();
+			_renderColorAlpha = new <Number>[1.0, 1.0, 1.0, 1.0];
+			_matrix = new Matrix3D();
+			
+			_useBaseTexture = useBaseTexture;
 			// base program without tint/alpha/mipmaps and with blinear smoothing
-			mBaseProgram = getImageProgramName(false, mMipMapping, mSmoothing);
-			this.mCanvasWidth = width;
-			this.mCanvasHeight = height;
-
+			_baseProgram = getImageProgramName(false, _mipMapping, _smoothing);
+			_canvasWidth = width;
+			_canvasHeight = height;
+			
 			resetVertices();
 			registerPrograms();
-
+			
 			color = 0xFFFFFF;
-
-			mSyncRequired = false;
-
+			
 			// handle lost context
 			Render2D.current.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		}
-
-
-		/**
-		 * Context created handler
-		 * @param event
-		 */
-		private function onContextCreated(event:Event):void
-		{
-			// the old context was lost, so we create new buffers and shaders.
-			createBuffers();
-			registerPrograms();
-		}
-
-
-		/**
-		 * Reset vertexData
-		 */
-		private function resetVertices():void
-		{
-			mVertexData = new VertexData2D(0);
-			mIndexData = new Vector.<uint>();
-			mExtraData = new Vector.<Number>();
-		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
 		/**
 		 * Add layer on the top.
 		 * @param layer
@@ -174,8 +177,8 @@ package tetragon.view.render2d.extensions.scrollimage
 		{
 			return addLayerAt(layer, numLayers + 1);
 		}
-
-
+		
+		
 		/**
 		 * Add layer at index.
 		 * @param layer
@@ -186,21 +189,21 @@ package tetragon.view.render2d.extensions.scrollimage
 		{
 			if ( index > numLayers ) index = numLayers + 1;
 
-			if ( mLayers.length == 0 && mLayers.length < mMaxLayersAmount )
+			if ( _layers.length == 0 && _layers.length < MAX_LAYERS_AMOUNT )
 			{
 				mainSetup(layer);
 			}
-			else if ( mTexture != layer.baseTexture )
+			else if ( _texture != layer.baseTexture )
 			{
 				throw new Error("Layers must use this same texture.");
 			}
-			else if ( mLayers.length >= mMaxLayersAmount )
+			else if ( _layers.length >= MAX_LAYERS_AMOUNT )
 			{
-				throw new Error("Maximum layers amount has been reached! Max is " + mMaxLayersAmount);
+				throw new Error("Maximum layers amount has been reached! Max is " + MAX_LAYERS_AMOUNT);
 			}
 
-			mLayers.splice(index, 0, layer);
-			mLayersMatrix.splice(index, 0, new Matrix3D());
+			_layers.splice(index, 0, layer);
+			_layersMatrix.splice(index, 0, new Matrix3D());
 
 			updateMesh();
 			return layer;
@@ -213,23 +216,12 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function removeLayerAt(id:int):void
 		{
-			if ( mLayers.length && id < mLayers.length )
+			if (_layers.length && id < _layers.length)
 			{
-				mLayers.splice(id, 1);
-				mLayersMatrix.splice(id, 1);
-
-				if ( mLayers.length )
-				{
-					updateMesh();
-				}
-				else
-				{
-					reset();
-				}
-			}
-			else
-			{
-				return;
+				_layers.splice(id, 1);
+				_layersMatrix.splice(id, 1);
+				if (_layers.length) updateMesh();
+				else reset();
 			}
 		}
 
@@ -240,11 +232,11 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function removeAll(dispose:Boolean = false):void
 		{
-			if ( dispose )
+			if (dispose)
 			{
-				for (var i:int = 0; i < mLayers.length; i++)
+				for (var i:int = 0; i < _layers.length; i++)
 				{
-					mLayers[i].dispose();
+					_layers[i].dispose();
 				}
 			}
 			reset();
@@ -257,43 +249,470 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function getLayerAt(index:uint):ScrollTile2D
 		{
-			if ( index < mLayers.length ) return  mLayers[index];
-			;
+			if (index < _layers.length) return _layers[index];
 			return null;
+		}
+		
+		
+		/**
+		 * Returns a rectangle that completely encloses the object as it appears in another coordinate system.
+		 * @param targetSpace
+		 * @param resultRect
+		 * @return
+		 */
+		public override function getBounds(targetSpace:DisplayObject2D, resultRect:Rectangle = null):Rectangle
+		{
+			if (resultRect == null) resultRect = new Rectangle();
+			var transformationMatrix:Matrix = getTransformationMatrix(targetSpace);
+			return _vertexData.getBounds(transformationMatrix, 0, -1, resultRect);
+		}
+		
+		
+		/**
+		 * Renders the object with the help of a 'support' object and with the accumulated alpha of its parent object.
+		 * @param support
+		 * @param alpha
+		 */
+		public override function render(support:RenderSupport2D, alpha:Number):void
+		{
+			if ( _layers.length == 0) return;
+			support.raiseDrawCount();
+
+			support.finishQuadBatch();
+			if (_syncRequired) syncBuffers();
+
+			var context:Context3D = Render2D.context;
+			if (context == null) throw new MissingContext3DException();
+
+			// apply the current blendmode
+			support.applyBlendMode(_premultipliedAlpha);
+
+			// set texture
+			if (_texture)
+				context.setTextureAt(0, _texture.base);
+
+			// set buffers
+			context.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			// position
+			context.setVertexBufferAt(1, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			// UV
+			context.setVertexBufferAt(2, _extraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
+			// vc for color and transform registers
+			context.setVertexBufferAt(3, _extraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
+			// clipping
+
+			// set alpha
+			_renderColorAlpha[3] = this.alpha * alpha;
+
+			// set object and layers data
+			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
+			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, _renderColorAlpha, 1);
+
+			var tintedlayer:Boolean = false;
+
+			var layer:ScrollTile2D;
+			for (var i:int = 0; i < _layers.length; i++)
+			{
+				layer = _layers[i];
+
+				tintedlayer = tintedlayer || layer.color != 0xFFFFFF || layer.alpha != 1.0;
+
+				_matrix = _freeze ? _layersMatrix[i] : calculateMatrix(layer, _layersMatrix[i]);
+
+				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, getColorRegister(i), layer.colorTrans, 1);
+				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, getTransRegister(i), _matrix, true);
+			}
+
+			// activate program (shader)
+			var tinted:Boolean = (_renderColorAlpha[3] != 1.0) || color != 0xFFFFFF || tintedlayer;
+			context.setProgram(Render2D.current.getProgram(getImageProgramName(tinted, _mipMapping, _smoothing, _texture.format, _useBaseTexture)));
+
+			// draw the object
+			context.drawTriangles(_indexBuffer, 0, _indexData.length / 3);
+
+			// reset buffers
+			if (_texture)
+			{
+				context.setTextureAt(0, null);
+			}
+
+			context.setVertexBufferAt(0, null);
+			context.setVertexBufferAt(1, null);
+			context.setVertexBufferAt(2, null);
+			context.setVertexBufferAt(3, null);
+		}
+		
+		
+		/**
+		 * Disposes all resources of the display object.
+		 */
+		public override function dispose():void
+		{
+			Render2D.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			if (_vertexBuffer) _vertexBuffer.dispose();
+			if (_indexBuffer) _indexBuffer.dispose();
+			_layers = null;
+			_layersMatrix = null;
+			_texture = null;
+			super.dispose();
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Tint color.
+		 */
+		public function get color():uint
+		{
+			return _color;
+		}
+		public function set color(v:uint):void
+		{
+			_color = v;
+			_renderColorAlpha[0] = ((_color >> 16) & 0xff) / 255.0;
+			_renderColorAlpha[1] = ((_color >> 8) & 0xff) / 255.0;
+			_renderColorAlpha[2] = (_color & 0xff) / 255.0;
+		}
+		
+		
+		/**
+		 * Canvas width in pixels.
+		 */
+		public function get canvasWidth():Number
+		{
+			return _canvasWidth;
+		}
+		public function set canvasWidth(v:Number):void
+		{
+			_canvasWidth = v;
+			if (_mainLayer)
+			{
+				mainSetup(_mainLayer);
+				_syncRequired = true;
+			}
+		}
+		
+		
+		/**
+		 * Canvas height in pixels.
+		 */
+		public function get canvasHeight():Number
+		{
+			return _canvasHeight;
+		}
+		public function set canvasHeight(v:Number):void
+		{
+			_canvasHeight = v;
+			if (_mainLayer)
+			{
+				mainSetup(_mainLayer);
+				_syncRequired = true;
+			}
+		}
+		
+		
+		/**
+		 * @inheritDocs
+		 */
+		override public function get width():Number
+		{
+			return numLayers == 0 ? super.width : 0;
+		}
+		override public function set width(v:Number):void
+		{
+			if (_textureWidth)
+			{
+				super.width = v;
+				_tempWidth = 0;
+			}
+			else
+			{
+				_tempWidth = v;
+			}
 		}
 
 
+		/**
+		 * @inheritDocs
+		 */
+		override public function get height():Number
+		{
+			return numLayers == 0 ? super.height : 0;
+		}
+		override public function set height(v:Number):void
+		{
+			if (_textureHeight)
+			{
+				super.height = v;
+				_tempHeight = 0;
+			}
+			else
+			{
+				_tempHeight = v;
+			}
+		}
+
+
+		/**
+		 * Texture used in object - from the layer on index 0.
+		 */
+		public function get texture():Texture2D
+		{
+			return _texture;
+		}
+		
+		
+		/**
+		 * The horizontal scale factor. '1' means no scale, negative values flip the tiles.
+		 */
+		public function get tilesScaleX():Number
+		{
+			return _tilesScaleX;
+		}
+		public function set tilesScaleX(v:Number):void
+		{
+			_tilesScaleX = v;
+		}
+
+
+		/**
+		 * The vertical scale factor. '1' means no scale, negative values flip the tiles.
+		 */
+		public function get tilesScaleY():Number
+		{
+			return _tilesScaleY;
+		}
+		public function set tilesScaleY(v:Number):void
+		{
+			_tilesScaleY = v;
+		}
+
+
+		/**
+		 * The x offet of the tiles.
+		 */
+		public function get tilesOffsetX():Number
+		{
+			return _tilesOffsetX;
+		}
+		public function set tilesOffsetX(v:Number):void
+		{
+			_tilesOffsetX = v;
+		}
+
+
+		/**
+		 * The y offet of the tiles.
+		 */
+		public function get tilesOffsetY():Number
+		{
+			return _tilesOffsetY;
+		}
+		public function set tilesOffsetY(v:Number):void
+		{
+			_tilesOffsetY = v;
+		}
+
+
+		/**
+		 * The rotation of the tiles in radians.
+		 */
+		public function get tilesRotation():Number
+		{
+			return _tilesRotation;
+		}
+		public function set tilesRotation(v:Number):void
+		{
+			_tilesRotation = v;
+		}
+
+
+		/**
+		 * The x pivot for rotation and scale the tiles.
+		 */
+		public function get tilesPivotX():Number
+		{
+			return _tilesPivotX * _textureWidth;
+		}
+		public function set tilesPivotX(v:Number):void
+		{
+			_tilesPivotX = _textureWidth ? v / _textureWidth : 0;
+		}
+
+
+		/**
+		 * The y pivot for rotation and scale the tiles.
+		 */
+		public function get tilesPivotY():Number
+		{
+			return _tilesPivotY * _textureHeight;
+		}
+		public function set tilesPivotY(v:Number):void
+		{
+			_tilesPivotY = _textureHeight ? v / _textureHeight : 0;
+		}
+
+
+		/**
+		 * Determinate parlax for offset.
+		 */
+		public function get parallaxOffset():Boolean
+		{
+			return _parallaxOffset;
+		}
+		public function set parallaxOffset(v:Boolean):void
+		{
+			_parallaxOffset = v;
+		}
+
+
+		/**
+		 * Determinate parlax for scale.
+		 */
+		public function get parallaxScale():Boolean
+		{
+			return _parallaxScale;
+		}
+		public function set parallaxScale(v:Boolean):void
+		{
+			_parallaxScale = v;
+		}
+
+
+		/**
+		 * Determinate parlax for all transformations.
+		 */
+		public function get parallax():Boolean
+		{
+			return _parallax;
+		}
+		public function set parallax(v:Boolean):void
+		{
+			_parallax = v;
+			parallaxOffset = v;
+			parallaxScale = v;
+		}
+
+
+		/**
+		 * Avoid all tiles transformations - for better performance matrixes are not calculate.
+		 */
+		public function get freeze():Boolean
+		{
+			return _freeze;
+		}
+		public function set freeze(v:Boolean):void
+		{
+			for (var i:int = 0; i < _layers.length; i++)
+			{
+				calculateMatrix(_layers[i], _layersMatrix[i]);
+			}
+			_freeze = v;
+		}
+
+
+		/**
+		 * Return number of layers
+		 */
+		public function get numLayers():int
+		{
+			return _layers.length;
+		}
+		
+		
+		/**
+		 * The smoothing filter that is used for the texture.
+		 */
+		public function get smoothing():String
+		{
+			return _smoothing;
+		}
+		public function set smoothing(v:String):void
+		{
+			_smoothing = v;
+		}
+
+
+		/**
+		 * Determinate mipmapping for the texture - default set to false to avoid
+		 * borders artefacts.
+		 */
+		public function get mipMapping():Boolean
+		{
+			return _mipMapping;
+		}
+		public function set mipMapping(v:Boolean):void
+		{
+			if (_texture) _mipMapping = v ? _texture.mipMapping : v;
+			else _mipMapping = v;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Context created handler
+		 * @param event
+		 */
+		private function onContextCreated(event:Event):void
+		{
+			// the old context was lost, so we create new buffers and shaders.
+			createBuffers();
+			registerPrograms();
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Reset vertexData
+		 */
+		private function resetVertices():void
+		{
+			_vertexData = new VertexData2D(0);
+			_indexData = new Vector.<uint>();
+			_extraData = new Vector.<Number>();
+		}
+		
+		
 		/**
 		 * Setup object property using first layer.
 		 * @param layer
 		 */
 		private function mainSetup(layer:ScrollTile2D):void
 		{
-			mMainLayer = layer;
-			mTexture = mMainLayer.baseTexture;
-			sPremultipliedAlpha = mTexture.premultipliedAlpha;
+			_mainLayer = layer;
+			_texture = _mainLayer.baseTexture;
+			_premultipliedAlpha = _texture.premultipliedAlpha;
 
-			mTextureWidth = mTexture.width;
-			mTextureHeight = mTexture.height;
+			_textureWidth = _texture.width;
+			_textureHeight = _texture.height;
 
-			mTextureRatio = mTextureWidth / mTextureHeight;
+			_textureRatio = _textureWidth / _textureHeight;
 
-			maxU = mCanvasWidth / mTextureWidth;
-			maxV = mCanvasHeight / mTextureHeight;
+			_maxU = _canvasWidth / _textureWidth;
+			_maxV = _canvasHeight / _textureHeight;
 
-			if ( mLayerVertexData == null )
+			if ( _layerVertexData == null )
 			{
-				mLayerVertexData = new VertexData2D(4);
+				_layerVertexData = new VertexData2D(4);
 
-				mLayerVertexData.setPosition(0, 0, 0);
-				mLayerVertexData.setPosition(1, mCanvasWidth, 0);
-				mLayerVertexData.setPosition(2, 0, mCanvasHeight);
-				mLayerVertexData.setPosition(3, mCanvasWidth, mCanvasHeight);
+				_layerVertexData.setPosition(0, 0, 0);
+				_layerVertexData.setPosition(1, _canvasWidth, 0);
+				_layerVertexData.setPosition(2, 0, _canvasHeight);
+				_layerVertexData.setPosition(3, _canvasWidth, _canvasHeight);
 
-				mLayerVertexData.setTexCoords(0, 0, 0);
-				mLayerVertexData.setTexCoords(1, maxU, 0);
-				mLayerVertexData.setTexCoords(2, 0, maxV);
-				mLayerVertexData.setTexCoords(3, maxU, maxV);
+				_layerVertexData.setTexCoords(0, 0, 0);
+				_layerVertexData.setTexCoords(1, _maxU, 0);
+				_layerVertexData.setTexCoords(2, 0, _maxV);
+				_layerVertexData.setTexCoords(3, _maxU, _maxV);
 			}
 		}
 
@@ -303,15 +722,15 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function updateMesh():void
 		{
-			if ( mMainLayer )
+			if ( _mainLayer )
 			{
 				resetVertices();
 
-				for (var i:int = 0; i < mLayers.length; i++)
+				for (var i:int = 0; i < _layers.length; i++)
 				{
-					setupVertices(i, mLayers[i]);
+					setupVertices(i, _layers[i]);
 				}
-				if ( mLayers.length ) createBuffers();
+				if ( _layers.length ) createBuffers();
 			}
 		}
 
@@ -321,29 +740,14 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function reset():void
 		{
-			mLayers = new Vector.<ScrollTile2D>();
-			mLayersMatrix = new Vector.<Matrix3D>();
-			mMainLayer = null;
-			mTextureWidth = mTextureHeight = 0;
+			_layers = new Vector.<ScrollTile2D>();
+			_layersMatrix = new Vector.<Matrix3D>();
+			_mainLayer = null;
+			_textureWidth = _textureHeight = 0;
 			resetVertices();
 		}
-
-
-		/**
-		 * Returns a rectangle that completely encloses the object as it appears in another coordinate system.
-		 * @param targetSpace
-		 * @param resultRect
-		 * @return
-		 */
-		public override function getBounds(targetSpace:DisplayObject2D, resultRect:Rectangle = null):Rectangle
-		{
-			if (resultRect == null)
-				resultRect = new Rectangle();
-			var transformationMatrix:Matrix = getTransformationMatrix(targetSpace);
-			return mVertexData.getBounds(transformationMatrix, 0, -1, resultRect);
-		}
-
-
+		
+		
 		/**
 		 * Creates vertex for a layer.
 		 * @param id
@@ -351,19 +755,19 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function setupVertices(id:int, layer:ScrollTile2D):void
 		{
-			mVertexData.append(mLayerVertexData);
+			_vertexData.append(_layerVertexData);
 
-			mIndexData[int(id * 6)] = id * 4;
-			mIndexData[int(id * 6 + 1)] = id * 4 + 1;
-			mIndexData[int(id * 6 + 2)] = id * 4 + 2;
-			mIndexData[int(id * 6 + 3)] = id * 4 + 1;
-			mIndexData[int(id * 6 + 4)] = id * 4 + 3;
-			mIndexData[int(id * 6 + 5)] = id * 4 + 2;
+			_indexData[int(id * 6)] = id * 4;
+			_indexData[int(id * 6 + 1)] = id * 4 + 1;
+			_indexData[int(id * 6 + 2)] = id * 4 + 2;
+			_indexData[int(id * 6 + 3)] = id * 4 + 1;
+			_indexData[int(id * 6 + 4)] = id * 4 + 3;
+			_indexData[int(id * 6 + 5)] = id * 4 + 2;
 
 			var i:int = -1;
 			while (++i < 4 )
 			{
-				mExtraData.push(getColorRegister(id), getTransRegister(id), int(sPremultipliedAlpha), layer.baseClipping.x, layer.baseClipping.y, layer.baseClipping.width, layer.baseClipping.height);
+				_extraData.push(getColorRegister(id), getTransRegister(id), int(_premultipliedAlpha), layer.baseClipping.x, layer.baseClipping.y, layer.baseClipping.width, layer.baseClipping.height);
 			}
 		}
 
@@ -375,7 +779,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function getColorRegister(id:uint):uint
 		{
-			return sRegister + ( id * 5 );
+			return REGISTER + ( id * 5 );
 		}
 
 
@@ -386,7 +790,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function getTransRegister(id:uint):uint
 		{
-			return sRegister + ( id * 5 ) + 1;
+			return REGISTER + ( id * 5 ) + 1;
 		}
 
 
@@ -396,104 +800,28 @@ package tetragon.view.render2d.extensions.scrollimage
 		private function createBuffers():void
 		{
 			// check if width/height was set before vertex creation
-			if ( tempWidth ) width = tempWidth;
-			if ( tempHeight ) height = tempHeight;
+			if ( _tempWidth ) width = _tempWidth;
+			if ( _tempHeight ) height = _tempHeight;
 
 			var context:Context3D = Render2D.context;
 			if (context == null)
 				throw new MissingContext3DException();
 
-			if (mVertexBuffer)
-				mVertexBuffer.dispose();
-			if (mIndexBuffer)
-				mIndexBuffer.dispose();
-			if (mExtraBuffer)
-				mExtraBuffer.dispose();
+			if (_vertexBuffer)
+				_vertexBuffer.dispose();
+			if (_indexBuffer)
+				_indexBuffer.dispose();
+			if (_extraBuffer)
+				_extraBuffer.dispose();
 
-			mVertexBuffer = context.createVertexBuffer(mVertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
-			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, mVertexData.numVertices);
+			_vertexBuffer = context.createVertexBuffer(_vertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
 
-			mExtraBuffer = context.createVertexBuffer(mVertexData.numVertices, 7);
-			mExtraBuffer.uploadFromVector(mExtraData, 0, mVertexData.numVertices);
+			_extraBuffer = context.createVertexBuffer(_vertexData.numVertices, 7);
+			_extraBuffer.uploadFromVector(_extraData, 0, _vertexData.numVertices);
 
-			mIndexBuffer = context.createIndexBuffer(mIndexData.length);
-			mIndexBuffer.uploadFromVector(mIndexData, 0, mIndexData.length);
-		}
-
-
-		/**
-		 * Renders the object with the help of a 'support' object and with the accumulated alpha of its parent object.
-		 * @param support
-		 * @param alpha
-		 */
-		public override function render(support:RenderSupport2D, alpha:Number):void
-		{
-			if ( mLayers.length == 0) return;
-			support.raiseDrawCount();
-
-			support.finishQuadBatch();
-			if (mSyncRequired) syncBuffers();
-
-			var context:Context3D = Render2D.context;
-			if (context == null)
-				throw new MissingContext3DException();
-
-			// apply the current blendmode
-			support.applyBlendMode(sPremultipliedAlpha);
-
-			// set texture
-			if (mTexture)
-				context.setTextureAt(0, mTexture.base);
-
-			// set buffers
-			context.setVertexBufferAt(0, mVertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			// position
-			context.setVertexBufferAt(1, mVertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			// UV
-			context.setVertexBufferAt(2, mExtraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
-			// vc for color and transform registers
-			context.setVertexBufferAt(3, mExtraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
-			// clipping
-
-			// set alpha
-			sRenderColorAlpha[3] = this.alpha * alpha;
-
-			// set object and layers data
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderColorAlpha, 1);
-
-			var tintedlayer:Boolean = false;
-
-			var layer:ScrollTile2D;
-			for (var i:int = 0; i < mLayers.length; i++)
-			{
-				layer = mLayers[i];
-
-				tintedlayer = tintedlayer || layer.color != 0xFFFFFF || layer.alpha != 1.0;
-
-				sMatrix = mFreez ? mLayersMatrix[i] : calculateMatrix(layer, mLayersMatrix[i]);
-
-				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, getColorRegister(i), layer.colorTrans, 1);
-				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, getTransRegister(i), sMatrix, true);
-			}
-
-			// activate program (shader)
-			var tinted:Boolean = (sRenderColorAlpha[3] != 1.0) || color != 0xFFFFFF || tintedlayer;
-			context.setProgram(Render2D.current.getProgram(getImageProgramName(tinted, mMipMapping, mSmoothing, mTexture.format, mUseBaseTexture)));
-
-			// draw the object
-			context.drawTriangles(mIndexBuffer, 0, mIndexData.length / 3);
-
-			// reset buffers
-			if (mTexture)
-			{
-				context.setTextureAt(0, null);
-			}
-
-			context.setVertexBufferAt(0, null);
-			context.setVertexBufferAt(1, null);
-			context.setVertexBufferAt(2, null);
-			context.setVertexBufferAt(3, null);
+			_indexBuffer = context.createIndexBuffer(_indexData.length);
+			_indexBuffer.uploadFromVector(_indexData, 0, _indexData.length);
 		}
 
 
@@ -502,12 +830,12 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function syncBuffers():void
 		{
-			if (mVertexBuffer == null)
+			if (_vertexBuffer == null)
 				createBuffers();
 			else
 			{
-				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, mVertexData.numVertices);
-				mSyncRequired = false;
+				_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
+				_syncRequired = false;
 			}
 		}
 
@@ -520,24 +848,24 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function calculateMatrix(layer:ScrollTile2D, matrix:Matrix3D):Matrix3D
 		{
-			var pOffset:Number = mParOffset ? layer.paralax : 1;
-			var pScale:Number = mParScale ? layer.paralax : 1;
+			var pOffset:Number = _parallaxOffset ? layer.paralax : 1;
+			var pScale:Number = _parallaxScale ? layer.paralax : 1;
 			var angle:Number = layer.rotation + tilesRotation;
 
 			matrix.identity();
 
-			matrix.prependTranslation(-mTilesPivotX, - mTilesPivotY, 0);
+			matrix.prependTranslation(-_tilesPivotX, - _tilesPivotY, 0);
 
 			// for no square ratio, scale to square
-			if ( mTextureRatio != 1 ) matrix.appendScale(1, 1 / mTextureRatio, 1);
+			if ( _textureRatio != 1 ) matrix.appendScale(1, 1 / _textureRatio, 1);
 
 			matrix.appendScale(1 / (layer.scaleX * 1 / pScale) / tilesScaleX + 1 - pScale, 1 / (layer.scaleY * 1 / pScale) / tilesScaleY + 1 - pScale, 1);
 			matrix.appendRotation(- angle * 180 / Math.PI, Vector3D.Z_AXIS);
 
 			// for no square ratio, unscale from square to orginal ratio
-			if ( mTextureRatio != 1 ) matrix.appendScale(1, mTextureRatio, 1);
+			if ( _textureRatio != 1 ) matrix.appendScale(1, _textureRatio, 1);
 
-			matrix.appendTranslation(mTilesPivotX - (layer.offsetX + mTilesOffsetX ) / mTextureWidth * pOffset, mTilesPivotY - (layer.offsetY + mTilesOffsetY ) / mTextureHeight * pOffset, 0);
+			matrix.appendTranslation(_tilesPivotX - (layer.offsetX + _tilesOffsetX ) / _textureWidth * pOffset, _tilesPivotY - (layer.offsetY + _tilesOffsetY ) / _textureHeight * pOffset, 0);
 			return matrix;
 		}
 
@@ -548,7 +876,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		private function registerPrograms():void
 		{
 			var target:Render2D = Render2D.current;
-			if ( target.hasProgram(mBaseProgram) )
+			if ( target.hasProgram(_baseProgram) )
 				return;
 			// already registered
 
@@ -687,420 +1015,14 @@ package tetragon.view.render2d.extensions.scrollimage
 			else
 				bitField |= 1 << 8;
 
-			var name:String = sProgramNameCache[bitField];
+			var name:String = _programNameCache[bitField];
 
 			if (name == null)
 			{
 				name = "SImage_i." + bitField.toString(16);
-				sProgramNameCache[bitField] = name;
+				_programNameCache[bitField] = name;
 			}
 			return name;
-		}
-
-
-		/**
-		 * Disposes all resources of the display object.
-		 */
-		public override function dispose():void
-		{
-			Render2D.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
-
-			if (mVertexBuffer)
-				mVertexBuffer.dispose();
-			if (mIndexBuffer)
-				mIndexBuffer.dispose();
-
-			mLayers = null;
-			mLayersMatrix = null;
-			mTexture = null;
-
-			super.dispose();
-		}
-
-
-		/**
-		 * Tint color.
-		 */
-		public function get color():uint
-		{
-			return mColor;
-		}
-
-
-		/**
-		 * Tint color.
-		 */
-		public function set color(value:uint):void
-		{
-			mColor = value;
-
-			sRenderColorAlpha[0] = ((color >> 16) & 0xff) / 255.0;
-			sRenderColorAlpha[1] = ((color >> 8) & 0xff) / 255.0;
-			sRenderColorAlpha[2] = ( color & 0xff) / 255.0;
-		}
-
-
-		/**
-		 * Canvas width in pixels.
-		 */
-		public function get canvasWidth():Number
-		{
-			return mCanvasWidth;
-		}
-
-
-		/**
-		 * Canvas width in pixels.
-		 */
-		public function set canvasWidth(value:Number):void
-		{
-			mCanvasWidth = value;
-			if ( mMainLayer )
-			{
-				mainSetup(mMainLayer);
-				mSyncRequired = true;
-			}
-		}
-
-
-		/**
-		 * Canvas height in pixels.
-		 */
-		public function get canvasHeight():Number
-		{
-			return mCanvasHeight;
-		}
-
-
-		/**
-		 * Canvas height in pixels.
-		 */
-		public function set canvasHeight(value:Number):void
-		{
-			mCanvasHeight = value;
-
-			if ( mMainLayer )
-			{
-				mainSetup(mMainLayer);
-				mSyncRequired = true;
-			}
-		}
-
-
-		/**
-		 * @inheritDocs
-		 */
-		override public function get width():Number
-		{
-			return numLayers == 0 ? super.width : 0;
-		}
-
-
-		/**
-		 * @inheritDocs
-		 */
-		override public function set width(value:Number):void
-		{
-			if ( mTextureWidth )
-			{
-				super.width = value;
-				tempWidth = 0;
-			}
-			else
-			{
-				tempWidth = value;
-			}
-		}
-
-
-		/**
-		 * @inheritDocs
-		 */
-		override public function get height():Number
-		{
-			return numLayers == 0 ? super.height : 0;
-		}
-
-
-		/**
-		 * @inheritDocs
-		 */
-		override public function set height(value:Number):void
-		{
-			if ( mTextureHeight )
-			{
-				super.height = value;
-				tempHeight = 0;
-			}
-			else
-			{
-				tempHeight = value;
-			}
-		}
-
-
-		/**
-		 * Texture used in object - from the layer on index 0.
-		 */
-		public function get texture():Texture2D
-		{
-			return mTexture;
-		}
-
-
-		/**
-		 * The horizontal scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function get tilesScaleX():Number
-		{
-			return mTilesScaleX;
-		}
-
-
-		/**
-		 * The horizontal scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function set tilesScaleX(value:Number):void
-		{
-			mTilesScaleX = value;
-		}
-
-
-		/**
-		 * The vertical scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function get tilesScaleY():Number
-		{
-			return mTilesScaleY;
-		}
-
-
-		/**
-		 * The vertical scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function set tilesScaleY(value:Number):void
-		{
-			mTilesScaleY = value;
-		}
-
-
-		/**
-		 * The x offet of the tiles.
-		 */
-		public function get tilesOffsetX():Number
-		{
-			return mTilesOffsetX;
-		}
-
-
-		/**
-		 * The x offet of the tiles.
-		 */
-		public function set tilesOffsetX(value:Number):void
-		{
-			mTilesOffsetX = value;
-		}
-
-
-		/**
-		 * The y offet of the tiles.
-		 */
-		public function get tilesOffsetY():Number
-		{
-			return mTilesOffsetY;
-		}
-
-
-		/**
-		 * The y offet of the tiles.
-		 */
-		public function set tilesOffsetY(value:Number):void
-		{
-			mTilesOffsetY = value;
-		}
-
-
-		/**
-		 * The rotation of the tiles in radians.
-		 */
-		public function get tilesRotation():Number
-		{
-			return mTilesRotation;
-		}
-
-
-		/**
-		 * The rotation of the tiles in radians.
-		 */
-		public function set tilesRotation(value:Number):void
-		{
-			mTilesRotation = value;
-		}
-
-
-		/**
-		 * The x pivot for rotation and scale the tiles.
-		 */
-		public function get tilesPivotX():Number
-		{
-			return mTilesPivotX * mTextureWidth;
-		}
-
-
-		/**
-		 * The x pivot for rotation and scale the tiles.
-		 */
-		public function set tilesPivotX(value:Number):void
-		{
-			mTilesPivotX = mTextureWidth ? value / mTextureWidth : 0;
-		}
-
-
-		/**
-		 * The y pivot for rotation and scale the tiles.
-		 */
-		public function get tilesPivotY():Number
-		{
-			return mTilesPivotY * mTextureHeight;
-		}
-
-
-		/**
-		 * The y pivot for rotation and scale the tiles.
-		 */
-		public function set tilesPivotY(value:Number):void
-		{
-			mTilesPivotY = mTextureHeight ? value / mTextureHeight : 0;
-		}
-
-
-		/**
-		 * Determinate parlax for offset.
-		 */
-		public function get paralaxOffset():Boolean
-		{
-			return mParOffset;
-		}
-
-
-		/**
-		 * Determinate parlax for offset.
-		 */
-		public function set paralaxOffset(value:Boolean):void
-		{
-			mParOffset = value;
-		}
-
-
-		/**
-		 * Determinate parlax for scale.
-		 */
-		public function get paralaxScale():Boolean
-		{
-			return mParScale;
-		}
-
-
-		/**
-		 * Determinate parlax for scale.
-		 */
-		public function set paralaxScale(value:Boolean):void
-		{
-			mParScale = value;
-		}
-
-
-		/**
-		 * Determinate parlax for all transformations.
-		 */
-		public function get paralax():Boolean
-		{
-			return mPar;
-		}
-
-
-		/**
-		 * Determinate parlax for all transformations.
-		 */
-		public function set paralax(value:Boolean):void
-		{
-			mPar = value;
-			paralaxOffset = value;
-			paralaxScale = value;
-		}
-
-
-		/**
-		 * Avoid all tiles transformations - for better performance matrixes are not calculate.
-		 */
-		public function get freez():Boolean
-		{
-			return mFreez;
-		}
-
-
-		/**
-		 * Avoid all tiles transformations - for better performance matrixes are not calculate.
-		 */
-		public function set freez(value:Boolean):void
-		{
-			for (var i:int = 0; i < mLayers.length; i++)
-			{
-				calculateMatrix(mLayers[i], mLayersMatrix[i]);
-			}
-			mFreez = value;
-		}
-
-
-		/**
-		 * Return number of layers
-		 */
-		public function get numLayers():int
-		{
-			return mLayers.length;
-		}
-
-
-		/**
-		 * The smoothing filter that is used for the texture.
-		 */
-		public function get smoothing():String
-		{
-			return mSmoothing;
-		}
-
-
-		/**
-		 * The smoothing filter that is used for the texture.
-		 */
-		public function set smoothing(value:String):void
-		{
-			mSmoothing = value;
-		}
-
-
-		/**
-		 * Determinate mipmapping for the texture - default set to false to avoid borders artefacts.
-		 */
-		public function get mipMapping():Boolean
-		{
-			return mMipMapping;
-		}
-
-
-		/**
-		 * Determinate mipmapping for the texture - default set to false to avoid borders artefacts.
-		 */
-		public function set mipMapping(value:Boolean):void
-		{
-			if ( mTexture )
-			{
-				mMipMapping = value ? mTexture.mipMapping : value;
-			}
-			else
-			{
-				mMipMapping = value;
-			}
 		}
 	}
 }
