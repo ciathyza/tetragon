@@ -34,6 +34,7 @@ package tetragon.debug
 	import tetragon.core.GameLoop;
 	import tetragon.data.Config;
 	import tetragon.util.ui.createTextField;
+	import tetragon.view.render2d.core.RenderSupport2D;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -504,7 +505,8 @@ package tetragon.debug
 			_mem2TF.text = "MAX:" + _memMax.toFixed(2);
 			_mem3TF.text = "PRC:" + _memPRC.toFixed(2);
 			_mem4TF.text = "GC: " + _memGC.toFixed(2);
-			_etc1TF.text = "GLFPS: " + _renderFPS + "/" + _glFPS;
+			//_etc1TF.text = "GLFPS: " + _renderFPS + "/" + _glFPS;
+			_etc1TF.text = "DRAW:  " + RenderSupport2D.drawCount;
 			_etc2TF.text = "MS:    " + _stageMS;
 			_etc3TF.text = "RENDER:" + _glRenderMS;
 			_etc4TF.text = "TICKS: " + _glTicks;

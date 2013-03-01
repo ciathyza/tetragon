@@ -80,8 +80,6 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _matrixStackSize:int;
 		/** @private */
-		private var _drawCount:int;
-		/** @private */
 		private var _backBufferWidth:int;
 		/** @private */
 		private var _backBufferHeight:int;
@@ -90,6 +88,8 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _blendMode:String;
 		
+		/** @private */
+		private static var _drawCount:uint;
 		/** @private */
 		private static var _point:Point;
 		/** @private */
@@ -587,12 +587,15 @@ package tetragon.view.render2d.core
 		/**
 		 * Indicates the number of stage3D draw calls made by the Render2D system.
 		 */
-		public function get drawCount():int
+		public static function get drawCount():uint
 		{
 			return _drawCount;
 		}
 		
 		
+		/**
+		 * Static instance of AGAL assembler that can be re-used in any other classes.
+		 */
 		static public function get agal():AGALMiniAssembler
 		{
 			if (!_agal) _agal = new AGALMiniAssembler();
