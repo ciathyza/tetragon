@@ -589,8 +589,8 @@ package tetragon.view.render2d.display
 			var target:Render2D = Render2D.current;
 			if (target.hasProgram(QUAD_PROGRAM_NAME)) return; // already registered
 			
-			var agal:AGALMiniAssembler = new AGALMiniAssembler();
-
+			var agal:AGALMiniAssembler = RenderSupport2D.agal;
+			
 			// this is the input data we'll pass to the shaders:
 			//
 			// va0 -> position

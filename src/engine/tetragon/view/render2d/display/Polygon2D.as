@@ -5,7 +5,6 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.core.VertexData2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
-	import com.hexagonstar.util.agal.AGALMiniAssembler;
 
 	import flash.display3D.*;
 	import flash.events.Event;
@@ -244,14 +243,10 @@ package tetragon.view.render2d.display
 
 			var fragmentProgramCode:String =
 				"mov oc, v0";	// just forward incoming color
-
-			var vertexProgramAssembler:AGALMiniAssembler = new AGALMiniAssembler();
-			vertexProgramAssembler.assemble(Context3DProgramType.VERTEX, vertexProgramCode);
-
-			var fragmentProgramAssembler:AGALMiniAssembler = new AGALMiniAssembler();
-			fragmentProgramAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode);
-
-			target.registerProgram(PROGRAM_NAME, vertexProgramAssembler.agalcode, fragmentProgramAssembler.agalcode);
+			
+			target.registerProgram(PROGRAM_NAME,
+				RenderSupport2D.agal.assemble(Context3DProgramType.VERTEX, vertexProgramCode),
+				RenderSupport2D.agal.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode));
 		}
 	}
 }

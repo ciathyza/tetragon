@@ -109,7 +109,6 @@ package tetragon.view.render2d.core
 		{
 			if (!_point) _point = new Point();
 			if (!_rectangle) _rectangle = new Rectangle();
-			if (!_agal) _agal = new AGALMiniAssembler();
 			
 			_projectionMatrix = new Matrix();
 			_modelViewMatrix = new Matrix();
@@ -398,8 +397,8 @@ package tetragon.view.render2d.core
 				resultProgram = context.createProgram();
 			}
 			
-			resultProgram.upload(_agal.assemble(Context3DProgramType.VERTEX, vertexShader),
-				_agal.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
+			resultProgram.upload(agal.assemble(Context3DProgramType.VERTEX, vertexShader),
+				agal.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
 			return resultProgram;
 		}
 		
@@ -591,6 +590,13 @@ package tetragon.view.render2d.core
 		public function get drawCount():int
 		{
 			return _drawCount;
+		}
+		
+		
+		static public function get agal():AGALMiniAssembler
+		{
+			if (!_agal) _agal = new AGALMiniAssembler();
+			return _agal;
 		}
 	}
 }

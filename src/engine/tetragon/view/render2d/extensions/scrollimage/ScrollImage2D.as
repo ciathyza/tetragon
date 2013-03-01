@@ -50,6 +50,7 @@ package tetragon.view.render2d.extensions.scrollimage
 	import flash.geom.Matrix3D;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 
@@ -881,8 +882,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			// already registered
 
 			// create vertex and fragment programs from assembly
-			var vertexProgramAssembler:AGALMiniAssembler = new AGALMiniAssembler();
-			var fragmentProgramAssembler:AGALMiniAssembler = new AGALMiniAssembler();
+			var agal:AGALMiniAssembler = RenderSupport2D.agal;
 
 			var vertexProgramCode:String;
 			var fragmentProgramCode:String;
@@ -930,7 +930,7 @@ package tetragon.view.render2d.extensions.scrollimage
 					"m44 op, va0, vc0 \n";
 					// 4x4 matrix transform to output space
 
-					vertexProgramAssembler.assemble(Context3DProgramType.VERTEX, vertexProgramCode);
+					var vertexByteCode:ByteArray = agal.assemble(Context3DProgramType.VERTEX, vertexProgramCode);
 					fragmentProgramCode = "mov ft0, v1 \n";
 					// sotre UV`a to temp0
 
@@ -974,9 +974,9 @@ package tetragon.view.render2d.extensions.scrollimage
 								else
 									options.push("linear", mipmap ? "miplinear" : "mipnone", "repeat");
 
-								fragmentProgramAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode.replace("???", options.join()));
-
-								target.registerProgram(getImageProgramName(tinted, mipmap, smoothing, format, useBase), vertexProgramAssembler.agalcode, fragmentProgramAssembler.agalcode);
+								target.registerProgram(getImageProgramName(tinted, mipmap, smoothing, format, useBase),
+									vertexByteCode,
+									agal.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode.replace("???", options.join())));
 							}
 						}
 					}
