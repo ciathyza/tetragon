@@ -72,6 +72,31 @@ package tetragon.view.render2d.extensions.scrollimage
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * The x offet of the tiles.
+		 */
+		public var tilesOffsetX:Number = 0.0;
+		
+		/**
+		 * The y offet of the tiles.
+		 */
+		public var tilesOffsetY:Number = 0.0;
+		
+		/**
+		 * The rotation of the tiles in radians.
+		 */
+		public var tilesRotation:Number = 0.0;
+		
+		/**
+		 * The horizontal scale factor. '1' means no scale, negative values flip the tiles.
+		 */
+		public var tilesScaleX:Number = 1.0;
+		
+		/**
+		 * The vertical scale factor. '1' means no scale, negative values flip the tiles.
+		 */
+		public var tilesScaleY:Number = 1.0;
+		
 		// vertex data
 		private var _vertexData:VertexData2D;
 		private var _vertexBuffer:VertexBuffer3D;
@@ -104,12 +129,6 @@ package tetragon.view.render2d.extensions.scrollimage
 		private var _mainLayer:ScrollTile2D;
 		private var _layerVertexData:VertexData2D;
 		
-		// transform
-		private var _tilesOffsetX:Number = 0.0;
-		private var _tilesOffsetY:Number = 0.0;
-		private var _tilesRotation:Number = 0.0;
-		private var _tilesScaleX:Number = 1.0;
-		private var _tilesScaleY:Number = 1.0;
 		private var _tilesPivotX:Number = 0.0;
 		private var _tilesPivotY:Number = 0.0;
 		private var _textureRatio:Number;
@@ -467,71 +486,6 @@ package tetragon.view.render2d.extensions.scrollimage
 		
 		
 		/**
-		 * The horizontal scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function get tilesScaleX():Number
-		{
-			return _tilesScaleX;
-		}
-		public function set tilesScaleX(v:Number):void
-		{
-			_tilesScaleX = v;
-		}
-
-
-		/**
-		 * The vertical scale factor. '1' means no scale, negative values flip the tiles.
-		 */
-		public function get tilesScaleY():Number
-		{
-			return _tilesScaleY;
-		}
-		public function set tilesScaleY(v:Number):void
-		{
-			_tilesScaleY = v;
-		}
-
-
-		/**
-		 * The x offet of the tiles.
-		 */
-		public function get tilesOffsetX():Number
-		{
-			return _tilesOffsetX;
-		}
-		public function set tilesOffsetX(v:Number):void
-		{
-			_tilesOffsetX = v;
-		}
-
-
-		/**
-		 * The y offet of the tiles.
-		 */
-		public function get tilesOffsetY():Number
-		{
-			return _tilesOffsetY;
-		}
-		public function set tilesOffsetY(v:Number):void
-		{
-			_tilesOffsetY = v;
-		}
-
-
-		/**
-		 * The rotation of the tiles in radians.
-		 */
-		public function get tilesRotation():Number
-		{
-			return _tilesRotation;
-		}
-		public function set tilesRotation(v:Number):void
-		{
-			_tilesRotation = v;
-		}
-
-
-		/**
 		 * The x pivot for rotation and scale the tiles.
 		 */
 		public function get tilesPivotX():Number
@@ -849,24 +803,29 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function calculateMatrix(layer:ScrollTile2D, matrix:Matrix3D):Matrix3D
 		{
-			var pOffset:Number = _parallaxOffset ? layer.parallax : 1;
-			var pScale:Number = _parallaxScale ? layer.parallax : 1;
+			var pOffset:Number = _parallaxOffset ? layer.parallax : 1.0;
+			var pScale:Number = _parallaxScale ? layer.parallax : 1.0;
 			var angle:Number = layer.rotation + tilesRotation;
-
+			
 			matrix.identity();
-
 			matrix.prependTranslation(-_tilesPivotX, - _tilesPivotY, 0);
-
+			
 			// for no square ratio, scale to square
-			if ( _textureRatio != 1 ) matrix.appendScale(1, 1 / _textureRatio, 1);
-
-			matrix.appendScale(1 / (layer.scaleX * 1 / pScale) / tilesScaleX + 1 - pScale, 1 / (layer.scaleY * 1 / pScale) / tilesScaleY + 1 - pScale, 1);
+			if (_textureRatio != 1) matrix.appendScale(1, 1 / _textureRatio, 1);
+			
+			var xs:Number = 1 / (layer.scaleX / pScale) / tilesScaleX + 1 - pScale;
+			var ys:Number = 1 / (layer.scaleY / pScale) / tilesScaleY + 1 - pScale;
+			// Faster Math.abs
+			xs = xs < 0 ? -xs : xs;
+			ys = ys < 0 ? -ys : ys;
+			
+			matrix.appendScale(xs, ys, 1.0);
 			matrix.appendRotation(- angle * 180 / Math.PI, Vector3D.Z_AXIS);
-
+			
 			// for no square ratio, unscale from square to orginal ratio
-			if ( _textureRatio != 1 ) matrix.appendScale(1, _textureRatio, 1);
-
-			matrix.appendTranslation(_tilesPivotX - (layer.offsetX + _tilesOffsetX ) / _textureWidth * pOffset, _tilesPivotY - (layer.offsetY + _tilesOffsetY ) / _textureHeight * pOffset, 0);
+			if (_textureRatio != 1) matrix.appendScale(1, _textureRatio, 1);
+			
+			matrix.appendTranslation(_tilesPivotX - (layer.offsetX + tilesOffsetX ) / _textureWidth * pOffset, _tilesPivotY - (layer.offsetY + tilesOffsetY ) / _textureHeight * pOffset, 0);
 			return matrix;
 		}
 

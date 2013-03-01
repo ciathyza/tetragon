@@ -70,9 +70,8 @@ package view.render2d
 		
 		public function updateRender():void
 		{
-			_tile1.offsetX -= 1;
-			_tile2.offsetX -= 1;
-			_tile3.offsetX -= 1;
+			_scrollImage.tilesOffsetX -=1;
+			//_scrollImage.tilesOffsetY -=1;
 			//_scrollImage.tilesRotation += 0.01;
 		}
 		
@@ -100,15 +99,12 @@ package view.render2d
 			_tile2 = new ScrollTile2D(atlas.getTexture('bg_hills'));
 			_tile3 = new ScrollTile2D(atlas.getTexture('bg_trees'));
 			
-			//_tile1.scaleX = _tile1.scaleY = 2.0;
-			//_tile2.scaleX = _tile2.scaleY = 2.0;
-			//_tile3.scaleX = _tile3.scaleY = 2.0;
-			
 			_tile2.parallax = 2;
 			_tile3.parallax = 4;
 			
-			_scrollImage = new ScrollImage2D(_frameWidth, _tile1.height);
+			_scrollImage = new ScrollImage2D(_frameWidth, 480);
 			_scrollImage.smoothing = TextureSmoothing2D.NONE;
+			_scrollImage.scale(2.0);
 			_scrollImage.addLayer(_tile1);
 			_scrollImage.addLayer(_tile2);
 			_scrollImage.addLayer(_tile3);

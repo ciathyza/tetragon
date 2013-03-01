@@ -385,6 +385,15 @@ package tetragon.view.render2d.display
 		}
 		
 		
+		/**
+		 * Allows to set scale X and scale y with one call.
+		 */
+		public function scale(value:Number):void
+		{
+			scaleX = scaleY = value;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
@@ -627,8 +636,8 @@ package tetragon.view.render2d.display
 				_orientationChanged = true;
 			}
 		}
-
-
+		
+		
 		/** The horizontal skew angle in radians. */
 		public function get skewX():Number
 		{
