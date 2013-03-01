@@ -48,11 +48,6 @@ package tetragon.data.atlas
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Properties
-		//-----------------------------------------------------------------------------------------
-		
-		
-		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
@@ -75,7 +70,7 @@ package tetragon.data.atlas
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Disposes the atlas.
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
@@ -99,18 +94,15 @@ package tetragon.data.atlas
 		/**
 		 * @inheritDoc
 		 */
-		override public function getImages(prefix:String = "", scale:Number = 1.0):*
+		override public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
 		{
-			var textures:Vector.<Texture2D> = new <Texture2D>[];
-			var names:Vector.<String> = new <String>[];
-			var name:String;
+			var names:Vector.<String> = getNames(prefix);
+			var textures:Vector.<Texture2D>;
 			
-			for (name in _regions)
-			{
-				if (name.indexOf(prefix) == 0) names.push(name);
-			}
-			names.sort(Array.CASEINSENSITIVE);
-			for each (name in names)
+			if (result) textures = result;
+			else textures = new <Texture2D>[];
+			
+			for each (var name:String in names)
 			{
 				textures.push(getImage(name, scale));
 			}

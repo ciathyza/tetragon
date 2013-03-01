@@ -36,7 +36,7 @@ package tetragon.data.atlas
 	
 	
 	/**
-	 * Abstract Atlas class
+	 * Abstract base class for atlas classes.
 	 *
 	 * @author Hexagon
 	 */
@@ -103,7 +103,7 @@ package tetragon.data.atlas
 		 * Retrieves a sub-image by name. Returns <code>null</code> if it is not found.
 		 * 
 		 * @param id
-		 * @param scale scaling factor
+		 * @param scale scaling factor for image pre-scaling.
 		 * @return The sub-image.
 		 */
 		public function getImage(id:String, scale:Number = 1.0):*
@@ -118,13 +118,32 @@ package tetragon.data.atlas
 		 * (especially useful for "MovieClip").
 		 * 
 		 * @param prefix
-		 * @param scale scaling factor
+		 * @param scale scaling factor for image pre-scaling.
+		 * @param result A vector that is used as the result.
 		 * @return Vector
 		 */
-		public function getImages(prefix:String = "", scale:Number = 1.0):*
+		public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
 		{
 			/* Abstract method! */
 			return null;
+		}
+		
+		
+		/**
+		 * Returns all sub-image names that start with a certain string, sorted alphabetically.
+		 * 
+		 * @param prefix
+		 * @param result
+		 */
+		public function getNames(prefix:String = "", result:Vector.<String> = null):Vector.<String>
+		{
+			if (!result) result = new <String>[];
+			for (var name:String in _regions)
+			{
+				if (name.indexOf(prefix) == 0) result.push(name);
+			}
+			result.sort(Array.CASEINSENSITIVE);
+			return result;
 		}
 		
 		
@@ -144,6 +163,8 @@ package tetragon.data.atlas
 		
 		/**
 		 * Returns the region rectangle for a specific sprite.
+		 * 
+		 * @param id
 		 */
 		public function getRegion(id:String):Rectangle
 		{

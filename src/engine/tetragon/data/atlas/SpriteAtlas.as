@@ -89,7 +89,7 @@ package tetragon.data.atlas
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Disposes the atlas.
+		 * @inheritDoc
 		 */
 		override public function dispose():void
 		{
@@ -99,11 +99,7 @@ package tetragon.data.atlas
 		
 		
 		/**
-		 * Retrieves a sprite by name. Returns <code>null</code> if it is not found.
-		 * 
-		 * @param id
-		 * @param scale scaling factor
-		 * @return BitmapData or null.
+		 * @inheritDoc
 		 */
 		override public function getImage(id:String, scale:Number = 1.0):*
 		{
@@ -127,23 +123,17 @@ package tetragon.data.atlas
 		
 		
 		/**
-		 * Returns all sprites that start with a certain string, sorted alphabetically
-		 * 
-		 * @param prefix
-		 * @return A Vector of BitmapDatas.
+		 * @inheritDoc
 		 */
-		override public function getImages(prefix:String = "", scale:Number = 1.0):*
+		override public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
 		{
-			var sprites:Vector.<BitmapData> = new <BitmapData>[];
-			var names:Vector.<String> = new <String>[];
-			var name:String;
+			var names:Vector.<String> = getNames(prefix);
+			var sprites:Vector.<BitmapData>;
 			
-			for (name in _regions)
-			{
-				if (name.indexOf(prefix) == 0) names.push(name);
-			}
-			names.sort(Array.CASEINSENSITIVE);
-			for each (name in names)
+			if (result) sprites = result;
+			else sprites = new <BitmapData>[];
+			
+			for each (var name:String in names)
 			{
 				sprites.push(getImage(name, scale));
 			}
