@@ -170,6 +170,16 @@ package tetragon.view.render.buffers
 		}
 		
 		
+		public function lock():void
+		{
+		}
+		
+		
+		public function unlock(changeRect:Rectangle = null):void
+		{
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------

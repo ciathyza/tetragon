@@ -2,6 +2,7 @@ package tetragon.view.render.buffers
 {
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
+	import flash.geom.Rectangle;
 	
 	
 	/**
@@ -88,6 +89,10 @@ package tetragon.view.render.buffers
 		 */
 		function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
+		
+		
+		function lock():void;
+		function unlock(changeRect:Rectangle = null):void;
 		
 		
 		//-----------------------------------------------------------------------------------------

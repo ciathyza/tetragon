@@ -337,7 +337,7 @@ package tetragon.systems.racetrack
 					continue;
 				}
 
-				renderSegment(s.p1.screen.x, s.p1.screen.y, s.p1.screen.w, s.p2.screen.x, s.p2.screen.y, s.p2.screen.w, s.color, s.haze);
+				renderSegment(i, s.p1.screen.x, s.p1.screen.y, s.p1.screen.w, s.p2.screen.x, s.p2.screen.y, s.p2.screen.w, s.color, s.haze);
 				maxY = s.p1.screen.y;
 			}
 
@@ -735,15 +735,16 @@ package tetragon.systems.racetrack
 		 * @param color
 		 * @param hazeAlpha
 		 */
-		private function renderSegment(x1:int, y1:int, w1:int, x2:int, y2:int, w2:int,
+		private function renderSegment(nr:int, x1:int, y1:int, w1:int, x2:int, y2:int, w2:int,
 			color:ColorSet, hazeAlpha:Number):void
 		{
 			/* Calculate rumble widths for current segment. */
 			var r1:Number = calcRumbleWidth(w1), r2:Number = calcRumbleWidth(w2);
 
 			/* Draw offroad area segment. */
+			//if (nr % 2 == 0)
 			_renderBuffer.blitRect(0, y2, _width, y1 - y2, color.grass, _hazeColor, hazeAlpha);
-
+			
 			/* Draw the road segment. */
 			_renderBuffer.drawQuad(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble, _hazeColor, hazeAlpha);
 			_renderBuffer.drawQuad(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble, _hazeColor, hazeAlpha);
