@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	=====================================================================================
+	RACETRACK OBJECTS FILE
+	Defines sprite collections and objects for the racetrack engine.
+	=====================================================================================
+-->
+<data>
+	
+	<collections>
+		<collection id="billboards" type="obstacle"/>
+		<collection id="vegetation" type="obstacle"/>
+		<collection id="buildings" type="obstacle"/>
+		<collection id="cars" type="opponent"/>
+		<collection id="player" type="player"/>
+	</collections>
+	
+	<objects>
+		<object id="billboard1" spriteID="spr_billboard_1" collectionID="billboards" scale="1.0"/>
+		<object id="billboard2" spriteID="spr_billboard_2" collectionID="billboards" scale="1.0"/>
+		<object id="billboard3" spriteID="spr_billboard_3" collectionID="billboards" scale="1.0"/>
+		<object id="billboard4" spriteID="spr_billboard_4" collectionID="billboards" scale="1.0"/>
+		<object id="billboard5" spriteID="spr_billboard_5" collectionID="billboards" scale="1.0"/>
+		<object id="billboard6" spriteID="spr_billboard_6" collectionID="billboards" scale="1.0"/>
+		<object id="billboard7" spriteID="spr_billboard_7" collectionID="billboards" scale="1.0"/>
+		<object id="billboard8" spriteID="spr_billboard_8" collectionID="billboards" scale="1.0"/>
+		<object id="billboard9" spriteID="spr_billboard_9" collectionID="billboards" scale="1.0"/>
+		
+		<object id="boulder1" spriteID="spr_veg_boulder_1" collectionID="vegetation" scale="1.0"/>
+		<object id="boulder2" spriteID="spr_veg_boulder_2" collectionID="vegetation" scale="1.0"/>
+		<object id="boulder3" spriteID="spr_veg_boulder_3" collectionID="vegetation" scale="1.0"/>
+		<object id="bush1" spriteID="spr_veg_bush_1" collectionID="vegetation" scale="1.0"/>
+		<object id="bush2" spriteID="spr_veg_bush_2" collectionID="vegetation" scale="1.0"/>
+		<object id="cactus" spriteID="spr_veg_cactus" collectionID="vegetation" scale="1.0"/>
+		<object id="deadtree1" spriteID="spr_veg_deadtree_1" collectionID="vegetation" scale="1.0"/>
+		<object id="deadtree2" spriteID="spr_veg_deadtree_2" collectionID="vegetation" scale="1.0"/>
+		<object id="palmtree" spriteID="spr_veg_palmtree" collectionID="vegetation" scale="1.0"/>
+		<object id="stump" spriteID="spr_veg_stump" collectionID="vegetation" scale="1.0"/>
+		<object id="tree1" spriteID="spr_veg_tree_1" collectionID="vegetation" scale="1.0"/>
+		<object id="tree2" spriteID="spr_veg_tree_2" collectionID="vegetation" scale="1.0"/>
+		
+		<object id="boathouse" spriteID="spr_bldg_boathouse" collectionID="buildings" scale="1.0"/>
+		<object id="column" spriteID="spr_bldg_column" collectionID="buildings" scale="1.0"/>
+		<object id="tower" spriteID="spr_bldg_tower" collectionID="buildings" scale="1.0"/>
+		<object id="windmill" spriteID="spr_bldg_windmill" collectionID="buildings" scale="1.0"/>
+		
+		<object id="car1" spriteID="spr_car_1" collectionID="cars" scale="1.0"/>
+		<object id="car2" spriteID="spr_car_2" collectionID="cars" scale="1.0"/>
+		<object id="car3" spriteID="spr_car_3" collectionID="cars" scale="1.0"/>
+		<object id="car4" spriteID="spr_car_4" collectionID="cars" scale="1.0"/>
+		<object id="car5" spriteID="spr_car_5" collectionID="cars" scale="1.0"/>
+		<object id="car6" spriteID="spr_car_6" collectionID="cars" scale="1.0"/>
+		
+		<object id="player" spriteID="spr_player" collectionID="player"/>
+		<object id="player_left" spriteID="spr_player_left" collectionID="player"/>
+		<object id="player_right" spriteID="spr_player_right" collectionID="player"/>
+		<object id="player_uphill" spriteID="spr_player_uphill" collectionID="player"/>
+		<object id="player_uphill_left" spriteID="spr_player_uphill_left" collectionID="player"/>
+		<object id="player_uphill_right" spriteID="spr_player_uphill_right" collectionID="player"/>
+ 	</objects>
+	
+</data>

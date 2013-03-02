@@ -59,8 +59,8 @@
 	======================================================================================= -->
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
-		<file id="spriteAtlasFile" path="data/spriteatlas.xml" packageID="resourcePackage"/>
-		<file id="textureAtlasFile" path="data/textureatlas.xml" packageID="resourcePackage"/>
+		<file id="spriteAtlasFile" path="data/sprites.xml" packageID="resourcePackage"/>
+		<file id="textureAtlasFile" path="data/textures.xml" packageID="resourcePackage"/>
 	</dataFiles>
 	
 	
@@ -82,10 +82,10 @@
 		<image id="imageCollection">
 		</image>
 		<image32>
-			<resource id="spriteAtlasPNG" path="images/sprites.png" packageID="resourcePackage"/>
+			<resource id="spritePNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<atf>
-			<resource id="spriteAtlasATF" path="images/sprites.atf" packageID="resourcePackage"/>
+			<resource id="spriteATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</atf>
 		<swf/>
 		<shader>
@@ -167,6 +167,8 @@
 	resource.packageID		ID of the resource package that the XML file is in.
 	======================================================================================= -->
 	<xml>
+		<resource id="racetrackObjects" path="data/objects.xml" packageID="resourcePackage"/>
+		<resource id="racetrackLevels" path="data/levels.xml" packageID="resourcePackage"/>
 	</xml>
 	
 	

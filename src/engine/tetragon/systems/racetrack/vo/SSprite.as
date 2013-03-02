@@ -11,7 +11,6 @@ package tetragon.systems.racetrack.vo
 	{
 		public var source:BitmapData;
 		public var offset:Number;
-		public var scaledWidth:Number;
 		
 		
 		public function SSprite(source:BitmapData, offset:Number = 0.0)

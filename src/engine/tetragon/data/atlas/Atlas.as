@@ -118,15 +118,27 @@ package tetragon.data.atlas
 		 * Returns all sub-images that start with a certain string, sorted alphabetically
 		 * (especially useful for "MovieClip").
 		 * 
+		 * If a result array is specified, the images will be added to that array.
+		 * 
 		 * @param prefix
 		 * @param scale scaling factor for image pre-scaling.
-		 * @param result A vector that is used as the result.
-		 * @return Vector
+		 * @param result An Array that is used as the result.
+		 * @return Array
 		 */
-		public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
+		public function getImages(prefix:String = "", scale:Number = 1.0, result:Array = null):Array
 		{
-			/* Abstract method! */
-			return null;
+			var names:Vector.<String> = getNames(prefix);
+			var images:Array;
+			
+			if (result) images = result;
+			else images = [];
+			
+			for each (var name:String in names)
+			{
+				images.push(getImage(name, scale));
+			}
+			
+			return images;
 		}
 		
 		

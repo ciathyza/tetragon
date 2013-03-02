@@ -28,6 +28,8 @@
  */
 package tetragon.systems.racetrack
 {
+	import tetragon.systems.racetrack.constants.RTObjectType;
+	import tetragon.systems.racetrack.vo.RTObjectCollection;
 	import tetragon.Main;
 	import tetragon.data.atlas.Atlas;
 	import tetragon.systems.racetrack.constants.COLOR;
@@ -40,9 +42,8 @@ package tetragon.systems.racetrack
 	import tetragon.systems.racetrack.vo.SSprite;
 	import tetragon.systems.racetrack.vo.Segment;
 
-	import com.hexagonstar.util.debug.Debug;
-
 	import flash.display.BitmapData;
+	import flash.utils.Dictionary;
 	
 	
 	/**
@@ -240,57 +241,75 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareSprites():void
 		{
-			_racetrack.sprites = _atlas.getImageMap();
+			_racetrack.sprites = _atlas.getImageMap("spr");
+			_racetrack.backgrounds = _atlas.getImageMap("bg");
 			
-			var spriteMap:Object = _atlas.getImageMap();
-			for (var i:String in spriteMap)
-			{
-				Debug.trace(i);
-			}
+			/* Create sprite collections. */
+			_racetrack.collections = new Dictionary();
 			
+			var collection:RTObjectCollection = new RTObjectCollection("billboards");
+			collection.type = RTObjectType.OBSTACLE;
+			collection.objects = [];
+			
+//			c["billboards"] = _atlas.getImages("spr_billboard");
+//			c["vegetation"] = _atlas.getImages("spr_veg");
+//			c["cars"] = _atlas.getImages("spr_car");
+//			c["buildings"] = _atlas.getImages("spr_bldg");
+//			
+//			/* Create sprite map that contains all sprites. */
+//			for each (var a:Array in c)
+//			{
+//				if (!a) continue;
+//				for (var i:uint = 0; i < a.length; i++)
+//				{
+//					
+//				}
+//			}
+//			
+//			_racetrack.collections["billboards"] = 
 			
 			_racetrack.sprold = new Sprites();
 			var s:Sprites = _racetrack.sprold;
 			
 			if (_atlas)
 			{
-				s.BILLBOARD01 = _atlas.getImage("billboard01", 2.5);
-				s.BILLBOARD02 = _atlas.getImage("billboard02", 2.5);
-				s.BILLBOARD03 = _atlas.getImage("billboard03", 2.5);
-				s.BILLBOARD04 = _atlas.getImage("billboard04", 2.5);
-				s.BILLBOARD05 = _atlas.getImage("billboard05", 2.5);
-				s.BILLBOARD06 = _atlas.getImage("billboard06", 2.5);
-				s.BILLBOARD07 = _atlas.getImage("billboard07", 2.5);
-				s.BILLBOARD08 = _atlas.getImage("billboard08", 2.5);
-				s.BILLBOARD09 = _atlas.getImage("billboard09", 2.5);
-				s.BOULDER1 = _atlas.getImage("veg_boulder1", 2.5);
-				s.BOULDER2 = _atlas.getImage("veg_boulder2", 2.5);
-				s.BOULDER3 = _atlas.getImage("veg_boulder3", 2.5);
-				s.BUSH1 = _atlas.getImage("veg_bush1", 2.5);
-				s.BUSH2 = _atlas.getImage("veg_bush2", 2.5);
-				s.CACTUS = _atlas.getImage("veg_cactus", 2.5);
-				s.TREE1 = _atlas.getImage("veg_tree1", 2.5);
-				s.TREE2 = _atlas.getImage("veg_tree2", 2.5);
-				s.PALM_TREE = _atlas.getImage("veg_palmtree", 2.5);
-				s.DEAD_TREE1 = _atlas.getImage("veg_deadtree1", 2.5);
-				s.DEAD_TREE2 = _atlas.getImage("veg_deadtree2", 2.5);
-				s.STUMP = _atlas.getImage("veg_stump", 2.5);
-				s.COLUMN = _atlas.getImage("bldg_column", 3.0);
-				s.TOWER = _atlas.getImage("bldg_tower", 10.0);
-				s.BOATHOUSE = _atlas.getImage("bldg_boathouse", 3.0);
-				s.WINDMILL = _atlas.getImage("bldg_windmill", 4.0);
-				s.CAR01 = _atlas.getImage("car01", 1.25);
-				s.CAR02 = _atlas.getImage("car02", 1.25);
-				s.CAR03 = _atlas.getImage("car03", 1.25);
-				s.CAR04 = _atlas.getImage("car04", 1.25);
-				s.TRUCK = _atlas.getImage("car05", 1.7);
-				s.SEMI = _atlas.getImage("car06", 2.0);
-				s.PLAYER_STRAIGHT = _atlas.getImage("player");
-				s.PLAYER_LEFT = _atlas.getImage("player_left");
-				s.PLAYER_RIGHT = _atlas.getImage("player_right");
-				s.PLAYER_UPHILL_STRAIGHT = _atlas.getImage("player_uphill");
-				s.PLAYER_UPHILL_LEFT = _atlas.getImage("player_uphill_left");
-				s.PLAYER_UPHILL_RIGHT = _atlas.getImage("player_uphill_right");
+				s.BILLBOARD01 = _atlas.getImage("spr_billboard_1", 2.5);
+				s.BILLBOARD02 = _atlas.getImage("spr_billboard_2", 2.5);
+				s.BILLBOARD03 = _atlas.getImage("spr_billboard_3", 2.5);
+				s.BILLBOARD04 = _atlas.getImage("spr_billboard_4", 2.5);
+				s.BILLBOARD05 = _atlas.getImage("spr_billboard_5", 2.5);
+				s.BILLBOARD06 = _atlas.getImage("spr_billboard_6", 2.5);
+				s.BILLBOARD07 = _atlas.getImage("spr_billboard_7", 2.5);
+				s.BILLBOARD08 = _atlas.getImage("spr_billboard_8", 2.5);
+				s.BILLBOARD09 = _atlas.getImage("spr_billboard_9", 2.5);
+				s.BOULDER1 = _atlas.getImage("spr_veg_boulder_1", 2.5);
+				s.BOULDER2 = _atlas.getImage("spr_veg_boulder_2", 2.5);
+				s.BOULDER3 = _atlas.getImage("spr_veg_boulder_3", 2.5);
+				s.BUSH1 = _atlas.getImage("spr_veg_bush_1", 2.5);
+				s.BUSH2 = _atlas.getImage("spr_veg_bush_2", 2.5);
+				s.CACTUS = _atlas.getImage("spr_veg_cactus", 2.5);
+				s.TREE1 = _atlas.getImage("spr_veg_tree_1", 2.5);
+				s.TREE2 = _atlas.getImage("spr_veg_tree_2", 2.5);
+				s.PALM_TREE = _atlas.getImage("spr_veg_palmtree", 2.5);
+				s.DEAD_TREE1 = _atlas.getImage("spr_veg_deadtree_1", 2.5);
+				s.DEAD_TREE2 = _atlas.getImage("spr_veg_deadtree_2", 2.5);
+				s.STUMP = _atlas.getImage("spr_veg_stump", 2.5);
+				s.COLUMN = _atlas.getImage("spr_bldg_column", 3.0);
+				s.TOWER = _atlas.getImage("spr_bldg_tower", 10.0);
+				s.BOATHOUSE = _atlas.getImage("spr_bldg_boathouse", 3.0);
+				s.WINDMILL = _atlas.getImage("spr_bldg_windmill", 4.0);
+				s.CAR01 = _atlas.getImage("spr_car_1", 1.25);
+				s.CAR02 = _atlas.getImage("spr_car_2", 1.25);
+				s.CAR03 = _atlas.getImage("spr_car_3", 1.25);
+				s.CAR04 = _atlas.getImage("spr_car_4", 1.25);
+				s.TRUCK = _atlas.getImage("spr_car_5", 1.7);
+				s.SEMI = _atlas.getImage("spr_car_6", 2.0);
+				s.PLAYER_STRAIGHT = _atlas.getImage("spr_player");
+				s.PLAYER_LEFT = _atlas.getImage("spr_player_left");
+				s.PLAYER_RIGHT = _atlas.getImage("spr_player_right");
+				s.PLAYER_UPHILL_STRAIGHT = _atlas.getImage("spr_player_uphill");
+				s.PLAYER_UPHILL_LEFT = _atlas.getImage("spr_player_uphill_left");
+				s.PLAYER_UPHILL_RIGHT = _atlas.getImage("spr_player_uphill_right");
 	
 				s.REGION_SKY = _atlas.getRegion("bg_sky");
 				s.REGION_HILLS = _atlas.getRegion("bg_hills");

@@ -269,6 +269,8 @@ package view.racing
 		{
 			registerResource("spriteAtlas");
 			registerResource("textureAtlas");
+			registerResource("racetrackObjects");
+			registerResource("racetrackLevels");
 		}
 		
 		

@@ -103,6 +103,7 @@ package tetragon.data.atlas
 		 */
 		override public function getImage(id:String, scale:Number = 1.0):*
 		{
+			// TODO Add frame support!
 			var region:Rectangle = _regions[id];
 			if (!_source || !region) return ResourceIndex.getPlaceholderImage();
 			if (!_point) _point = new Point(0, 0);
@@ -119,26 +120,6 @@ package tetragon.data.atlas
 			_matrix.setTo(scale, 0, 0, scale, 0, 0);
 			scaled.draw(sprite, _matrix);
 			return scaled;
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
-		{
-			var names:Vector.<String> = getNames(prefix);
-			var sprites:Vector.<BitmapData>;
-			
-			if (result) sprites = result;
-			else sprites = new <BitmapData>[];
-			
-			for each (var name:String in names)
-			{
-				sprites.push(getImage(name, scale));
-			}
-			
-			return sprites;
 		}
 		
 		

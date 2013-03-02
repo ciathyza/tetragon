@@ -125,26 +125,6 @@ package tetragon.data.atlas
 		}
 		
 		
-		/**
-		 * @inheritDoc
-		 */
-		override public function getImages(prefix:String = "", scale:Number = 1.0, result:* = null):*
-		{
-			var names:Vector.<String> = getNames(prefix);
-			var textures:Vector.<Texture2D>;
-			
-			if (result) textures = result;
-			else textures = new <Texture2D>[];
-			
-			for each (var name:String in names)
-			{
-				textures.push(getImage(name, scale));
-			}
-			
-			return textures;
-		}
-		
-		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
