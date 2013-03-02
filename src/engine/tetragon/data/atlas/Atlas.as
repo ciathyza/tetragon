@@ -133,13 +133,15 @@ package tetragon.data.atlas
 		/**
 		 * Returns all sub-images of the atlas mapped by their name into a dictionary.
 		 * 
+		 * @param prefix
 		 * @param scale
 		 * @param result
 		 */
-		public function getImageMap(scale:Number = 1.0, result:Dictionary = null):Dictionary
+		public function getImageMap(prefix:String = "", scale:Number = 1.0,
+			result:Dictionary = null):Dictionary
 		{
 			var map:Dictionary = result || new Dictionary();
-			var names:Vector.<String> = getNames("");
+			var names:Vector.<String> = getNames(prefix);
 			for each (var name:String in names)
 			{
 				map[name] = getImage(name, scale);

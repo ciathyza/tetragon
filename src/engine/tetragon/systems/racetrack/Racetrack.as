@@ -75,7 +75,7 @@ package tetragon.systems.racetrack
 		public var sprold:Sprites;
 		public var spriteScale:Number;
 		
-		public var spritesNew:Dictionary;
+		public var sprites:Dictionary;
 		public var backgrounds:Dictionary;
 		public var collections:Dictionary;
 		public var colors:Dictionary;

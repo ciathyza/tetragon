@@ -240,6 +240,8 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareSprites():void
 		{
+			_racetrack.sprites = _atlas.getImageMap();
+			
 			var spriteMap:Object = _atlas.getImageMap();
 			for (var i:String in spriteMap)
 			{
