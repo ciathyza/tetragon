@@ -72,13 +72,13 @@ package tetragon.systems.racetrack
 		public var segments:Vector.<Segment>;
 		public var opponents:Vector.<Opponent>;
 		
-		public var sprites:Sprites;
+		public var sprold:Sprites;
 		public var spriteScale:Number;
 		
-		private var _spritesNew:Dictionary;
-		private var _backgrounds:Dictionary;
-		private var _collections:Dictionary;
-		private var _colors:Dictionary;
+		public var spritesNew:Dictionary;
+		public var backgrounds:Dictionary;
+		public var collections:Dictionary;
+		public var colors:Dictionary;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -90,10 +90,6 @@ package tetragon.systems.racetrack
 		 */
 		public function Racetrack()
 		{
-			_spritesNew = new Dictionary();
-			_backgrounds = new Dictionary();
-			_collections = new Dictionary();
-			_colors = new Dictionary();
 		}
 		
 		

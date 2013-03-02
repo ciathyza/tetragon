@@ -33,6 +33,7 @@ package tetragon.data.atlas
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 	
 	
 	/**
@@ -126,6 +127,24 @@ package tetragon.data.atlas
 		{
 			/* Abstract method! */
 			return null;
+		}
+		
+		
+		/**
+		 * Returns all sub-images of the atlas mapped by their name into a dictionary.
+		 * 
+		 * @param scale
+		 * @param result
+		 */
+		public function getImageMap(scale:Number = 1.0, result:Dictionary = null):Dictionary
+		{
+			var map:Dictionary = result || new Dictionary();
+			var names:Vector.<String> = getNames("");
+			for each (var name:String in names)
+			{
+				map[name] = getImage(name, scale);
+			}
+			return map;
 		}
 		
 		

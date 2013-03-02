@@ -454,7 +454,7 @@ package tetragon.systems.racetrack
 			_cameraDepth = _racetrack.cameraDepth;
 			_segments = _racetrack.segments;
 			_opponents = _racetrack.opponents;
-			_sprites = _racetrack.sprites;
+			_sprites = _racetrack.sprold;
 			_spriteScale = _racetrack.spriteScale;
 		}
 		

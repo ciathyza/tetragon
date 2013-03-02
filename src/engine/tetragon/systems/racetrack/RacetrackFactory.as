@@ -40,6 +40,8 @@ package tetragon.systems.racetrack
 	import tetragon.systems.racetrack.vo.SSprite;
 	import tetragon.systems.racetrack.vo.Segment;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.display.BitmapData;
 	
 	
@@ -124,43 +126,43 @@ package tetragon.systems.racetrack
 			
 			/* Create Demo Sprites ------------------------------------------------------- */
 			/* Add row of billboards right after start line. */
-			addSprite(20, _racetrack.sprites.BILLBOARD07, -1);
-			addSprite(40, _racetrack.sprites.BILLBOARD06, -1);
-			addSprite(60, _racetrack.sprites.BILLBOARD08, -1);
-			addSprite(80, _racetrack.sprites.BILLBOARD09, -1);
-			addSprite(100, _racetrack.sprites.BILLBOARD01, -1);
-			addSprite(120, _racetrack.sprites.BILLBOARD02, -1);
-			addSprite(140, _racetrack.sprites.BILLBOARD03, -1);
-			addSprite(160, _racetrack.sprites.BILLBOARD04, -1);
-			addSprite(180, _racetrack.sprites.BILLBOARD05, -1);
-			addSprite(240, _racetrack.sprites.BILLBOARD07, -1.2);
-			addSprite(240, _racetrack.sprites.BILLBOARD06, 1.2);
+			addSprite(20, _racetrack.sprold.BILLBOARD07, -1);
+			addSprite(40, _racetrack.sprold.BILLBOARD06, -1);
+			addSprite(60, _racetrack.sprold.BILLBOARD08, -1);
+			addSprite(80, _racetrack.sprold.BILLBOARD09, -1);
+			addSprite(100, _racetrack.sprold.BILLBOARD01, -1);
+			addSprite(120, _racetrack.sprold.BILLBOARD02, -1);
+			addSprite(140, _racetrack.sprold.BILLBOARD03, -1);
+			addSprite(160, _racetrack.sprold.BILLBOARD04, -1);
+			addSprite(180, _racetrack.sprold.BILLBOARD05, -1);
+			addSprite(240, _racetrack.sprold.BILLBOARD07, -1.2);
+			addSprite(240, _racetrack.sprold.BILLBOARD06, 1.2);
 			/* Add some billboards at end of track. */
-			addSprite(_racetrack.segments.length - 25, _racetrack.sprites.BILLBOARD07, -1.2);
-			addSprite(_racetrack.segments.length - 25, _racetrack.sprites.BILLBOARD06, 1.2);
+			addSprite(_racetrack.segments.length - 25, _racetrack.sprold.BILLBOARD07, -1.2);
+			addSprite(_racetrack.segments.length - 25, _racetrack.sprold.BILLBOARD06, 1.2);
 			/* Add palm trees at start of track. */
-			addSprites(_racetrack.sprites.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
-			addSprites(_racetrack.sprites.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
+			addSprites(_racetrack.sprold.PALM_TREE, 10, 200, null, 4, 100, 0.5, 0.5);
+			addSprites(_racetrack.sprold.PALM_TREE, 10, 200, null, 4, 100, 1, 2);
 			/* Add a long row of columns on right side and trees on left side. */
-			addSprites(_racetrack.sprites.COLUMN, 250, 1000, null, 5, 0, 1.1);
-			addSprites(_racetrack.sprites.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
-			addSprites(_racetrack.sprites.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
+			addSprites(_racetrack.sprold.COLUMN, 250, 1000, null, 5, 0, 1.1);
+			addSprites(_racetrack.sprold.TREE1, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
+			addSprites(_racetrack.sprold.TREE2, 250, 1000, [0, 5], 8, 0, -1, 2, "sub");
 			// TODO
 			for (i = 200; i < _racetrack.segments.length; i += 3)
 			{
-				addSprite(i, randomChoice(_racetrack.sprites.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
+				addSprite(i, randomChoice(_racetrack.sprold.VEGETATION), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			for (i = 1600; i < _racetrack.segments.length; i += 20)
 			{
-				addSprite(i, randomChoice(_racetrack.sprites.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
+				addSprite(i, randomChoice(_racetrack.sprold.BUILDINGS), randomChoice([1, -1]) * (2 + Math.random() * 5));
 			}
 			for (i = 1000; i < (_racetrack.segments.length - 50); i += 100)
 			{
 				side = randomChoice([1, -1]);
-				addSprite(i + randomInt(0, 50), randomChoice(_racetrack.sprites.BILLBOARDS), -side);
+				addSprite(i + randomInt(0, 50), randomChoice(_racetrack.sprold.BILLBOARDS), -side);
 				for (j = 0 ; j < 20 ; j++)
 				{
-					sprite = randomChoice(_racetrack.sprites.VEGETATION);
+					sprite = randomChoice(_racetrack.sprold.VEGETATION);
 					offset = side * (1.5 + Math.random());
 					addSprite(i + randomInt(0, 50), sprite, offset);
 				}
@@ -171,8 +173,8 @@ package tetragon.systems.racetrack
 			{
 				offset = Math.random() * randomChoice([-0.8, 0.8]);
 				z = int(Math.random() * _racetrack.segments.length) * _racetrack.segmentLength;
-				sprite = randomChoice(_racetrack.sprites.CARS);
-				speed = _racetrack.maxSpeed / 4 + Math.random() * _racetrack.maxSpeed / (sprite == _racetrack.sprites.SEMI ? 4 : 2);
+				sprite = randomChoice(_racetrack.sprold.CARS);
+				speed = _racetrack.maxSpeed / 4 + Math.random() * _racetrack.maxSpeed / (sprite == _racetrack.sprold.SEMI ? 4 : 2);
 				opponent = new Opponent(offset, z, new SSprite(sprite), speed);
 				segment = findSegment(opponent.z);
 				segment.cars.push(opponent);
@@ -238,8 +240,15 @@ package tetragon.systems.racetrack
 		 */
 		private function prepareSprites():void
 		{
-			_racetrack.sprites = new Sprites();
-			var s:Sprites = _racetrack.sprites;
+			var spriteMap:Object = _atlas.getImageMap();
+			for (var i:String in spriteMap)
+			{
+				Debug.trace(i);
+			}
+			
+			
+			_racetrack.sprold = new Sprites();
+			var s:Sprites = _racetrack.sprold;
 			
 			if (_atlas)
 			{
