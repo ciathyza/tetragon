@@ -39,7 +39,6 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.geom.MatrixUtil;
 	import com.hexagonstar.util.geom.RectangleUtil;
 	import com.hexagonstar.util.math.nextPowerOfTwo;
@@ -108,6 +107,9 @@ package tetragon.view.render2d.filters
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		public static var render2D:Render2D;
+		public static var context3D:Context3D;
+		
 		private var _vertexPosAtID:int = 0;
 		private var _texCoordsAtID:int = 1;
 		private var _baseTextureID:int = 0;
@@ -169,7 +171,7 @@ package tetragon.view.render2d.filters
 			
 			// Handle lost context. By using the conventional event, we can make it weak; this
 			// avoids memory leaks when people forget to call "dispose" on the filter.
-			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
+			render2D.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
 				onContextCreated, false, 0, true);
 		}
 		
@@ -181,7 +183,7 @@ package tetragon.view.render2d.filters
 		/** Disposes the filter (programs, buffers, textures). */
 		public function dispose():void
 		{
-			Render2D.current.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
+			render2D.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
 			if (_vertexBuffer) _vertexBuffer.dispose();
 			if (_indexBuffer) _indexBuffer.dispose();
 			disposePassTextures();
@@ -425,11 +427,9 @@ package tetragon.view.render2d.filters
 		{
 			var cacheTexture:Texture2D = null;
 			var stage:Stage2D = object.stage;
-			var context:Context3D = Render2D.context;
-			var scale:Number = Render2D.current.contentScaleFactor;
+			var scale:Number = render2D.contentScaleFactor;
 			
 			if (!stage) throw new Error("Filtered object must be on the stage.");
-			if (!context) throw new MissingContext3DException();
 			
 			// the bounds of the object in stage coordinates
 			calculateBounds(object, stage, !intoCache, _bounds);
@@ -440,7 +440,7 @@ package tetragon.view.render2d.filters
 				return intoCache ? new QuadBatch2D() : null;
 			}
 
-			updateBuffers(context, _bounds);
+			updateBuffers(context3D, _bounds);
 			updatePassTextures(_bounds.width, _bounds.height, _resolution * scale);
 
 			support.finishQuadBatch();
@@ -476,8 +476,8 @@ package tetragon.view.render2d.filters
 			support.loadIdentity();
 			
 			// now we'll draw in stage coordinates!
-			context.setVertexBufferAt(_vertexPosAtID, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			context.setVertexBufferAt(_texCoordsAtID, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(_vertexPosAtID, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(_texCoordsAtID, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 
 			// draw all passes
 			for (var i:int = 0; i < _numPasses; ++i)
@@ -510,18 +510,18 @@ package tetragon.view.render2d.filters
 
 				var passTexture:Texture2D = getPassTexture(i);
 
-				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, _mvpConstantID, support.mvpMatrix3D, true);
-				context.setTextureAt(_baseTextureID, passTexture.base);
+				context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, _mvpConstantID, support.mvpMatrix3D, true);
+				context3D.setTextureAt(_baseTextureID, passTexture.base);
 
-				activate(i, context, passTexture);
-				context.drawTriangles(_indexBuffer, 0, 2);
-				deactivate(i, context, passTexture);
+				activate(i, context3D, passTexture);
+				context3D.drawTriangles(_indexBuffer, 0, 2);
+				deactivate(i, context3D, passTexture);
 			}
 
 			// reset shader attributes
-			context.setVertexBufferAt(_vertexPosAtID, null);
-			context.setVertexBufferAt(_texCoordsAtID, null);
-			context.setTextureAt(_baseTextureID, null);
+			context3D.setVertexBufferAt(_vertexPosAtID, null);
+			context3D.setVertexBufferAt(_texCoordsAtID, null);
+			context3D.setTextureAt(_baseTextureID, null);
 
 			support.popMatrix();
 
@@ -604,7 +604,7 @@ package tetragon.view.render2d.filters
 		private function calculateBounds(object:DisplayObject2D, stage:Stage2D, intersectWithStage:Boolean, resultRect:Rectangle):void
 		{
 			// optimize for full-screen effects
-			if (object == stage || object == Render2D.current.root)
+			if (object == stage || object == render2D.root)
 				resultRect.setTo(0, 0, stage.stageWidth, stage.stageHeight);
 			else
 				object.getBounds(stage, resultRect);

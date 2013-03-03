@@ -28,7 +28,6 @@
  */
 package tetragon.view.render2d.display
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.events.Event2D;
@@ -37,11 +36,9 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGALMiniAssembler;
 	import com.hexagonstar.util.geom.MatrixUtil;
 
-	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;
 	import flash.display3D.Context3DVertexBufferFormat;
@@ -127,7 +124,7 @@ package tetragon.view.render2d.display
 			// Handle lost context. We use the conventional event here (not the one from Render2D)
 			// so we're able to create a weak event listener; this avoids memory leaks when people
 			// forget to call "dispose" on the QuadBatch.
-			Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
+			render2D.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
 				onContextCreated, false, 0, true);
 		}
 		
@@ -139,7 +136,7 @@ package tetragon.view.render2d.display
 		/** Disposes vertex- and index-buffer. */
 		public override function dispose():void
 		{
-			Render2D.current.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
+			render2D.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
 
 			if (_vertexBuffer) _vertexBuffer.dispose();
 			if (_indexBuffer) _indexBuffer.dispose();
@@ -174,7 +171,6 @@ package tetragon.view.render2d.display
 			if (_syncRequired) syncBuffers();
 
 			var pma:Boolean = _vertexData.premultipliedAlpha;
-			var context:Context3D = Render2D.context;
 			var tinted:Boolean = _tinted || (parentAlpha != 1.0);
 			var programName:String = _texture ? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing) : QUAD_PROGRAM_NAME;
 
@@ -184,30 +180,30 @@ package tetragon.view.render2d.display
 			MatrixUtil.convertTo3D(mvpMatrix, _renderMatrix);
 			RenderSupport2D.setBlendFactors(pma, blendMode ? blendMode : this.blendMode);
 
-			context.setProgram(Render2D.current.getProgram(programName));
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, _renderAlpha, 1);
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, _renderMatrix, true);
-			context.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setProgram(render2D.getProgram(programName));
+			context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, _renderAlpha, 1);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, _renderMatrix, true);
+			context3D.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 
 			if (_texture == null || tinted)
-				context.setVertexBufferAt(1, _vertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
+				context3D.setVertexBufferAt(1, _vertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
 
 			if (_texture)
 			{
-				context.setTextureAt(0, _texture.base);
-				context.setVertexBufferAt(2, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+				context3D.setTextureAt(0, _texture.base);
+				context3D.setVertexBufferAt(2, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
 
-			context.drawTriangles(_indexBuffer, 0, _numQuads * 2);
+			context3D.drawTriangles(_indexBuffer, 0, _numQuads * 2);
 
 			if (_texture)
 			{
-				context.setTextureAt(0, null);
-				context.setVertexBufferAt(2, null);
+				context3D.setTextureAt(0, null);
+				context3D.setVertexBufferAt(2, null);
 			}
 
-			context.setVertexBufferAt(1, null);
-			context.setVertexBufferAt(0, null);
+			context3D.setVertexBufferAt(1, null);
+			context3D.setVertexBufferAt(0, null);
 		}
 
 
@@ -432,17 +428,15 @@ package tetragon.view.render2d.display
 		{
 			var numVertices:int = _vertexData.numVertices;
 			var numIndices:int = _indexData.length;
-			var context:Context3D = Render2D.context;
 			
 			if (_vertexBuffer) _vertexBuffer.dispose();
 			if (_indexBuffer) _indexBuffer.dispose();
 			if (numVertices == 0) return;
-			if (!context) throw new MissingContext3DException();
 			
-			_vertexBuffer = context.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer = context3D.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
 			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
 			
-			_indexBuffer = context.createIndexBuffer(numIndices);
+			_indexBuffer = context3D.createIndexBuffer(numIndices);
 			_indexBuffer.uploadFromVector(_indexData, 0, numIndices);
 			
 			_syncRequired = false;
@@ -586,8 +580,7 @@ package tetragon.view.render2d.display
 		 */
 		private static function registerPrograms():void
 		{
-			var target:Render2D = Render2D.current;
-			if (target.hasProgram(QUAD_PROGRAM_NAME)) return; // already registered
+			if (render2D.hasProgram(QUAD_PROGRAM_NAME)) return; // already registered
 			
 			var agal:AGALMiniAssembler = RenderSupport2D.agal;
 			
@@ -608,7 +601,7 @@ package tetragon.view.render2d.display
 			var fragmentASM:String =
 				"mov oc, v0       \n";	// output color
 			
-			target.registerProgram(QUAD_PROGRAM_NAME,
+			render2D.registerProgram(QUAD_PROGRAM_NAME,
 				agal.assemble(Context3DProgramType.VERTEX, vertexASM),
 				agal.assemble(Context3DProgramType.FRAGMENT, fragmentASM));
 			
@@ -664,7 +657,7 @@ package tetragon.view.render2d.display
 								else
 									options.push("linear", mipmap ? "miplinear" : "mipnone");
 								
-								target.registerProgram(getImageProgramName(tinted, mipmap, repeat,
+								render2D.registerProgram(getImageProgramName(tinted, mipmap, repeat,
 									format, smoothing), agal.assemble(Context3DProgramType.VERTEX,
 										vertexASM), agal.assemble(Context3DProgramType.FRAGMENT,
 										fragmentASM.replace("???", options.join())));

@@ -34,7 +34,6 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGALMiniAssembler;
 	import com.hexagonstar.util.color.ColorUtil;
 	import com.hexagonstar.util.geom.MatrixUtil;
@@ -59,6 +58,8 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
+		
+		public static var context3D:Context3D;
 		
 		/** @private */
 		private var _projectionMatrix:Matrix;
@@ -286,7 +287,7 @@ package tetragon.view.render2d.core
 		{
 			_backBufferWidth = w;
 			_backBufferHeight = h;
-			Render2D.context.configureBackBuffer(w, h, antiAlias, enableDepthAndStencil);
+			context3D.configureBackBuffer(w, h, antiAlias, enableDepthAndStencil);
 		}
 		
 		
@@ -392,9 +393,7 @@ package tetragon.view.render2d.core
 		{
 			if (!resultProgram)
 			{
-				var context:Context3D = Render2D.context;
-				if (!context) throw new MissingContext3DException();
-				resultProgram = context.createProgram();
+				resultProgram = context3D.createProgram();
 			}
 			
 			resultProgram.upload(agal.assemble(Context3DProgramType.VERTEX, vertexShader),
@@ -422,7 +421,7 @@ package tetragon.view.render2d.core
 			blendMode:String = "normal"):void
 		{
 			var blendFactors:Array = BlendMode2D.getBlendFactors(blendMode, premultipliedAlpha);
-			Render2D.context.setBlendFactors(blendFactors[0], blendFactors[1]);
+			context3D.setBlendFactors(blendFactors[0], blendFactors[1]);
 		}
 		
 		
@@ -434,7 +433,7 @@ package tetragon.view.render2d.core
 		 */
 		public static function clear(rgb:uint = 0, alpha:Number = 0.0):void
 		{
-			Render2D.context.clear(ColorUtil.getRed(rgb) / 255.0,
+			context3D.clear(ColorUtil.getRed(rgb) / 255.0,
 				ColorUtil.getGreen(rgb) / 255.0,
 				ColorUtil.getBlue(rgb) / 255.0, alpha);
 		}
@@ -511,8 +510,8 @@ package tetragon.view.render2d.core
 		public function set renderTarget(v:Texture2D):void
 		{
 			_renderTarget = v;
-			if (v) Render2D.context.setRenderToTexture(v.base);
-			else Render2D.context.setRenderToBackBuffer();
+			if (v) context3D.setRenderToTexture(v.base);
+			else context3D.setRenderToBackBuffer();
 		}
 		
 		
@@ -574,12 +573,12 @@ package tetragon.view.render2d.core
 				MatrixUtil.transformCoords(_projectionMatrix, v.right, v.bottom, _point);
 				_rectangle.right = Math.min(1, ( _point.x + 1) / 2) * w;
 				_rectangle.bottom = Math.min(1, (-_point.y + 1) / 2) * h;
-				Render2D.context.setScissorRectangle(_rectangle);
+				context3D.setScissorRectangle(_rectangle);
 			}
 			else
 			{
 				_scissorRectangle.setEmpty();
-				Render2D.context.setScissorRectangle(null);
+				context3D.setScissorRectangle(null);
 			}
 		}
 		

@@ -28,6 +28,7 @@
  */
 package tetragon.view.render2d.display
 {
+	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
@@ -36,6 +37,7 @@ package tetragon.view.render2d.display
 	import com.hexagonstar.exception.AbstractMethodException;
 	import com.hexagonstar.util.geom.MatrixUtil;
 
+	import flash.display3D.Context3D;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -140,6 +142,9 @@ package tetragon.view.render2d.display
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
+		
+		public static var render2D:Render2D;
+		public static var context3D:Context3D;
 		
 		private var _parent:DisplayObjectContainer2D;
 		private var _transMatrix:Matrix;

@@ -142,22 +142,13 @@ package tetragon.systems.racetrack
 			
 			this.racetrack = racetrack;
 			
-			if (!_useRender2D) init();
+			setup();
 		}
 		
 		
 		// -----------------------------------------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		public function init():void
-		{
-			setup();
-		}
-		
 		
 		/**
 		 * @inheritDoc

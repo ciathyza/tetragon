@@ -1,10 +1,7 @@
 package tetragon.view.render2d.display
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
-
-	import com.hexagonstar.exception.MissingContext3DException;
 
 	import flash.display3D.*;
 	import flash.events.Event;
@@ -62,7 +59,7 @@ package tetragon.view.render2d.display
 			registerPrograms();
 
 			// handle lost context
-			Render2D.current.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			render2D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		}
 		
 		
@@ -73,7 +70,7 @@ package tetragon.view.render2d.display
 		/** Disposes all resources of the display object. */
 		public override function dispose():void
 		{
-			Render2D.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			render2D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 			if (mVertexBuffer) mVertexBuffer.dispose();
 			if (mIndexBuffer) mIndexBuffer.dispose();
 			super.dispose();
@@ -104,25 +101,22 @@ package tetragon.view.render2d.display
 			sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = 1.0;
 			sRenderAlpha[3] = alpha * this.alpha;
 
-			var context:Context3D = Render2D.context;
-			if (context == null) throw new MissingContext3DException();
-
 			// apply the current blendmode
 			support.applyBlendMode(false);
 
 			// activate program (shader) and set the required buffers / constants
-			context.setProgram(Render2D.current.getProgram(PROGRAM_NAME));
-			context.setVertexBufferAt(0, mVertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			context.setVertexBufferAt(1, mVertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
+			context3D.setProgram(render2D.getProgram(PROGRAM_NAME));
+			context3D.setVertexBufferAt(0, mVertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(1, mVertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
+			context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
 
 			// finally: draw the object!
-			context.drawTriangles(mIndexBuffer, 0, mNumEdges);
+			context3D.drawTriangles(mIndexBuffer, 0, mNumEdges);
 
 			// reset buffers
-			context.setVertexBufferAt(0, null);
-			context.setVertexBufferAt(1, null);
+			context3D.setVertexBufferAt(0, null);
+			context3D.setVertexBufferAt(1, null);
 		}
 		
 		
@@ -211,16 +205,13 @@ package tetragon.view.render2d.display
 		 *  buffers. */
 		private function createBuffers():void
 		{
-			var context:Context3D = Render2D.context;
-			if (context == null) throw new MissingContext3DException();
-
 			if (mVertexBuffer) mVertexBuffer.dispose();
 			if (mIndexBuffer) mIndexBuffer.dispose();
 
-			mVertexBuffer = context.createVertexBuffer(mVertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			mVertexBuffer = context3D.createVertexBuffer(mVertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
 			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, mVertexData.numVertices);
 
-			mIndexBuffer = context.createIndexBuffer(mIndexData.length);
+			mIndexBuffer = context3D.createIndexBuffer(mIndexData.length);
 			mIndexBuffer.uploadFromVector(mIndexData, 0, mIndexData.length);
 		}
 		
@@ -228,8 +219,7 @@ package tetragon.view.render2d.display
 		/** Creates vertex and fragment programs from assembly. */
 		private static function registerPrograms():void
 		{
-			var target:Render2D = Render2D.current;
-			if (target.hasProgram(PROGRAM_NAME)) return;
+			if (render2D.hasProgram(PROGRAM_NAME)) return;
 			// already registered
 
 			// va0 -> position
@@ -244,7 +234,7 @@ package tetragon.view.render2d.display
 			var fragmentProgramCode:String =
 				"mov oc, v0";	// just forward incoming color
 			
-			target.registerProgram(PROGRAM_NAME,
+			render2D.registerProgram(PROGRAM_NAME,
 				RenderSupport2D.agal.assemble(Context3DProgramType.VERTEX, vertexProgramCode),
 				RenderSupport2D.agal.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode));
 		}

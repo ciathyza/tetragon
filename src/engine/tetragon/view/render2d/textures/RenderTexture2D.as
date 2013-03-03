@@ -28,15 +28,12 @@
  */
 package tetragon.view.render2d.textures
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Image2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.math.nextPowerOfTwo;
 
-	import flash.display3D.Context3D;
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
@@ -129,7 +126,7 @@ package tetragon.view.render2d.textures
 		public function RenderTexture2D(width:int, height:int, persistent:Boolean = true,
 			scale:Number = -1.0)
 		{
-			if (scale <= 0.0) scale = Render2D.contentScaleFactor;
+			if (scale <= 0.0) scale = render2D.contentScaleFactor;
 			
 			var nativeWidth:int = nextPowerOfTwo(width * scale);
 			var nativeHeight:int = nextPowerOfTwo(height * scale);
@@ -206,9 +203,6 @@ package tetragon.view.render2d.textures
 		 */
 		public function drawBundled(drawingBlock:Function, antiAliasing:int = 0):void
 		{
-			var context:Context3D = Render2D.context;
-			if (!context) throw new MissingContext3DException();
-			
 			// persistent drawing uses double buffering, as Molehill forces us to call 'clear'
 			// on every render target once per update.
 			
@@ -254,9 +248,6 @@ package tetragon.view.render2d.textures
 		 */
 		public function clear():void
 		{
-			var context:Context3D = Render2D.context;
-			if (!context) throw new MissingContext3DException();
-			
 			_support.renderTarget = _activeTexture;
 			_support.clear();
 			_support.renderTarget = null;

@@ -28,7 +28,6 @@
  */
 package tetragon.view.render2d.touch
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -94,7 +93,7 @@ package tetragon.view.render2d.touch
 
 		private function createTexture():Texture2D
 		{
-			var scale:Number = Render2D.contentScaleFactor;
+			var scale:Number = render2D.contentScaleFactor;
 			var radius:Number = 12 * scale;
 			var width:int = 32 * scale;
 			var height:int = 32 * scale;

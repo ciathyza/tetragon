@@ -36,6 +36,10 @@ package tetragon.view
 	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
+	import tetragon.view.render2d.core.RenderSupport2D;
+	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.filters.FragmentFilter2D;
+	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
@@ -114,7 +118,7 @@ package tetragon.view
 		private var _screenLoaded:Boolean;
 		
 		private var _enableErrorChecking:Boolean;
-		private var _handleLostContext:Boolean;
+		private static var _handleLostContext:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -304,6 +308,29 @@ package tetragon.view
 		
 		
 		/**
+		 * @private
+		 */
+		public function showOnScreenError(message:String):void
+		{
+			Log.fatal(message, this);
+			var tf:TextField = new TextField();
+			var format:TextFormat = new TextFormat("Verdana", 14, 0xFFFFFF);
+			format.align = TextFormatAlign.CENTER;
+			tf.defaultTextFormat = format;
+			tf.wordWrap = true;
+			tf.width = _stage.stageWidth * 0.75;
+			tf.autoSize = TextFieldAutoSize.CENTER;
+			tf.text = message;
+			tf.x = int((_stage.stageWidth - tf.width) * 0.5);
+			tf.y = int((_stage.stageHeight - tf.height) * 0.5);
+			tf.background = true;
+			tf.backgroundColor = 0x440000;
+			if (_nativeViewContainer) _nativeViewContainer.addChild(tf);
+			else _contextView.addChild(tf);
+		}
+		
+		
+		/**
 		 * Initializes the screen manager by requesting a Stage3D context and readying other
 		 * required facilities for managing screens. Called automatically by the engine!
 		 * 
@@ -459,6 +486,22 @@ package tetragon.view
 		
 		
 		/**
+		 * The stage3DProxy that has been prepared by the screen manager. When Tetragon
+		 * is ready for use, a context3D has already been created.
+		 */
+		public function get stage3DProxy():Stage3DProxy
+		{
+			return _stage3DProxy;
+		}
+		
+		
+		public function get context3D():Context3D
+		{
+			return _context3D;
+		}
+		
+		
+		/**
 		 * Indicates if the app should automatically recover from a lost device context. On
 		 * some systems, an upcoming screensaver or entering sleep mode may invalidate the
 		 * render context. This setting indicates if the app should recover from such
@@ -468,11 +511,11 @@ package tetragon.view
 		 * 
 		 * @default false
 		 */
-		public function get handleLostContext():Boolean
+		public static function get handleLostContext():Boolean
 		{
 			return _handleLostContext;
 		}
-		public function set handleLostContext(v:Boolean):void
+		public static function set handleLostContext(v:Boolean):void
 		{
 			_handleLostContext = v;
 		}
@@ -838,6 +881,13 @@ package tetragon.view
 		{
 			_context3D = _stage3D.context3D;
 			_context3D.enableErrorChecking = _enableErrorChecking;
+			
+			/* Set shortcuts to context in Render2D classes. */
+			DisplayObject2D.context3D =
+			RenderSupport2D.context3D =
+			FragmentFilter2D.context3D =
+			Texture2D.context3D = _context3D;
+			
 			verbose("Context3D initialized. Display Driver: " + _context3D.driverInfo);
 			if (_context3DCreatedSignal) _context3DCreatedSignal.dispatch(_context3D);
 		}
@@ -985,29 +1035,6 @@ package tetragon.view
 		//private function removeScreenChildren(screen:Screen):void
 		//{
 		//}
-		
-		
-		/**
-		 * @private
-		 */
-		private function showOnScreenError(message:String):void
-		{
-			Log.fatal(message, this);
-			var tf:TextField = new TextField();
-			var format:TextFormat = new TextFormat("Verdana", 14, 0xFFFFFF);
-			format.align = TextFormatAlign.CENTER;
-			tf.defaultTextFormat = format;
-			tf.wordWrap = true;
-			tf.width = _stage.stageWidth * 0.75;
-			tf.autoSize = TextFieldAutoSize.CENTER;
-			tf.text = message;
-			tf.x = int((_stage.stageWidth - tf.width) * 0.5);
-			tf.y = int((_stage.stageHeight - tf.height) * 0.5);
-			tf.background = true;
-			tf.backgroundColor = 0x440000;
-			if (_nativeViewContainer) _nativeViewContainer.addChild(tf);
-			else _contextView.addChild(tf);
-		}
 		
 		
 		/**

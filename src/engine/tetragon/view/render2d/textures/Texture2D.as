@@ -28,11 +28,11 @@
  */
 package tetragon.view.render2d.textures
 {
+	import tetragon.view.ScreenManager;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.events.Event2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display.Bitmap;
@@ -123,6 +123,9 @@ package tetragon.view.render2d.textures
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		public static var render2D:Render2D;
+		public static var context3D:Context3D;
+		
 		private var _frame:Rectangle;
 		private var _repeat:Boolean;
 		
@@ -189,12 +192,9 @@ package tetragon.view.render2d.textures
 			var origHeight:int = data.height;
 			var legalWidth:int = nextPowerOfTwo(origWidth);
 			var legalHeight:int = nextPowerOfTwo(origHeight);
-			var context:Context3D = Render2D.context;
 			var potData:BitmapData;
 			
-			if (!context) throw new MissingContext3DException();
-			
-			var nativeTexture:Texture = context.createTexture(legalWidth, legalHeight,
+			var nativeTexture:Texture = context3D.createTexture(legalWidth, legalHeight,
 				Context3DTextureFormat.BGRA, optimizeForRenderToTexture);
 			
 			if (legalWidth > origWidth || legalHeight > origHeight)
@@ -210,7 +210,7 @@ package tetragon.view.render2d.textures
 				Context3DTextureFormat.BGRA, legalWidth, legalHeight, generateMipMaps, true,
 				optimizeForRenderToTexture, scale);
 			
-			if (Render2D.handleLostContext) concreteTexture.restoreOnLostContext(data);
+			if (ScreenManager.handleLostContext) concreteTexture.restoreOnLostContext(data);
 			else if (potData) potData.dispose();
 			
 			if (origWidth == legalWidth && origHeight == legalHeight)
@@ -244,13 +244,10 @@ package tetragon.view.render2d.textures
 			useMipMaps:Boolean = true, loadAsync:Function = null):Texture2D
 		{
 			const eventType:String = "textureReady"; // defined here for backwards compatibility
-			var context:Context3D = Render2D.context;
-			
-			if (!context) throw new MissingContext3DException();
 			
 			var async:Boolean = loadAsync != null;
 			var atfData:ATFData2D = new ATFData2D(data);
-			var nativeTexture:Texture = context.createTexture(atfData.width,
+			var nativeTexture:Texture = context3D.createTexture(atfData.width,
 				atfData.height, atfData.format, false);
 			
 			uploadATFData(nativeTexture, data, 0, async);
@@ -259,7 +256,7 @@ package tetragon.view.render2d.textures
 				atfData.format, atfData.width, atfData.height,
 				useMipMaps && atfData.numTextures > 1, false, false, scale);
 			
-			if (Render2D.handleLostContext)
+			if (ScreenManager.handleLostContext)
 			{
 				concreteTexture.restoreOnLostContext(atfData);
 			}
@@ -292,10 +289,10 @@ package tetragon.view.render2d.textures
 		public static function fromColor(width:int, height:int, color:uint = 0xFFFFFFFF,
 			optimizeForRenderToTexture:Boolean = false, scale:Number = -1.0):Texture2D
 		{
-			if (scale <= 0.0) scale = Render2D.contentScaleFactor;
+			if (scale <= 0.0) scale = render2D.contentScaleFactor;
 			var b:BitmapData = new BitmapData(width * scale, height * scale, true, color);
 			var t:Texture2D = fromBitmapData(b, false, optimizeForRenderToTexture, scale);
-			if (!Render2D.handleLostContext) b.dispose();
+			if (!ScreenManager.handleLostContext) b.dispose();
 			return t;
 		}
 		
@@ -315,18 +312,15 @@ package tetragon.view.render2d.textures
 			premultipliedAlpha:Boolean = false, optimizeForRenderToTexture:Boolean = true,
 			scale:Number = -1.0):Texture2D
 		{
-			if (scale <= 0.0) scale = Render2D.contentScaleFactor;
+			if (scale <= 0.0) scale = render2D.contentScaleFactor;
 			
 			var origWidth:int = width * scale;
 			var origHeight:int = height * scale;
 			var legalWidth:int = nextPowerOfTwo(origWidth);
 			var legalHeight:int = nextPowerOfTwo(origHeight);
 			var format:String = Context3DTextureFormat.BGRA;
-			var context:Context3D = Render2D.context;
 			
-			if (!context) throw new MissingContext3DException();
-			
-			var nativeTexture:Texture = context.createTexture(legalWidth, legalHeight,
+			var nativeTexture:Texture = context3D.createTexture(legalWidth, legalHeight,
 				Context3DTextureFormat.BGRA, optimizeForRenderToTexture);
 			var concreteTexture:ConcreteTexture2D = new ConcreteTexture2D(nativeTexture, format,
 				legalWidth, legalHeight, false, premultipliedAlpha, optimizeForRenderToTexture, scale);

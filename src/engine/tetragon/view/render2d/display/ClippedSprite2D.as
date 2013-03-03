@@ -28,12 +28,8 @@
  */
 package tetragon.view.render2d.display
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 
-	import com.hexagonstar.exception.MissingContext3DException;
-
-	import flash.display3D.Context3D;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -79,9 +75,6 @@ package tetragon.view.render2d.display
 			}
 			else
 			{
-				var context:Context3D = Render2D.context;
-				if (!context) throw new MissingContext3DException();
-				
 				support.finishQuadBatch();
 				support.scissorRectangle = _clipRect;
 				

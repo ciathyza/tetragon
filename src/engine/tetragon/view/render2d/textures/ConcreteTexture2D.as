@@ -28,11 +28,9 @@
  */
 package tetragon.view.render2d.textures
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.events.Event2D;
 
 	import flash.display.BitmapData;
-	import flash.display3D.Context3D;
 	import flash.display3D.Context3DTextureFormat;
 	import flash.display3D.textures.TextureBase;
 	
@@ -115,9 +113,9 @@ package tetragon.view.render2d.textures
 		public function restoreOnLostContext(data:Object):void
 		{
 			if (!_data && data)
-				Render2D.current.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
+				render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
 			else if (!data)
-				Render2D.current.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
+				render2D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
 			_data = data;
 		}
 		
@@ -131,20 +129,19 @@ package tetragon.view.render2d.textures
 		 */
 		private function onContextCreated(e:Event2D):void
 		{
-			var context:Context3D = Render2D.context;
 			var bitmapData:BitmapData = _data as BitmapData;
 			var atfData:ATFData2D = _data as ATFData2D;
 			var nativeTexture:flash.display3D.textures.Texture;
 			
 			if (bitmapData)
 			{
-				nativeTexture = context.createTexture(_width, _height, Context3DTextureFormat.BGRA,
+				nativeTexture = context3D.createTexture(_width, _height, Context3DTextureFormat.BGRA,
 					_optimizedForRenderTexture);
 				Texture2D.uploadBitmapData(nativeTexture, bitmapData, _mipMapping);
 			}
 			else if (atfData)
 			{
-				nativeTexture = context.createTexture(atfData.width, atfData.height, atfData.format,
+				nativeTexture = context3D.createTexture(atfData.width, atfData.height, atfData.format,
 					_optimizedForRenderTexture);
 				Texture2D.uploadATFData(nativeTexture, atfData.data);
 			}

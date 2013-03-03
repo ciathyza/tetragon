@@ -28,7 +28,6 @@
  */
 package tetragon.view.render2d.extensions.scrollimage
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -36,10 +35,8 @@ package tetragon.view.render2d.extensions.scrollimage
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import com.hexagonstar.constants.TextureSmoothing;
-	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGALMiniAssembler;
 
-	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;
 	import flash.display3D.Context3DVertexBufferFormat;
@@ -180,7 +177,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			color = 0xFFFFFF;
 			
 			// handle lost context
-			Render2D.current.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			render2D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 		}
 		
 		
@@ -301,32 +298,29 @@ package tetragon.view.render2d.extensions.scrollimage
 			support.finishQuadBatch();
 			if (_syncRequired) syncBuffers();
 
-			var context:Context3D = Render2D.context;
-			if (context == null) throw new MissingContext3DException();
-
 			// apply the current blendmode
 			support.applyBlendMode(_premultipliedAlpha);
 
 			// set texture
 			if (_texture)
-				context.setTextureAt(0, _texture.base);
+				context3D.setTextureAt(0, _texture.base);
 
 			// set buffers
-			context.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			// position
-			context.setVertexBufferAt(1, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(1, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			// UV
-			context.setVertexBufferAt(2, _extraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
+			context3D.setVertexBufferAt(2, _extraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
 			// vc for color and transform registers
-			context.setVertexBufferAt(3, _extraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
+			context3D.setVertexBufferAt(3, _extraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
 			// clipping
 
 			// set alpha
 			_renderColorAlpha[3] = this.alpha * alpha;
 
 			// set object and layers data
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, _renderColorAlpha, 1);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
+			context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, _renderColorAlpha, 1);
 
 			var tintedlayer:Boolean = false;
 
@@ -339,27 +333,27 @@ package tetragon.view.render2d.extensions.scrollimage
 
 				_matrix = _freeze ? _layersMatrix[i] : calculateMatrix(layer, _layersMatrix[i]);
 
-				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, getColorRegister(i), layer.colorTrans, 1);
-				context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, getTransRegister(i), _matrix, true);
+				context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, getColorRegister(i), layer.colorTrans, 1);
+				context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, getTransRegister(i), _matrix, true);
 			}
 
 			// activate program (shader)
 			var tinted:Boolean = (_renderColorAlpha[3] != 1.0) || color != 0xFFFFFF || tintedlayer;
-			context.setProgram(Render2D.current.getProgram(getImageProgramName(tinted, _mipMapping, _smoothing, _texture.format, _useBaseTexture)));
+			context3D.setProgram(render2D.getProgram(getImageProgramName(tinted, _mipMapping, _smoothing, _texture.format, _useBaseTexture)));
 
 			// draw the object
-			context.drawTriangles(_indexBuffer, 0, _indexData.length / 3);
+			context3D.drawTriangles(_indexBuffer, 0, _indexData.length / 3);
 
 			// reset buffers
 			if (_texture)
 			{
-				context.setTextureAt(0, null);
+				context3D.setTextureAt(0, null);
 			}
 
-			context.setVertexBufferAt(0, null);
-			context.setVertexBufferAt(1, null);
-			context.setVertexBufferAt(2, null);
-			context.setVertexBufferAt(3, null);
+			context3D.setVertexBufferAt(0, null);
+			context3D.setVertexBufferAt(1, null);
+			context3D.setVertexBufferAt(2, null);
+			context3D.setVertexBufferAt(3, null);
 		}
 		
 		
@@ -368,7 +362,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public override function dispose():void
 		{
-			Render2D.current.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
+			render2D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 			if (_vertexBuffer) _vertexBuffer.dispose();
 			if (_indexBuffer) _indexBuffer.dispose();
 			_layers = null;
@@ -758,10 +752,6 @@ package tetragon.view.render2d.extensions.scrollimage
 			if ( _tempWidth ) width = _tempWidth;
 			if ( _tempHeight ) height = _tempHeight;
 
-			var context:Context3D = Render2D.context;
-			if (context == null)
-				throw new MissingContext3DException();
-
 			if (_vertexBuffer)
 				_vertexBuffer.dispose();
 			if (_indexBuffer)
@@ -769,13 +759,13 @@ package tetragon.view.render2d.extensions.scrollimage
 			if (_extraBuffer)
 				_extraBuffer.dispose();
 
-			_vertexBuffer = context.createVertexBuffer(_vertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer = context3D.createVertexBuffer(_vertexData.numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
 			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
 
-			_extraBuffer = context.createVertexBuffer(_vertexData.numVertices, 7);
+			_extraBuffer = context3D.createVertexBuffer(_vertexData.numVertices, 7);
 			_extraBuffer.uploadFromVector(_extraData, 0, _vertexData.numVertices);
 
-			_indexBuffer = context.createIndexBuffer(_indexData.length);
+			_indexBuffer = context3D.createIndexBuffer(_indexData.length);
 			_indexBuffer.uploadFromVector(_indexData, 0, _indexData.length);
 		}
 
@@ -835,9 +825,7 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		private function registerPrograms():void
 		{
-			var target:Render2D = Render2D.current;
-			if ( target.hasProgram(_baseProgram) )
-				return;
+			if (render2D.hasProgram(_baseProgram) ) return;
 			// already registered
 
 			// create vertex and fragment programs from assembly
@@ -933,7 +921,7 @@ package tetragon.view.render2d.extensions.scrollimage
 								else
 									options.push("linear", mipmap ? "miplinear" : "mipnone", "repeat");
 
-								target.registerProgram(getImageProgramName(tinted, mipmap, smoothing, format, useBase),
+								render2D.registerProgram(getImageProgramName(tinted, mipmap, smoothing, format, useBase),
 									vertexByteCode,
 									agal.assemble(Context3DProgramType.FRAGMENT, fragmentProgramCode.replace("???", options.join())));
 							}

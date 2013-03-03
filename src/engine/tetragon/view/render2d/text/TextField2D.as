@@ -28,7 +28,6 @@
  */
 package tetragon.view.render2d.text
 {
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.DisplayObjectContainer2D;
@@ -168,7 +167,7 @@ package tetragon.view.render2d.text
 				mQuadBatch = null;
 			}
 
-			var scale:Number = Render2D.contentScaleFactor;
+			var scale:Number = render2D.contentScaleFactor;
 			var width:Number = mHitArea.width * scale;
 			var height:Number = mHitArea.height * scale;
 
@@ -622,12 +621,12 @@ package tetragon.view.render2d.text
 		 *  in one Stage3D context, they are saved in Render2D's 'contextData' property. */
 		private static function get bitmapFonts():Dictionary
 		{
-			var fonts:Dictionary = Render2D.current.contextData[BITMAP_FONT_DATA_NAME] as Dictionary;
+			var fonts:Dictionary = render2D.contextData[BITMAP_FONT_DATA_NAME] as Dictionary;
 
 			if (fonts == null)
 			{
 				fonts = new Dictionary();
-				Render2D.current.contextData[BITMAP_FONT_DATA_NAME] = fonts;
+				render2D.contextData[BITMAP_FONT_DATA_NAME] = fonts;
 			}
 
 			return fonts;

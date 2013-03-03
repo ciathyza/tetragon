@@ -39,9 +39,10 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.KeyboardEvent2D;
 	import tetragon.view.render2d.events.ResizeEvent2D;
+	import tetragon.view.render2d.filters.FragmentFilter2D;
+	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.touch.TouchPhase2D;
 	import tetragon.view.render2d.touch.TouchProcessor2D;
-	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
 	import flash.display.Stage;
@@ -50,24 +51,17 @@ package tetragon.view.render2d.core
 	import flash.display3D.Context3DCompareMode;
 	import flash.display3D.Context3DTriangleFace;
 	import flash.display3D.Program3D;
-	import flash.errors.IllegalOperationError;
-	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
 	import flash.ui.Mouse;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
 
 	
 	
@@ -205,7 +199,7 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _stage2D:Stage2D;
 		/** @private */
-		private var _context:Context3D;
+		private static var _context:Context3D;
 		/** @private */
 		private var _gameLoop:GameLoop;
 		
@@ -221,8 +215,6 @@ package tetragon.view.render2d.core
 		private var _renderSupport:RenderSupport2D;
 		/** @private */
 		private var _touchProcessor:TouchProcessor2D;
-		/** @private */
-		//private var _statsDisplay:StatsDisplay2D;
 		
 		/** @private */
 		private var _viewPort:Rectangle;
@@ -243,18 +235,12 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _simulateMultitouch:Boolean;
 		/** @private */
-		private var _enableErrorChecking:Boolean;
-		/** @private */
 		private var _leftMouseDown:Boolean;
 		/** @private */
 		private var _shareContext:Boolean;
 		
 		/** @private */
-		private static var _current:Render2D;
-		/** @private */
 		private static var _contextData:Dictionary;
-		/** @private */
-		private static var _handleLostContext:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -275,17 +261,19 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(rootView:View2D, stage3DProxy:Stage3DProxy = null,
-			renderMode:String = "auto", profile:String = "baselineConstrained")
+		public function Render2D(rootView:View2D, renderMode:String = "auto",
+			profile:String = "baselineConstrained")
 		{
 			_main = Main.instance;
 			_stage = _main.stage;
-			_stage3DProxy = stage3DProxy || _main.stage3DManager.getFreeStage3DProxy();
+			_stage3DProxy = _main.screenManager.stage3DProxy;
 			_gameLoop = _main.gameLoop;
 			
-			if (!_contextData) _contextData = new Dictionary(true);
+			DisplayObject2D.render2D =
+			FragmentFilter2D.render2D =
+			Texture2D.render2D = this;
 			
-			makeCurrent();
+			if (!_contextData) _contextData = new Dictionary(true);
 			
 			_rootView = rootView;
 			_stage3D = _stage3DProxy.stage3D;
@@ -301,7 +289,6 @@ package tetragon.view.render2d.core
 			
 			_antiAliasing = 0;
 			_simulateMultitouch = false;
-			_enableErrorChecking = false;
 			_profile = profile;
 			_lastFrameTimestamp = getTimer() / 1000.0;
 			
@@ -323,24 +310,18 @@ package tetragon.view.render2d.core
 			_stage.addEventListener(Event.RESIZE, onResize);
 			_stage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
-			_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
-			
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
-			
 			/* If we already got a context3D and it's not disposed. */
-			if (_stage3D.context3D && _stage3D.context3D.driverInfo != "Disposed")
+			if (_stage3DProxy.context3D && _stage3DProxy.context3D.driverInfo != "Disposed")
 			{
 				_shareContext = true;
 				/* we don't call it right away, because Render2D should behave the
 				 * same way with or without a shared context. */
-				setTimeout(initialize, 1);
+				//setTimeout(initialize, 1);
+				initialize();
 			}
 			else
 			{
-				_shareContext = false;
-				_stage3DProxy.requestContext3D();
+				Log.fatal("Stage3DProxy has no context!", this);
 			}
 		}
 		
@@ -363,11 +344,6 @@ package tetragon.view.render2d.core
 			_stage.removeEventListener(Event.RESIZE, onResize);
 			_stage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
-			_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
-			
 			for each (var touchEventType:String in touchEventTypes)
 			{
 				_stage.removeEventListener(touchEventType, onTouch);
@@ -377,7 +353,6 @@ package tetragon.view.render2d.core
 			if (_renderSupport) _renderSupport.dispose();
 			if (_touchProcessor) _touchProcessor.dispose();
 			if (_context && !_shareContext) _context.dispose();
-			if (_current == this) _current = null;
 		}
 		
 		
@@ -402,7 +377,6 @@ package tetragon.view.render2d.core
 		 */
 		public function advanceTime(passedTime:Number):void
 		{
-			makeCurrent();
 			_touchProcessor.advanceTime(passedTime);
 			_stage2D.advanceTime(passedTime);
 			_juggler.advanceTime(passedTime);
@@ -418,7 +392,6 @@ package tetragon.view.render2d.core
 		{
 			if (!contextValid) return;
 			
-			makeCurrent();
 			updateViewPort();
 			_renderSupport.nextFrame();
 			
@@ -442,15 +415,6 @@ package tetragon.view.render2d.core
 			
 			//if (_statsDisplay) _statsDisplay.drawCount = _renderSupport.drawCount;
 			if (!_shareContext) _context.present();
-		}
-		
-		
-		/**
-		 * Make this Render2D instance the <code>current</code> one.
-		 */
-		public function makeCurrent():void
-		{
-			_current = this;
 		}
 		
 		
@@ -574,17 +538,8 @@ package tetragon.view.render2d.core
 		{
 			return _juggler;
 		}
-
-
-		/**
-		 * The render context of this instance.
-		 */
-		public function get context():Context3D
-		{
-			return _context;
-		}
-
-
+		
+		
 		/**
 		 * A dictionary that can be used to save custom data related to the current context.
 		 * If you need to share data that is bound to a specific stage3D instance (e.g.
@@ -614,23 +569,6 @@ package tetragon.view.render2d.core
 		}
 
 
-		/**
-		 * Indicates if Stage3D render methods will report errors. Activate only when needed,
-		 * as this has a negative impact on performance.
-		 * 
-		 * @default false
-		 */
-		public function get enableErrorChecking():Boolean
-		{
-			return _enableErrorChecking;
-		}
-		public function set enableErrorChecking(v:Boolean):void
-		{
-			_enableErrorChecking = v;
-			if (_context) _context.enableErrorChecking = v;
-		}
-		
-		
 		/**
 		 * The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing.
 		 * 
@@ -758,42 +696,6 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * The currently active Render2D instance.
-		 */
-		public static function get current():Render2D
-		{
-			return _current;
-		}
-		
-		
-		/**
-		 * The render context of the currently active Render2D instance.
-		 */
-		public static function get context():Context3D
-		{
-			return _current ? _current.context : null;
-		}
-		
-		
-		/**
-		 * The default juggler of the currently active Render2D instance.
-		 */
-		public static function get juggler():Juggler2D
-		{
-			return _current ? _current.juggler : null;
-		}
-		
-		
-		/**
-		 * The contentScaleFactor of the currently active Render2D instance.
-		 */
-		public static function get contentScaleFactor():Number
-		{
-			return _current ? _current.contentScaleFactor : 1.0;
-		}
-		
-		
-		/**
 		 * Indicates if multitouch input should be supported.
 		 */
 		public static function get multitouchEnabled():Boolean
@@ -802,45 +704,9 @@ package tetragon.view.render2d.core
 		}
 		public static function set multitouchEnabled(v:Boolean):void
 		{
-			if (_current)
-			{
-				throw new IllegalOperationError("'multitouchEnabled' must be set before"
-					+ " Render2D instance is created.");
-			}
-			else
-			{
-				Multitouch.inputMode = v
-					? MultitouchInputMode.TOUCH_POINT
-					: MultitouchInputMode.NONE;
-			}
-		}
-		
-		
-		/**
-		 * Indicates if Render2D should automatically recover from a lost device context. On
-		 * some systems, an upcoming screensaver or entering sleep mode may invalidate the
-		 * render context. This setting indicates if Render2D should recover from such
-		 * incidents. Beware that this has a huge impact on memory consumption! It is
-		 * recommended to enable this setting on Android and Windows, but to deactivate it on
-		 * iOS and Mac OS X.
-		 * 
-		 * @default false
-		 */
-		public static function get handleLostContext():Boolean
-		{
-			return _handleLostContext;
-		}
-		public static function set handleLostContext(v:Boolean):void
-		{
-			if (_current)
-			{
-				throw new IllegalOperationError("'handleLostContext' must be set before"
-					+ " Render2D instance is created.");
-			}
-			else
-			{
-				_handleLostContext = v;
-			}
+			Multitouch.inputMode = v
+				? MultitouchInputMode.TOUCH_POINT
+				: MultitouchInputMode.NONE;
 		}
 		
 		
@@ -871,58 +737,6 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
-		private function onStage3DError(e:ErrorEvent):void
-		{
-			if (e.errorID == 3702)
-			{
-				showOnScreenError("This application is not correctly embedded (wrong wmode value)");
-			}
-			else
-			{
-				showOnScreenError("Stage3D error: " + e.text);
-			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContextCreated(e:Stage3DEvent):void
-		{
-			if (!Render2D.handleLostContext && _context)
-			{
-				stop();
-				e.stopImmediatePropagation();
-				showOnScreenError("Fatal error: The application lost the device context!");
-				Log.fatal("The device context was lost. Enable Render2D.handleLostContext"
-					+ " to avoid this error.", this);
-			}
-			else
-			{
-				initialize();
-			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContextRecreated(e:Stage3DEvent):void
-		{
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContextDisposed(e:Stage3DEvent):void
-		{
-		}
-		
-		
-		/**
-		 * @private
-		 */
 		private function onGameLoopRender(ticks:uint, ms:uint, fps:uint):void
 		{
 			/* On mobile, the native display list is only updated on stage3D draw calls.
@@ -941,7 +755,6 @@ package tetragon.view.render2d.core
 		private function onKey(e:KeyboardEvent):void
 		{
 			if (!_started) return;
-			makeCurrent();
 			_stage2D.dispatchEvent(new KeyboardEvent2D(e.type, e.charCode, e.keyCode,
 				e.keyLocation, e.ctrlKey, e.altKey, e.shiftKey));
 		}
@@ -1048,7 +861,6 @@ package tetragon.view.render2d.core
 		 */
 		private function initialize():void
 		{
-			makeCurrent();
 			initializeGraphicsAPI();
 			initializeRootView();
 			
@@ -1062,15 +874,10 @@ package tetragon.view.render2d.core
 		 */
 		private function initializeGraphicsAPI():void
 		{
-			_context = _stage3D.context3D;
-			_context.enableErrorChecking = _enableErrorChecking;
+			_context = _stage3DProxy.context3D;
 			contextData[PROGRAM_DATA_NAME] = new Dictionary();
-
 			updateViewPort(true);
-
-			Log.verbose("Render2D System v" + VERSION + " - Initialization complete.", this);
-			Log.verbose("Display Driver: " + _context.driverInfo, this);
-			
+			Log.verbose("Render2D System v" + VERSION + " initialized.", this);
 			dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
 		}
 		
@@ -1128,29 +935,6 @@ package tetragon.view.render2d.core
 					_renderSupport.backBufferHeight = _clippedViewPort.height;
 				}
 			}
-		}
-		
-		
-		/**
-		 * TODO To be moved out of Render2D and into a more common display space!
-		 * Possibly move to ScreenManager.
-		 * @private
-		 */
-		private function showOnScreenError(message:String):void
-		{
-			var tf:TextField = new TextField();
-			var format:TextFormat = new TextFormat("Verdana", 12, 0xFFFFFF);
-			format.align = TextFormatAlign.CENTER;
-			tf.defaultTextFormat = format;
-			tf.wordWrap = true;
-			tf.width = _stage2D.stageWidth * 0.75;
-			tf.autoSize = TextFieldAutoSize.CENTER;
-			tf.text = message;
-			tf.x = (_stage2D.stageWidth - tf.width) / 2;
-			tf.y = (_stage2D.stageHeight - tf.height) / 2;
-			tf.background = true;
-			tf.backgroundColor = 0x440000;
-			_stage.addChild(tf);
 		}
 	}
 }

@@ -38,7 +38,6 @@ package view.racing
 	import tetragon.view.render.scroll.ParallaxLayer;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.events.Event2D;
 
 	import flash.display.Bitmap;
 	
@@ -59,7 +58,7 @@ package view.racing
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _useRender2D:Boolean = false;
+		private var _useRender2D:Boolean = true;
 		private var _render2D:Render2D;
 		private var _view:RacingView;
 		
@@ -99,7 +98,8 @@ package view.racing
 			main.keyInputManager.assign("CURSORDOWN", KeyMode.UP, onKeyUp, "d");
 			main.keyInputManager.assign("CURSORLEFT", KeyMode.UP, onKeyUp, "l");
 			main.keyInputManager.assign("CURSORRIGHT", KeyMode.UP, onKeyUp, "r");
-			main.gameLoop.start();
+			
+			//main.gameLoop.start();
 		}
 		
 		
@@ -165,24 +165,6 @@ package view.racing
 		override protected function onStageResize():void
 		{
 			super.onStageResize();
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContext3DCreated(e:Event2D):void
-		{
-			setupRacetrackSystem();
-			main.gameLoop.start();
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onRoot2DCreated(e:Event2D):void
-		{
 		}
 		
 		
@@ -283,9 +265,15 @@ package view.racing
 			
 			if (_useRender2D)
 			{
+				resourceManager.process("textureAtlas");
+				_atlas = getResource("textureAtlas");
+				
 				_view = new RacingView();
 				_view.background = new Quad2D(10, 10, 0xFF00FF);
 				_render2D = new Render2D(_view);
+				
+				//_racetrack = _racetrackFactory.createDemoRacetrack(_atlas);
+				//_racetrackSystem = new RacetrackSystem(1024, 640, _racetrack, _atlas, _useRender2D);
 			}
 			else
 			{
@@ -326,11 +314,6 @@ package view.racing
 		 */
 		override protected function addListeners():void
 		{
-			if (_render2D)
-			{
-				_render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
-				_render2D.addEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
-			}
 			main.gameLoop.tickSignal.add(onTick);
 			main.gameLoop.renderSignal.add(onRender);
 		}
@@ -341,11 +324,6 @@ package view.racing
 		 */
 		override protected function removeListeners():void
 		{
-			if (_render2D)
-			{
-				_render2D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
-				_render2D.removeEventListener(Event2D.ROOT_CREATED, onRoot2DCreated);
-			}
 			main.gameLoop.tickSignal.remove(onTick);
 			main.gameLoop.renderSignal.remove(onRender);
 		}
@@ -375,28 +353,6 @@ package view.racing
 		override protected function layoutChildren():void
 		{
 			centerChild(_renderBitmap);
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function setupRacetrackSystem():void
-		{
-			if (_useRender2D)
-			{
-				/* Texture can only be processed after we have a Context3D! */
-				resourceManager.process("textureAtlas");
-				_atlas = getResource("textureAtlas");
-				_racetrack = _racetrackFactory.createDemoRacetrack(_atlas);
-				_racetrackSystem = new RacetrackSystem(1024, 640, _racetrack, _atlas, _useRender2D);
-				_racetrackSystem.init();
-				reset();
-			}
-			else
-			{
-				
-			}
 		}
 	}
 }
