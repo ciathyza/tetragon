@@ -228,7 +228,7 @@ package tetragon.view
 		 * 
 		 * @see tetragon.view.ScreenManager
 		 */
-		protected function get screenManager():ScreenManager2
+		protected function get screenManager():ScreenManager
 		{
 			return main.screenManager;
 		}

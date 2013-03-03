@@ -35,7 +35,7 @@ package tetragon.setup
 	import tetragon.debug.cli.CLI;
 	import tetragon.entity.EntitySystemManager;
 	import tetragon.state.StateManager;
-	import tetragon.view.ScreenManager2;
+	import tetragon.view.ScreenManager;
 	import tetragon.view.theme.UIThemeManager;
 
 	import flash.text.Font;
@@ -59,7 +59,7 @@ package tetragon.setup
 		/** @private */
 		private var _stateManager:StateManager;
 		/** @private */
-		private var _screenManager:ScreenManager2;
+		private var _screenManager:ScreenManager;
 		/** @private */
 		private var _entitySystemManager:EntitySystemManager;
 		/** @private */

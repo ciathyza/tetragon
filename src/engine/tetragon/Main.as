@@ -45,7 +45,7 @@ package tetragon
 	import tetragon.input.KeyInputManager;
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
-	import tetragon.view.ScreenManager2;
+	import tetragon.view.ScreenManager;
 	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;
 
@@ -100,7 +100,7 @@ package tetragon
 		/** @private */
 		private var _resourceManager:ResourceManager;
 		/** @private */
-		private var _screenManager:ScreenManager2;
+		private var _screenManager:ScreenManager;
 		/** @private */
 		private var _stateManager:StateManager;
 		/** @private */
@@ -289,7 +289,7 @@ package tetragon
 		/**
 		 * A reference to the screen manager.
 		 */
-		public function get screenManager():ScreenManager2
+		public function get screenManager():ScreenManager
 		{
 			return _screenManager;
 		}
@@ -538,7 +538,7 @@ package tetragon
 			_commandManager = new CommandManager();
 			_resourceManager = new ResourceManager();
 			_moduleManager = new ModuleManager();
-			_screenManager = new ScreenManager2();
+			_screenManager = new ScreenManager();
 			_stateManager = new StateManager();
 			_themeManager = UIThemeManager.instance;
 			_localSettingsManager = new LocalSettingsManager();

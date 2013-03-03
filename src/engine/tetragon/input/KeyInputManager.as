@@ -30,7 +30,7 @@ package tetragon.input
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
-	import tetragon.view.ScreenManager2;
+	import tetragon.view.ScreenManager;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -67,7 +67,7 @@ package tetragon.input
 		/** @private */
 		private var _stage:Stage;
 		/** @private */
-		private var _screenManager:ScreenManager2;
+		private var _screenManager:ScreenManager;
 		/** @private */
 		private var _keyBindings:Object;
 		/** @private */

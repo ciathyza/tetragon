@@ -29,7 +29,7 @@
 package tetragon.util.display
 {
 	import tetragon.Main;
-	import tetragon.view.ScreenManager2;
+	import tetragon.view.ScreenManager;
 
 	import flash.display.DisplayObject;
 	
@@ -48,7 +48,7 @@ package tetragon.util.display
 		hOffset:int = 0, vOffset:int = 0):void
 	{
 		if (!child) return;
-		var sm:ScreenManager2 = Main.instance.screenManager;
+		var sm:ScreenManager = Main.instance.screenManager;
 		if (h) child.x = Math.round(sm.hCenter - (child.width * 0.5)) + hOffset;
 		if (v) child.y = Math.round(sm.vCenter - (child.height * 0.5)) + vOffset;
 	}
