@@ -205,12 +205,16 @@ package tetragon.debug
 				
 				_frames = 0;
 				_statsDelay = 10;
-				onGameLoopFrameRateChanged(_gameLoop.frameRate);
 				_glTicks = 0;
 				_glRenderMS = 0;
 				_last = getTimer();
 				
-				_gameLoop.renderSignal.add(onGameLoopRender);
+				if (_gameLoop)
+				{
+					onGameLoopFrameRateChanged(_gameLoop.frameRate);
+					_gameLoop.renderSignal.add(onGameLoopRender);
+				}
+				
 				addEventListener(Event.ENTER_FRAME, onEnterFrame);
 				addEventListener(MouseEvent.CLICK, onClick);
 				_stage.addEventListener(Event.RESIZE, onStageResize);
@@ -225,7 +229,7 @@ package tetragon.debug
 				removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 				removeEventListener(MouseEvent.CLICK, onClick);
 				_stage.removeEventListener(Event.RESIZE, onStageResize);
-				_gameLoop.renderSignal.remove(onGameLoopRender);
+				if (_gameLoop) _gameLoop.renderSignal.remove(onGameLoopRender);
 				
 				_active = false;
 				

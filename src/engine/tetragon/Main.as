@@ -28,16 +28,6 @@
  */
 package tetragon
 {
-	import com.hexagonstar.exception.SingletonException;
-	import com.hexagonstar.util.debug.HLog;
-	import com.hexagonstar.util.display.StageReference;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.display.StageDisplayState;
-	import flash.events.ErrorEvent;
-	import flash.events.UncaughtErrorEvent;
-	import flash.external.ExternalInterface;
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
@@ -55,11 +45,20 @@ package tetragon
 	import tetragon.input.KeyInputManager;
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.ScreenManager2;
 	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;
 
+	import com.hexagonstar.exception.SingletonException;
+	import com.hexagonstar.util.debug.HLog;
+	import com.hexagonstar.util.display.StageReference;
 
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Stage;
+	import flash.display.StageDisplayState;
+	import flash.events.ErrorEvent;
+	import flash.events.UncaughtErrorEvent;
+	import flash.external.ExternalInterface;
 	
 	
 	/**
@@ -101,7 +100,7 @@ package tetragon
 		/** @private */
 		private var _resourceManager:ResourceManager;
 		/** @private */
-		private var _screenManager:ScreenManager;
+		private var _screenManager:ScreenManager2;
 		/** @private */
 		private var _stateManager:StateManager;
 		/** @private */
@@ -122,13 +121,6 @@ package tetragon
 		private var _entitySystemManager:EntitySystemManager;
 		/** @private */
 		private var _entityFactory:EntityFactory;
-		
-		/** @private */
-		private var _console:Console;
-		/** @private */
-		private var _statsMonitor:StatsMonitor;
-		/** @private */
-		private var _utilityContainer:Sprite;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -164,40 +156,6 @@ package tetragon
 			
 			/* Initiate startup phase. */
 			commandManager.execute(new StartupApplicationCommand(), onStartupComplete);
-		}
-		
-		
-		/**
-		 * Used by the engine to set the debug console. Can only be set once!
-		 * @private
-		 */
-		public function setConsole(v:Console):void
-		{
-			if (_console) return;
-			_console = v;
-		}
-		
-		
-		/**
-		 * Used by the engine to set the stats monitor. Can only be set once!
-		 * @private
-		 */
-		public function setStatsMonitor(v:StatsMonitor):void
-		{
-			if (_statsMonitor) return;
-			_statsMonitor = v;
-			_statsMonitor.setGameLoop(_gameLoop);
-		}
-		
-		
-		/**
-		 * Used by the engine to set the utility container. Can only be set once!
-		 * @private
-		 */
-		public function setUtilityContainer(v:Sprite):void
-		{
-			if (_utilityContainer) return;
-			_utilityContainer = v;
 		}
 		
 		
@@ -279,7 +237,7 @@ package tetragon
 		 */
 		public function get console():Console
 		{
-			return _console;
+			return _screenManager.console;
 		}
 
 
@@ -288,7 +246,7 @@ package tetragon
 		 */
 		public function get statsMonitor():StatsMonitor
 		{
-			return _statsMonitor;
+			return _screenManager.statsMonitor;
 		}
 		
 		
@@ -331,7 +289,7 @@ package tetragon
 		/**
 		 * A reference to the screen manager.
 		 */
-		public function get screenManager():ScreenManager
+		public function get screenManager():ScreenManager2
 		{
 			return _screenManager;
 		}
@@ -472,15 +430,6 @@ package tetragon
 		}
 		
 		
-		/**
-		 * @private
-		 */
-		public function get utilityContainer():Sprite
-		{
-			return _utilityContainer;
-		}
-		
-		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -507,8 +456,8 @@ package tetragon
 		 */
 		private function onAllModulesComplete():void
 		{
-			/* Time to open the start screen. */
-			screenManager.start();
+			/* Time to init the screen manager and open the initial screen. */
+			screenManager.init();
 		}
 		
 		
@@ -589,7 +538,7 @@ package tetragon
 			_commandManager = new CommandManager();
 			_resourceManager = new ResourceManager();
 			_moduleManager = new ModuleManager();
-			_screenManager = new ScreenManager();
+			_screenManager = new ScreenManager2();
 			_stateManager = new StateManager();
 			_themeManager = UIThemeManager.instance;
 			_localSettingsManager = new LocalSettingsManager();

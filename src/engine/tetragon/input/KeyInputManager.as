@@ -30,7 +30,7 @@ package tetragon.input
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.ScreenManager2;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -67,7 +67,7 @@ package tetragon.input
 		/** @private */
 		private var _stage:Stage;
 		/** @private */
-		private var _screenManager:ScreenManager;
+		private var _screenManager:ScreenManager2;
 		/** @private */
 		private var _keyBindings:Object;
 		/** @private */
@@ -142,8 +142,8 @@ package tetragon.input
 			if (_active) return;
 			_active = true;
 			
-			_screenManager.screenContainer.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			_screenManager.screenContainer.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_screenManager.viewsContainer.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			_screenManager.viewsContainer.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			_stage.addEventListener(Event.DEACTIVATE, onDeactivate);
@@ -156,8 +156,8 @@ package tetragon.input
 		public function deactivate():void
 		{
 			if (!_active) return;
-			_screenManager.screenContainer.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			_screenManager.screenContainer.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_screenManager.viewsContainer.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			_screenManager.viewsContainer.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			_stage.removeEventListener(Event.DEACTIVATE, onDeactivate);

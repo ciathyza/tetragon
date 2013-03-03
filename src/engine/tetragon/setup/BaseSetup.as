@@ -28,10 +28,6 @@
  */
 package tetragon.setup
 {
-	import com.hexagonstar.util.env.getSeparator;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.geom.Rectangle;
 	import tetragon.BuildType;
 	import tetragon.Main;
 	import tetragon.command.cli.AppInitCommand;
@@ -62,24 +58,18 @@ package tetragon.setup
 	import tetragon.command.ecs.ListEntityComponentsCommand;
 	import tetragon.command.ecs.ListEntityFamiliesCommand;
 	import tetragon.command.env.ChangeLocaleCommand;
-	import tetragon.command.env.CheckUpdateCommand;
-	import tetragon.command.env.CreateUserDataFoldersCommand;
 	import tetragon.command.env.EnterStateCommand;
 	import tetragon.command.env.ForceGCCommand;
 	import tetragon.command.env.ListScreensCommand;
 	import tetragon.command.env.OpenScreenCommand;
-	import tetragon.command.env.ResetWinBoundsCommand;
 	import tetragon.command.env.SetFramerateCommand;
 	import tetragon.command.env.ShutdownApplicationCommand;
-	import tetragon.command.env.StartupApplicationCommand;
 	import tetragon.command.env.ToggleFullscreenAIRCommand;
 	import tetragon.command.env.ToggleFullscreenCommand;
 	import tetragon.command.env.ToggleStatsMonitorCommand;
 	import tetragon.command.env.ToggleStatsMonitorPosCommand;
 	import tetragon.command.file.DumpCommand;
 	import tetragon.command.file.ListDataFilesCommand;
-	import tetragon.command.file.ListPackageContentsCommand;
-	import tetragon.command.file.ListPackagesCommand;
 	import tetragon.command.file.ListResourcesCommand;
 	import tetragon.command.file.ListStringsCommand;
 	import tetragon.command.file.LoadResourceCommand;
@@ -91,9 +81,7 @@ package tetragon.setup
 	import tetragon.data.Settings;
 	import tetragon.data.atlas.SpriteAtlas;
 	import tetragon.data.atlas.TextureAtlas;
-	import tetragon.debug.Console;
 	import tetragon.debug.Log;
-	import tetragon.debug.StatsMonitor;
 	import tetragon.entity.components.Actor2DRefComponent;
 	import tetragon.entity.components.Cell2DComponent;
 	import tetragon.entity.components.Cell2DInteriorDataComponent;
@@ -105,6 +93,11 @@ package tetragon.setup
 	import tetragon.file.parsers.TextureAtlasDataParser;
 	import tetragon.file.resource.processors.SpriteAtlasProcessor;
 	import tetragon.file.resource.processors.TextureAtlasProcessor;
+
+	import com.hexagonstar.util.env.getSeparator;
+
+	import flash.display.Stage;
+	import flash.geom.Rectangle;
 
 
 	
@@ -178,25 +171,8 @@ package tetragon.setup
 			}
 			
 			/* Set up debug utilities. */
-			if (!main.console && config.getBoolean(Config.CONSOLE_ENABLED))
-			{
-				if (!main.utilityContainer)
-				{
-					main.setUtilityContainer(new Sprite());
-					main.contextView.addChild(main.utilityContainer);
-				}
-				main.setConsole(new Console(main.utilityContainer));
-				main.console.init();
-			}
-			if (!main.statsMonitor && config.getBoolean(Config.STATSMONITOR_ENABLED))
-			{
-				if (!main.utilityContainer)
-				{
-					main.setUtilityContainer(new Sprite());
-					main.contextView.addChild(main.utilityContainer);
-				}
-				main.setStatsMonitor(new StatsMonitor(main.utilityContainer));
-			}
+			main.screenManager.createDebugFacilities(config.getBoolean(Config.CONSOLE_ENABLED),
+				config.getBoolean(Config.STATSMONITOR_ENABLED));
 			
 			/* Now that app config is loaded, ready the Logger. */
 			Log.ready(main);
