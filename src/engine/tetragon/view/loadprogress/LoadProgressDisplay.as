@@ -29,7 +29,7 @@
 package tetragon.view.loadprogress
 {
 	import tetragon.Main;
-	import tetragon.view.Screen2;
+	import tetragon.view.Screen;
 	import tetragon.view.ScreenManager2;
 
 	import com.hexagonstar.file.BulkProgress;
@@ -72,7 +72,7 @@ package tetragon.view.loadprogress
 		/** @private */
 		private var _screenManager:ScreenManager2;
 		/** @private */
-		private var _screen:Screen2;
+		private var _screen:Screen;
 		/** @private */
 		private var _userInputSignal:Signal;
 		/** @private */
@@ -246,7 +246,7 @@ package tetragon.view.loadprogress
 		/**
 		 * A reference to the screen that the load progress display is used for.
 		 */
-		protected function get screen():Screen2
+		protected function get screen():Screen
 		{
 			return _screen;
 		}

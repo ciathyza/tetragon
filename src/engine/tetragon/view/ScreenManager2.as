@@ -33,11 +33,16 @@ package tetragon.view
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
 	import tetragon.debug.StatsMonitor;
+	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
+	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
+	import com.hexagonstar.file.BulkProgress;
 	import com.hexagonstar.signals.Signal;
+	import com.hexagonstar.tween.Tween;
+	import com.hexagonstar.tween.TweenVars;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.display.DisplayObjectContainer;
@@ -53,6 +58,7 @@ package tetragon.view
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	import flash.utils.setTimeout;
 	
 	
 	/**
@@ -69,7 +75,7 @@ package tetragon.view
 		private var _main:Main;
 		private var _stage:Stage;
 		private var _contextView:DisplayObjectContainer;
-		private var _viewsContainer:Sprite;
+		private var _nativeViewContainer:Sprite;
 		
 		private var _utilityContainer:Sprite;
 		private var _console:Console;
@@ -81,18 +87,32 @@ package tetragon.view
 		
 		private var _screenClasses:Object;
 		private var _currentScreenClass:Class;
-		private var _currentScreen:Screen2;
-		private var _nextScreen:Screen2;
+		private var _currentScreen:Screen;
+		private var _nextScreen:Screen;
 		
 		private var _screenWidth:int;
 		private var _screenHeight:int;
 		private var _screenScale:Number = 1.0;
 		
+		private var _loadProgressDisplay:LoadProgressDisplay;
+		private var _loadedResourceCount:uint;
+		private var _failedResourceCount:uint;
+		
+		private var _tweenVars:TweenVars;
+		private var _screenOpenDelay:Number = 0.2;
+		private var _screenCloseDelay:Number = 0.2;
+		private var _tweenDuration:Number = 0.4;
+		private var _fastDuration:Number = 0.2;
+		private var _backupDuration:Number;
+		private var _backupOpenDelay:Number;
+		private var _backupCloseDelay:Number;
+		
 		private var _initialized:Boolean;
 		private var _debugFacilitiesInitialized:Boolean;
-		
 		private var _switching:Boolean;
 		private var _screenAutoStart:Boolean;
+		private var _screenLoaded:Boolean;
+		
 		private var _enableErrorChecking:Boolean;
 		private var _handleLostContext:Boolean;
 		
@@ -135,6 +155,7 @@ package tetragon.view
 			_stage3D = _stage3DProxy.stage3D;
 			
 			_screenClasses = {};
+			_tweenVars = new TweenVars();
 			
 			_screenInitSignal = new Signal();
 			_screenCreatedSignal = new Signal();
@@ -143,8 +164,9 @@ package tetragon.view
 			_screenUnloadedSignal = new Signal();
 			_stageResizeSignal = new Signal();
 			
-			_viewsContainer = new Sprite();
-			_contextView.addChild(_viewsContainer);
+			_nativeViewContainer = new Sprite();
+			_nativeViewContainer.focusRect = false;
+			_contextView.addChild(_nativeViewContainer);
 			
 			_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
@@ -170,18 +192,6 @@ package tetragon.view
 		public function registerScreen(screenID:String, screenClass:Class):void
 		{
 			_screenClasses[screenID] = screenClass;
-		}
-		
-		
-		/**
-		 * Initializes the screen manager by requesting a Stage3D context and readying other
-		 * required facilities for managing screens.
-		 */
-		public function init():void
-		{
-			if (_initialized) return;
-			_initialized = true;
-			_stage3DProxy.requestContext3D();
 		}
 		
 		
@@ -219,10 +229,10 @@ package tetragon.view
 			}
 			
 			var s:* = new screenClass();
-			if (s is Screen2)
+			if (s is Screen)
 			{
 				verbose("Initializing screen \"" + screenID + "\" ...");
-				var screen:Screen2 = s as Screen2;
+				var screen:Screen = s as Screen;
 				screen.id = screenID;
 				_screenInitSignal.dispatch(screen);
 				
@@ -237,13 +247,13 @@ package tetragon.view
 				}
 				
 				/* Only change screen alpha if we're actually using tweens! */
-				//if (_tweenDuration > 0)
-				//{
-				//	_nextScreen.alpha = 0;
-				//}
+				if (_tweenDuration > 0)
+				{
+					//_nextScreen.alpha = 0;
+				}
 				
-				//_screenContainer.addChild(_nextScreen);
-				closeLastScreen();
+				_nativeViewContainer.addChild(_nextScreen);
+				closePreviousScreen();
 			}
 			else
 			{
@@ -276,7 +286,7 @@ package tetragon.view
 		{
 			if (!_currentScreen) return;
 			_nextScreen = null;
-			closeLastScreen(noTween);
+			closePreviousScreen(noTween);
 		}
 		
 		
@@ -285,11 +295,25 @@ package tetragon.view
 		 */
 		public function fastTransitionOnNext():void
 		{
-			//_backupDuration = _tweenDuration;
-			//_backupOpenDelay = _screenOpenDelay;
-			//_backupCloseDelay = _screenCloseDelay;
-			//_tweenDuration = _fastDuration;
-			//_screenOpenDelay = _screenCloseDelay = 0;
+			_backupDuration = _tweenDuration;
+			_backupOpenDelay = _screenOpenDelay;
+			_backupCloseDelay = _screenCloseDelay;
+			_tweenDuration = _fastDuration;
+			_screenOpenDelay = _screenCloseDelay = 0;
+		}
+		
+		
+		/**
+		 * Initializes the screen manager by requesting a Stage3D context and readying other
+		 * required facilities for managing screens. Called automatically by the engine!
+		 * 
+		 * @private
+		 */
+		public function init():void
+		{
+			if (_initialized) return;
+			_initialized = true;
+			_stage3DProxy.requestContext3D();
 		}
 		
 		
@@ -363,7 +387,7 @@ package tetragon.view
 		/**
 		 * Returns the currently opened screen.
 		 */
-		public function get currentScreen():Screen2
+		public function get currentScreen():Screen
 		{
 			return _currentScreen;
 		}
@@ -421,16 +445,16 @@ package tetragon.view
 		{
 			if (v == _screenScale || v < 0) return;
 			_screenScale = v;
-			_viewsContainer.scaleX = _viewsContainer.scaleY = _screenScale;
+			_nativeViewContainer.scaleX = _nativeViewContainer.scaleY = _screenScale;
 		}
 		
 		
 		/**
 		 * The display object container that acts as the wrapper for native display views.
 		 */
-		public function get viewsContainer():Sprite
+		public function get nativeViewContainer():Sprite
 		{
-			return _viewsContainer;
+			return _nativeViewContainer;
 		}
 		
 		
@@ -514,7 +538,7 @@ package tetragon.view
 			if (!_mouseSignal)
 			{
 				_mouseSignal = new MouseSignal();
-				_viewsContainer.addEventListener(MouseEvent.CLICK, onScreenClick);
+				_nativeViewContainer.addEventListener(MouseEvent.CLICK, onScreenClick);
 			}
 			return _mouseSignal;
 		}
@@ -597,9 +621,209 @@ package tetragon.view
 		}
 		
 		
+		/**
+		 * @private
+		 */
 		private function onScreenClick(e:MouseEvent):void
 		{
 			if (_mouseSignal) _mouseSignal.dispatch(MouseSignal.CLICK, null);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onTweenInUpdate():void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onTweenInComplete():void
+		{
+			_tweenDuration = _backupDuration;
+			_screenOpenDelay = _backupOpenDelay;
+			_screenCloseDelay = _backupCloseDelay;
+			
+			if (!_currentScreen)
+			{
+				/* this should not happen unless you quickly repeat app init in the CLI! */
+				Log.warn("onTweenInComplete: screen is null", this);
+				return;
+			}
+			
+			verbose("Opened " + _currentScreen.toString());
+			_screenOpenedSignal.dispatch(_currentScreen);
+			
+			/* Everythings' done, screen is faded in! Let's grant user interaction
+			 * (but only if autoEnable is allowed!). */
+			if (_currentScreen.autoEnable)
+			{
+				_currentScreen.setInitialEnabledState(true);
+			}
+			
+			_stage.focus = _nativeViewContainer;
+			
+			/* If autoStart, now is the time to call start on the screen. */
+			if (_screenAutoStart)
+			{
+				_screenAutoStart = false;
+				_currentScreen.start();
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onTweenOutUpdate():void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onTweenOutComplete():void
+		{
+			_nativeViewContainer.removeChild(_currentScreen);
+			_currentScreen.screenUnloadedSignal.addOnce(onScreenUnloaded);
+			_currentScreen.unloadScreen();
+		}
+		
+		
+		/**
+		 * Invoked while a screen is loading.
+		 * @private
+		 */
+		private function onScreenLoadProgress(progress:BulkProgress):void
+		{
+			if (!_loadProgressDisplay) return;
+			_loadProgressDisplay.update(progress);
+		}
+		
+		
+		/**
+		 * Invoked if a resource has loaded.
+		 * @private
+		 */
+		private function onResourceLoaded(loadedResource:Resource):void
+		{
+			++_loadedResourceCount;
+			if (!_loadProgressDisplay) return;
+			_loadProgressDisplay.loadedCount = _loadedResourceCount;
+		}
+		
+		
+		/**
+		 * Invoked if a resource failed loading.
+		 * @private
+		 */
+		private function onScreenLoadError(failedResource:Resource):void
+		{
+			++_failedResourceCount;
+			if (!_loadProgressDisplay) return;
+			_loadProgressDisplay.failedCount = _failedResourceCount;
+			
+			/* If all resources failed loading, still call onScreenLoaded() or we
+			 * would be stuck forever in the load display! */
+			if (_loadProgressDisplay.allFailed)
+			{
+				onScreenLoaded();
+			}
+		}
+		
+		
+		/**
+		 * Invoked after a screen's resources have been loaded.
+		 * @private
+		 */
+		private function onScreenLoaded():void
+		{
+			/* Prevent accidentally calling handler twice in case of load errors! */
+			if (_screenLoaded) return;
+			_screenLoaded = true;
+			
+			_currentScreen.loadProgressSignal.remove(onScreenLoadProgress);
+			_currentScreen.resourceLoadedSignal.remove(onResourceLoaded);
+			_currentScreen.loadErrorSignal.remove(onScreenLoadError);
+			_currentScreen.screenCreatedSignal.addOnce(onScreenCreated);
+			_currentScreen.createScreen();
+		}
+		
+		
+		/**
+		 * Invoked after a screen has been created, i.e. after the screen's children have
+		 * been created, registered and added to the screen.
+		 * @private
+		 */
+		private function onScreenCreated():void
+		{
+			if (!_currentScreen)
+			{
+				/* this should not happen unless you quickly repeat app init in the CLI! */
+				Log.warn("onScreenOpened: screen is null.", this);
+				return;
+			}
+			
+			_screenCreatedSignal.dispatch(_currentScreen);
+			
+			/* Disable screen view objects while fading in. */
+			_currentScreen.setInitialEnabledState(false);
+			
+			/* Screen is created and child objects have been created, time to lay out
+			 * children and update any screen text. */
+			_currentScreen.update();
+			
+			if (_loadProgressDisplay)
+			{
+				_loadProgressDisplay.update();
+				if (_loadProgressDisplay.waitForUserInput)
+				{
+					_loadProgressDisplay.userInputSignal.addOnce(onLoadProgressDisplayUserInput);
+				}
+				else
+				{
+					onLoadProgressDisplayUserInput();
+				}
+			}
+			else
+			{
+				showCurrentScreen();
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onLoadProgressDisplayUserInput():void
+		{
+			_tweenVars.reset();
+			_tweenVars.setProperty("alpha", 0.0);
+			_tweenVars.onComplete = function():void
+			{
+				_nativeViewContainer.removeChild(_loadProgressDisplay);
+				_loadProgressDisplay.dispose();
+				_loadProgressDisplay = null;
+				showCurrentScreen();
+			};
+			
+			Tween.to(_loadProgressDisplay, 0.4, _tweenVars);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onScreenUnloaded(unloadedScreen:Screen):void
+		{
+			verbose("Closed " + _currentScreen.toString());
+			_currentScreen = null;
+			_screenUnloadedSignal.dispatch(unloadedScreen);
+			openNextScreen();
 		}
 		
 		
@@ -648,39 +872,119 @@ package tetragon.view
 		/**
 		 * @private
 		 */
-		private function closeLastScreen(noTween:Boolean = false):void
+		private function closePreviousScreen(noTween:Boolean = false):void
 		{
-//			if (_currentScreen)
-//			{
-//				_currentScreen.setInitialEnabledState(false);
-//				_screenCloseSignal.dispatch(_currentScreen);
-//				
-//				if (noTween)
-//				{
-//					onTweenOutComplete();
-//					return;
-//				}
-//				
-//				if (_tweenDuration > 0)
-//				{
-//					/* Tween out current screen. */
-//					_tweenVars.reset();
-//					_tweenVars.setProperty("alpha", 0.0);
-//					_tweenVars.onUpdate = onTweenOutUpdate;
-//					_tweenVars.onComplete = onTweenOutComplete;
-//					_tweenVars.delay = _screenCloseDelay;
-//					Tween.to(_currentScreen, _tweenDuration, _tweenVars);
-//				}
-//				else
-//				{
-//					setTimeout(onTweenOutComplete, _screenCloseDelay * 1000);
-//				}
-//			}
-//			else
-//			{
-//				openNextScreen();
-//			}
+			if (_currentScreen)
+			{
+				_currentScreen.setInitialEnabledState(false);
+				_screenCloseSignal.dispatch(_currentScreen);
+				
+				if (noTween)
+				{
+					onTweenOutComplete();
+					return;
+				}
+				
+				if (_tweenDuration > 0)
+				{
+					/* Tween out current screen. */
+					_tweenVars.reset();
+					_tweenVars.setProperty("alpha", 0.0);
+					_tweenVars.onUpdate = onTweenOutUpdate;
+					_tweenVars.onComplete = onTweenOutComplete;
+					_tweenVars.delay = _screenCloseDelay;
+					Tween.to(_currentScreen, _tweenDuration, _tweenVars);
+				}
+				else
+				{
+					setTimeout(onTweenOutComplete, _screenCloseDelay * 1000);
+				}
+			}
+			else
+			{
+				openNextScreen();
+			}
 		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function openNextScreen():void
+		{
+			if (!_nextScreen) return;
+			setTimeout(function():void
+			{
+				_screenLoaded = false;
+				_loadedResourceCount = 0;
+				_failedResourceCount = 0;
+				_currentScreen = _nextScreen as Screen;
+				_currentScreen.screenLoadedSignal.addOnce(onScreenLoaded);
+				
+				verbose("Loading " + _currentScreen.toString() + " ("
+					+ _currentScreen.resourceCount + " resources) ...");
+				
+				/* We only need the load progress display if we actually got resources
+				 * and if the resources haven't been already loaded/failed before. */
+				if (_currentScreen.resourceCount > 0 && !_currentScreen.resourcesAlreadyLoaded)
+				{
+					_loadProgressDisplay = _currentScreen.loadProgressDisplay;
+				}
+				
+				if (_loadProgressDisplay)
+				{
+					_loadProgressDisplay.totalCount = _currentScreen.resourceCount;
+					_loadProgressDisplay.alpha = 0.0;
+					_nativeViewContainer.addChild(_loadProgressDisplay);
+					
+					_tweenVars.reset();
+					_tweenVars.setProperty("alpha", 1.0);
+					Tween.to(_loadProgressDisplay, 0.4, _tweenVars);
+					
+					_currentScreen.loadProgressSignal.add(onScreenLoadProgress);
+					_currentScreen.resourceLoadedSignal.add(onResourceLoaded);
+					_currentScreen.loadErrorSignal.add(onScreenLoadError);
+					_currentScreen.loadScreen();
+				}
+				else
+				{
+					_currentScreen.loadScreen();
+				}
+			}, _screenOpenDelay * 1000);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function showCurrentScreen():void
+		{
+			_switching = false;
+			if (_tweenDuration > 0)
+			{
+				/* Tween in next screen. */
+				_tweenVars.reset();
+				_tweenVars.setProperty("alpha", 1.0);
+				_tweenVars.onUpdate = onTweenInUpdate;
+				_tweenVars.onComplete = onTweenInComplete;
+				Tween.to(_currentScreen, _tweenDuration, _tweenVars);
+			}
+			else
+			{
+				onTweenInComplete();
+			}
+		}
+		
+		
+		/**
+		 * Removes all child views from the view container that are part of the
+		 * specified screen.
+		 * 
+		 * @private
+		 */
+		//private function removeScreenChildren(screen:Screen):void
+		//{
+		//}
 		
 		
 		/**
@@ -701,7 +1005,7 @@ package tetragon.view
 			tf.y = int((_stage.stageHeight - tf.height) * 0.5);
 			tf.background = true;
 			tf.backgroundColor = 0x440000;
-			if (_viewsContainer) _viewsContainer.addChild(tf);
+			if (_nativeViewContainer) _nativeViewContainer.addChild(tf);
 			else _contextView.addChild(tf);
 		}
 		

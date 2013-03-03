@@ -28,15 +28,17 @@
  */
 package tetragon.view
 {
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.signals.NativeSignal;
-	import com.hexagonstar.signals.Signal;
-	import flash.events.Event;
 	import tetragon.file.resource.Resource;
 	import tetragon.file.resource.ResourceCollection;
 	import tetragon.view.loadprogress.DebugLoadProgressDisplay;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.native.View;
+
+	import com.hexagonstar.file.BulkProgress;
+	import com.hexagonstar.signals.NativeSignal;
+	import com.hexagonstar.signals.Signal;
+
+	import flash.events.Event;
 
 
 	
@@ -226,10 +228,9 @@ package tetragon.view
 		 * 
 		 * @see tetragon.view.ScreenManager
 		 */
-		protected function get screenManager():ScreenManager
+		protected function get screenManager():ScreenManager2
 		{
-			return null;
-			//return main.screenManager;
+			return main.screenManager;
 		}
 		
 		
