@@ -94,6 +94,11 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public var tilesScaleY:Number = 1.0;
 		
+		/**
+		 * Used for uniform tile-scaling.
+		 */
+		private var _tilesScale:Number = 1.0;
+		
 		// vertex data
 		private var _vertexData:VertexData2D;
 		private var _vertexBuffer:VertexBuffer3D;
@@ -389,6 +394,16 @@ package tetragon.view.render2d.extensions.scrollimage
 			_renderColorAlpha[0] = ((_color >> 16) & 0xff) / 255.0;
 			_renderColorAlpha[1] = ((_color >> 8) & 0xff) / 255.0;
 			_renderColorAlpha[2] = (_color & 0xff) / 255.0;
+		}
+		
+		
+		public function get tilesScale():Number
+		{
+			return _tilesScale;
+		}
+		public function set tilesScale(v:Number):void
+		{
+			_tilesScale = tilesScaleX = tilesScaleY = v;
 		}
 		
 		

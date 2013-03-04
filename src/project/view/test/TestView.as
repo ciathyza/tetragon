@@ -126,8 +126,14 @@ package view.test
 		}
 		
 		
+		//private var _zoomIn:Boolean;
+		
 		override protected function executeBeforeRender():void
 		{
+			//if (_scrollImage.tilesScale <= 1.0) _zoomIn = true;
+			//else if (_scrollImage.tilesScale >= 2.0) _zoomIn = false;
+			//_scrollImage.tilesScale += (_zoomIn) ? 0.001 : -0.001;
+			
 			_scrollImage.tilesOffsetX -= 1;
 			_scrollImage.tilesOffsetY -= 1;
 		}
