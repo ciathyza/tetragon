@@ -161,6 +161,10 @@ package tetragon.view
 			_screenClasses = {};
 			_tweenVars = new TweenVars();
 			
+			_backupDuration = _tweenDuration;
+			_backupOpenDelay = _screenOpenDelay;
+			_backupCloseDelay = _screenCloseDelay;
+			
 			_screenInitSignal = new Signal();
 			_screenCreatedSignal = new Signal();
 			_screenOpenedSignal = new Signal();
@@ -417,6 +421,75 @@ package tetragon.view
 		public function get currentScreen():Screen
 		{
 			return _currentScreen;
+		}
+		
+		
+		/**
+		 * The duration (in seconds) that the ScreenManager will use to tween in/out
+		 * screens. If set to 0 the ScreenManager will completely ignore tweening.
+		 * 
+		 * @default 0.4
+		 */
+		public function get tweenDuration():Number
+		{
+			return _tweenDuration;
+		}
+		public function set tweenDuration(v:Number):void
+		{
+			if (v < 0) v = 0;
+			_tweenDuration = _backupDuration = v;
+		}
+		
+		
+		/**
+		 * The duration (in seconds) that the ScreenManager will use to tween in/out
+		 * screens after calling the fastTransitionOnNext() method. If set to 0 the
+		 * ScreenManager will completely ignore tweening.
+		 * 
+		 * @default 0.2
+		 */
+		public function get fastDuration():Number
+		{
+			return _fastDuration;
+		}
+		public function set fastDuration(v:Number):void
+		{
+			if (v < 0) v = 0;
+			_fastDuration = v;
+		}
+		
+		
+		/**
+		 * A delay (in seconds) that the screen manager waits before opening a screen.
+		 * This can be used to make transitions less abrupt.
+		 * 
+		 * @default 0.2
+		 */
+		public function get screenOpenDelay():Number
+		{
+			return _screenOpenDelay;
+		}
+		public function set screenOpenDelay(v:Number):void
+		{
+			if (v < 0) v = 0;
+			_screenOpenDelay = v;
+		}
+		
+		
+		/**
+		 * A delay (in seconds) that the screen manager waits before closing an opened screen.
+		 * This can be used to make transitions less abrupt.
+		 * 
+		 * @default 0.2
+		 */
+		public function get screenCloseDelay():Number
+		{
+			return _screenCloseDelay;
+		}
+		public function set screenCloseDelay(v:Number):void
+		{
+			if (v < 0) v = 0;
+			_screenCloseDelay = v;
 		}
 		
 		
@@ -947,7 +1020,13 @@ package tetragon.view
 				}
 				else
 				{
-					setTimeout(onTweenOutComplete, _screenCloseDelay * 1000);
+					var timeDelay:Number = _screenCloseDelay * 1000;
+					if (isNaN(timeDelay))
+					{
+						Log.warn("closePreviousScreen:: Calculated timeDelay is invalid!", this);
+						timeDelay = 300;
+					}
+					setTimeout(onTweenOutComplete, timeDelay);
 				}
 			}
 			else
@@ -963,6 +1042,14 @@ package tetragon.view
 		private function openNextScreen():void
 		{
 			if (!_nextScreen) return;
+			
+			var timeDelay:Number = _screenOpenDelay * 1000;
+			if (isNaN(timeDelay))
+			{
+				Log.warn("openNextScreen:: Calculated timeDelay is invalid!", this);
+				timeDelay = 300;
+			}
+			
 			setTimeout(function():void
 			{
 				_screenLoaded = false;
@@ -1000,7 +1087,7 @@ package tetragon.view
 				{
 					_currentScreen.loadScreen();
 				}
-			}, _screenOpenDelay * 1000);
+			}, timeDelay);
 		}
 		
 		
