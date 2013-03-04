@@ -103,19 +103,34 @@ package tetragon.data.atlas
 		 */
 		override public function getImage(id:String, scale:Number = 1.0):*
 		{
-			// TODO Add frame support!
 			var region:Rectangle = _regions[id];
 			if (!_source || !region) return ResourceIndex.getPlaceholderImage();
-			if (!_point) _point = new Point(0, 0);
+			if (!_point) _point = new Point();
 			
-			var sprite:BitmapData = new BitmapData(region.width, region.height, _transparent,
+			var sprite:BitmapData;
+			var frame:Rectangle = _frames[id];
+			
+			/* If the sub image has associated frame boundaries, prepare a bitmap data
+			 * with the size of the frame and copy the image onto it at the right offset. */
+			if (frame)
+			{
+				sprite = new BitmapData(frame.width, frame.height, _transparent,
+					_backgroundColor);
+				_point.setTo(-frame.x, -frame.y);
+			}
+			else
+			{
+				sprite = new BitmapData(region.width, region.height, _transparent,
 				_backgroundColor);
+				_point.setTo(0, 0);
+			}
+			
 			sprite.copyPixels(_source, region, _point);
 			
 			if (scale == 1.0) return sprite;
 			
-			var scaled:BitmapData = new BitmapData(Math.round(region.width * scale),
-				Math.round(region.height * scale), _transparent, _backgroundColor);
+			var scaled:BitmapData = new BitmapData(Math.round(sprite.width * scale),
+				Math.round(sprite.height * scale), _transparent, _backgroundColor);
 			if (!_matrix) _matrix = new Matrix();
 			_matrix.setTo(scale, 0, 0, scale, 0, 0);
 			scaled.draw(sprite, _matrix);
