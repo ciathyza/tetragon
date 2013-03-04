@@ -43,10 +43,12 @@ package tetragon.view
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
+	import com.hexagonstar.display.shape.RectangleShape;
 	import com.hexagonstar.file.BulkProgress;
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.tween.Tween;
 	import com.hexagonstar.tween.TweenVars;
+	import com.hexagonstar.util.debug.Debug;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.display.DisplayObjectContainer;
@@ -80,6 +82,7 @@ package tetragon.view
 		private var _stage:Stage;
 		private var _contextView:DisplayObjectContainer;
 		private var _nativeViewContainer:Sprite;
+		private var _screenCover:RectangleShape;
 		
 		private var _utilityContainer:Sprite;
 		private var _console:Console;
@@ -101,6 +104,8 @@ package tetragon.view
 		private var _loadProgressDisplay:LoadProgressDisplay;
 		private var _loadedResourceCount:uint;
 		private var _failedResourceCount:uint;
+		
+		private var _fadeColor:uint;
 		
 		private var _tweenVars:TweenVars;
 		private var _screenOpenDelay:Number = 0.2;
@@ -158,6 +163,8 @@ package tetragon.view
 			_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
 			_stage3D = _stage3DProxy.stage3D;
 			
+			onStageResize(null);
+			
 			_screenClasses = {};
 			_tweenVars = new TweenVars();
 			
@@ -176,12 +183,14 @@ package tetragon.view
 			_nativeViewContainer.focusRect = false;
 			_contextView.addChild(_nativeViewContainer);
 			
+			_fadeColor = _stage.color;
+			_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
+			
 			_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
 			
-			onStageResize(null);
 			_main.stage.addEventListener(Event.RESIZE, onStageResize);
 			_main.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
 		}
@@ -258,10 +267,12 @@ package tetragon.view
 				if (_tweenDuration > 0)
 				{
 					_nextScreen.visible = false;
-					_nextScreen.alpha = 0;
+					_screenCover.alpha = 1.0;
+					Debug.trace(">>> Adding Screen Cover");
+					_nativeViewContainer.addChild(_screenCover);
 				}
 				
-				_nativeViewContainer.addChild(_nextScreen);
+				_nativeViewContainer.addChildAt(_nextScreen, 0);
 				closePreviousScreen();
 			}
 			else
@@ -551,6 +562,21 @@ package tetragon.view
 		
 		
 		/**
+		 * The color to/from that the screen cover is faded during the transition between
+		 * screens. The default is the same as the Flash stage color.
+		 */
+		public function get fadeColor():uint
+		{
+			return _fadeColor;
+		}
+		public function set fadeColor(v:uint):void
+		{
+			_fadeColor = v;
+			if (_screenCover) _screenCover.fillColor = _fadeColor;
+		}
+		
+		
+		/**
 		 * The display object container that acts as the wrapper for native display views.
 		 */
 		public function get nativeViewContainer():Sprite
@@ -723,9 +749,16 @@ package tetragon.view
 		 */
 		private function onStageResize(e:Event):void
 		{
-			_screenWidth = _main.contextView.stage.stageWidth;
-			_screenHeight = _main.contextView.stage.stageHeight;
-			_stageResizeSignal.dispatch();
+			_screenWidth = _stage.stageWidth;
+			_screenHeight = _stage.stageHeight;
+			
+			if (_screenCover)
+			{
+				_screenCover.width = _screenWidth;
+				_screenCover.height = _screenHeight;
+			}
+			
+			if (_stageResizeSignal) _stageResizeSignal.dispatch();
 		}
 		
 		
@@ -750,7 +783,7 @@ package tetragon.view
 		/**
 		 * @private
 		 */
-		private function onTweenInUpdate():void
+		private function onScreenTweenInUpdate():void
 		{
 		}
 		
@@ -758,7 +791,7 @@ package tetragon.view
 		/**
 		 * @private
 		 */
-		private function onTweenInComplete():void
+		private function onScreenTweenInComplete():void
 		{
 			_tweenDuration = _backupDuration;
 			_screenOpenDelay = _backupOpenDelay;
@@ -767,8 +800,15 @@ package tetragon.view
 			if (!_currentScreen)
 			{
 				/* this should not happen unless you quickly repeat app init in the CLI! */
-				Log.warn("onTweenInComplete: screen is null", this);
+				Log.warn("onScreenTweenInComplete: screen is null", this);
 				return;
+			}
+			
+			/* Remove screen cover from display list. */
+			if (_nativeViewContainer.contains(_screenCover))
+			{
+				Debug.trace(">>> Removing Screen Cover");
+				_nativeViewContainer.removeChild(_screenCover);
 			}
 			
 			verbose("Opened " + _currentScreen.toString());
@@ -937,7 +977,7 @@ package tetragon.view
 		 */
 		private function onScreenUnloaded(unloadedScreen:Screen):void
 		{
-			verbose("Closed " + _currentScreen.toString());
+			verbose("Unloaded " + _currentScreen.toString());
 			_currentScreen = null;
 			_screenUnloadedSignal.dispatch(unloadedScreen);
 			openNextScreen();
@@ -1011,13 +1051,14 @@ package tetragon.view
 				
 				if (_tweenDuration > 0)
 				{
+					_screenCover.alpha = 0.0;
 					/* Tween out current screen. */
 					_tweenVars.reset();
-					_tweenVars.setProperty("alpha", 0.0);
+					_tweenVars.setProperty("alpha", 1.0);
 					_tweenVars.onUpdate = onTweenOutUpdate;
 					_tweenVars.onComplete = onTweenOutComplete;
 					_tweenVars.delay = _screenCloseDelay;
-					Tween.to(_currentScreen, _tweenDuration, _tweenVars);
+					Tween.to(_screenCover, _tweenDuration, _tweenVars);
 				}
 				else
 				{
@@ -1102,15 +1143,15 @@ package tetragon.view
 			{
 				/* Tween in next screen. */
 				_tweenVars.reset();
-				_tweenVars.setProperty("alpha", 1.0);
-				_tweenVars.onUpdate = onTweenInUpdate;
-				_tweenVars.onComplete = onTweenInComplete;
+				_tweenVars.setProperty("alpha", 0.0);
+				_tweenVars.onUpdate = onScreenTweenInUpdate;
+				_tweenVars.onComplete = onScreenTweenInComplete;
 				_currentScreen.visible = true;
-				Tween.to(_currentScreen, _tweenDuration, _tweenVars);
+				Tween.to(_screenCover, _tweenDuration, _tweenVars);
 			}
 			else
 			{
-				onTweenInComplete();
+				onScreenTweenInComplete();
 			}
 		}
 		

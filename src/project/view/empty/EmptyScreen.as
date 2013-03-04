@@ -28,7 +28,11 @@
  */
 package view.empty
 {
+	import lib.display.TetragonLogo;
+
+	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
+	import tetragon.view.loadprogress.LoadProgressDisplay;
 	
 	
 	/**
@@ -48,6 +52,8 @@ package view.empty
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
+		
+		private var _logo:TetragonLogo;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -123,6 +129,15 @@ package view.empty
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function get loadProgressDisplay():LoadProgressDisplay
+		{
+			return super.loadProgressDisplay;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -169,6 +184,7 @@ package view.empty
 		 */
 		override protected function registerResources():void
 		{
+			registerResource("settings");
 		}
 		
 		
@@ -177,6 +193,7 @@ package view.empty
 		 */
 		override protected function createChildren():void
 		{
+			_logo = new TetragonLogo();
 		}
 		
 		
@@ -193,6 +210,7 @@ package view.empty
 		 */
 		override protected function addChildren():void
 		{
+			addChild(_logo);
 		}
 		
 		
@@ -226,6 +244,7 @@ package view.empty
 		 */
 		override protected function layoutChildren():void
 		{
+			centerChild(_logo);
 		}
 		
 		
