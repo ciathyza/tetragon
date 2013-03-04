@@ -30,76 +30,24 @@ package tetragon.setup
 {
 	import tetragon.BuildType;
 	import tetragon.Main;
-	import tetragon.command.cli.AppInitCommand;
-	import tetragon.command.cli.ClearConsoleCommand;
-	import tetragon.command.cli.HelpCommand;
-	import tetragon.command.cli.HideConsoleCommand;
-	import tetragon.command.cli.ListCLICommandsCommand;
-	import tetragon.command.cli.ListCapabilitiesCommand;
-	import tetragon.command.cli.ListConfigCommand;
-	import tetragon.command.cli.ListFontsCommand;
-	import tetragon.command.cli.ListKeyAssignmentsCommand;
-	import tetragon.command.cli.ListLocalSettingsCommand;
-	import tetragon.command.cli.ListMetaDataCommand;
-	import tetragon.command.cli.ListModulesCommand;
-	import tetragon.command.cli.ListParamsCommand;
-	import tetragon.command.cli.ListRegistryObjectsCommand;
-	import tetragon.command.cli.ListSettingsCommand;
-	import tetragon.command.cli.ListStatesCommand;
-	import tetragon.command.cli.ListTextFormatsCommand;
-	import tetragon.command.cli.LogCommand;
-	import tetragon.command.cli.OutputAppInfoCommand;
-	import tetragon.command.cli.OutputEngineInfoCommand;
-	import tetragon.command.cli.OutputRuntimeInfoCommand;
-	import tetragon.command.cli.SetConsoleAlphaCommand;
-	import tetragon.command.cli.SetConsoleColorCommand;
-	import tetragon.command.cli.ToggleConsoleSizeCommand;
-	import tetragon.command.ecs.ListEntitiesCommand;
-	import tetragon.command.ecs.ListEntityComponentsCommand;
-	import tetragon.command.ecs.ListEntityFamiliesCommand;
-	import tetragon.command.env.ChangeLocaleCommand;
-	import tetragon.command.env.EnterStateCommand;
-	import tetragon.command.env.ForceGCCommand;
-	import tetragon.command.env.ListScreensCommand;
-	import tetragon.command.env.OpenScreenCommand;
-	import tetragon.command.env.SetFramerateCommand;
-	import tetragon.command.env.ShutdownApplicationCommand;
-	import tetragon.command.env.ToggleFullscreenAIRCommand;
-	import tetragon.command.env.ToggleFullscreenCommand;
-	import tetragon.command.env.ToggleStatsMonitorCommand;
-	import tetragon.command.env.ToggleStatsMonitorPosCommand;
-	import tetragon.command.file.DumpCommand;
-	import tetragon.command.file.ListDataFilesCommand;
-	import tetragon.command.file.ListResourcesCommand;
-	import tetragon.command.file.ListStringsCommand;
-	import tetragon.command.file.LoadResourceCommand;
-	import tetragon.command.file.ResourceInfoCommand;
-	import tetragon.command.file.UnloadAllResourcesCommand;
-	import tetragon.command.file.UnloadResourceCommand;
+	import tetragon.command.cli.*;
+	import tetragon.command.ecs.*;
+	import tetragon.command.env.*;
+	import tetragon.command.file.*;
 	import tetragon.data.Config;
 	import tetragon.data.Params;
 	import tetragon.data.Settings;
 	import tetragon.data.atlas.SpriteAtlas;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.debug.Log;
-	import tetragon.entity.components.Actor2DRefComponent;
-	import tetragon.entity.components.Cell2DComponent;
-	import tetragon.entity.components.Cell2DInteriorDataComponent;
-	import tetragon.entity.components.GraphicsComponent;
-	import tetragon.entity.components.RefListComponent;
-	import tetragon.entity.components.Spacial2DComponent;
-	import tetragon.entity.components.Spacial3DComponent;
-	import tetragon.file.parsers.SpriteAtlasDataParser;
-	import tetragon.file.parsers.TextureAtlasDataParser;
-	import tetragon.file.resource.processors.SpriteAtlasProcessor;
-	import tetragon.file.resource.processors.TextureAtlasProcessor;
+	import tetragon.entity.components.*;
+	import tetragon.file.parsers.*;
+	import tetragon.file.resource.processors.*;
 
 	import com.hexagonstar.util.env.getSeparator;
 
 	import flash.display.Stage;
 	import flash.geom.Rectangle;
-
-
 	
 	
 	/**

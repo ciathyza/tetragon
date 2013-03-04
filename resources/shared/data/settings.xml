@@ -10,7 +10,7 @@
 	<screenScale>1.0</screenScale>
 	<!-- The ID of the first-opening screen. If the splash screen is defined and
 	enabled, it will open before the initial screen opens. -->
-	<initialScreenID>racingScreen</initialScreenID>
+	<initialScreenID>emptyScreen</initialScreenID>
 	<!-- The ID of the used UI theme. -->
 	<themeID>default</themeID>
 	
@@ -26,7 +26,7 @@
 	<!-- Seconds that the splash screen should show before it auto-closes. -->
 	<splashScreenWaitTime>6</splashScreenWaitTime>
 	<!-- Determines whether to show the splash screen or not. -->
-	<showSplashScreen>false</showSplashScreen>
+	<showSplashScreen>true</showSplashScreen>
 	<!-- Determines whether the user is allowed to abort the splash screen or not
 	(by pressing a key or clicking the mouse). -->
 	<allowSplashAbort>true</allowSplashAbort>

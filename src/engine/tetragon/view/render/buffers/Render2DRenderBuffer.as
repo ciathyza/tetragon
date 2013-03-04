@@ -32,10 +32,7 @@ package tetragon.view.render.buffers
 
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
-	import flash.display.Shape;
-	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
 	
@@ -51,13 +48,13 @@ package tetragon.view.render.buffers
 		/** @private */
 		private var _r:Rectangle;
 		/** @private */
-		private var _p:Point;
-		/** @private */
+//		private var _p:Point;
+//		/** @private */
 		private var _m:Matrix;
 		/** @private */
-		private var _s:Shape;
-		/** @private */
-		private var _ct:ColorTransform;
+//		private var _s:Shape;
+//		/** @private */
+//		private var _ct:ColorTransform;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -206,11 +203,11 @@ package tetragon.view.render.buffers
 		 * @param alpha Alpha value (0.0 - 1.0) of color2.
 		 * @return uint
 		 */
-	    private function mixColors(color1:uint, color2:uint, alpha:Number):uint
-		{
-			return (((color2 >> 16 & 0xFF) * (1 - alpha) + (color1 >> 16 & 0xFF) * alpha) << 16)
-				+ (((color2 >> 8 & 0xFF) * (1 - alpha) + (color1 >> 8 & 0xFF) * alpha) << 8)
-				+ ((color2 & 0xFF) * (1 - alpha) + (color1 & 0xFF) * alpha);
-		}
+		//private function mixColors(color1:uint, color2:uint, alpha:Number):uint
+		//{
+		//	return (((color2 >> 16 & 0xFF) * (1 - alpha) + (color1 >> 16 & 0xFF) * alpha) << 16)
+		//		+ (((color2 >> 8 & 0xFF) * (1 - alpha) + (color1 >> 8 & 0xFF) * alpha) << 8)
+		//		+ ((color2 & 0xFF) * (1 - alpha) + (color1 & 0xFF) * alpha);
+		//}
 	}
 }

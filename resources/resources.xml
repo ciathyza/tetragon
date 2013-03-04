@@ -59,8 +59,6 @@
 	======================================================================================= -->
 	<dataFiles>
 		<file id="settingsFile" path="data/settings.xml" packageID="resourcePackage"/>
-		<file id="spriteAtlasFile" path="data/sprites.xml" packageID="resourcePackage"/>
-		<file id="textureAtlasFile" path="data/textures.xml" packageID="resourcePackage"/>
 	</dataFiles>
 	
 	
@@ -82,10 +80,8 @@
 		<image id="imageCollection">
 		</image>
 		<image32>
-			<resource id="spritePNG" path="images/sprites.png" packageID="resourcePackage"/>
 		</image32>
 		<atf>
-			<resource id="spriteATF" path="images/sprites.atf" packageID="resourcePackage"/>
 		</atf>
 		<swf/>
 		<shader>
@@ -127,14 +123,6 @@
 		<group type="Settings">
 			<resource id="settings" fileID="settingsFile"/>
 		</group>
-		<!-- Data type group for Texture Atlas resource. -->
-		<group type="TextureAtlas" fileID="textureAtlasFile">
-			<resource id="textureAtlas"/>
-		</group>
-		<!-- Data type group for Sprite Atlas resource. -->
-		<group type="SpriteAtlas" fileID="spriteAtlasFile">
-			<resource id="spriteAtlas"/>
-		</group>
 	</data>
 	
 	
@@ -167,8 +155,6 @@
 	resource.packageID		ID of the resource package that the XML file is in.
 	======================================================================================= -->
 	<xml>
-		<resource id="racetrackObjects" path="data/objects.xml" packageID="resourcePackage"/>
-		<resource id="racetrackLevels" path="data/levels.xml" packageID="resourcePackage"/>
 	</xml>
 	
 	

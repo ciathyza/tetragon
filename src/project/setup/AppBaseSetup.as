@@ -38,8 +38,6 @@ package setup
 	import tetragon.setup.Setup;
 
 	import view.empty.EmptyScreen;
-	import view.racing.RacingScreen;
-	import view.render2d.Render2DTestScreen;
 	import view.splash.SplashScreen;
 
 	import com.hexagonstar.util.env.isDomainPermitted;
@@ -257,8 +255,6 @@ package setup
 		{
 			registrar.registerScreen(SplashScreen.ID, SplashScreen);
 			registrar.registerScreen(EmptyScreen.ID, EmptyScreen);
-			registrar.registerScreen(Render2DTestScreen.ID, Render2DTestScreen);
-			registrar.registerScreen(RacingScreen.ID, RacingScreen);
 		}
 	}
 }
