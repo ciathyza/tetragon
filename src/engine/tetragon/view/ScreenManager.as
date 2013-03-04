@@ -257,7 +257,8 @@ package tetragon.view
 				/* Only change screen alpha if we're actually using tweens! */
 				if (_tweenDuration > 0)
 				{
-					//_nextScreen.alpha = 0;
+					_nextScreen.visible = false;
+					_nextScreen.alpha = 0;
 				}
 				
 				_nativeViewContainer.addChild(_nextScreen);
@@ -1104,6 +1105,7 @@ package tetragon.view
 				_tweenVars.setProperty("alpha", 1.0);
 				_tweenVars.onUpdate = onTweenInUpdate;
 				_tweenVars.onComplete = onTweenInComplete;
+				_currentScreen.visible = true;
 				Tween.to(_currentScreen, _tweenDuration, _tweenVars);
 			}
 			else
