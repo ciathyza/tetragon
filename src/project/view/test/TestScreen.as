@@ -26,13 +26,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package view.empty
+package view.test
 {
-	import lib.display.TetragonLogo;
-
-	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
+	import tetragon.view.render2d.core.Render2D;
 	
 	
 	/**
@@ -40,20 +38,21 @@ package view.empty
 	 * 
 	 * @author Hexagon
 	 */
-	public class EmptyScreen extends Screen
+	public class TestScreen extends Screen
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const ID:String = "emptyScreen";
+		public static const ID:String = "testScreen";
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _logo:TetragonLogo;
+		private var _render2D:Render2D;
+		private var _view:TestView;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -100,6 +99,8 @@ package view.empty
 		override public function stop():void
 		{
 			super.stop();
+			_render2D.stop();
+			main.gameLoop.stop();
 		}
 		
 		
@@ -153,6 +154,23 @@ package view.empty
 		}
 		
 		
+		/**
+		 * @private
+		 */
+		private function onTick():void
+		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onRender(ticks:uint, ms:uint, fps:uint):void
+		{
+			_render2D.render();
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
@@ -193,7 +211,8 @@ package view.empty
 		 */
 		override protected function createChildren():void
 		{
-			_logo = new TetragonLogo();
+			_view = new TestView();
+			_render2D = new Render2D(_view);
 		}
 		
 		
@@ -210,7 +229,6 @@ package view.empty
 		 */
 		override protected function addChildren():void
 		{
-			addChild(_logo);
 		}
 		
 		
@@ -219,6 +237,8 @@ package view.empty
 		 */
 		override protected function addListeners():void
 		{
+			main.gameLoop.tickSignal.add(onTick);
+			main.gameLoop.renderSignal.add(onRender);
 		}
 		
 		
@@ -227,6 +247,8 @@ package view.empty
 		 */
 		override protected function removeListeners():void
 		{
+			main.gameLoop.tickSignal.remove(onTick);
+			main.gameLoop.renderSignal.remove(onRender);
 		}
 		
 		
@@ -244,7 +266,6 @@ package view.empty
 		 */
 		override protected function layoutChildren():void
 		{
-			centerChild(_logo);
 		}
 		
 		
@@ -285,6 +306,8 @@ package view.empty
 		 */
 		override protected function executeBeforeStart():void
 		{
+			_render2D.start();
+			main.gameLoop.start();
 		}
 	}
 }

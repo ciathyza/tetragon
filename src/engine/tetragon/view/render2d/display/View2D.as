@@ -94,6 +94,8 @@ package tetragon.view.render2d.display
 		 */
 		public override function render(support:RenderSupport2D, alpha:Number):void
 		{
+			executeBeforeRender();
+			
 			/* Render background, which is not in the child collection. */
 			if (_background)
 			{
@@ -270,6 +272,14 @@ package tetragon.view.render2d.display
 		protected static function getResource(resourceID:String):*
 		{
 			return resourceIndex.getResourceContent(resourceID);
+		}
+		
+		
+		/**
+		 * Executed at start of the render loop for the view.
+		 */
+		protected function executeBeforeRender():void
+		{
 		}
 	}
 }

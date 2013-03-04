@@ -37,8 +37,8 @@ package setup
 	import tetragon.debug.Log;
 	import tetragon.setup.Setup;
 
-	import view.empty.EmptyScreen;
 	import view.splash.SplashScreen;
+	import view.test.TestScreen;
 
 	import com.hexagonstar.util.env.isDomainPermitted;
 	
@@ -254,7 +254,7 @@ package setup
 		override protected function registerScreens():void
 		{
 			registrar.registerScreen(SplashScreen.ID, SplashScreen);
-			registrar.registerScreen(EmptyScreen.ID, EmptyScreen);
+			registrar.registerScreen(TestScreen.ID, TestScreen);
 		}
 	}
 }

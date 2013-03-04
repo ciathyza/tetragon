@@ -48,7 +48,6 @@ package tetragon.view
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.tween.Tween;
 	import com.hexagonstar.tween.TweenVars;
-	import com.hexagonstar.util.debug.Debug;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.display.DisplayObjectContainer;
@@ -268,7 +267,6 @@ package tetragon.view
 				{
 					_nextScreen.visible = false;
 					_screenCover.alpha = 1.0;
-					Debug.trace(">>> Adding Screen Cover");
 					_nativeViewContainer.addChild(_screenCover);
 				}
 				
@@ -807,7 +805,6 @@ package tetragon.view
 			/* Remove screen cover from display list. */
 			if (_nativeViewContainer.contains(_screenCover))
 			{
-				Debug.trace(">>> Removing Screen Cover");
 				_nativeViewContainer.removeChild(_screenCover);
 			}
 			

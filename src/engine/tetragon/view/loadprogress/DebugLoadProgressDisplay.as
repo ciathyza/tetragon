@@ -28,8 +28,6 @@
  */
 package tetragon.view.loadprogress
 {
-	import com.hexagonstar.display.shape.RectangleShape;
-	import com.hexagonstar.util.display.StageReference;
 	import com.hexagonstar.util.filter.createOutlineFilter;
 
 	import flash.events.MouseEvent;
@@ -52,8 +50,6 @@ package tetragon.view.loadprogress
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/** @private */
-		protected var _bg:RectangleShape;
 		/** @private */
 		protected var _tf:TextField;
 		/** @private */
@@ -154,13 +150,6 @@ package tetragon.view.loadprogress
 		}
 		
 		
-		override protected function onStageResize():void
-		{
-			_bg.setProperties(StageReference.stageWidth, StageReference.stageHeight, 0x000000, 0.8);
-			_bg.draw();
-		}
-		
-		
 		/**
 		 * @private
 		 */
@@ -179,8 +168,6 @@ package tetragon.view.loadprogress
 			var format:TextFormat = new TextFormat("Terminalscope", 16, 0xFFFFFF);
 			var filter:GlowFilter = createOutlineFilter(int(format.size));
 			
-			_bg = new RectangleShape();
-			
 			_tf = new TextField();
 			_tf.antiAliasType = AntiAliasType.NORMAL;
 			_tf.gridFitType = GridFitType.PIXEL;
@@ -198,8 +185,6 @@ package tetragon.view.loadprogress
 			_tf.x = 10;
 			_tf.y = 10;
 			
-			onStageResize();
-			addChild(_bg);
 			addChild(_tf);
 		}
 		

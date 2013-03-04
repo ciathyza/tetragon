@@ -29,7 +29,6 @@
 package tetragon.view.render2d.core
 {
 	import tetragon.Main;
-	import tetragon.core.GameLoop;
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -200,8 +199,6 @@ package tetragon.view.render2d.core
 		private var _stage2D:Stage2D;
 		/** @private */
 		private static var _context:Context3D;
-		/** @private */
-		private var _gameLoop:GameLoop;
 		
 		/** @private */
 		private var _stage:Stage;
@@ -267,7 +264,6 @@ package tetragon.view.render2d.core
 			_main = Main.instance;
 			_stage = _main.stage;
 			_stage3DProxy = _main.screenManager.stage3DProxy;
-			_gameLoop = _main.gameLoop;
 			
 			DisplayObject2D.render2D =
 			FragmentFilter2D.render2D =
@@ -304,7 +300,6 @@ package tetragon.view.render2d.core
 			}
 			
 			/* Register other event handlers. */
-			_gameLoop.renderSignal.add(onGameLoopRender);
 			_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
 			_stage.addEventListener(Event.RESIZE, onResize);
@@ -313,7 +308,7 @@ package tetragon.view.render2d.core
 			/* If we already got a context3D and it's not disposed. */
 			if (_stage3DProxy.context3D && _stage3DProxy.context3D.driverInfo != "Disposed")
 			{
-				_shareContext = true;
+				//_shareContext = true;
 				/* we don't call it right away, because Render2D should behave the
 				 * same way with or without a shared context. */
 				//setTimeout(initialize, 1);
@@ -338,7 +333,6 @@ package tetragon.view.render2d.core
 		{
 			stop();
 			
-			_gameLoop.renderSignal.remove(onGameLoopRender);
 			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_stage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
 			_stage.removeEventListener(Event.RESIZE, onResize);
@@ -367,7 +361,7 @@ package tetragon.view.render2d.core
 			_lastFrameTimestamp = now;
 			
 			advanceTime(passedTime);
-			render();
+			nextRender();
 		}
 		
 		
@@ -388,7 +382,7 @@ package tetragon.view.render2d.core
 		 * afterwards, it is presented. This can be avoided by enabling
 		 * <code>shareContext</code>.
 		 */
-		public function render():void
+		public function nextRender():void
 		{
 			if (!contextValid) return;
 			
@@ -413,7 +407,6 @@ package tetragon.view.render2d.core
 			_stage2D.render(_renderSupport, 1.0);
 			_renderSupport.finishQuadBatch();
 			
-			//if (_statsDisplay) _statsDisplay.drawCount = _renderSupport.drawCount;
 			if (!_shareContext) _context.present();
 		}
 		
@@ -439,6 +432,18 @@ package tetragon.view.render2d.core
 		public function stop():void
 		{
 			_started = false;
+		}
+		
+		
+		/**
+		 * 
+		 */
+		public function render():void
+		{
+			/* On mobile, the native display list is only updated on stage3D draw calls.
+			 * Thus, we render even when Render2D is paused. */
+			if (_started) nextFrame();
+			else nextRender();
 		}
 		
 		
@@ -733,21 +738,6 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		private function onGameLoopRender(ticks:uint, ms:uint, fps:uint):void
-		{
-			/* On mobile, the native display list is only updated on stage3D draw calls.
-			 * Thus, we render even when Render2D is paused. */
-			if (!_shareContext)
-			{
-				if (_started) nextFrame();
-				else render();
-			}
-		}
-		
 		
 		/**
 		 * @private
