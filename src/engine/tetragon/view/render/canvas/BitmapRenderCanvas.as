@@ -26,13 +26,12 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.buffers
+package tetragon.view.render.canvas
 {
 	import tetragon.Main;
 	import tetragon.debug.IDrawCallsPollingSource;
 
 	import flash.display.BitmapData;
-	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
@@ -43,7 +42,7 @@ package tetragon.view.render.buffers
 	/**
 	 * A render buffer that draws objects onto a bitmapdata.
 	 */
-	public class SoftwareRenderBuffer extends BitmapData implements IRenderBuffer,
+	public class BitmapRenderCanvas extends BitmapData implements IRenderCanvas,
 		IDrawCallsPollingSource
 	{
 		//-----------------------------------------------------------------------------------------
@@ -82,7 +81,7 @@ package tetragon.view.render.buffers
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function SoftwareRenderBuffer(width:int, height:int, fillColor:uint = 0x000000,
+		public function BitmapRenderCanvas(width:int, height:int, fillColor:uint = 0x000000,
 			transparent:Boolean = false):void
 		{
 			super(width, height, transparent, fillColor);
@@ -216,7 +215,7 @@ package tetragon.view.render.buffers
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		public function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
+		public function drawImage(image:Object, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
 			++_drawCount;
@@ -231,11 +230,11 @@ package tetragon.view.render.buffers
 				_ct.redOffset = ((mixColor >> 16) & 0xFF) * mixAlpha;
 				_ct.greenOffset = ((mixColor >> 8) & 0xFF) * mixAlpha;
 				_ct.blueOffset = (mixColor & 0xFF) * mixAlpha;
-				draw(image, _m, _ct, null, _r, false);
+				draw(image as BitmapData, _m, _ct, null, _r, false);
 				return;
 			}
 			
-			draw(image, _m, null, null, _r, false);
+			draw(image as BitmapData, _m, null, null, _r, false);
 		}
 		
 		

@@ -1,7 +1,6 @@
-package tetragon.view.render.buffers
+package tetragon.view.render.canvas
 {
 	import flash.display.BitmapData;
-	import flash.display.IBitmapDrawable;
 	import flash.geom.Rectangle;
 	
 	
@@ -9,7 +8,7 @@ package tetragon.view.render.buffers
 	 * IRenderBuffer
 	 * @author Hexagon
 	 */
-	public interface IRenderBuffer
+	public interface IRenderCanvas
 	{
 		/**
 		 * Clears the render buffer.
@@ -87,7 +86,7 @@ package tetragon.view.render.buffers
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
+		function drawImage(image:Object, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
 		
 		

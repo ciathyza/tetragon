@@ -26,12 +26,11 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.buffers
+package tetragon.view.render.canvas
 {
 	import tetragon.view.render2d.textures.RenderTexture2D;
 
 	import flash.display.BitmapData;
-	import flash.display.IBitmapDrawable;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
@@ -39,7 +38,7 @@ package tetragon.view.render.buffers
 	/**
 	 * 
 	 */
-	public class Render2DRenderBuffer extends RenderTexture2D implements IRenderBuffer
+	public class Render2DRenderCanvas extends RenderTexture2D implements IRenderCanvas
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -69,7 +68,7 @@ package tetragon.view.render.buffers
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function Render2DRenderBuffer(width:int, height:int, fillColor:uint = 0x000000):void
+		public function Render2DRenderCanvas(width:int, height:int, fillColor:uint = 0x000000):void
 		{
 			super(width, height, false);
 		}
@@ -157,7 +156,7 @@ package tetragon.view.render.buffers
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		public function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
+		public function drawImage(image:Object, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
 			_m.setTo(scale, 0, 0, scale, x, y);

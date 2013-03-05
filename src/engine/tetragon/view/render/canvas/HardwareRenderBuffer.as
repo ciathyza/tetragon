@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.buffers
+package tetragon.view.render.canvas
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
@@ -46,6 +46,8 @@ package tetragon.view.render.buffers
 	
 	
 	/**
+	 * TODO Obsolete class!
+	 * 
 	 * HardwareRenderBuffer class
 	 *
 	 * @author Hexagon
