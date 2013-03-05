@@ -34,7 +34,6 @@ package tetragon.debug
 	import tetragon.core.GameLoop;
 	import tetragon.data.Config;
 	import tetragon.util.ui.createTextField;
-	import tetragon.view.render2d.core.RenderSupport2D;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -106,6 +105,9 @@ package tetragon.debug
 		private var _etc3TF:TextField;
 		/** @private */
 		private var _etc4TF:TextField;
+		
+		/** @private */
+		private var _drawCallsPollingSource:IDrawCallsPollingSource;
 		
 		/** @private */
 		private var _colorBg:uint;
@@ -275,6 +277,17 @@ package tetragon.debug
 		{
 			_gameLoop = gameLoop;
 			_gameLoop.frameRateChangedSignal.add(onGameLoopFrameRateChanged);
+		}
+		
+		
+		/**
+		 * Registers an object as a source for polling render draw call counts from it.
+		 * 
+		 * @param source
+		 */
+		public function registerDrawCallsPolling(source:IDrawCallsPollingSource):void
+		{
+			_drawCallsPollingSource = source;
 		}
 		
 		
@@ -510,7 +523,7 @@ package tetragon.debug
 			_mem3TF.text = "PRC:" + _memPRC.toFixed(2);
 			_mem4TF.text = "GC: " + _memGC.toFixed(2);
 			//_etc1TF.text = "GLFPS: " + _renderFPS + "/" + _glFPS;
-			_etc1TF.text = "DRAW:  " + RenderSupport2D.drawCount;
+			_etc1TF.text = "DRAW:  " + (_drawCallsPollingSource ? _drawCallsPollingSource.drawCount : "0");
 			_etc2TF.text = "MS:    " + _stageMS;
 			_etc3TF.text = "RENDER:" + _glRenderMS;
 			_etc4TF.text = "TICKS: " + _glTicks;

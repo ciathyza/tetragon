@@ -28,6 +28,9 @@
  */
 package tetragon.view.render.buffers
 {
+	import tetragon.Main;
+	import tetragon.debug.IDrawCallsPollingSource;
+
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
 	import flash.display.Shape;
@@ -40,7 +43,8 @@ package tetragon.view.render.buffers
 	/**
 	 * A render buffer that draws objects onto a bitmapdata.
 	 */
-	public class SoftwareRenderBuffer extends BitmapData implements IRenderBuffer
+	public class SoftwareRenderBuffer extends BitmapData implements IRenderBuffer,
+		IDrawCallsPollingSource
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -62,6 +66,8 @@ package tetragon.view.render.buffers
 		private var _s:Shape;
 		/** @private */
 		private var _ct:ColorTransform;
+		/** @private */
+		private var _drawCount:uint;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -81,9 +87,16 @@ package tetragon.view.render.buffers
 		{
 			super(width, height, transparent, fillColor);
 			
+			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
+			if (Main.instance.statsMonitor)
+			{
+				Main.instance.statsMonitor.registerDrawCallsPolling(this);
+			}
+			
 			_fillColor = fillColor;
 			_rect = rect;
 			_buffer = [];
+			_drawCount = 0;
 			
 			_r = new Rectangle();
 			_p = new Point();
@@ -103,6 +116,7 @@ package tetragon.view.render.buffers
 		public function clear():void
 		{
 			fillRect(_rect, _fillColor);
+			_drawCount = 0;
 		}
 		
 		
@@ -205,6 +219,8 @@ package tetragon.view.render.buffers
 		public function drawImage(image:IBitmapDrawable, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
+			++_drawCount;
+			
 			_m.setTo(scale, 0, 0, scale, x, y);
 			_r.setTo(x, y, w, h);
 			
@@ -237,6 +253,15 @@ package tetragon.view.render.buffers
 		public function set fillColor(v:uint):void
 		{
 			_fillColor = v;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get drawCount():uint
+		{
+			return _drawCount;
 		}
 		
 		

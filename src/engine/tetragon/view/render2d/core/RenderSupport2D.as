@@ -28,6 +28,8 @@
  */
 package tetragon.view.render2d.core
 {
+	import tetragon.Main;
+	import tetragon.debug.IDrawCallsPollingSource;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Quad2D;
@@ -53,7 +55,7 @@ package tetragon.view.render2d.core
 	 * manipulation of the current transformation matrix (similar to the matrix
 	 * manipulation methods of OpenGL 1.x) and other helper methods.
 	 */
-	public class RenderSupport2D
+	public class RenderSupport2D implements IDrawCallsPollingSource
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -90,7 +92,8 @@ package tetragon.view.render2d.core
 		private var _blendMode:String;
 		
 		/** @private */
-		private static var _drawCount:uint;
+		private var _drawCount:uint;
+		
 		/** @private */
 		private static var _point:Point;
 		/** @private */
@@ -108,6 +111,12 @@ package tetragon.view.render2d.core
 		 */
 		public function RenderSupport2D()
 		{
+			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
+			if (Main.instance.statsMonitor)
+			{
+				Main.instance.statsMonitor.registerDrawCallsPolling(this);
+			}
+			
 			if (!_point) _point = new Point();
 			if (!_rectangle) _rectangle = new Rectangle();
 			
@@ -584,9 +593,9 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * Indicates the number of stage3D draw calls made by the Render2D system.
+		 * @inheritDoc
 		 */
-		public static function get drawCount():uint
+		public function get drawCount():uint
 		{
 			return _drawCount;
 		}
