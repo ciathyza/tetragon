@@ -258,7 +258,7 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(rootView:View2D, renderMode:String = "auto",
+		public function Render2D(rootView:View2D = null, renderMode:String = "auto",
 			profile:String = "baselineConstrained")
 		{
 			_main = Main.instance;
@@ -271,7 +271,6 @@ package tetragon.view.render2d.core
 			
 			if (!_contextData) _contextData = new Dictionary(true);
 			
-			_rootView = rootView;
 			_stage3D = _stage3DProxy.stage3D;
 			
 			_viewPort = new Rectangle(0, 0, _stage3DProxy.width, _stage3DProxy.height);
@@ -313,6 +312,7 @@ package tetragon.view.render2d.core
 				 * same way with or without a shared context. */
 				//setTimeout(initialize, 1);
 				initialize();
+				this.rootView = rootView;
 			}
 			else
 			{
@@ -665,12 +665,18 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * The instance of the root class provided in the constructor. Available as soon as
-		 * the event 'ROOT_CREATED' has been dispatched.
+		 * Allows to get and set the root view after Render2D has been instantiated.
+		 * Note that the rootview can only be set once!
 		 */
-		public function get root():DisplayObject2D
+		public function get rootView():View2D
 		{
 			return _rootView;
+		}
+		public function set rootView(v:View2D):void
+		{
+			if (!v || _rootView) return;
+			_rootView = v;
+			initializeRootView();
 		}
 		
 		
@@ -852,7 +858,7 @@ package tetragon.view.render2d.core
 		private function initialize():void
 		{
 			initializeGraphicsAPI();
-			initializeRootView();
+			//initializeRootView();
 			
 			_touchProcessor.simulateMultitouch = _simulateMultitouch;
 			_lastFrameTimestamp = getTimer() / 1000.0;

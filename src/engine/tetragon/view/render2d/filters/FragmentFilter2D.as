@@ -604,7 +604,7 @@ package tetragon.view.render2d.filters
 		private function calculateBounds(object:DisplayObject2D, stage:Stage2D, intersectWithStage:Boolean, resultRect:Rectangle):void
 		{
 			// optimize for full-screen effects
-			if (object == stage || object == render2D.root)
+			if (object == stage || object == render2D.rootView)
 				resultRect.setTo(0, 0, stage.stageWidth, stage.stageHeight);
 			else
 				object.getBounds(stage, resultRect);
