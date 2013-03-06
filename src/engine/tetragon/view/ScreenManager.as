@@ -387,6 +387,7 @@ package tetragon.view
 					_contextView.addChild(_utilityContainer);
 				}
 				_statsMonitor = new StatsMonitor(_utilityContainer);
+				_statsMonitor.setGameLoop(_main.gameLoop);
 			}
 		}
 		

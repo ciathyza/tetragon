@@ -1,23 +1,21 @@
 package tetragon.view.render.canvas
 {
 	import flash.display.BitmapData;
-	import flash.geom.Rectangle;
 	
 	
 	/**
-	 * IRenderBuffer
 	 * @author Hexagon
 	 */
 	public interface IRenderCanvas
 	{
 		/**
-		 * Clears the render buffer.
+		 * Clears the render canvas.
 		 */
 		function clear():void;
 		
 		
 		/**
-		 * Draws a filled, four-sided polygon onto the render buffer.
+		 * Draws a filled, four-sided polygon onto the render canvas.
 		 * 
 		 * @param x1		first point x coord
 		 * @param y1		first point y coord 
@@ -29,13 +27,12 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
-			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
-			mixColor:uint, mixAlpha:Number = 1.0):void;
+		function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number, x3:Number, y3:Number,
+			x4:Number, y4:Number, color:uint, mixColor:uint, mixAlpha:Number = 1.0):void;
 		
 		
 		/**
-		 * Fast method to blit a rectangle onto the render buffer.
+		 * Fast method to blit a rectangle onto the render canvas.
 		 * 
 		 * @param x
 		 * @param y
@@ -50,7 +47,7 @@ package tetragon.view.render.canvas
 		
 		
 		/**
-		 * Draws a rectangle shape onmto the render buffer, using the draw API.
+		 * Draws a rectangle shape onmto the render canvas, using the draw API.
 		 * 
 		 * @param x
 		 * @param y
@@ -63,7 +60,7 @@ package tetragon.view.render.canvas
 		
 		
 		/**
-		 * Fast method to blit a bitmap onto the render buffer.
+		 * Fast method to blit a bitmap onto the render canvas.
 		 * 
 		 * @param image
 		 * @param x
@@ -75,7 +72,7 @@ package tetragon.view.render.canvas
 		
 		
 		/**
-		 * Draws a display object onto the render buffer using the draw API.
+		 * Draws a display object onto the render canvas using the draw API.
 		 * 
 		 * @param image
 		 * @param x
@@ -86,12 +83,11 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawImage(image:Object, x:int, y:int, w:int, h:int,
-			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
+		function drawImage(image:*, x:int, y:int, w:int, h:int, scale:Number = 1.0,
+			mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
 		
 		
-		function lock():void;
-		function unlock(changeRect:Rectangle = null):void;
+		function drawBundled():void;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -99,7 +95,7 @@ package tetragon.view.render.canvas
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * The fill color of the render buffer.
+		 * The fill color of the render canvas.
 		 */
 		function get fillColor():uint;
 		function set fillColor(v:uint):void;

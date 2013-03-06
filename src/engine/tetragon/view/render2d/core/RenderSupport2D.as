@@ -28,8 +28,6 @@
  */
 package tetragon.view.render2d.core
 {
-	import tetragon.Main;
-	import tetragon.debug.IDrawCallsPollingSource;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Quad2D;
@@ -55,7 +53,7 @@ package tetragon.view.render2d.core
 	 * manipulation of the current transformation matrix (similar to the matrix
 	 * manipulation methods of OpenGL 1.x) and other helper methods.
 	 */
-	public class RenderSupport2D implements IDrawCallsPollingSource
+	public class RenderSupport2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -63,6 +61,8 @@ package tetragon.view.render2d.core
 		
 		public static var context3D:Context3D;
 		
+		/** @private */
+		private var _render2D:Render2D;
 		/** @private */
 		private var _projectionMatrix:Matrix;
 		/** @private */
@@ -92,9 +92,6 @@ package tetragon.view.render2d.core
 		private var _blendMode:String;
 		
 		/** @private */
-		private var _drawCount:uint;
-		
-		/** @private */
 		private static var _point:Point;
 		/** @private */
 		private static var _rectangle:Rectangle;
@@ -109,13 +106,9 @@ package tetragon.view.render2d.core
 		/**
 		 * Creates a new RenderSupport object with an empty matrix stack.
 		 */
-		public function RenderSupport2D()
+		public function RenderSupport2D(render2D:Render2D = null)
 		{
-			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
-			if (Main.instance.statsMonitor)
-			{
-				Main.instance.statsMonitor.registerDrawCallsPolling(this);
-			}
+			_render2D = render2D;
 			
 			if (!_point) _point = new Point();
 			if (!_rectangle) _rectangle = new Rectangle();
@@ -127,7 +120,6 @@ package tetragon.view.render2d.core
 			_matrixStack = new <Matrix>[];
 			
 			_matrixStackSize = 0;
-			_drawCount = 0;
 			_currentQuadBatchID = 0;
 			_renderTarget = null;
 			
@@ -333,7 +325,7 @@ package tetragon.view.render2d.core
 				currentBatch.renderCustom(_projectionMatrix);
 				currentBatch.reset();
 				++_currentQuadBatchID;
-				++_drawCount;
+				if (_render2D) ++_render2D._drawCount;
 				if (_quadBatches.length <= _currentQuadBatchID)
 				{
 					_quadBatches.push(new QuadBatch2D());
@@ -350,7 +342,7 @@ package tetragon.view.render2d.core
 			resetMatrix();
 			_blendMode = BlendMode2D.NORMAL;
 			_currentQuadBatchID = 0;
-			_drawCount = 0;
+			if (_render2D) _render2D._drawCount = 0;
 		}
 		
 		
@@ -372,7 +364,7 @@ package tetragon.view.render2d.core
 		 */
 		public function raiseDrawCount(value:uint = 1):void
 		{
-			_drawCount += value;
+			if (_render2D) _render2D._drawCount += value;
 		}
 		
 		
@@ -589,15 +581,6 @@ package tetragon.view.render2d.core
 				_scissorRectangle.setEmpty();
 				context3D.setScissorRectangle(null);
 			}
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get drawCount():uint
-		{
-			return _drawCount;
 		}
 		
 		

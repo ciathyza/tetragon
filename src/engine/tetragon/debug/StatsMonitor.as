@@ -108,6 +108,8 @@ package tetragon.debug
 		
 		/** @private */
 		private var _drawCallsPollingSource:IDrawCallsPollingSource;
+		/** @private */
+		private var _drawCount:uint;
 		
 		/** @private */
 		private var _colorBg:uint;
@@ -205,6 +207,7 @@ package tetragon.debug
 				/* Set monitor up if we haven't done that yet! */
 				if (_rectangle == null) setup();
 				
+				_drawCount = 0;
 				_frames = 0;
 				_statsDelay = 10;
 				_glTicks = 0;
@@ -324,6 +327,7 @@ package tetragon.debug
 			_glTicks = ticks;
 			_glRenderMS = ms;
 			_renderFPS = fps;
+			if (_drawCallsPollingSource) _drawCount = _drawCallsPollingSource.drawCount;
 		}
 		
 		
@@ -523,7 +527,7 @@ package tetragon.debug
 			_mem3TF.text = "PRC:" + _memPRC.toFixed(2);
 			_mem4TF.text = "GC: " + _memGC.toFixed(2);
 			//_etc1TF.text = "GLFPS: " + _renderFPS + "/" + _glFPS;
-			_etc1TF.text = "DRAW:  " + (_drawCallsPollingSource ? _drawCallsPollingSource.drawCount : "0");
+			_etc1TF.text = "DRAW:  " + _drawCount;
 			_etc2TF.text = "MS:    " + _stageMS;
 			_etc3TF.text = "RENDER:" + _glRenderMS;
 			_etc4TF.text = "TICKS: " + _glTicks;

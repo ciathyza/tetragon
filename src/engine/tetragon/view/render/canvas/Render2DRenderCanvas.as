@@ -156,7 +156,7 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		public function drawImage(image:Object, x:int, y:int, w:int, h:int,
+		public function drawImage(image:*, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
 			_m.setTo(scale, 0, 0, scale, x, y);

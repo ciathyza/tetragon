@@ -29,6 +29,7 @@
 package tetragon.view.render2d.core
 {
 	import tetragon.Main;
+	import tetragon.debug.IDrawCallsPollingSource;
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -172,7 +173,7 @@ package tetragon.view.render2d.core
 	 * and <code>context.present()</code>.</li>
 	 * </ol>
 	 */
-	public class Render2D extends EventDispatcher2D
+	public class Render2D extends EventDispatcher2D implements IDrawCallsPollingSource
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
@@ -228,6 +229,8 @@ package tetragon.view.render2d.core
 		private var _lastFrameTimestamp:Number;
 		
 		/** @private */
+		internal var _drawCount:uint;
+		/** @private */
 		private var _started:Boolean;
 		/** @private */
 		private var _simulateMultitouch:Boolean;
@@ -269,6 +272,12 @@ package tetragon.view.render2d.core
 			FragmentFilter2D.render2D =
 			Texture2D.render2D = this;
 			
+			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
+			if (_main.statsMonitor)
+			{
+				_main.statsMonitor.registerDrawCallsPolling(this);
+			}
+			
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			_stage3D = _stage3DProxy.stage3D;
@@ -280,8 +289,9 @@ package tetragon.view.render2d.core
 			
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
-			_renderSupport = new RenderSupport2D();
+			_renderSupport = new RenderSupport2D(this);
 			
+			_drawCount = 0;
 			_antiAliasing = 0;
 			_simulateMultitouch = false;
 			_profile = profile;
@@ -703,6 +713,15 @@ package tetragon.view.render2d.core
 		public function get profile():String
 		{
 			return _profile;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get drawCount():uint
+		{
+			return _drawCount;
 		}
 		
 		

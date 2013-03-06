@@ -98,7 +98,7 @@ package tetragon.view.render2d.textures
 		private var _activeTexture:Texture2D;
 		private var _bufferTexture:Texture2D;
 		private var _helperImage:Image2D;
-		private var _drawing:Boolean;
+		private var _drawingBundled:Boolean;
 		private var _bufferReady:Boolean;
 		private var _support:RenderSupport2D;
 		
@@ -180,7 +180,7 @@ package tetragon.view.render2d.textures
 		{
 			if (!object) return;
 			
-			if (_drawing) render();
+			if (_drawingBundled) render();
 			else drawBundled(render, antiAliasing);
 			
 			function render():void
@@ -228,13 +228,13 @@ package tetragon.view.render2d.textures
 			
 			try
 			{
-				_drawing = true;
+				_drawingBundled = true;
 				// draw new objects
 				if (drawingBlock != null) drawingBlock();
 			}
 			finally
 			{
-				_drawing = false;
+				_drawingBundled = false;
 				_support.finishQuadBatch();
 				_support.nextFrame();
 				_support.renderTarget = null;

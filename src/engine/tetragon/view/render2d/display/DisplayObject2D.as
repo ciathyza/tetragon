@@ -399,6 +399,19 @@ package tetragon.view.render2d.display
 		}
 		
 		
+		/**
+		 * 
+		 */
+		public function setTo(x:Number, y:Number, width:Number, height:Number):void
+		{
+			_x = x;
+			_y = y;
+			_orientationChanged = true;
+			this.width = width;
+			this.height = height;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
@@ -848,7 +861,7 @@ package tetragon.view.render2d.display
 		{
 			// check for a recursion
 			var ancestor:DisplayObject2D = value;
-			while (ancestor != this && !ancestor)
+			while (ancestor != this && ancestor != null)
 			{
 				ancestor = ancestor._parent;
 			}
