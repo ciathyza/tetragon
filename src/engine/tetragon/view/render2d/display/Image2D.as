@@ -68,6 +68,7 @@ package tetragon.view.render2d.display
 		private var _smoothing:String;
 		private var _vertexDataCache:VertexData2D;
 		private var _vertexDataCacheInvalid:Boolean;
+		private var _clipRect:Rectangle;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -199,13 +200,66 @@ package tetragon.view.render2d.display
 		 */
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
-			support.batchQuad(this, parentAlpha, _texture, _smoothing);
+			if (!_clipRect)
+			{
+				support.batchQuad(this, parentAlpha, _texture, _smoothing);
+			}
+			else
+			{
+				support.finishQuadBatch();
+				support.scissorRectangle = _clipRect;
+				
+				support.batchQuad(this, parentAlpha, _texture, _smoothing);
+				
+				support.finishQuadBatch();
+				support.scissorRectangle = null;
+			}
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject2D
+		{
+			// without a clip rect, the sprite should behave just like before
+			if (!_clipRect) return super.hitTest(localPoint, forTouch);
+			
+			// on a touch test, invisible or untouchable objects cause the test to fail
+			if (forTouch && (!visible || !touchable)) return null;
+			
+			if (_clipRect.containsPoint(localToGlobal(localPoint)))
+			{
+				return super.hitTest(localPoint, forTouch);
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
+		
+		public function get clipRect():Rectangle
+		{
+			return _clipRect;
+		}
+		public function set clipRect(v:Rectangle):void
+		{
+			if (v)
+			{
+				if (!_clipRect) _clipRect = v.clone();
+				else _clipRect.setTo(v.x, v.y, v.width, v.height);
+			}
+			else
+			{
+				_clipRect = null;
+			}
+		}
+		
 		
 		/**
 		 * The texture that is displayed on the quad.

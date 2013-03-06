@@ -195,6 +195,29 @@ package tetragon.view.render2d.textures
 		
 		
 		/**
+		 * The same as draw() but with some additional features like a clipRect.
+		 */
+		public function drawImage(object:Image2D, matrix:Matrix = null, clipRect:Rectangle = null,
+			alpha:Number = 1.0, antiAliasing:int = 0):void
+		{
+			if (!object) return;
+			
+			if (_drawingBundled) render();
+			else drawBundled(render, antiAliasing);
+			
+			function render():void
+			{
+				_support.loadIdentity();
+				_support.blendMode = object.blendMode;
+				if (matrix) _support.prependMatrix(matrix);
+				else _support.transformMatrix(object);
+				object.clipRect = clipRect;
+				object.render(_support, alpha);
+			}
+		}
+		
+		
+		/**
 		 * Bundles several calls to <code>draw</code> together in a block. This avoids buffer 
 		 * switches and allows you to draw multiple objects into a non-persistent texture.
 		 * 
