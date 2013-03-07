@@ -230,7 +230,7 @@ package tetragon.view.render2d.display
 		 *  i.e. the values for texture, smoothing and blendmode. When you add additional quads,  
 		 *  make sure they share that state (e.g. with the 'isStageChange' method), or reset
 		 *  the batch. */
-		public function addQuad(quad:Quad2D, parentAlpha:Number = 1.0, texture:Texture2D = null, smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null):void
+		public function addQuad(quad:IQuad2D, parentAlpha:Number = 1.0, texture:Texture2D = null, smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
 			if (modelViewMatrix == null)
 				modelViewMatrix = quad.transformationMatrix;

@@ -30,7 +30,7 @@ package tetragon.view.render2d.core
 {
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
-	import tetragon.view.render2d.display.Quad2D;
+	import tetragon.view.render2d.display.IQuad2D;
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
@@ -301,7 +301,7 @@ package tetragon.view.render2d.core
 		 * @param texture
 		 * @param smoothing
 		 */
-		public function batchQuad(quad:Quad2D, parentAlpha:Number, texture:Texture2D = null,
+		public function batchQuad(quad:IQuad2D, parentAlpha:Number, texture:Texture2D = null,
 			smoothing:String = null):void
 		{
 			if (_quadBatches[_currentQuadBatchID].isStateChange(quad.tinted, parentAlpha,

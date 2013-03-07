@@ -55,7 +55,7 @@ package tetragon.view.render2d.display
 	 * 
 	 * @see Image2D
 	 */
-	public class Quad2D extends DisplayObject2D
+	public class Quad2D extends DisplayObject2D implements IQuad2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -86,13 +86,13 @@ package tetragon.view.render2d.display
 		 * @param premultipliedAlpha
 		 */
 		public function Quad2D(width:Number, height:Number, color:uint = 0xFFFFFF,
-			premultipliedAlpha:Boolean = true)
+			premultipliedAlpha:Boolean = true, skew:Number = 0.0)
 		{
 			_tinted = color != 0xFFFFFF;
 			
 			_vertexData = new VertexData2D(4, premultipliedAlpha);
-			_vertexData.setPosition(0, 0.0, 0.0);
-			_vertexData.setPosition(1, width, 0.0);
+			_vertexData.setPosition(0, skew, 0.0);
+			_vertexData.setPosition(1, width + skew, 0.0);
 			_vertexData.setPosition(2, 0.0, height);
 			_vertexData.setPosition(3, width, height);
 			_vertexData.setUniformColor(color);
