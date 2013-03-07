@@ -165,6 +165,16 @@ package tetragon.setup
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function shutdown():void
+		{
+			main.screenManager.dispose();
+			complete(SHUTDOWN);
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------

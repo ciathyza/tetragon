@@ -159,7 +159,12 @@ package tetragon.view
 			_main = Main.instance;
 			_stage = _main.stage;
 			_contextView = _main.contextView;
+			
 			_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
+			_stage3DProxy.width = _stage.stageWidth;
+			_stage3DProxy.height = _stage.stageHeight;
+			_stage3DProxy.color = _stage.color;
+			
 			_stage3D = _stage3DProxy.stage3D;
 			
 			onStageResize(null);
@@ -355,6 +360,23 @@ package tetragon.view
 			if (_initialized) return;
 			_initialized = true;
 			_stage3DProxy.requestContext3D();
+		}
+		
+		
+		/**
+		 * Disposes the class.
+		 */
+		public function dispose():void
+		{
+			if (_currentScreen) _currentScreen.dispose();
+			
+			_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
+			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
+			_main.stage.removeEventListener(Event.RESIZE, onStageResize);
+			_main.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
+			_stage3DProxy.dispose();
 		}
 		
 		

@@ -315,13 +315,17 @@ package tetragon.view.render2d.core
 			_stage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
 			/* If we already got a context3D and it's not disposed. */
-			if (_stage3DProxy.context3D && _stage3DProxy.context3D.driverInfo != "Disposed")
+			if (RenderSupport2D.context3D && RenderSupport2D.context3D.driverInfo != "Disposed")
 			{
-				//_shareContext = true;
-				/* we don't call it right away, because Render2D should behave the
-				 * same way with or without a shared context. */
-				//setTimeout(initialize, 1);
-				initialize();
+				_context = RenderSupport2D.context3D;
+				contextData[PROGRAM_DATA_NAME] = new Dictionary();
+				updateViewPort(true);
+				Log.verbose("Render2D System v" + VERSION + " initialized.", this);
+				dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
+				
+				_touchProcessor.simulateMultitouch = _simulateMultitouch;
+				_lastFrameTimestamp = getTimer() / 1000.0;
+				
 				this.rootView = rootView;
 			}
 			else
@@ -686,7 +690,8 @@ package tetragon.view.render2d.core
 		{
 			if (!v || _rootView) return;
 			_rootView = v;
-			initializeRootView();
+			_stage2D.addChildAt(_rootView, 0);
+			dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
 		}
 		
 		
@@ -870,42 +875,6 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		private function initialize():void
-		{
-			initializeGraphicsAPI();
-			//initializeRootView();
-			
-			_touchProcessor.simulateMultitouch = _simulateMultitouch;
-			_lastFrameTimestamp = getTimer() / 1000.0;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function initializeGraphicsAPI():void
-		{
-			_context = _stage3DProxy.context3D;
-			contextData[PROGRAM_DATA_NAME] = new Dictionary();
-			updateViewPort(true);
-			Log.verbose("Render2D System v" + VERSION + " initialized.", this);
-			dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function initializeRootView():void
-		{
-			_stage2D.addChildAt(_rootView, 0);
-			dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
-		}
-		
 		
 		/**
 		 * @private

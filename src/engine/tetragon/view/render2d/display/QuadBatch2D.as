@@ -384,8 +384,13 @@ package tetragon.view.render2d.display
 		 */
 		private function onContextCreated(e:Object):void
 		{
-			createBuffers();
-			registerPrograms();
+			/* Tentative fix for Error #3694! Check that the context isn't disposed before
+			 * it get's accessed again! */
+			if (RenderSupport2D.context3D && RenderSupport2D.context3D.driverInfo != "Disposed")
+			{
+				createBuffers();
+				registerPrograms();
+			}
 		}
 		
 		
