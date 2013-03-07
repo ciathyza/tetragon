@@ -53,6 +53,10 @@ package tetragon.view.render2d.extensions.scrollimage
 
 	/**
 	 * Display object with tile texture, may contain 16 TileTexture objects
+	 * 
+	 * CURRENT LIMITATIONS:
+	 * - The parallax of a layer cannot be a fraction (e.g. 0.5). It must be a full number
+	 * (e.g. 1, 2, 3, 4...).
 	 */
 	public class ScrollImage2D extends DisplayObject2D
 	{
@@ -298,54 +302,46 @@ package tetragon.view.render2d.extensions.scrollimage
 		public override function render(support:RenderSupport2D, alpha:Number):void
 		{
 			if ( _layers.length == 0) return;
+			
 			support.raiseDrawCount();
-
 			support.finishQuadBatch();
 			if (_syncRequired) syncBuffers();
-
-			// apply the current blendmode
 			support.applyBlendMode(_premultipliedAlpha);
-
-			// set texture
-			if (_texture)
-				context3D.setTextureAt(0, _texture.base);
-
+			if (_texture) context3D.setTextureAt(0, _texture.base);
+			
 			// set buffers
-			context3D.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			// position
-			context3D.setVertexBufferAt(1, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			// UV
-			context3D.setVertexBufferAt(2, _extraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
 			// vc for color and transform registers
-			context3D.setVertexBufferAt(3, _extraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
 			// clipping
-
+			context3D.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(1, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context3D.setVertexBufferAt(2, _extraBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_3);
+			context3D.setVertexBufferAt(3, _extraBuffer, 3, Context3DVertexBufferFormat.FLOAT_4);
+			
 			// set alpha
 			_renderColorAlpha[3] = this.alpha * alpha;
-
+			
 			// set object and layers data
 			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
 			context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, _renderColorAlpha, 1);
-
+			
 			var tintedlayer:Boolean = false;
-
 			var layer:ScrollTile2D;
+			
 			for (var i:int = 0; i < _layers.length; i++)
 			{
 				layer = _layers[i];
-
 				tintedlayer = tintedlayer || layer.color != 0xFFFFFF || layer.alpha != 1.0;
-
 				_matrix = _freeze ? _layersMatrix[i] : calculateMatrix(layer, _layersMatrix[i]);
-
 				context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, getColorRegister(i), layer.colorTrans, 1);
 				context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, getTransRegister(i), _matrix, true);
 			}
-
+			
 			// activate program (shader)
 			var tinted:Boolean = (_renderColorAlpha[3] != 1.0) || color != 0xFFFFFF || tintedlayer;
 			context3D.setProgram(render2D.getProgram(getImageProgramName(tinted, _mipMapping, _smoothing, _texture.format, _useBaseTexture)));
-
+			
 			// draw the object
 			context3D.drawTriangles(_indexBuffer, 0, _indexData.length / 3);
 
@@ -809,7 +805,8 @@ package tetragon.view.render2d.extensions.scrollimage
 		private function calculateMatrix(layer:ScrollTile2D, matrix:Matrix3D):Matrix3D
 		{
 			var pOffset:Number = _parallaxOffset ? layer.parallax : 1.0;
-			var pScale:Number = _parallaxScale ? layer.parallax : 1.0;
+			//var pScale:Number = _parallaxScale ? layer.parallax : 1.0;
+			var pScale:Number = 1.0; // Tentative fix for scaling with parallax problem.
 			var angle:Number = layer.rotation + tilesRotation;
 			
 			matrix.identity();
@@ -820,6 +817,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			
 			var xs:Number = 1 / (layer.scaleX / pScale) / tilesScaleX + 1 - pScale;
 			var ys:Number = 1 / (layer.scaleY / pScale) / tilesScaleY + 1 - pScale;
+			
 			// Faster Math.abs
 			xs = xs < 0 ? -xs : xs;
 			ys = ys < 0 ? -ys : ys;
@@ -830,7 +828,10 @@ package tetragon.view.render2d.extensions.scrollimage
 			// for no square ratio, unscale from square to orginal ratio
 			if (_textureRatio != 1) matrix.appendScale(1, _textureRatio, 1);
 			
-			matrix.appendTranslation(_tilesPivotX - (layer.offsetX + tilesOffsetX ) / _textureWidth * pOffset, _tilesPivotY - (layer.offsetY + tilesOffsetY ) / _textureHeight * pOffset, 0);
+			matrix.appendTranslation(
+				_tilesPivotX - (layer.offsetX + tilesOffsetX) / _textureWidth * pOffset,
+				_tilesPivotY - (layer.offsetY + tilesOffsetY) / _textureHeight * pOffset,
+				0);
 			return matrix;
 		}
 
