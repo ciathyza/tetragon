@@ -57,6 +57,7 @@ package tetragon.view.render2d.extensions.scrollimage
 	 * CURRENT LIMITATIONS:
 	 * - The parallax of a layer cannot be a fraction (e.g. 0.5). It must be a full number
 	 * (e.g. 1, 2, 3, 4...).
+	 * - Layers must have all the same size. (no texture frames are supported).
 	 */
 	public class ScrollImage2D extends DisplayObject2D
 	{
@@ -134,6 +135,9 @@ package tetragon.view.render2d.extensions.scrollimage
 		private var _layersMatrix:Vector.<Matrix3D>;
 		private var _mainLayer:ScrollTile2D;
 		private var _layerVertexData:VertexData2D;
+		
+		private var _mainLayerWidth:int;
+		private var _mainLayerHeight:int;
 		
 		private var _tilesPivotX:Number = 0.0;
 		private var _tilesPivotY:Number = 0.0;
@@ -213,13 +217,13 @@ package tetragon.view.render2d.extensions.scrollimage
 		 */
 		public function addLayerAt(layer:ScrollTile2D, index:int):ScrollTile2D
 		{
-			if ( index > numLayers ) index = numLayers + 1;
+			if (index > numLayers) index = numLayers + 1;
 
-			if ( _layers.length == 0 && _layers.length < MAX_LAYERS_AMOUNT )
+			if (_layers.length == 0 && _layers.length < MAX_LAYERS_AMOUNT)
 			{
-				mainSetup(layer);
+				mainLayerSetup(layer);
 			}
-			else if ( _texture != layer.baseTexture )
+			else if (_texture != layer.baseTexture)
 			{
 				throw new Error("Layers must use this same texture.");
 			}
@@ -415,7 +419,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			_canvasWidth = v;
 			if (_mainLayer)
 			{
-				mainSetup(_mainLayer);
+				mainLayerSetup(_mainLayer);
 				_syncRequired = true;
 			}
 		}
@@ -433,7 +437,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			_canvasHeight = v;
 			if (_mainLayer)
 			{
-				mainSetup(_mainLayer);
+				mainLayerSetup(_mainLayer);
 				_syncRequired = true;
 			}
 		}
@@ -611,6 +615,18 @@ package tetragon.view.render2d.extensions.scrollimage
 		}
 		
 		
+		public function get layerWidth():int
+		{
+			return _mainLayerWidth;
+		}
+
+
+		public function get layerHeight():int
+		{
+			return _mainLayerHeight;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -646,9 +662,11 @@ package tetragon.view.render2d.extensions.scrollimage
 		 * Setup object property using first layer.
 		 * @param layer
 		 */
-		private function mainSetup(layer:ScrollTile2D):void
+		private function mainLayerSetup(layer:ScrollTile2D):void
 		{
 			_mainLayer = layer;
+			_mainLayerWidth = _mainLayer.width;
+			_mainLayerHeight = _mainLayer.width;
 			_texture = _mainLayer.baseTexture;
 			_premultipliedAlpha = _texture.premultipliedAlpha;
 
@@ -660,7 +678,7 @@ package tetragon.view.render2d.extensions.scrollimage
 			_maxU = _canvasWidth / _textureWidth;
 			_maxV = _canvasHeight / _textureHeight;
 
-			if ( _layerVertexData == null )
+			if (_layerVertexData == null)
 			{
 				_layerVertexData = new VertexData2D(4);
 
