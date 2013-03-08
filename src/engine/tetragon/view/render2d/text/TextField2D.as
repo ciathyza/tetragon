@@ -32,8 +32,8 @@ package tetragon.view.render2d.text
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.DisplayObjectContainer2D;
 	import tetragon.view.render2d.display.Image2D;
-	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.QuadBatch2D;
+	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -47,7 +47,8 @@ package tetragon.view.render2d.text
 	import flash.text.AntiAliasType;
 	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
-
+	
+	
 	/** A TextField displays text, either using standard true type fonts or custom bitmap fonts.
 	 *  
 	 *  <p>You can set all properties you are used to, like the font name and size, a color, the 
@@ -81,7 +82,7 @@ package tetragon.view.render2d.text
 	public class TextField2D extends DisplayObjectContainer2D
 	{
 		// the name container with the registered bitmap fonts
-		private static const BITMAP_FONT_DATA_NAME:String = "Render2D.display.TextField.BitmapFonts";
+		private static const BITMAP_FONT_DATA_NAME:String = "Render2D.text.TextField2D.BitmapFonts";
 		private var mFontSize:Number;
 		private var mColor:uint;
 		private var mText:String;
@@ -118,7 +119,7 @@ package tetragon.view.render2d.text
 			mBold = bold;
 			this.fontName = fontName;
 
-			mHitArea = new Quad2D(width, height);
+			mHitArea = new Rect2D(width, height);
 			mHitArea.alpha = 0.0;
 			addChild(mHitArea);
 
@@ -281,10 +282,10 @@ package tetragon.view.render2d.text
 			var width:Number = mHitArea.width;
 			var height:Number = mHitArea.height;
 
-			var topLine:Quad2D = mBorder.getChildAt(0) as Quad2D;
-			var rightLine:Quad2D = mBorder.getChildAt(1) as Quad2D;
-			var bottomLine:Quad2D = mBorder.getChildAt(2) as Quad2D;
-			var leftLine:Quad2D = mBorder.getChildAt(3) as Quad2D;
+			var topLine:Rect2D = mBorder.getChildAt(0) as Rect2D;
+			var rightLine:Rect2D = mBorder.getChildAt(1) as Rect2D;
+			var bottomLine:Rect2D = mBorder.getChildAt(2) as Rect2D;
+			var leftLine:Rect2D = mBorder.getChildAt(3) as Rect2D;
 
 			topLine.width = width;
 			topLine.height = 1;
@@ -470,7 +471,7 @@ package tetragon.view.render2d.text
 				addChild(mBorder);
 
 				for (var i:int = 0; i < 4; ++i)
-					mBorder.addChild(new Quad2D(1.0, 1.0));
+					mBorder.addChild(new Rect2D(1.0, 1.0));
 
 				updateBorder();
 			}

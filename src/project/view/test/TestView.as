@@ -31,7 +31,7 @@ package view.test
 	import lib.display.TetragonLogo;
 
 	import tetragon.data.Settings;
-	import tetragon.view.render2d.display.Quad2D;
+	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
@@ -91,7 +91,7 @@ package view.test
 		{
 			super.onAddedToStage(e);
 			
-			background = new Quad2D(10, 10, 0x00577C);
+			background = new Rect2D(10, 10, 0x00577C);
 			
 			var logoColor:uint = _main.registry.settings.getNumber(Settings.SPLASH_LOGO_COLOR);
 			if (isNaN(logoColor)) logoColor = 0xFFBF00;

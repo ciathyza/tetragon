@@ -58,7 +58,7 @@ package tetragon.view.render2d.display
 	 * @see Render2D.textures.Texture2D
 	 * @see Quad2D
 	 */
-	public class Image2D extends Quad2D
+	public class Image2D extends Rect2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties

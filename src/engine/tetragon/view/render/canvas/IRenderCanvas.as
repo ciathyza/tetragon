@@ -87,7 +87,7 @@ package tetragon.view.render.canvas
 			mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
 		
 		
-		function drawBundled():void;
+		function complete():void;
 		
 		
 		//-----------------------------------------------------------------------------------------

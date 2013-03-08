@@ -238,7 +238,7 @@ package tetragon.view.render.canvas
 		}
 		
 		
-		public function drawBundled():void
+		public function complete():void
 		{
 		}
 		

@@ -55,7 +55,7 @@ package tetragon.view.render2d.display
 	 * 
 	 * @see Image2D
 	 */
-	public class Quad2D extends DisplayObject2D implements IQuad2D
+	public class Rect2D extends DisplayObject2D implements IQuad2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -85,7 +85,7 @@ package tetragon.view.render2d.display
 		 * @param color
 		 * @param premultipliedAlpha
 		 */
-		public function Quad2D(width:Number, height:Number, color:uint = 0xFFFFFF,
+		public function Rect2D(width:Number, height:Number, color:uint = 0xFFFFFF,
 			premultipliedAlpha:Boolean = true, skew:Number = 0.0)
 		{
 			_tinted = color != 0xFFFFFF;

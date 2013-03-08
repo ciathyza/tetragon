@@ -52,7 +52,7 @@ package tetragon.view.render2d.display
 		protected var _main:Main;
 		
 		protected var _clipRect:Rectangle;
-		protected var _background:Quad2D;
+		protected var _background:Rect2D;
 		
 		protected var _clipped:Boolean = true;
 		
@@ -202,11 +202,11 @@ package tetragon.view.render2d.display
 		}
 		
 		
-		public function get background():Quad2D
+		public function get background():Rect2D
 		{
 			return _background;
 		}
-		public function set background(v:Quad2D):void
+		public function set background(v:Rect2D):void
 		{
 			if (v == _background) return;
 			_background = v;

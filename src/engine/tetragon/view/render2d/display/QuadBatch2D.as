@@ -478,7 +478,7 @@ package tetragon.view.render2d.display
 			var objectAlpha:Number = object.alpha;
 
 			var container:DisplayObjectContainer2D = object as DisplayObjectContainer2D;
-			var quad:Quad2D = object as Quad2D;
+			var quad:Rect2D = object as Rect2D;
 			var batch:QuadBatch2D = object as QuadBatch2D;
 			var filter:FragmentFilter2D = object.filter;
 
