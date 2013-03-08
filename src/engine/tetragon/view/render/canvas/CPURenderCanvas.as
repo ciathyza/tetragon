@@ -32,7 +32,6 @@ package tetragon.view.render.canvas
 	import tetragon.debug.IDrawCallsPollingSource;
 
 	import flash.display.BitmapData;
-	import flash.display.Shape;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -49,23 +48,13 @@ package tetragon.view.render.canvas
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/** @private */
 		private var _fillColor:uint;
-		/** @private */
 		private var _rect:Rectangle;
-		/** @private */
 		private var _buffer:Array;
-		/** @private */
 		private var _r:Rectangle;
-		/** @private */
 		private var _p:Point;
-		/** @private */
 		private var _m:Matrix;
-		/** @private */
-		private var _s:Shape;
-		/** @private */
 		private var _ct:ColorTransform;
-		/** @private */
 		private var _drawCount:uint;
 		
 		
@@ -78,8 +67,8 @@ package tetragon.view.render.canvas
 		 * 
 		 * @param width
 		 * @param height
-		 * @param transparent
 		 * @param fillColor
+		 * @param transparent
 		 */
 		public function CPURenderCanvas(width:int, height:int, fillColor:uint = 0x000000,
 			transparent:Boolean = false):void
@@ -99,7 +88,6 @@ package tetragon.view.render.canvas
 			
 			_r = new Rectangle();
 			_p = new Point();
-			_s = new Shape();
 			_m = new Matrix();
 			_ct = new ColorTransform();
 		}
@@ -110,7 +98,7 @@ package tetragon.view.render.canvas
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Clears the render buffer.
+		 * @inheritDoc
 		 */
 		public function clear():void
 		{
@@ -120,17 +108,20 @@ package tetragon.view.render.canvas
 		
 		
 		/**
-		 * Draws a filled, four-sided polygon onto the render buffer.
-		 * 
-		 * @param x1		first point x coord
-		 * @param y1		first point y coord 
-		 * @param x2		second point x coord
-		 * @param y2		second point y coord
-		 * @param x3		third point x coord
-		 * @param y4		third point y coord
-		 * @param color		color (0xRRGGBB)
-		 * @param mixColor
-		 * @param mixAlpha
+		 * @inheritDoc
+		 */
+		public function drawRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
+			mixAlpha:Number = 1.0):void
+		{
+			_r.setTo(x, y, w, h);
+			fillRect(_r, mixAlpha < 1.0 ? mixColors(color, mixColor, mixAlpha) : color);
+			
+			++_drawCount;
+		}
+		
+		
+		/**
+		 * @inheritDoc
 		 */
 		public function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
@@ -142,78 +133,13 @@ package tetragon.view.render.canvas
 			lineTo(x2, y2, x3, y3, color);
 			lineTo(x3, y3, x4, y4, color);
 			lineTo(x4, y4, x1, y1, color);
+			
+			++_drawCount;
 		}
 		
 		
 		/**
-		 * Fast method to blit a rectangle onto the render buffer.
-		 * 
-		 * @param x
-		 * @param y
-		 * @param w
-		 * @param h
-		 * @param color
-		 * @param mixColor
-		 * @param mixAlpha
-		 */
-		public function blitRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
-			mixAlpha:Number = 1.0):void
-		{
-			_r.setTo(x, y, w, h);
-			fillRect(_r, mixAlpha < 1.0 ? mixColors(color, mixColor, mixAlpha) : color);
-		}
-		
-		
-		/**
-		 * Draws a rectangle shape onmto the render buffer, using the draw API.
-		 * 
-		 * @param x
-		 * @param y
-		 * @param w
-		 * @param h
-		 * @param color
-		 * @param alpha
-		 */
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint, alpha:Number = 1.0):void
-		{
-			_s.graphics.clear();
-			_s.graphics.beginFill(color, alpha);
-			_s.graphics.drawRect(0, 0, w, h);
-			_s.graphics.endFill();
-			_m.identity();
-			_m.translate(x, y);
-			draw(_s, _m);
-		}
-		
-		
-		/**
-		 * Fast method to blit a bitmap onto the render buffer.
-		 * 
-		 * @param image
-		 * @param x
-		 * @param y
-		 * @param w
-		 * @param h
-		 */
-		public function blitImage(image:BitmapData, x:int, y:int, w:int, h:int):void
-		{
-			_r.setTo(0, 0, w, h);
-			_p.setTo(x, y);
-			copyPixels(image, _r, _p);
-		}
-		
-		
-		/**
-		 * Draws a display object onto the render buffer using the draw API.
-		 * 
-		 * @param image
-		 * @param x
-		 * @param y
-		 * @param w
-		 * @param h
-		 * @param scale
-		 * @param mixColor
-		 * @param mixAlpha
+		 * @inheritDoc
 		 */
 		public function drawImage(image:*, x:int, y:int, w:int, h:int,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
@@ -238,8 +164,32 @@ package tetragon.view.render.canvas
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function blitImage(image:*, x:int, y:int, w:int, h:int):void
+		{
+			_r.setTo(0, 0, w, h);
+			_p.setTo(x, y);
+			copyPixels(image as BitmapData, _r, _p);
+			++_drawCount;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function complete():void
 		{
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function toString():String
+		{
+			return "CPURenderCanvas";
 		}
 		
 		
@@ -248,7 +198,7 @@ package tetragon.view.render.canvas
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * The fill color of the render buffer.
+		 * @inheritDoc
 		 */
 		public function get fillColor():uint
 		{
