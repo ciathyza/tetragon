@@ -30,6 +30,7 @@ package tetragon.view.render.canvas
 {
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.display.Image2D;
+	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.textures.RenderTexture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
@@ -49,10 +50,10 @@ package tetragon.view.render.canvas
 		//-----------------------------------------------------------------------------------------
 		
 		private var _texture:RenderTexture2D;
-		private var _rect:Rectangle;
-		private var _matrix:Matrix;
-		private var _quad:Rect2D;
-		private var _rtQuad:RacetrackQuad;
+		private var _r:Rectangle;
+		private var _m:Matrix;
+		private var _rect:Rect2D;
+		private var _quad:Quad2D;
 		
 		private var _drawCommands:Vector.<DrawCommand>;
 		private var _drawCommandsMax:uint = 1000;
@@ -76,10 +77,11 @@ package tetragon.view.render.canvas
 			
 			super(_texture);
 			
-			_matrix = new Matrix();
-			_rect = new Rectangle();
-			_quad = new Rect2D(10, 10);
-			_rtQuad = new RacetrackQuad();
+			_m = new Matrix();
+			_r = new Rectangle();
+			_rect = new Rect2D(10, 10);
+			_quad = new Quad2D();
+			
 			smoothing = TextureSmoothing2D.NONE;
 			
 			preallocateCommands();
@@ -205,22 +207,22 @@ package tetragon.view.render.canvas
 					else if (c.type == 0)
 					{
 						if (c.mixAlpha < 1.0) c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
-						_quad.setTo(c.x, c.y, c.w, c.h);
-						_quad.color = c.color;
-						_texture.draw(_quad);
+						_rect.setTo(c.x, c.y, c.w, c.h);
+						_rect.color = c.color;
+						_texture.draw(_rect);
 					}
 					else if (c.type == 1)
 					{
 						if (c.mixAlpha < 1.0) c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
-						_rtQuad.update(c.x, c.y, c.x2, c.y2, c.x3, c.y3, c.x4, c.y4, c.color);
-						_texture.draw(_rtQuad);
+						_quad.update(c.x, c.y, c.x2, c.y2, c.x3, c.y3, c.x4, c.y4, c.color);
+						_texture.draw(_quad);
 					}
 					else if (c.type == 2)
 					{
 						c.image.color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);;
-						_matrix.setTo(c.scale, 0, 0, c.scale, c.x, c.y);
-						_rect.setTo(c.x, c.y, c.w, c.h);
-						_texture.drawImage(c.image, _matrix, _rect);
+						_m.setTo(c.scale, 0, 0, c.scale, c.x, c.y);
+						_r.setTo(c.x, c.y, c.w, c.h);
+						_texture.drawImage(c.image, _m, _r);
 					}
 					
 					/* Mark command as unused. */

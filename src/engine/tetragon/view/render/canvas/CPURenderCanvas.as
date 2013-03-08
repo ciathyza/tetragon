@@ -42,7 +42,7 @@ package tetragon.view.render.canvas
 	/**
 	 * A render buffer that draws objects onto a bitmapdata.
 	 */
-	public class BitmapRenderCanvas extends BitmapData implements IRenderCanvas,
+	public class CPURenderCanvas extends BitmapData implements IRenderCanvas,
 		IDrawCallsPollingSource
 	{
 		//-----------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ package tetragon.view.render.canvas
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function BitmapRenderCanvas(width:int, height:int, fillColor:uint = 0x000000,
+		public function CPURenderCanvas(width:int, height:int, fillColor:uint = 0x000000,
 			transparent:Boolean = false):void
 		{
 			super(width, height, transparent, fillColor);
