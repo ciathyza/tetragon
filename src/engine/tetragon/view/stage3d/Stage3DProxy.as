@@ -28,6 +28,8 @@
  */
 package tetragon.view.stage3d
 {
+	import tetragon.debug.Log;
+
 	import flash.display.Shape;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
@@ -136,6 +138,7 @@ package tetragon.view.stage3d
 		public function requestContext3D():void
 		{
 			if (_contextRequested) return;
+			_contextRequested = true;
 			
 			/* Whatever happens, be sure this has highest priority. */
 			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate, false, 1000);
@@ -146,11 +149,17 @@ package tetragon.view.stage3d
 			// old value (will likely be same if re-requesting.)
 			_usesSoftwareRendering ||= _forceSoftware;
 			
-			_stage3D.requestContext3D(_forceSoftware
-				? Context3DRenderMode.SOFTWARE
-				: Context3DRenderMode.AUTO);
-			
-			_contextRequested = true;
+			try
+			{
+				_stage3D.requestContext3D(_forceSoftware
+					? Context3DRenderMode.SOFTWARE
+					: Context3DRenderMode.AUTO);
+			}
+			catch (err:Error)
+			{
+				_contextRequested = false;
+				Log.fatal("Error requesting Context3D: " + err.message, this);
+			}
 		}
 		
 		

@@ -29,6 +29,7 @@
 package tetragon.view.render.canvas
 {
 	import tetragon.debug.Log;
+	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.Rect2D;
@@ -82,8 +83,11 @@ package tetragon.view.render.canvas
 			
 			_m = new Matrix();
 			_r = new Rectangle();
+			
 			_rect = new Rect2D(10, 10);
+			_rect.blendMode = BlendMode2D.NONE;
 			_quad = new Quad2D();
+			_quad.blendMode = BlendMode2D.NONE;
 			
 			preallocateCommandBuffer();
 		}

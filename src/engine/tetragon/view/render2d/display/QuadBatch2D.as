@@ -162,18 +162,27 @@ package tetragon.view.render2d.display
 		}
 		
 		
-		/** Renders the current batch with custom settings for model-view-projection matrix, alpha 
-		 *  and blend mode. This makes it possible to render batches that are not part of the 
-		 *  display list. */
-		public function renderCustom(mvpMatrix:Matrix, parentAlpha:Number = 1.0, blendMode:String = null):void
+		/**
+		 * Renders the current batch with custom settings for model-view-projection matrix, alpha 
+		 * and blend mode. This makes it possible to render batches that are not part of the 
+		 * display list.
+		 * 
+		 * @param mvpMatrix
+		 * @param parentAlpha
+		 * @param blendMode
+		 */
+		public function renderCustom(mvpMatrix:Matrix, parentAlpha:Number = 1.0,
+			blendMode:String = null):void
 		{
 			if (_numQuads == 0) return;
 			if (_syncRequired) syncBuffers();
-
+			
 			var pma:Boolean = _vertexData.premultipliedAlpha;
 			var tinted:Boolean = _tinted || (parentAlpha != 1.0);
-			var programName:String = _texture ? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing) : QUAD_PROGRAM_NAME;
-
+			var programName:String = _texture
+				? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing)
+				: QUAD_PROGRAM_NAME;
+			
 			_renderAlpha[0] = _renderAlpha[1] = _renderAlpha[2] = pma ? parentAlpha : 1.0;
 			_renderAlpha[3] = parentAlpha;
 
@@ -438,7 +447,8 @@ package tetragon.view.render2d.display
 			if (_indexBuffer) _indexBuffer.dispose();
 			if (numVertices == 0) return;
 			
-			_vertexBuffer = context3D.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer = context3D.createVertexBuffer(numVertices,
+				VertexData2D.ELEMENTS_PER_VERTEX);
 			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
 			
 			_indexBuffer = context3D.createIndexBuffer(numIndices);
@@ -448,20 +458,21 @@ package tetragon.view.render2d.display
 		}
 		
 		
-		/** Uploads the raw data of all batched quads to the vertex buffer. */
+		/**
+		 * Uploads the raw data of all batched quads to the vertex buffer.
+		 */
 		private function syncBuffers():void
 		{
 			if (!_vertexBuffer)
 			{
 				createBuffers();
+				return;
 			}
-			else
-			{
-				// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware (iOS!),
-				// this is slower than updating the complete buffer.
-				_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
-				_syncRequired = false;
-			}
+			
+			// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware
+			// (iOS!), this is slower than updating the complete buffer.
+			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
+			_syncRequired = false;
 		}
 		
 		
