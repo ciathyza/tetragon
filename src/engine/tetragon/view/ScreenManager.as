@@ -29,6 +29,7 @@
 package tetragon.view
 {
 	import tetragon.Main;
+	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
@@ -120,6 +121,7 @@ package tetragon.view
 		private var _switching:Boolean;
 		private var _screenAutoStart:Boolean;
 		private var _screenLoaded:Boolean;
+		private var _hardwareRenderingEnabled:Boolean;
 		
 		private var _enableErrorChecking:Boolean;
 		private static var _handleLostContext:Boolean;
@@ -130,7 +132,7 @@ package tetragon.view
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		private var _context3DCreatedSignal:Signal;
+		private var _screenManagerReadySignal:Signal;
 		/** @private */
 		private var _screenInitSignal:Signal;
 		/** @private */
@@ -160,13 +162,6 @@ package tetragon.view
 			_stage = _main.stage;
 			_contextView = _main.contextView;
 			
-			_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
-			_stage3DProxy.width = _stage.stageWidth;
-			_stage3DProxy.height = _stage.stageHeight;
-			_stage3DProxy.color = _stage.color;
-			
-			_stage3D = _stage3DProxy.stage3D;
-			
 			onStageResize(null);
 			
 			_screenClasses = {};
@@ -189,11 +184,6 @@ package tetragon.view
 			
 			_fadeColor = _stage.color;
 			_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
-			
-			_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
 			
 			_main.stage.addEventListener(Event.RESIZE, onStageResize);
 			_main.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
@@ -359,7 +349,28 @@ package tetragon.view
 		{
 			if (_initialized) return;
 			_initialized = true;
-			_stage3DProxy.requestContext3D();
+			
+			_hardwareRenderingEnabled = _main.registry.config.getBoolean(Config.HARDWARE_RENDERING_ENABLED);
+			
+			if (_hardwareRenderingEnabled)
+			{
+				_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
+				_stage3DProxy.width = _screenWidth;
+				_stage3DProxy.height = _screenHeight;
+				_stage3DProxy.color = _stage.color;
+				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
+				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
+				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
+				_stage3D = _stage3DProxy.stage3D;
+				_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
+				_stage3DProxy.requestContext3D();
+			}
+			else
+			{
+				verbose("Hardware rendering is disabled.");
+				if (_screenManagerReadySignal) _screenManagerReadySignal.dispatch(null);
+				openInitialScreen();
+			}
 		}
 		
 		
@@ -370,13 +381,20 @@ package tetragon.view
 		{
 			if (_currentScreen) _currentScreen.dispose();
 			
-			_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-			_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
 			_main.stage.removeEventListener(Event.RESIZE, onStageResize);
 			_main.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
-			_stage3DProxy.dispose();
+			
+			if (_stage3D)
+			{
+				_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
+			}
+			if (_stage3DProxy)
+			{
+				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
+				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
+				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
+				_stage3DProxy.dispose();
+			}
 		}
 		
 		
@@ -678,13 +696,15 @@ package tetragon.view
 		
 		
 		/**
-		 * Dispatched when the Context3D has been created and is ready for use. The signal
+		 * Dispatched when the ScreenManager is ready. If Hardware Rendering is enabled it is
+		 * dispatched after the Context3D has been created and is ready for use. Otherwise it
+		 * is dispatched right after the screen manager was initialized. The signal
 		 * broadcasts a reference of the Context3D as it's parameter.
 		 */
-		public function get context3DCreatedSignal():Signal
+		public function get screenManagerReadySignal():Signal
 		{
-			if (!_context3DCreatedSignal) _context3DCreatedSignal = new Signal();
-			return _context3DCreatedSignal;
+			if (!_screenManagerReadySignal) _screenManagerReadySignal = new Signal();
+			return _screenManagerReadySignal;
 		}
 		
 		
@@ -1013,6 +1033,8 @@ package tetragon.view
 		 */
 		private function initializeContext3D():void
 		{
+			if (!_stage3D) return;
+			
 			_context3D = _stage3D.context3D;
 			_context3D.enableErrorChecking = _enableErrorChecking;
 			
@@ -1023,7 +1045,7 @@ package tetragon.view
 			Texture2D.context3D = _context3D;
 			
 			verbose("Context3D initialized. Display Driver: " + _context3D.driverInfo);
-			if (_context3DCreatedSignal) _context3DCreatedSignal.dispatch(_context3D);
+			if (_screenManagerReadySignal) _screenManagerReadySignal.dispatch(_context3D);
 		}
 		
 		

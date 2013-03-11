@@ -301,6 +301,8 @@ package tetragon.setup
 			config.setProperty(Config.UPDATE_CHECK_INTERVAL, 1);
 			config.setProperty(Config.UPDATE_CHECK_TIMEOUT, 10);
 			
+			config.setProperty(Config.HARDWARE_RENDERING_ENABLED, true);
+			
 			config.setProperty(Config.ENV_START_FULLSCREEN, false);
 			config.setProperty(Config.ENV_BG_FRAMERATE, -1);
 		}

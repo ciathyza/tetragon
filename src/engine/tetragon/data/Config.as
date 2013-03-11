@@ -113,6 +113,9 @@ package tetragon.data
 		/* Domain Locker settings */
 		public static const ALLOWED_DOMAINS:String					= "allowedDomains";
 		
+		/* Render settings */
+		public static const HARDWARE_RENDERING_ENABLED:String			= "hardwareRenderingEnabled";
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Properties

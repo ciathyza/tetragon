@@ -45,6 +45,8 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.touch.TouchProcessor2D;
 	import tetragon.view.stage3d.Stage3DProxy;
 
+	import com.hexagonstar.exception.FatalException;
+
 	import flash.display.Stage;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
@@ -267,6 +269,11 @@ package tetragon.view.render2d.core
 			_main = Main.instance;
 			_stage = _main.stage;
 			_stage3DProxy = _main.screenManager.stage3DProxy;
+			
+			if (!_stage3DProxy)
+			{
+				throw new FatalException("Stage3DProxy is not available! Is hardware rendering enabled?");
+			}
 			
 			DisplayObject2D.render2D =
 			FragmentFilter2D.render2D =
