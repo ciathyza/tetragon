@@ -1012,6 +1012,7 @@
 			<copyConfigFiles sourceFolder="${deploy.ios.config}"/>
 			<copyExtraFiles sourceFolder="${deploy.ios.extra}"/>
 			<copyIconFiles sourceFolder="${deploy.ios.icons}"/>
+			<copyLaunchImageFiles sourceFolder="${deploy.ios.images}"/>
 		</sequential>
 	</macrodef>
 	
@@ -1043,6 +1044,16 @@
 		<attribute name="sourceFolder"/>
 		<sequential>
 			<copy todir="${path.bin}/${target.folder.icons}" verbose="off" overwrite="true">
+				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
+			</copy>
+		</sequential>
+	</macrodef>
+	
+	
+	<macrodef name="copyLaunchImageFiles">
+		<attribute name="sourceFolder"/>
+		<sequential>
+			<copy todir="${path.bin}" verbose="off" overwrite="true">
 				<fileset dir="@{sourceFolder}" excludes="**/.svn,**/.gitkeep"/>
 			</copy>
 		</sequential>
@@ -1195,6 +1206,7 @@
 				<arg value="-package"/>
 				<arg value="-target"/>
 				<arg value="@{target}"/>
+				<!-- <arg value="-sampler"/> -->
 				<arg value="-provisioning-profile"/>
 				<arg value="${air.ios.provprofile.path}"/>
 				<arg value="-storetype"/>
@@ -1220,6 +1232,9 @@
 				<arg value="-C"/>
 				<arg value="${path.bin}"/>
 				<arg value="${target.folder.resources}"/>
+				<arg value="-C"/>
+				<arg value="${path.bin}"/>
+				<!-- <arg value="Default-568h@2x.png"/> -->
 			</exec>
 		</sequential>
 	</macrodef>

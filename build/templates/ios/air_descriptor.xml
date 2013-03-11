@@ -28,7 +28,7 @@
 		<autoOrients>@air_ios_autoOrients@</autoOrients>
 		<aspectRatio>@air_ios_aspectRatio@</aspectRatio>
 		<renderMode>@air_ios_renderMode@</renderMode>
-		<depthAndStencil>true</depthAndStencil>
+		<depthAndStencil>false</depthAndStencil>
 		<softKeyboardBehavior>@air_ios_softKeyboardBehavior@</softKeyboardBehavior>
 	</initialWindow>
 	

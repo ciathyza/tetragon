@@ -28,7 +28,7 @@
 		<autoOrients>@air_android_autoOrients@</autoOrients>
 		<aspectRatio>@air_android_aspectRatio@</aspectRatio>
 		<renderMode>@air_android_renderMode@</renderMode>
-		<depthAndStencil>true</depthAndStencil>
+		<depthAndStencil>false</depthAndStencil>
 		<softKeyboardBehavior>@air_android_softKeyboardBehavior@</softKeyboardBehavior>
 	</initialWindow>
 	
