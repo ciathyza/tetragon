@@ -210,7 +210,7 @@ package tetragon.setup
 			}
 			
 			config.setProperty(Config.CONSOLE_ENABLED, true);
-			config.setProperty(Config.CONSOLE_AUTO_OPEN, false);
+			config.setProperty(Config.CONSOLE_AUTO_OPEN_LEVEL, 4);
 			config.setProperty(Config.CONSOLE_TWEEN, true);
 			config.setProperty(Config.CONSOLE_MONOCHROME, false);
 			config.setProperty(Config.CONSOLE_SIZE, 2);

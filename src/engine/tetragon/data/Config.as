@@ -48,7 +48,7 @@ package tetragon.data
 		
 		/* Console settings */
 		public static const CONSOLE_ENABLED:String					= "consoleEnabled";
-		public static const CONSOLE_AUTO_OPEN:String				= "consoleAutoOpen";
+		public static const CONSOLE_AUTO_OPEN_LEVEL:String			= "consoleAutoOpenLevel";
 		public static const CONSOLE_TWEEN:String					= "consoleTween";
 		public static const CONSOLE_MONOCHROME:String				= "consoleMonochrome";
 		public static const CONSOLE_SIZE:String						= "consoleSize";

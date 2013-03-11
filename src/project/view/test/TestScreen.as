@@ -70,8 +70,6 @@ package view.test
 		override public function start():void
 		{
 			super.start();
-			if (main.console) main.console.toggle();
-			if (main.statsMonitor) main.statsMonitor.toggle();
 		}
 		
 		

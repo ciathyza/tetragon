@@ -49,7 +49,6 @@ package tetragon.debug
 	import flash.text.StyleSheet;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
-	import flash.utils.setTimeout;
 	
 	
 	/**
@@ -131,6 +130,8 @@ package tetragon.debug
 		/** @private */
 		private var _maxLevel:int = LogLevel.FATAL;
 		
+		private var _consoleAutoOpenLevel:int;
+		
 		/** @private */
 		private var _useTween:Boolean = true;
 		/** @private */
@@ -190,13 +191,10 @@ package tetragon.debug
 			size = _config.getNumber(Config.CONSOLE_SIZE);
 			transparency = _config.getNumber(Config.CONSOLE_TRANSPARENCY);
 			maxBufferSize = _config.getNumber(Config.CONSOLE_MAX_BUFFERSIZE);
+			_consoleAutoOpenLevel = _config.getNumber(Config.CONSOLE_AUTO_OPEN_LEVEL);
+			if (_consoleAutoOpenLevel < 0) _consoleAutoOpenLevel = 9999;
 			
 			_main.keyInputManager.assignEngineKey("toggleConsole", toggle);
-			
-			if (_config.getBoolean(Config.CONSOLE_AUTO_OPEN))
-			{
-				setTimeout(toggle, 100);
-			}
 		}
 		
 		
@@ -262,6 +260,12 @@ package tetragon.debug
 		public function log(text:String, level:int = 2, inverse:Boolean = false):void
 		{
 			if (!_consoleEnabled) return;
+			
+			if (!_visible && (level >= _consoleAutoOpenLevel && level < 999))
+			{
+				toggle();
+			}
+			
 			if (_ta.length >= _maxBufferSize) _ta.clear();
 			if (_monochrome) level = 2;
 			else if (level < 0) level = 0;
