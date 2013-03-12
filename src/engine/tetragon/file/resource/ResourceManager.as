@@ -494,18 +494,18 @@ package tetragon.file.resource
 		 * Processes the specified resource using a suitable resource processor.
 		 * 
 		 * @param resourceID The resource ID to process.
-		 * @return true or false.
+		 * @return The resource content or null.
 		 */
-		public function process(resourceID:String):Boolean
+		public function process(resourceID:String):*
 		{
-			if (resourceID == null) return false;
+			if (resourceID == null) return null;
 			var resource:Resource = resourceIndex.getResource(resourceID);
 			if (!resource)
 			{
 				error("Failed to process resource \"" + resourceID
 					+ "\". Either the specified resource ID is wrong or the resource"
 					+ " has not yet been loaded.");
-				return false;
+				return null;
 			}
 			var clazz:Class = _classRegistry.getResourceProcessorClass(resource.type);
 			if (!clazz)
@@ -513,7 +513,7 @@ package tetragon.file.resource
 				error("Failed to process resource \"" + resource.id
 					+ "\". No processor class is registered for it's dataType \""
 					+ resource.type + "\".");
-				return false;
+				return null;
 			}
 			
 			var processor:ResourceProcessor;
@@ -526,10 +526,11 @@ package tetragon.file.resource
 				error("Failed to process resource \"" + resource.id
 					+ "\". The registered processor class for dataType \""
 					+ resource.type + "\" is not of type ResourceProcessor.");
-				return false;
+				return null;
 			}
 			//Log.debug("Processing resource \"" + resourceID + "\" with " + processor.toString() + " ...", this);
-			return processor.process(resource);
+			processor.process(resource);
+			return resource.content;
 		}
 		
 		
