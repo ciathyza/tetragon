@@ -29,6 +29,7 @@
 package tetragon.view.loadprogress
 {
 	import com.hexagonstar.util.filter.createOutlineFilter;
+	import com.hexagonstar.util.time.CallLater;
 
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
@@ -120,11 +121,9 @@ package tetragon.view.loadprogress
 				_percentage = 100;
 			}
 			
-			if (_percentage == 100) complete();
+			updateText();
 			
-			_tf.text = "Loading screen \"" + screen.id + "\" (" + screen.resourceCount
-				+ " resources) ...\n\n" + _text;
-			_tf.scrollV = _tf.maxScrollV;
+			if (_percentage == 100) complete();
 		}
 		
 		
@@ -142,6 +141,9 @@ package tetragon.view.loadprogress
 			{
 				_text = _backBuffer + _sAll + "\n\nAll loading completed. ";
 			}
+			
+			updateText();
+			
 			if (waitForUserInput)
 			{
 				_text += "Press mouse to continue.";
@@ -199,6 +201,22 @@ package tetragon.view.loadprogress
 				else s+= ".";
 			}
 			return "[" + s + "]";
+		}
+		
+		
+		private function updateText():void
+		{
+			_tf.text = "Loading screen \"" + screen.id + "\" (" + screen.resourceCount
+				+ " resources) ...\n\n" + _text;
+			_tf.scrollV = _tf.maxScrollV;
+		}
+		
+		
+		override protected function complete():void
+		{
+			if (_allComplete) return;
+			_allComplete = true;
+			CallLater.add(onComplete);
 		}
 	}
 }

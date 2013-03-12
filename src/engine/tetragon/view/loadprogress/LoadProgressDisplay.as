@@ -84,11 +84,11 @@ package tetragon.view.loadprogress
 		/** @private */
 		private var _failedCount:uint;
 		/** @private */
-		private var _allLoaded:Boolean;
+		protected var _allLoaded:Boolean;
 		/** @private */
-		private var _allFailed:Boolean;
+		protected var _allFailed:Boolean;
 		/** @private */
-		private var _allComplete:Boolean;
+		protected var _allComplete:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
