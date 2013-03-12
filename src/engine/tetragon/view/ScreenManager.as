@@ -41,8 +41,8 @@ package tetragon.view
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
+	import tetragon.view.stage3d.Stage3DSignal;
 
 	import com.hexagonstar.display.shape.RectangleShape;
 	import com.hexagonstar.file.BulkProgress;
@@ -358,9 +358,7 @@ package tetragon.view
 				_stage3DProxy.width = _screenWidth;
 				_stage3DProxy.height = _screenHeight;
 				_stage3DProxy.color = _stage.color;
-				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated, false, 10);
-				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-				_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
+				_stage3DProxy.stage3DSignal.add(onStage3DSignal);
 				_stage3D = _stage3DProxy.stage3D;
 				_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
 				_stage3DProxy.requestContext3D();
@@ -390,9 +388,7 @@ package tetragon.view
 			}
 			if (_stage3DProxy)
 			{
-				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContextCreated);
-				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_RECREATED, onContextRecreated);
-				_stage3DProxy.removeEventListener(Stage3DEvent.CONTEXT3D_DISPOSED, onContextDisposed);
+				_stage3DProxy.stage3DSignal.remove(onStage3DSignal);
 				_stage3DProxy.dispose();
 			}
 		}
@@ -752,36 +748,28 @@ package tetragon.view
 		/**
 		 * @private
 		 */
-		private function onContextCreated(e:Stage3DEvent):void
+		private function onStage3DSignal(type:String):void
 		{
-			if (!_handleLostContext && _context3D)
+			switch (type)
 			{
-				e.stopImmediatePropagation();
-				showOnScreenError("Fatal Error: The application lost the device context!");
+				case Stage3DSignal.CONTEXT3D_CREATED:
+					if (!_handleLostContext && _context3D)
+					{
+						showOnScreenError("Fatal Error: The application lost the device context!");
+					}
+					else
+					{
+						initializeContext3D();
+						openInitialScreen();
+					}
+					break;
+				case Stage3DSignal.CONTEXT3D_RECREATED:
+					Log.debug("The Context3D has been recreated.", this);
+					break;
+				case Stage3DSignal.CONTEXT3D_DISPOSED:
+					Log.debug("The Context3D has been disposed.", this);
+					break;
 			}
-			else
-			{
-				initializeContext3D();
-				openInitialScreen();
-			}
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContextRecreated(e:Stage3DEvent):void
-		{
-			Log.debug("The Context3D has been recreated.", this);
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function onContextDisposed(e:Stage3DEvent):void
-		{
-			Log.debug("The Context3D has been disposed.", this);
 		}
 		
 		
