@@ -231,7 +231,7 @@ package tetragon.view.render.canvas
 					/* Draw Image */
 					else if (c.type == 3)
 					{
-						c.image.color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);;
+						if (c.mixAlpha < 1.0) c.image.color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);
 						_m.setTo(c.scale, 0, 0, c.scale, c.x, c.y);
 						_r.setTo(c.x, c.y, c.w, c.h);
 						_texture.drawImage(c.image, _m, _r);
