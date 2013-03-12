@@ -1232,9 +1232,13 @@
 				<arg value="-C"/>
 				<arg value="${path.bin}"/>
 				<arg value="${target.folder.resources}"/>
-				<arg value="-C"/>
-				<arg value="${path.bin}"/>
-				<!-- <arg value="Default-568h@2x.png"/> -->
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default@2x.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default-568h@2x.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default-Portrait.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default-Portrait@2x.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default-Landscape.png"/>
+				<arg value="-C"/><arg value="${path.bin}"/><arg value="Default-LandscapeLeft@2x.png"/>
 			</exec>
 		</sequential>
 	</macrodef>
