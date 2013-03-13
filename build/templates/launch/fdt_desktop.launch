@@ -17,6 +17,7 @@
 		-benchmark=@benchmark@
 		-optimize=true
 		-strict=true
+		-warn-no-constructor=false
 		-show-unused-type-selector-warnings=false
 		-keep-as3-metadata+=TypeHint
 		-keep-as3-metadata+=Resource

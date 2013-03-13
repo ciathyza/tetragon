@@ -29,9 +29,10 @@
 package
 {
 	import tetragon.Main;
-	
 	import tetragon.env.preload.IPreloadable;
 	import tetragon.env.preload.Preloader;
+
+	import flash.display.Sprite;
 	
 	
 	[SWF(width="@app_width@", height="@app_height@", backgroundColor="#@app_bgcolor@", frameRate="@app_framerate@")]
@@ -45,13 +46,27 @@ package
 	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
 	 */
 	[Frame(factoryClass="@web_preloaderclass@")]
-	public final class Entry implements IPreloadable
+	public final class Entry extends Sprite implements IPreloadable
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		private var _main:Main;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new instance of the class.
+		 */
+		public function Entry()
+		{
+			//_main = Main.instance;
+			//_main.init(this, new AppInfo(), new Setups().list, AppResourceBundle);
+		}
 		
 		
 		//-----------------------------------------------------------------------------------------
