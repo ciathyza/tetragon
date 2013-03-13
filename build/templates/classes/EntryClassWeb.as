@@ -64,8 +64,8 @@ package
 		 */
 		public function Entry()
 		{
-			//_main = Main.instance;
-			//_main.init(this, new AppInfo(), new Setups().list, AppResourceBundle);
+			_main = Main.instance;
+			_main.init(this, new AppInfo(), new Setups().list, AppResourceBundle);
 		}
 		
 		

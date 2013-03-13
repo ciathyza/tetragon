@@ -840,6 +840,7 @@
 				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
 				
 				<!-- Project Source Path -->
+				<!-- <source-path path-element="${path.src.engine}"/> -->
 				<source-path path-element="${path.src.project}"/>
 				
 				<!-- Project Library Source Path -->
