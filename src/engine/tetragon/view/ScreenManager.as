@@ -37,6 +37,7 @@ package tetragon.view
 	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
+	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
@@ -81,6 +82,7 @@ package tetragon.view
 		private var _main:Main;
 		private var _stage:Stage;
 		private var _contextView:DisplayObjectContainer;
+		private var _render2D:Render2D;
 		private var _nativeViewContainer:Sprite;
 		private var _screenCover:RectangleShape;
 		
@@ -633,6 +635,13 @@ package tetragon.view
 		public function get context3D():Context3D
 		{
 			return _context3D;
+		}
+		
+		
+		public function get render2D():Render2D
+		{
+			if (!_render2D) _render2D = new Render2D();
+			return _render2D;
 		}
 		
 		

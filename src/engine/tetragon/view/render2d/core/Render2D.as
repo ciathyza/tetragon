@@ -695,10 +695,17 @@ package tetragon.view.render2d.core
 		}
 		public function set rootView(v:View2D):void
 		{
-			if (!v || _rootView) return;
-			_rootView = v;
-			_stage2D.addChildAt(_rootView, 0);
-			dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
+			if (_rootView)
+			{
+				_stage2D.removeChild(_rootView);
+				_rootView = null;
+			}
+			if (v)
+			{
+				_rootView = v;
+				_stage2D.addChildAt(_rootView, 0);
+				dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
+			}
 		}
 		
 		
