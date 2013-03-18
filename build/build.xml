@@ -11,7 +11,7 @@
  http://www.tetragonengine.com/
 ***************************************************************************************************
 -->
-<project default="001 Init" basedir=".." name="tetragon">
+<project default="001 Init" basedir=".." name="tetragon.base">
 	
 	<property file="build/project.properties"/>
 	<property file="build/build.properties"/>
@@ -326,7 +326,7 @@
 			<copyWebFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcWeb bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" compress="true" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -343,7 +343,7 @@
 			<copyWebFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.web}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcWeb bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" compress="true" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -353,7 +353,7 @@
 		<attribute name="debug"/>
 		<sequential>
 			<prepare buildType="web" debug="@{debug}" entryClassTemplate="EntryClassWeb.as" width="${web.width}" height="${web.height}" bgcolor="${web.bgcolor}" framerate="${web.framerate}"/>
-			<compile bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcWeb bgcolor="${web.bgcolor}" framerate="${web.framerate}" debug="@{debug}" compress="true" config="flex-config.xml" libpath="player/${version.pg}" isWebBuild="true" isAIRBuild="false" isDesktopBuild="false" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -371,7 +371,7 @@
 			<copyDesktopFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.desktop}"/>
-			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcAIR bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -387,7 +387,7 @@
 			<copyDesktopFiles/>
 			<packResources resourcesSourceFolder="${resources.source.shared}"/>
 			<packResources resourcesSourceFolder="${resources.source.desktop}"/>
-			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcAIR bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -397,7 +397,7 @@
 		<attribute name="debug"/>
 		<sequential>
 			<prepare buildType="desktop" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.desktop.width}" height="${air.desktop.height}" bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}"/>
-			<compile bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
+			<mxmlcAIR bgcolor="${air.desktop.bgcolor}" framerate="${air.desktop.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="true" isMobileBuild="false" isAndroidBuild="false" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -415,7 +415,7 @@
 			<copyAndroidFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.android}"/>
-			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+			<mxmlcAIR bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -425,7 +425,7 @@
 		<attribute name="debug"/>
 		<sequential>
 			<prepare buildType="android" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.android.width}" height="${air.android.height}" bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}"/>
-			<compile bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
+			<mxmlcAIR bgcolor="${air.android.bgcolor}" framerate="${air.android.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="true" isIOSBuild="false"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -443,7 +443,7 @@
 			<copyIOSFiles/>
 			<copyResources resourcesSourceFolder="${resources.source.shared}"/>
 			<copyResources resourcesSourceFolder="${resources.source.ios}"/>
-			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+			<mxmlcAIR bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -453,7 +453,7 @@
 		<attribute name="debug"/>
 		<sequential>
 			<prepare buildType="ios" debug="@{debug}" entryClassTemplate="EntryClassAIR.as" width="${air.ios.width}" height="${air.ios.height}" bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}"/>
-			<compile bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
+			<mxmlcAIR bgcolor="${air.ios.bgcolor}" framerate="${air.ios.framerate}" debug="@{debug}" compress="true" config="air-config.xml" libpath="air" isWebBuild="false" isAIRBuild="true" isDesktopBuild="false" isMobileBuild="true" isAndroidBuild="false" isIOSBuild="true"/>
 			<addTelemetry/>
 		</sequential>
 	</macrodef>
@@ -581,7 +581,6 @@
 						<token key="app_height"			value="@{height}"/>
 						<token key="app_bgcolor"		value="@{bgcolor}"/>
 						<token key="app_framerate"		value="@{framerate}"/>
-						<token key="web_preloaderclass"	value="${web.preloaderclass}"/>
 					</replacetokens>
 				</filterchain>
 			</copy>
@@ -774,11 +773,11 @@
 	</macrodef>
 	
 	
-	<!-- Compile target for use with ActionScript Compiler 2.0 -->
-	<macrodef name="compile.asc2">
+	<macrodef name="mxmlcWeb">
 		<attribute name="bgcolor"/>
 		<attribute name="framerate"/>
 		<attribute name="debug"/>
+		<attribute name="compress"/>
 		<attribute name="config"/>
 		<attribute name="libpath"/>
 		<attribute name="isWebBuild"/>
@@ -789,71 +788,101 @@
 		<attribute name="isIOSBuild"/>
 		<sequential>
 			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
-			<mxmlc
-				file="${path.src.project}/${entry.class}.as"
-				output="${path.bin}/${app.swfname.full}"
-				default-frame-rate="@{framerate}"
-				default-background-color="0x@{bgcolor}"
-				swf-version="${version.swf}"
-				target-player="${version.pg}"
-				debug="@{debug}"
-				optimize="true"
-				strict="true">
-				
-				<load-config filename="${FLEX_HOME}/frameworks/@{config}"/>
-				<default-size width="${app.width}" height="${app.height}"/>
-				
-				<default-script-limits
-					max-recursion-depth="${max.recursiondepth}"
-					max-execution-time="${max.executiontime}"/>
-				
-				<!--These Meta Tags are required for the Resource Manager -->
-				<keep-as3-metadata name="TypeHint"/>
-				<keep-as3-metadata name="Resource"/>
-				<keep-as3-metadata name="ResourceIndex"/>
-				<keep-as3-metadata name="Embed"/>
-				
-				<!-- Conditional Compilation Constant Definitions -->
-				<define name="CONFIG::IS_WEB_BUILD" value="@{isWebBuild}"/>
-				<define name="CONFIG::IS_AIR_BUILD" value="@{isAIRBuild}"/>
-				<define name="CONFIG::IS_DESKTOP_BUILD" value="@{isDesktopBuild}"/>
-				<define name="CONFIG::IS_MOBILE_BUILD" value="@{isMobileBuild}"/>
-				<define name="CONFIG::IS_ANDROID_BUILD" value="@{isAndroidBuild}"/>
-				<define name="CONFIG::IS_IOS_BUILD" value="@{isIOSBuild}"/>
-				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
-				
-				<!-- Project Source Path -->
-				<source-path path-element="${path.src.project}"/>
-				
-				<!-- Project Library Source Path -->
-				<source-path path-element="${path.libs.source}"/>
-				
-				<!-- Additional Source Paths should only be used during development! -->
-				<!-- <source-path path-element="${path.src.tetragon.base}"/> -->
-				<!-- <source-path path-element="${path.src.hexagonlib}"/> -->
-				<!-- <source-path path-element="${path.src.hexagonui}"/> -->
-				
-				<!-- Flex Framework Libraries should not be appended! -->
-				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs/@{libpath}" append="false">
-					<include name="*.swc"/>
-				</compiler.library-path>
-				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs" append="false">
-					<include name="framework.swc"/>
-				</compiler.library-path>
-				<compiler.library-path dir="${FLEX_HOME}/frameworks/locale/${app.localestring}" append="false">
-					<include name="*.swc"/>
-				</compiler.library-path>
-				
-				<!-- Project SWCs -->
-				<compiler.library-path dir="${path.libs.swc}" append="false">
-					<include name="*.swc"/>
-				</compiler.library-path>
-				
-			</mxmlc>
+			<exec executable="${mxmlc}">
+				<arg value="${path.src.project}/${web.preloaderclass}.as"/>
+				<arg line="-output=${path.bin}/${app.swfname.full}"/>
+				<arg line="-default-frame-rate=@{framerate}"/>
+				<arg line="-default-background-color=0x@{bgcolor}"/>
+				<arg line="-default-size=${app.width},${app.height}"/>
+				<arg line="-default-script-limits=${max.recursiondepth},${max.executiontime}"/>
+				<arg line="-swf-version=${version.swf}"/>
+				<arg line="-target-player=${version.pg}"/>
+				<arg line="-debug=@{debug}"/>
+				<arg line="-optimize=true"/>
+				<arg line="-strict=true"/>
+				<arg line="-compress=@{compress}"/>
+				<arg line="-frame ${entry.class} ${entry.class}"/>
+				<arg line="-warn-no-constructor=false"/>
+				<arg line="-load-config=${FLEX_HOME}/frameworks/@{config}"/>
+				<arg line="-keep-as3-metadata=TypeHint"/>
+				<arg line="-keep-as3-metadata=Resource"/>
+				<arg line="-keep-as3-metadata=ResourceIndex"/>
+				<arg line="-keep-as3-metadata=Embed"/>
+				<arg line="-define=CONFIG::IS_WEB_BUILD,@{isWebBuild}"/>
+				<arg line="-define=CONFIG::IS_AIR_BUILD,@{isAIRBuild}"/>
+				<arg line="-define=CONFIG::IS_DESKTOP_BUILD,@{isDesktopBuild}"/>
+				<arg line="-define=CONFIG::IS_MOBILE_BUILD,@{isMobileBuild}"/>
+				<arg line="-define=CONFIG::IS_ANDROID_BUILD,@{isAndroidBuild}"/>
+				<arg line="-define=CONFIG::IS_IOS_BUILD,@{isIOSBuild}"/>
+				<arg line="-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}"/>
+				<arg line="-source-path=${path.libs.source}"/>
+				<arg line="-source-path+=${path.src.engine}"/>
+				<arg line="-source-path+=${path.src.project}"/>
+				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
+				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/locale/${app.localestring}"/>
+				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/@{libpath}"/>
+				<arg line="-library-path+=${path.libs.swc}"/>
+			</exec>
 		</sequential>
 	</macrodef>
 	
-	<!-- Old compile target for use with ActionScript Compiler 1.0 -->
+	
+	<macrodef name="mxmlcAIR">
+		<attribute name="bgcolor"/>
+		<attribute name="framerate"/>
+		<attribute name="debug"/>
+		<attribute name="compress"/>
+		<attribute name="config"/>
+		<attribute name="libpath"/>
+		<attribute name="isWebBuild"/>
+		<attribute name="isAIRBuild"/>
+		<attribute name="isDesktopBuild"/>
+		<attribute name="isMobileBuild"/>
+		<attribute name="isAndroidBuild"/>
+		<attribute name="isIOSBuild"/>
+		<sequential>
+			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
+			<exec executable="${mxmlc}">
+				<arg value="${path.src.project}/${entry.class}.as"/>
+				<arg line="-output=${path.bin}/${app.swfname.full}"/>
+				<arg line="-default-frame-rate=@{framerate}"/>
+				<arg line="-default-background-color=0x@{bgcolor}"/>
+				<arg line="-default-size=${app.width},${app.height}"/>
+				<arg line="-default-script-limits=${max.recursiondepth},${max.executiontime}"/>
+				<arg line="-swf-version=${version.swf}"/>
+				<arg line="-target-player=${version.pg}"/>
+				<arg line="-debug=@{debug}"/>
+				<arg line="-optimize=true"/>
+				<arg line="-strict=true"/>
+				<arg line="-compress=@{compress}"/>
+				<arg line="-warn-no-constructor=false"/>
+				<arg line="-load-config=${FLEX_HOME}/frameworks/@{config}"/>
+				<arg line="-keep-as3-metadata=TypeHint"/>
+				<arg line="-keep-as3-metadata=Resource"/>
+				<arg line="-keep-as3-metadata=ResourceIndex"/>
+				<arg line="-keep-as3-metadata=Embed"/>
+				<arg line="-define=CONFIG::IS_WEB_BUILD,@{isWebBuild}"/>
+				<arg line="-define=CONFIG::IS_AIR_BUILD,@{isAIRBuild}"/>
+				<arg line="-define=CONFIG::IS_DESKTOP_BUILD,@{isDesktopBuild}"/>
+				<arg line="-define=CONFIG::IS_MOBILE_BUILD,@{isMobileBuild}"/>
+				<arg line="-define=CONFIG::IS_ANDROID_BUILD,@{isAndroidBuild}"/>
+				<arg line="-define=CONFIG::IS_IOS_BUILD,@{isIOSBuild}"/>
+				<arg line="-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}"/>
+				<arg line="-source-path=${path.libs.source}"/>
+				<arg line="-source-path+=${path.src.engine}"/>
+				<arg line="-source-path+=${path.src.project}"/>
+				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/air/aircore.swc"/>
+				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airframework.swc"/>
+				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airglobal.swc"/>
+				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
+				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air/servicemonitor.swc"/>
+				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/textLayout.swc"/>
+				<arg line="-library-path+=${path.libs.swc}"/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
 	<macrodef name="compile">
 		<attribute name="bgcolor"/>
 		<attribute name="framerate"/>
@@ -871,18 +900,15 @@
 			<mxmlc
 				file="${path.src.project}/${entry.class}.as"
 				output="${path.bin}/${app.swfname.full}"
-				incremental="false"
-				locale="${app.localestring}"
 				default-frame-rate="@{framerate}"
 				default-background-color="0x@{bgcolor}"
 				swf-version="${version.swf}"
 				target-player="${version.pg}"
 				debug="@{debug}"
-				accessible="${accessible}"
-				benchmark="${benchmark}"
 				optimize="true"
 				strict="true"
-				show-unused-type-selector-warnings="false">
+				compress="true"
+				warn-no-constructor="false">
 				
 				<load-config filename="${FLEX_HOME}/frameworks/@{config}"/>
 				<default-size width="${app.width}" height="${app.height}"/>
@@ -897,16 +923,6 @@
 				<keep-as3-metadata name="ResourceIndex"/>
 				<keep-as3-metadata name="Embed"/>
 				
-				<metadata
-					title="${meta.title}"
-					description="${meta.description}"
-					date="${build.date}">
-					<language code="${app.language}"/>
-					<publisher name="${meta.publisher}"/>
-					<creator name="${meta.creator}"/>
-					<contributor name="${meta.contributor}"/>
-				</metadata>
-				
 				<!-- Conditional Compilation Constant Definitions -->
 				<define name="CONFIG::IS_WEB_BUILD" value="@{isWebBuild}"/>
 				<define name="CONFIG::IS_AIR_BUILD" value="@{isAIRBuild}"/>
@@ -917,6 +933,7 @@
 				<define name="CONFIG::USE_EMBEDDED_RESOURCES" value="${resource.useEmbed}"/>
 				
 				<!-- Project Source Path -->
+				<!-- <source-path path-element="${path.src.engine}"/> -->
 				<source-path path-element="${path.src.project}"/>
 				
 				<!-- Project Library Source Path -->
