@@ -581,7 +581,6 @@
 						<token key="app_height"			value="@{height}"/>
 						<token key="app_bgcolor"		value="@{bgcolor}"/>
 						<token key="app_framerate"		value="@{framerate}"/>
-						<token key="web_preloaderclass"	value="${web.preloaderclass}"/>
 					</replacetokens>
 				</filterchain>
 			</copy>

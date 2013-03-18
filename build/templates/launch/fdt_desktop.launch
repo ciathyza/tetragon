@@ -8,13 +8,10 @@
 		-swf-version=@swf_version@
 		-target-player=@fpv_version@
 		-library-path+='{flexSDK}/frameworks/locale/en_US'
-		-locale=@app_localestring@
 		-default-frame-rate=@air_desktop_framerate@
 		-default-background-color=0x@air_desktop_bgcolor@
 		-default-size=@air_desktop_width@,@air_desktop_height@
 		-default-script-limits=@max_recursiondepth@,@max_executiontime@
-		-accessible=@accessible@
-		-benchmark=@benchmark@
 		-optimize=true
 		-strict=true
 		-warn-no-constructor=false
@@ -30,13 +27,6 @@
 		-define=CONFIG::IS_ANDROID_BUILD,false
 		-define=CONFIG::IS_IOS_BUILD,false
 		-define=CONFIG::USE_EMBEDDED_RESOURCES,@resource_useEmbed@
-		-title='@meta_title@'
-		-description='@meta_description@'
-		-date='@build_date@'
-		-language=@app_language@
-		-publisher='@meta_publisher@'
-		-creator='@meta_creator@'
-		-contributor='@meta_contributor@'
 	"/>
 	
 	<booleanAttribute key="DISABLE_COMPILE_PROCESS" value="false"/>
