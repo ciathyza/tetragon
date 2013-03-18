@@ -30,6 +30,7 @@ package tetragon.view.stage3d
 {
 	import tetragon.debug.Log;
 
+	import flash.display.Shape;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DRenderMode;
@@ -37,6 +38,7 @@ package tetragon.view.stage3d
 	import flash.display3D.VertexBuffer3D;
 	import flash.display3D.textures.TextureBase;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.geom.Rectangle;
 	
 	
@@ -50,13 +52,13 @@ package tetragon.view.stage3d
 	 * it uses. Stage3DProxy should never be created directly, but requested through
 	 * Stage3DManager.
 	 */
-	public class Stage3DProxy
+	public class Stage3DProxy extends EventDispatcher
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		//private static var _frameEventDriver:Shape;
+		private static var _frameEventDriver:Shape;
 		private static var _enableErrorChecking:Boolean;
 		
 		private var _stage3D:Stage3D;
@@ -89,13 +91,6 @@ package tetragon.view.stage3d
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Signals
-		//-----------------------------------------------------------------------------------------
-		
-		private var _stage3DSignal:Stage3DSignal;
-		
-		
-		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
@@ -112,7 +107,7 @@ package tetragon.view.stage3d
 		public function Stage3DProxy(stage3DIndex:int, stage3D:Stage3D,
 			stage3DManager:Stage3DManager, forceSoftware:Boolean = false)
 		{
-			//if (!_frameEventDriver) _frameEventDriver = new Shape();
+			if (!_frameEventDriver) _frameEventDriver = new Shape();
 			
 			_stage3DIndex = stage3DIndex;
 			_stage3D = stage3D;
@@ -310,17 +305,17 @@ package tetragon.view.stage3d
 		 *            strong or weak. A strong reference (the default) prevents your
 		 *            listener from being garbage-collected. A weak reference does not.
 		 */
-		//public override function addEventListener(type:String, listener:Function,
-		//	useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
-		//{
-		//	super.addEventListener(type, listener, useCapture, priority, useWeakReference);
-		//	if ((type == Event.ENTER_FRAME || type == Event.EXIT_FRAME)
-		//		&& !_frameEventDriver.hasEventListener(Event.ENTER_FRAME))
-		//	{
-		//		_frameEventDriver.addEventListener(Event.ENTER_FRAME, onEnterFrame, useCapture,
-		//			priority, useWeakReference);
-		//	}
-		//}
+		public override function addEventListener(type:String, listener:Function,
+			useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void
+		{
+			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+			if ((type == Event.ENTER_FRAME || type == Event.EXIT_FRAME)
+				&& !_frameEventDriver.hasEventListener(Event.ENTER_FRAME))
+			{
+				_frameEventDriver.addEventListener(Event.ENTER_FRAME, onEnterFrame, useCapture,
+					priority, useWeakReference);
+			}
+		}
 		
 		
 		/**
@@ -338,17 +333,17 @@ package tetragon.view.stage3d
 		 *            both, one call with useCapture() set to true, and another call with
 		 *            useCapture() set to false.
 		 */
-		//public override function removeEventListener(type:String, listener:Function,
-		//	useCapture:Boolean = false):void
-		//{
-		//	super.removeEventListener(type, listener, useCapture);
-		//	// Remove the main rendering listener if no EnterFrame listeners remain
-		//	if (!hasEventListener(Event.ENTER_FRAME) && !hasEventListener(Event.EXIT_FRAME)
-		//		&& _frameEventDriver.hasEventListener(Event.ENTER_FRAME))
-		//	{
-		//		_frameEventDriver.removeEventListener(Event.ENTER_FRAME, onEnterFrame, useCapture);
-		//	}
-		//}
+		public override function removeEventListener(type:String, listener:Function,
+			useCapture:Boolean = false):void
+		{
+			super.removeEventListener(type, listener, useCapture);
+			// Remove the main rendering listener if no EnterFrame listeners remain
+			if (!hasEventListener(Event.ENTER_FRAME) && !hasEventListener(Event.EXIT_FRAME)
+				&& _frameEventDriver.hasEventListener(Event.ENTER_FRAME))
+			{
+				_frameEventDriver.removeEventListener(Event.ENTER_FRAME, onEnterFrame, useCapture);
+			}
+		}
 		
 		
 		/**
@@ -392,7 +387,7 @@ package tetragon.view.stage3d
 			if (_context3D.driverInfo == "Disposed")
 			{
 				_context3D = null;
-				if (_stage3DSignal) _stage3DSignal.dispatch(Stage3DSignal.CONTEXT3D_DISPOSED);
+				dispatchEvent(new Stage3DEvent(Stage3DEvent.CONTEXT3D_DISPOSED));
 				return false;
 			}
 			return true;
@@ -592,8 +587,6 @@ package tetragon.view.stage3d
 		
 		/**
 		 * Determines global Context3D Error Checking.
-		 * 
-		 * @default false
 		 */
 		public static function get enableErrorChecking():Boolean
 		{
@@ -602,13 +595,6 @@ package tetragon.view.stage3d
 		public static function set enableErrorChecking(v:Boolean):void
 		{
 			_enableErrorChecking = v;
-		}
-		
-		
-		public function get stage3DSignal():Stage3DSignal
-		{
-			if (!_stage3DSignal) _stage3DSignal = new Stage3DSignal();
-			return _stage3DSignal;
 		}
 		
 		
@@ -642,12 +628,9 @@ package tetragon.view.stage3d
 				
 				// Dispatch the appropriate event depending on whether context was
 				// created for the first time or recreated after a device loss.
-				if (_stage3DSignal)
-				{
-					_stage3DSignal.dispatch(hadContext
-						? Stage3DSignal.CONTEXT3D_RECREATED
-						: Stage3DSignal.CONTEXT3D_CREATED);
-				}
+				dispatchEvent(new Stage3DEvent(hadContext
+					? Stage3DEvent.CONTEXT3D_RECREATED
+					: Stage3DEvent.CONTEXT3D_CREATED));
 			}
 			else
 			{
@@ -663,14 +646,14 @@ package tetragon.view.stage3d
 		 * 
 		 * @private
 		 */
-		//private function onEnterFrame(event:Event):void
-		//{
-		//	if (!_context3D) return;
-		//	clear();
-		//	notifyEnterFrame();
-		//	present();
-		//	notifyExitFrame();
-		//}
+		private function onEnterFrame(event:Event):void
+		{
+			if (!_context3D) return;
+			clear();
+			notifyEnterFrame();
+			present();
+			notifyExitFrame();
+		}
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -680,21 +663,21 @@ package tetragon.view.stage3d
 		/**
 		 * @private
 		 */
-		//private function notifyEnterFrame():void
-		//{
-		//	if (!hasEventListener(Event.ENTER_FRAME)) return;
-		//	dispatchEvent(_enterFrame);
-		//}
+		private function notifyEnterFrame():void
+		{
+			if (!hasEventListener(Event.ENTER_FRAME)) return;
+			dispatchEvent(_enterFrame);
+		}
 		
 		
 		/**
 		 * @private
 		 */
-		//private function notifyExitFrame():void
-		//{
-		//	if (!hasEventListener(Event.EXIT_FRAME)) return;
-		//	dispatchEvent(_exitFrame);
-		//}
+		private function notifyExitFrame():void
+		{
+			if (!hasEventListener(Event.EXIT_FRAME)) return;
+			dispatchEvent(_exitFrame);
+		}
 		
 		
 		/**
@@ -705,7 +688,7 @@ package tetragon.view.stage3d
 		{
 			if (!_context3D) return;
 			_context3D.dispose();
-			if (_stage3DSignal) _stage3DSignal.dispatch(Stage3DSignal.CONTEXT3D_DISPOSED);
+			dispatchEvent(new Stage3DEvent(Stage3DEvent.CONTEXT3D_DISPOSED));
 			_context3D = null;
 			_contextRequested = false;
 		}

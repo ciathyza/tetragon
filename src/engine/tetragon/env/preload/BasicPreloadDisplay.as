@@ -29,7 +29,6 @@
 package tetragon.env.preload
 {
 	import flash.events.Event;
-
 	
 	
 	/**
@@ -47,7 +46,7 @@ package tetragon.env.preload
 		 * A reference to the Preloader (which wraps this preload display).
 		 * @private
 		 */
-		protected var _preloader:IPreloader;
+		protected var _preloader:Preloader;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ package tetragon.env.preload
 		 * 
 		 * @param preloader A reference to the wrapping Preloader.
 		 */
-		public function BasicPreloadDisplay(preloader:IPreloader)
+		public function BasicPreloadDisplay(preloader:Preloader)
 		{
 			super();
 			_preloader = preloader;

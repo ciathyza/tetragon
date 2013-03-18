@@ -37,9 +37,11 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import com.hexagonstar.util.agal.AGALMiniAssembler;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.Context3DVertexBufferFormat;
 	import flash.display3D.IndexBuffer3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.geom.Matrix;
@@ -104,16 +106,13 @@ package tetragon.view.render2d.display
 		private static var _renderAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
 		private static var _renderMatrix:Matrix3D = new Matrix3D();
 		private static var _programNameCache:Dictionary = new Dictionary();
-		private static var _rawData:Vector.<Number> = new <Number>[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Creates a new QuadBatch instance with empty batch data.
-		 */
+		/** Creates a new QuadBatch instance with empty batch data. */
 		public function QuadBatch2D()
 		{
 			_vertexData = new VertexData2D(0, true);
@@ -125,8 +124,8 @@ package tetragon.view.render2d.display
 			// Handle lost context. We use the conventional event here (not the one from Render2D)
 			// so we're able to create a weak event listener; this avoids memory leaks when people
 			// forget to call "dispose" on the QuadBatch.
-			render2D.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated,
-				false, 0, true);
+			render2D.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE,
+				onContextCreated, false, 0, true);
 		}
 		
 		
@@ -134,21 +133,19 @@ package tetragon.view.render2d.display
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Disposes vertex- and index-buffer.
-		 */
+		/** Disposes vertex- and index-buffer. */
 		public override function dispose():void
 		{
 			render2D.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
+
 			if (_vertexBuffer) _vertexBuffer.dispose();
 			if (_indexBuffer) _indexBuffer.dispose();
+
 			super.dispose();
 		}
 		
 		
-		/**
-		 * Creates a duplicate of the QuadBatch object.
-		 */
+		/** Creates a duplicate of the QuadBatch object. */
 		public function clone():QuadBatch2D
 		{
 			var clone:QuadBatch2D = new QuadBatch2D();
@@ -182,55 +179,45 @@ package tetragon.view.render2d.display
 			
 			var pma:Boolean = _vertexData.premultipliedAlpha;
 			var tinted:Boolean = _tinted || (parentAlpha != 1.0);
+			var programName:String = _texture
+				? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing)
+				: QUAD_PROGRAM_NAME;
 			
 			_renderAlpha[0] = _renderAlpha[1] = _renderAlpha[2] = pma ? parentAlpha : 1.0;
 			_renderAlpha[3] = parentAlpha;
-			
-			/* Inlined Matrix convertTo3D for better speed. */
-			_rawData[0] = mvpMatrix.a;
-			_rawData[1] = mvpMatrix.b;
-			_rawData[4] = mvpMatrix.c;
-			_rawData[5] = mvpMatrix.d;
-			_rawData[12] = mvpMatrix.tx;
-			_rawData[13] = mvpMatrix.ty;
-			_renderMatrix.copyRawDataFrom(_rawData);
-			
-			/* Inlined RenderSupport2D.setBlendFactors. */
-			var bf:Array = BlendMode2D.getBlendFactors(blendMode ? blendMode : this.blendMode, pma);
-			context3D.setBlendFactors(bf[0], bf[1]);
-			
-			context3D.setProgram(render2D.getProgram(_texture ? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing) : QUAD_PROGRAM_NAME));
-			context3D.setProgramConstantsFromVector("vertex", 0, _renderAlpha, 1);
-			context3D.setProgramConstantsFromMatrix("vertex", 1, _renderMatrix, true);
-			context3D.setVertexBufferAt(0, _vertexBuffer, 0, "float2");
-			
-			if (!_texture || tinted)
-			{
-				context3D.setVertexBufferAt(1, _vertexBuffer, 2, "float4");
-			}
+
+			MatrixUtil.convertTo3D(mvpMatrix, _renderMatrix);
+			RenderSupport2D.setBlendFactors(pma, blendMode ? blendMode : this.blendMode);
+
+			context3D.setProgram(render2D.getProgram(programName));
+			context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, _renderAlpha, 1);
+			context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, _renderMatrix, true);
+			context3D.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+
+			if (_texture == null || tinted)
+				context3D.setVertexBufferAt(1, _vertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
+
 			if (_texture)
 			{
 				context3D.setTextureAt(0, _texture.base);
-				context3D.setVertexBufferAt(2, _vertexBuffer, 6, "float2");
+				context3D.setVertexBufferAt(2, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
-			
+
 			context3D.drawTriangles(_indexBuffer, 0, _numQuads * 2);
-			
+
 			if (_texture)
 			{
 				context3D.setTextureAt(0, null);
 				context3D.setVertexBufferAt(2, null);
 			}
-			
+
 			context3D.setVertexBufferAt(1, null);
 			context3D.setVertexBufferAt(0, null);
 		}
-		
-		
-		/**
-		 * Resets the batch. The vertex- and index-buffers remain their size, so that they
-		 * can be reused quickly.
-		 */
+
+
+		/** Resets the batch. The vertex- and index-buffers remain their size, so that they
+		 *  can be reused quickly. */
 		public function reset():void
 		{
 			_numQuads = 0;
@@ -240,48 +227,28 @@ package tetragon.view.render2d.display
 		}
 
 
-		/**
-		 * Adds an image to the batch. This method internally calls 'addQuad' with the correct
-		 * parameters for 'texture' and 'smoothing'.
-		 * 
-		 * @param image
-		 * @param parentAlpha
-		 * @param modelViewMatrix
-		 * @param blendMode
-		 */
-		public function addImage(image:Image2D, parentAlpha:Number = 1.0,
-			modelViewMatrix:Matrix = null, blendMode:String = null):void
+		/** Adds an image to the batch. This method internally calls 'addQuad' with the correct
+		 *  parameters for 'texture' and 'smoothing'. */
+		public function addImage(image:Image2D, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
 			addQuad(image, parentAlpha, image.texture, image.smoothing, modelViewMatrix, blendMode);
 		}
-		
-		
-		/**
-		 * Adds a quad to the batch. The first quad determines the state of the batch,
-		 * i.e. the values for texture, smoothing and blendmode. When you add additional quads,  
-		 * make sure they share that state (e.g. with the 'isStageChange' method), or reset
-		 * the batch.
-		 * 
-		 * @param quad
-		 * @param parentAlpha
-		 * @param texture
-		 * @param smoothing
-		 * @param modelViewMatrix
-		 * @param blendMode
-		 */
-		public function addQuad(quad:IQuad2D, parentAlpha:Number = 1.0, texture:Texture2D = null,
-			smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null):void
+
+
+		/** Adds a quad to the batch. The first quad determines the state of the batch,
+		 *  i.e. the values for texture, smoothing and blendmode. When you add additional quads,  
+		 *  make sure they share that state (e.g. with the 'isStageChange' method), or reset
+		 *  the batch. */
+		public function addQuad(quad:IQuad2D, parentAlpha:Number = 1.0, texture:Texture2D = null, smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
-			if (!modelViewMatrix) modelViewMatrix = quad.transformationMatrix;
-			
+			if (modelViewMatrix == null)
+				modelViewMatrix = quad.transformationMatrix;
+
 			var tinted:Boolean = texture ? (quad.tinted || parentAlpha != 1.0) : false;
 			var alpha:Number = parentAlpha * quad.alpha;
 			var vertexID:int = _numQuads * 4;
-			
-			if (_numQuads + 1 > _vertexData.numVertices / 4)
-			{
-				expand();
-			}
+
+			if (_numQuads + 1 > _vertexData.numVertices / 4) expand();
 			if (_numQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quad.blendMode;
@@ -290,40 +257,29 @@ package tetragon.view.render2d.display
 				_smoothing = smoothing;
 				_vertexData.setPremultipliedAlpha(texture ? texture.premultipliedAlpha : true, false);
 			}
-			
+
 			quad.copyVertexDataTo(_vertexData, vertexID);
 			_vertexData.transformVertex(vertexID, modelViewMatrix, 4);
-			
+
 			if (alpha != 1.0)
-			{
 				_vertexData.scaleAlpha(vertexID, alpha, 4);
-			}
-			
+
 			_syncRequired = true;
 			_numQuads++;
 		}
-		
-		
-		/**
-		 * @param quadBatch
-		 * @param parentAlpha
-		 * @param modelViewMatrix
-		 * @param blendMode
-		 */
-		public function addQuadBatch(quadBatch:QuadBatch2D, parentAlpha:Number = 1.0,
-			modelViewMatrix:Matrix = null, blendMode:String = null):void
+
+
+		public function addQuadBatch(quadBatch:QuadBatch2D, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
-			if (!modelViewMatrix) modelViewMatrix = quadBatch.transformationMatrix;
-			
+			if (modelViewMatrix == null)
+				modelViewMatrix = quadBatch.transformationMatrix;
+
 			var tinted:Boolean = quadBatch._tinted || parentAlpha != 1.0;
 			var alpha:Number = parentAlpha * quadBatch.alpha;
 			var vertexID:int = _numQuads * 4;
 			var numQuads:int = quadBatch.numQuads;
-			
-			if (_numQuads + numQuads > capacity)
-			{
-				expand(_numQuads + numQuads);
-			}
+
+			if (_numQuads + numQuads > capacity) expand(_numQuads + numQuads);
 			if (_numQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quadBatch.blendMode;
@@ -332,68 +288,46 @@ package tetragon.view.render2d.display
 				_smoothing = quadBatch._smoothing;
 				_vertexData.setPremultipliedAlpha(quadBatch._vertexData.premultipliedAlpha, false);
 			}
-			
+
 			quadBatch._vertexData.copyTo(_vertexData, vertexID, 0, numQuads * 4);
 			_vertexData.transformVertex(vertexID, modelViewMatrix, numQuads * 4);
-			
+
 			if (alpha != 1.0)
-			{
 				_vertexData.scaleAlpha(vertexID, alpha, numQuads * 4);
-			}
-			
+
 			_syncRequired = true;
 			_numQuads += numQuads;
 		}
-		
-		
-		/**
-		 * Indicates if specific quads can be added to the batch without causing a state change. 
-		 * A state change occurs if the quad uses a different base texture, has a different 
-		 * 'tinted', 'smoothing', 'repeat' or 'blendMode' setting, or if the batch is full
-		 * (one batch can contain up to 8192 quads).
-		 * 
-		 * @param tinted
-		 * @param parentAlpha
-		 * @param texture
-		 * @param smoothing
-		 * @param blendMode
-		 * @param numQuads
-		 */
-		public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture2D,
-			smoothing:String, blendMode:String, numQuads:int = 1):Boolean
+
+
+		/** Indicates if specific quads can be added to the batch without causing a state change. 
+		 *  A state change occurs if the quad uses a different base texture, has a different 
+		 *  'tinted', 'smoothing', 'repeat' or 'blendMode' setting, or if the batch is full
+		 *  (one batch can contain up to 8192 quads). */
+		public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture2D, smoothing:String, blendMode:String, numQuads:int = 1):Boolean
 		{
 			if (_numQuads == 0) return false;
 			else if (_numQuads + numQuads > 8192) return true; // maximum buffer size
-			else if (!_texture && !texture) return false;
-			else if (_texture && texture)
-			{
-				return _texture.base != texture.base
-					|| _texture.repeat != texture.repeat
-					|| _smoothing != smoothing
-					|| _tinted != (tinted || parentAlpha != 1.0)
-					|| this.blendMode != blendMode;
-			}
+			else if (_texture == null && texture == null) return false;
+			else if (_texture != null && texture != null)
+				return _texture.base != texture.base || _texture.repeat != texture.repeat || _smoothing != smoothing || _tinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
 			else return true;
 		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		public override function getBounds(targetSpace:DisplayObject2D,
-			resultRect:Rectangle = null):Rectangle
+
+
+		// display object methods
+		/** @inheritDoc */
+		public override function getBounds(targetSpace:DisplayObject2D, resultRect:Rectangle = null):Rectangle
 		{
-			if (!resultRect) resultRect = new Rectangle();
-			var m:Matrix = targetSpace == this
-				? null
-				: getTransformationMatrix(targetSpace, _helperMatrix);
-			return _vertexData.getBounds(m, 0, _numQuads * 4, resultRect);
+			if (resultRect == null) resultRect = new Rectangle();
+
+			var transformationMatrix:Matrix = targetSpace == this ? null : getTransformationMatrix(targetSpace, _helperMatrix);
+
+			return _vertexData.getBounds(transformationMatrix, 0, _numQuads * 4, resultRect);
 		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
+
+
+		/** @inheritDoc */
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
 			if (_numQuads)
@@ -403,14 +337,13 @@ package tetragon.view.render2d.display
 				renderCustom(support.mvpMatrix, alpha * parentAlpha, support.blendMode);
 			}
 		}
-		
-		
-		/**
-		 * Analyses an object that is made up exclusively of quads (or other containers)
-		 * and creates a vector of QuadBatch objects representing it. This can be
-		 * used to render the container very efficiently. The 'flatten'-method of the Sprite 
-		 * class uses this method internally.
-		 */
+
+
+		// compilation (for flattened sprites)
+		/** Analyses an object that is made up exclusively of quads (or other containers)
+		 *  and creates a vector of QuadBatch objects representing it. This can be
+		 *  used to render the container very efficiently. The 'flatten'-method of the Sprite 
+		 *  class uses this method internally. */
 		public static function compile(object:DisplayObject2D, quadBatches:Vector.<QuadBatch2D>):void
 		{
 			compileObject(object, quadBatches, -1, new Matrix());
@@ -480,13 +413,13 @@ package tetragon.view.render2d.display
 		private function expand(newCapacity:int = -1):void
 		{
 			var oldCapacity:int = capacity;
-			
+
 			if (newCapacity < 0) newCapacity = oldCapacity * 2;
 			if (newCapacity == 0) newCapacity = 16;
 			if (newCapacity <= oldCapacity) return;
-			
+
 			_vertexData.numVertices = newCapacity * 4;
-			
+
 			for (var i:int = oldCapacity; i < newCapacity; ++i)
 			{
 				_indexData[int(i * 6)] = i * 4;
@@ -496,7 +429,7 @@ package tetragon.view.render2d.display
 				_indexData[int(i * 6 + 4)] = i * 4 + 3;
 				_indexData[int(i * 6 + 5)] = i * 4 + 2;
 			}
-			
+
 			createBuffers();
 			registerPrograms();
 		}
@@ -514,7 +447,8 @@ package tetragon.view.render2d.display
 			if (_indexBuffer) _indexBuffer.dispose();
 			if (numVertices == 0) return;
 			
-			_vertexBuffer = context3D.createVertexBuffer(numVertices, 8);
+			_vertexBuffer = context3D.createVertexBuffer(numVertices,
+				VertexData2D.ELEMENTS_PER_VERTEX);
 			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
 			
 			_indexBuffer = context3D.createIndexBuffer(numIndices);
@@ -535,7 +469,7 @@ package tetragon.view.render2d.display
 				return;
 			}
 			
-			// as 3rd parameter, we could also use '_numQuads * 4', but on some GPU hardware
+			// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware
 			// (iOS!), this is slower than updating the complete buffer.
 			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
 			_syncRequired = false;
@@ -763,11 +697,11 @@ package tetragon.view.render2d.display
 			if (mipMap) bitField |= 1 << 1;
 			if (repeat) bitField |= 1 << 2;
 			
-			if (smoothing == "none") bitField |= 1 << 3;
-			else if (smoothing == "trilinear") bitField |= 1 << 4;
+			if (smoothing == TextureSmoothing2D.NONE) bitField |= 1 << 3;
+			else if (smoothing == TextureSmoothing2D.TRILINEAR) bitField |= 1 << 4;
 			
-			if (format == "compressed") bitField |= 1 << 5;
-			else if (format == "compressedAlpha") bitField |= 1 << 6;
+			if (format == Context3DTextureFormat.COMPRESSED) bitField |= 1 << 5;
+			else if (format == Context3DTextureFormat.COMPRESSED_ALPHA) bitField |= 1 << 6;
 			
 			var name:String = _programNameCache[bitField];
 			if (name == null)

@@ -93,13 +93,13 @@ package tetragon.view.render2d.text
 
 		/** Creates a bitmap font by parsing an XML file and uses the specified texture. 
 		 *  If you don't pass any data, the "mini" font will be created. */
-		public function BitmapFont2D(texture:Texture2D = null, fontXML:XML = null)
+		public function BitmapFont2D(texture:Texture2D = null, fontXml:XML = null)
 		{
 			// if no texture is passed in, we create the minimal, embedded font
-			if (texture == null && fontXML == null)
+			if (texture == null && fontXml == null)
 			{
 				texture = MiniBitmapFont2D.texture;
-				fontXML = MiniBitmapFont2D.xml;
+				fontXml = MiniBitmapFont2D.xml;
 			}
 
 			mName = "unknown";
@@ -109,7 +109,7 @@ package tetragon.view.render2d.text
 			mHelperImage = new Image2D(texture);
 			mCharLocationPool = new <CharLocation>[];
 
-			if (fontXML) parseFontXml(fontXML);
+			if (fontXml) parseFontXml(fontXml);
 		}
 
 

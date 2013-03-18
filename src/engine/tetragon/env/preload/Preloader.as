@@ -26,15 +26,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package 
+package tetragon.env.preload
 {
 	import tetragon.Main;
 	import tetragon.data.Params;
-	import tetragon.env.preload.BasicPreloadDisplay;
-	import tetragon.env.preload.IPreloadDisplay;
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.IPreloader;
-	import tetragon.env.preload.TetragonPreloadDisplay;
 
 	import com.hexagonstar.constants.Alignment;
 
@@ -68,7 +63,7 @@ package
 	 * your class for use with this preloader inside the <code>configure()</code>
 	 * method.</p>
 	 */
-	public class Preloader extends MovieClip implements IPreloader
+	public class Preloader extends MovieClip
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
@@ -178,7 +173,7 @@ package
 		/**
 		 * @private
 		 */
-		protected function onEnterFrame(e:Event):void
+		private function onEnterFrame(e:Event):void
 		{
 			if (currentFrame == 1)
 			{
@@ -217,7 +212,7 @@ package
 		/**
 		 * Starts the preloader.
 		 */
-		protected function start():void
+		private function start():void
 		{
 			if (Main.params.getParam(Params.SKIP_PRELOADER))
 			{
@@ -239,7 +234,7 @@ package
 		/**
 		 * Instanciates the entry class and enters it.
 		 */
-		protected function initiateEntry():void
+		private function initiateEntry():void
 		{
 			var clazz:Class = Class(getDefinitionByName(_entryClass));
 			if (clazz)

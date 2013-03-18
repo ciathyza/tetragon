@@ -11,7 +11,7 @@
  http://www.tetragonengine.com/
 ***************************************************************************************************
 -->
-<project default="010 FDT: Launch" basedir=".." name="tetragon.base.fdt">
+<project default="010 FDT: Launch" basedir=".." name="tetragon.fdt">
 	
 	<xmlproperty file="${basedir}/.project"/>
 	
