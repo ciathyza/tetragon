@@ -243,24 +243,6 @@ package tetragon.view.render2d.display
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
-		public function get clipRect():Rectangle
-		{
-			return _clipRect;
-		}
-		public function set clipRect(v:Rectangle):void
-		{
-			if (v)
-			{
-				if (!_clipRect) _clipRect = v.clone();
-				else _clipRect.setTo(v.x, v.y, v.width, v.height);
-			}
-			else
-			{
-				_clipRect = null;
-			}
-		}
-		
-		
 		/**
 		 * The texture that is displayed on the quad.
 		 */
@@ -302,6 +284,24 @@ package tetragon.view.render2d.display
 			else
 			{
 				throw new ArgumentError("Invalid smoothing mode: " + value);
+			}
+		}
+		
+		
+		public function get clipRect():Rectangle
+		{
+			return _clipRect;
+		}
+		public function set clipRect(v:Rectangle):void
+		{
+			if (v)
+			{
+				if (!_clipRect) _clipRect = v.clone();
+				else _clipRect.setTo(v.x, v.y, v.width, v.height);
+			}
+			else
+			{
+				_clipRect = null;
 			}
 		}
 		

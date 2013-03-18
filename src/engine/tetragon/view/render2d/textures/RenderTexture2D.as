@@ -197,8 +197,8 @@ package tetragon.view.render2d.textures
 		/**
 		 * The same as draw() but with some additional features like a clipRect.
 		 */
-		public function drawImage(object:Image2D, matrix:Matrix = null, clipRect:Rectangle = null,
-			alpha:Number = 1.0, antiAliasing:int = 0):void
+		public function drawImage(object:Image2D, matrix:Matrix = null,
+			clipRect:Rectangle = null, alpha:Number = 1.0, antiAliasing:int = 0):void
 		{
 			if (!object) return;
 			

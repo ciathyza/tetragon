@@ -241,14 +241,16 @@ package tetragon.file.parsers
 		 * 
 		 * @param xml The XML from which to extract.
 		 * @param name The node or attribute name on the specified XML.
-		 * @return The extracted array.
+		 * @return The extracted array or null if the array is empty.
 		 */
 		protected static function extractArray(xml:*, name:String = null):Array
 		{
 			var s:String = extractString(xml, name);
 			if (s == null || s.length < 1) return null;
 			s = s.split(" ").join("");
-			return s.split(",");
+			var a:Array = s.split(",");
+			if (a && a.length > 0) return a;
+			return null;
 		}
 		
 		

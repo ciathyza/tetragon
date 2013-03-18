@@ -32,7 +32,8 @@ package tetragon.view.render2d.animation
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	
 	
-	/** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
+	/**
+	 * The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
 	 * 
 	 *  <p>A juggler is a simple object. It does no more than saving a list of objects implementing 
 	 *  "IAnimatable" and advancing their time if it is told to do so (by calling its own 
@@ -64,63 +65,87 @@ package tetragon.view.render2d.animation
 	 */
 	public class Juggler2D implements IAnimatable2D
 	{
-		private var mObjects:Vector.<IAnimatable2D>;
-		private var mElapsedTime:Number;
-
-
-		/** Create an empty juggler. */
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _objects:Vector.<IAnimatable2D>;
+		private var _elapsedTime:Number;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Create an empty juggler.
+		 */
 		public function Juggler2D()
 		{
-			mElapsedTime = 0;
-			mObjects = new <IAnimatable2D>[];
+			_elapsedTime = 0;
+			_objects = new <IAnimatable2D>[];
 		}
-
-
-		/** Adds an object to the juggler. */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Adds an object to the juggler.
+		 * 
+		 * @param object
+		 */
 		public function add(object:IAnimatable2D):void
 		{
-			if (object && mObjects.indexOf(object) == -1)
+			if (object && _objects.indexOf(object) == -1)
 			{
-				mObjects.push(object);
-
+				_objects.push(object);
 				var dispatcher:EventDispatcher2D = object as EventDispatcher2D;
 				if (dispatcher) dispatcher.addEventListener(Event2D.REMOVE_FROM_JUGGLER, onRemove);
 			}
 		}
 
 
-		/** Determines if an object has been added to the juggler. */
+		/**
+		 * Determines if an object has been added to the juggler.
+		 * 
+		 * @param object
+		 * @return Boolean
+		 */
 		public function contains(object:IAnimatable2D):Boolean
 		{
-			return mObjects.indexOf(object) != -1;
+			return _objects.indexOf(object) != -1;
 		}
-
-
-		/** Removes an object from the juggler. */
+		
+		
+		/**
+		 * Removes an object from the juggler.
+		 * 
+		 * @param object
+		 */
 		public function remove(object:IAnimatable2D):void
 		{
-			if (object == null) return;
-
+			if (!object) return;
 			var dispatcher:EventDispatcher2D = object as EventDispatcher2D;
 			if (dispatcher) dispatcher.removeEventListener(Event2D.REMOVE_FROM_JUGGLER, onRemove);
-
-			var index:int = mObjects.indexOf(object);
-			if (index != -1) mObjects[index] = null;
+			var index:int = _objects.indexOf(object);
+			if (index != -1) _objects[index] = null;
 		}
-
-
+		
+		
 		/** Removes all tweens with a certain target. */
 		public function removeTweens(target:Object):void
 		{
 			if (target == null) return;
 
-			for (var i:int = mObjects.length - 1; i >= 0; --i)
+			for (var i:int = _objects.length - 1; i >= 0; --i)
 			{
-				var tween:Tween2D = mObjects[i] as Tween2D;
+				var tween:Tween2D = _objects[i] as Tween2D;
 				if (tween && tween.target == target)
 				{
 					tween.removeEventListener(Event2D.REMOVE_FROM_JUGGLER, onRemove);
-					mObjects[i] = null;
+					_objects[i] = null;
 				}
 			}
 		}
@@ -133,23 +158,21 @@ package tetragon.view.render2d.animation
 			// from an 'advanceTime' call, this would make the loop crash. Instead, the
 			// vector is filled with 'null' values. They will be cleaned up on the next call
 			// to 'advanceTime'.
-
-			for (var i:int = mObjects.length - 1; i >= 0; --i)
+			for (var i:int = _objects.length - 1; i >= 0; --i)
 			{
-				var dispatcher:EventDispatcher2D = mObjects[i] as EventDispatcher2D;
+				var dispatcher:EventDispatcher2D = _objects[i] as EventDispatcher2D;
 				if (dispatcher) dispatcher.removeEventListener(Event2D.REMOVE_FROM_JUGGLER, onRemove);
-				mObjects[i] = null;
+				_objects[i] = null;
 			}
 		}
-
-
+		
+		
 		/** Delays the execution of a function until a certain time has passed. Creates an
 		 *  object of type 'DelayedCall' internally and returns it. Remove that object
 		 *  from the juggler to cancel the function call. */
 		public function delayCall(call:Function, delay:Number, ...args):DelayedCall2D
 		{
 			if (call == null) return null;
-
 			var delayedCall:DelayedCall2D = new DelayedCall2D(call, delay, args);
 			add(delayedCall);
 			return delayedCall;
@@ -191,38 +214,35 @@ package tetragon.view.render2d.animation
 			tween.addEventListener(Event2D.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
 			add(tween);
 		}
-
-
-		private function onPooledTweenComplete(event:Event2D):void
-		{
-			Tween2D.toPool(event.target as Tween2D);
-		}
-
-
-		/** Advances all objects by a certain time (in seconds). */
+		
+		
+		/**
+		 * Advances all objects by a certain time (in seconds).
+		 * 
+		 * @param time
+		 */
 		public function advanceTime(time:Number):void
 		{
-			var numObjects:int = mObjects.length;
+			var numObjects:int = _objects.length;
 			var currentIndex:int = 0;
-			var i:int;
-
-			mElapsedTime += time;
+			_elapsedTime += time;
+			
 			if (numObjects == 0) return;
 
 			// there is a high probability that the "advanceTime" function modifies the list
 			// of animatables. we must not process new objects right now (they will be processed
 			// in the next frame), and we need to clean up any empty slots in the list.
-
+			var i:int;
 			for (i = 0; i < numObjects; ++i)
 			{
-				var object:IAnimatable2D = mObjects[i];
+				var object:IAnimatable2D = _objects[i];
 				if (object)
 				{
 					// shift objects into empty slots along the way
 					if (currentIndex != i)
 					{
-						mObjects[currentIndex] = object;
-						mObjects[i] = null;
+						_objects[currentIndex] = object;
+						_objects[i] = null;
 					}
 
 					object.advanceTime(time);
@@ -232,31 +252,49 @@ package tetragon.view.render2d.animation
 
 			if (currentIndex != i)
 			{
-				numObjects = mObjects.length;
-				// count might have changed!
-
+				numObjects = _objects.length; // count might have changed!
 				while (i < numObjects)
-					mObjects[int(currentIndex++)] = mObjects[int(i++)];
-
-				mObjects.length = currentIndex;
+				{
+					_objects[int(currentIndex++)] = _objects[int(i++)];
+				}
+				_objects.length = currentIndex;
 			}
 		}
-
-
-		private function onRemove(event:Event2D):void
-		{
-			remove(event.target as IAnimatable2D);
-
-			var tween:Tween2D = event.target as Tween2D;
-			if (tween && tween.isComplete)
-				add(tween.nextTween);
-		}
-
-
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
 		/** The total life time of the juggler. */
 		public function get elapsedTime():Number
 		{
-			return mElapsedTime;
+			return _elapsedTime;
+		}
+		
+		
+		public function get numObjects():uint
+		{
+			return _objects.length;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		private function onPooledTweenComplete(e:Event2D):void
+		{
+			Tween2D.toPool(e.target as Tween2D);
+		}
+		
+		
+		private function onRemove(e:Event2D):void
+		{
+			remove(e.target as IAnimatable2D);
+
+			var tween:Tween2D = e.target as Tween2D;
+			if (tween && tween.isComplete) add(tween.nextTween);
 		}
 	}
 }

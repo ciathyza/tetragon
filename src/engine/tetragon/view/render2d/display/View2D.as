@@ -51,9 +51,8 @@ package tetragon.view.render2d.display
 		
 		protected var _main:Main;
 		
-		protected var _clipRect:Rectangle;
 		protected var _background:Rect2D;
-		
+		private var _clipRect:Rectangle;
 		protected var _clipped:Boolean = true;
 		
 		protected var _frameWidth:int;
