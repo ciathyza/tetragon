@@ -790,7 +790,7 @@
 		<sequential>
 			<echo message="Compiling ${app.swfname.full} ..." level="info"/>
 			<exec executable="${mxmlc}">
-				<arg value="${path.src.project}/${entry.class}.as"/>
+				<arg value="${path.src.project}/${web.preloaderclass}.as"/>
 				<arg line="-output=${path.bin}/${app.swfname.full}"/>
 				<arg line="-default-frame-rate=@{framerate}"/>
 				<arg line="-default-background-color=0x@{bgcolor}"/>
@@ -802,6 +802,7 @@
 				<arg line="-optimize=true"/>
 				<arg line="-strict=true"/>
 				<arg line="-compress=@{compress}"/>
+				<arg line="-frame ${entry.class} ${entry.class}"/>
 				<arg line="-warn-no-constructor=false"/>
 				<arg line="-load-config=${FLEX_HOME}/frameworks/@{config}"/>
 				<arg line="-keep-as3-metadata=TypeHint"/>

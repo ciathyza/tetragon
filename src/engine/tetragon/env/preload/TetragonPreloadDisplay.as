@@ -50,7 +50,7 @@ package tetragon.env.preload
 		 * A reference to the Preloader (which wraps this preload display).
 		 * @private
 		 */
-		protected var _preloader:Preloader;
+		protected var _preloader:IPreloader;
 		
 		/**
 		 * How many frames to wait before initiating the preloader. This is a threshold
@@ -91,7 +91,7 @@ package tetragon.env.preload
 		 * 
 		 * @param preloader A reference to the wrapping Preloader.
 		 */
-		public function TetragonPreloadDisplay(preloader:Preloader)
+		public function TetragonPreloadDisplay(preloader:IPreloader)
 		{
 			super();
 			_preloader = preloader;

@@ -38,6 +38,6 @@ package tetragon.env.preload
 		 * Invoked by a Preloader class after it has finished preloading
 		 * the application. The web-based application is initiated from here.
 		 */
-		function onApplicationPreloaded(preloader:Preloader):void;
+		function onApplicationPreloaded(preloader:IPreloader):void;
 	}
 }
