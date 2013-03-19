@@ -501,7 +501,7 @@ package tetragon.input
 		private function onKeyDown(e:KeyboardEvent):void
 		{
 			_keySignal.dispatch(KeySignal.KEY_DOWN, e);
-			var isAlreadyDown:Boolean = _keysDown[e.keyCode];
+			var isAlreadyDown:Boolean = _keysDown[e.keyCode] as Boolean;
 			var i:int;
 			
 			/* Store all keys that are currently pressed. */

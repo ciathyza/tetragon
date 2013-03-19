@@ -714,10 +714,10 @@ package tetragon.view.native
 						c.dispose();
 						break;
 					case EXEC_ENABLED:
-						c.enabled = value;
+						c.enabled = value as Boolean;
 						break;
 					case EXEC_PAUSED:
-						c.paused = value;
+						c.paused = value as Boolean;
 						break;
 				}
 			}
