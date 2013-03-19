@@ -142,13 +142,13 @@ package tetragon.view.loadprogress
 				_text = _backBuffer + _sAll + "\n\nAll loading completed. ";
 			}
 			
-			updateText();
-			
 			if (waitForUserInput)
 			{
 				_text += "Press mouse to continue.";
 				screenManager.mouseSignal.addOnce(onMouseClick);
 			}
+			
+			updateText();
 		}
 		
 		
