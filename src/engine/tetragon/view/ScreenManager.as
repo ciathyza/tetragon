@@ -640,7 +640,7 @@ package tetragon.view
 		
 		public function get render2D():Render2D
 		{
-			if (_render2D == null) _render2D = new Render2D();
+			if (!_render2D) _render2D = Render2D.instance;
 			return _render2D;
 		}
 		

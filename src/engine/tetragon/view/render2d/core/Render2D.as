@@ -46,6 +46,7 @@ package tetragon.view.render2d.core
 	import tetragon.view.stage3d.Stage3DProxy;
 
 	import com.hexagonstar.exception.FatalException;
+	import com.hexagonstar.exception.SingletonException;
 
 	import flash.display.Stage;
 	import flash.display.Stage3D;
@@ -193,7 +194,14 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
+		private static var _instance:Render2D;
+		/** @private */
+		private static var _singletonLock:Boolean;
+		
+		/** @private */
 		private var _main:Main;
+		/** @private */
+		private var _nativeStage:Stage;
 		/** @private */
 		private var _stage3DProxy:Stage3DProxy;
 		/** @private */
@@ -202,9 +210,6 @@ package tetragon.view.render2d.core
 		private var _stage2D:Stage2D;
 		/** @private */
 		private static var _context:Context3D;
-		
-		/** @private */
-		private var _stage:Stage;
 		
 		/** @private */
 		private var _rootView:View2D;
@@ -251,94 +256,11 @@ package tetragon.view.render2d.core
 		
 		/**
 		 * Creates a new Render2D instance.
-		 * 
-		 * @param rootClass A subclass of a Render2D display object. It will be created as
-		 *            soon as initialization is finished and will become the first child of
-		 *            the Render2D stage.
-		 * @param viewPort A rectangle describing the area into which the content will be
-		 *            rendered. @default stage size
-		 * @param stage3D The Stage3D object into which the content will be rendered. If it
-		 *            already contains a context, <code>sharedContext</code> will be set to
-		 *            <code>true</code>. @default the first available Stage3D.
-		 * @param renderMode Use this parameter to force "software" rendering.
-		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(rootView:View2D = null, renderMode:String = "auto",
-			profile:String = "baselineConstrained")
+		public function Render2D()
 		{
-			_main = Main.instance;
-			_stage = _main.stage;
-			_stage3DProxy = _main.screenManager.stage3DProxy;
-			
-			if (!_stage3DProxy)
-			{
-				throw new FatalException("Stage3DProxy is not available! Is hardware rendering enabled?");
-			}
-			
-			DisplayObject2D.render2D =
-			FragmentFilter2D.render2D =
-			Texture2D.render2D = this;
-			
-			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
-			if (_main.statsMonitor)
-			{
-				_main.statsMonitor.registerDrawCallsPolling(this);
-			}
-			
-			if (!_contextData) _contextData = new Dictionary(true);
-			
-			_stage3D = _stage3DProxy.stage3D;
-			
-			_viewPort = new Rectangle(0, 0, _stage3DProxy.width, _stage3DProxy.height);
-			_previousViewPort = new Rectangle();
-			
-			_stage2D = new Stage2D(_stage3DProxy.width, _stage3DProxy.height, _stage3DProxy.color);
-			
-			_touchProcessor = new TouchProcessor2D(_stage2D);
-			_juggler = new Juggler2D();
-			_renderSupport = new RenderSupport2D(this);
-			
-			_drawCount = 0;
-			_antiAliasing = 0;
-			_simulateMultitouch = false;
-			_profile = profile;
-			_lastFrameTimestamp = getTimer() / 1000.0;
-			
-			/* For context data, we actually reference by stage3D, since it survives
-			 * a context loss. */
-			_contextData[stage3D] = new Dictionary();
-			_contextData[stage3D][PROGRAM_DATA_NAME] = new Dictionary();
-			
-			/* Register touch/mouse event handlers. */
-			for each (var touchEventType:String in touchEventTypes)
-			{
-				_stage.addEventListener(touchEventType, onTouch);
-			}
-			
-			/* Register other event handlers. */
-			_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
-			_stage.addEventListener(KeyboardEvent.KEY_UP, onKey);
-			_stage.addEventListener(Event.RESIZE, onResize);
-			_stage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
-			
-			/* If we already got a context3D and it's not disposed. */
-			if (RenderSupport2D.context3D && RenderSupport2D.context3D.driverInfo != "Disposed")
-			{
-				_context = RenderSupport2D.context3D;
-				contextData[PROGRAM_DATA_NAME] = new Dictionary();
-				updateViewPort(true);
-				Log.verbose("Render2D System v" + VERSION + " initialized.", this);
-				dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
-				
-				_touchProcessor.simulateMultitouch = _simulateMultitouch;
-				_lastFrameTimestamp = getTimer() / 1000.0;
-				
-				this.rootView = rootView;
-			}
-			else
-			{
-				Log.fatal("Stage3DProxy has no context!", this);
-			}
+			if (!_singletonLock) throw new SingletonException(this);
+			setup();
 		}
 		
 		
@@ -354,14 +276,14 @@ package tetragon.view.render2d.core
 		{
 			stop();
 			
-			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey);
-			_stage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
-			_stage.removeEventListener(Event.RESIZE, onResize);
-			_stage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
+			_nativeStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey);
+			_nativeStage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
+			_nativeStage.removeEventListener(Event.RESIZE, onResize);
+			_nativeStage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
 			
 			for each (var touchEventType:String in touchEventTypes)
 			{
-				_stage.removeEventListener(touchEventType, onTouch);
+				_nativeStage.removeEventListener(touchEventType, onTouch);
 			}
 			
 			if (_stage2D) _stage2D.dispose();
@@ -540,6 +462,21 @@ package tetragon.view.render2d.core
 		//-----------------------------------------------------------------------------------------
 		
 		/**
+		 * Returns the singleton instance of the class.
+		 */
+		public static function get instance():Render2D
+		{
+			if (_instance == null)
+			{
+				_singletonLock = true;
+				_instance = new Render2D();
+				_singletonLock = false;
+			}
+			return _instance;
+		}
+		
+		
+		/**
 		 * Indicates if a context is available and non-disposed.
 		 */
 		private function get contextValid():Boolean
@@ -606,11 +543,9 @@ package tetragon.view.render2d.core
 		}
 		public function set antiAliasing(v:int):void
 		{
-			if (_antiAliasing != v)
-			{
-				_antiAliasing = v;
-				if (contextValid) updateViewPort(true);
-			}
+			if (v == _antiAliasing) return;
+			_antiAliasing = v;
+			if (contextValid) updateViewPort(true);
 		}
 		
 		
@@ -638,26 +573,6 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * Indicates if a small statistics box (with FPS, memory usage and draw count)
-		 * is displayed.
-		 */
-		//public function get showStats():Boolean
-		//{
-		//	return _statsDisplay && _statsDisplay.parent;
-		//}
-		//public function set showStats(v:Boolean):void
-		//{
-		//	if (v == showStats) return;
-		//	if (v)
-		//	{
-		//		if (_statsDisplay) _stage2D.addChild(_statsDisplay);
-		//		else showStatsAt();
-		//	}
-		//	else _statsDisplay.removeFromParent();
-		//}
-		
-		
-		/**
 		 * The Render2D stage object, which is the root of the display tree that
 		 * is rendered.
 		 */
@@ -677,11 +592,11 @@ package tetragon.view.render2d.core
 
 
 		/**
-		 * The Flash (2D) stage object Render2D renders beneath.
+		 * The Flash native stage object that Render2D renders beneath.
 		 */
-		public function get stage():Stage
+		public function get nativeStage():Stage
 		{
-			return _stage;
+			return _nativeStage;
 		}
 		
 		
@@ -727,11 +642,22 @@ package tetragon.view.render2d.core
 		
 		/**
 		 * The Context3D profile as requested in the constructor. Beware that if you are using
-		 * a shared context, this might not be accurate.
+		 * a shared context, this might not be accurate. Possible values are:
+		 * 
+		 * baseline
+		 * baselineConstrained
+		 * 
+		 * @default baselineConstrained
 		 */
 		public function get profile():String
 		{
 			return _profile;
+		}
+		public function set profile(v:String):void
+		{
+			if (v == _profile) return;
+			_profile = v;
+			if (contextValid) updateViewPort(true);
 		}
 		
 		
@@ -893,6 +819,79 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
+		private function setup():void
+		{
+			_main = Main.instance;
+			_nativeStage = _main.stage;
+			_stage3DProxy = _main.screenManager.stage3DProxy;
+			
+			if (!_stage3DProxy)
+			{
+				throw new FatalException("Stage3DProxy is not available! Is hardware"
+					+ " rendering enabled?");
+			}
+			
+			/* Set shortcut to render2D instance in often used classes for faster access. */
+			DisplayObject2D.render2D =
+			FragmentFilter2D.render2D =
+			Texture2D.render2D = this;
+			
+			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
+			if (_main.statsMonitor) _main.statsMonitor.registerDrawCallsPolling(this);
+			
+			_stage3D = _stage3DProxy.stage3D;
+			_viewPort = new Rectangle(0, 0, _stage3DProxy.width, _stage3DProxy.height);
+			_previousViewPort = new Rectangle();
+			_stage2D = new Stage2D(_stage3DProxy.width, _stage3DProxy.height, _stage3DProxy.color);
+			_touchProcessor = new TouchProcessor2D(_stage2D);
+			_juggler = new Juggler2D();
+			_renderSupport = new RenderSupport2D(this);
+			
+			_drawCount = 0;
+			_antiAliasing = 0;
+			_simulateMultitouch = false;
+			_profile = "baselineConstrained";
+			_lastFrameTimestamp = getTimer() / 1000.0;
+			
+			/* For context data, we actually reference by stage3D, since it survives
+			 * a context loss. */
+			if (!_contextData) _contextData = new Dictionary(true);
+			_contextData[stage3D] = new Dictionary();
+			_contextData[stage3D][PROGRAM_DATA_NAME] = new Dictionary();
+			
+			/* Register touch/mouse event handlers. */
+			for each (var touchEventType:String in touchEventTypes)
+			{
+				_nativeStage.addEventListener(touchEventType, onTouch);
+			}
+			
+			/* Register other event handlers. */
+			_nativeStage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
+			_nativeStage.addEventListener(KeyboardEvent.KEY_UP, onKey);
+			_nativeStage.addEventListener(Event.RESIZE, onResize);
+			_nativeStage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
+			
+			/* If we already got a context3D and it's not disposed. */
+			if (RenderSupport2D.context3D && RenderSupport2D.context3D.driverInfo != "Disposed")
+			{
+				_context = RenderSupport2D.context3D;
+				contextData[PROGRAM_DATA_NAME] = new Dictionary();
+				updateViewPort(true);
+				Log.verbose("Render2D System v" + VERSION + " initialized.", this);
+				dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
+				
+				_touchProcessor.simulateMultitouch = _simulateMultitouch;
+			}
+			else
+			{
+				Log.fatal("Stage3DProxy has no context!", this);
+			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private function updateViewPort(updateAliasing:Boolean = false):void
 		{
 			/* The last set viewport is stored in a variable; that way, people can modify the
@@ -908,8 +907,8 @@ package tetragon.view.render2d.core
 				// Constrained mode requires that the viewport is within the native stage bounds;
 				// thus, we use a clipped viewport when configuring the back buffer. (In baseline
 				// mode, that's not necessary, but it does not hurt either.)
-				_clippedViewPort = _viewPort.intersection(new Rectangle(0, 0, _stage.stageWidth,
-					_stage.stageHeight));
+				_clippedViewPort = _viewPort.intersection(new Rectangle(0, 0, _nativeStage.stageWidth,
+					_nativeStage.stageHeight));
 				
 				if (!_shareContext)
 				{
