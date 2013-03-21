@@ -33,6 +33,7 @@ package tetragon
 	import tetragon.file.parsers.*;
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.loaders.*;
+	import tetragon.systems.ISystem;
 
 	import com.hexagonstar.types.Point2D;
 	import com.hexagonstar.types.Point3D;
@@ -97,6 +98,12 @@ package tetragon
 		 * @private
 		 */
 		private var _componentMap:Object;
+		
+		/**
+		 * Maps systems for access in other classes, for example commands.
+		 * @private
+		 */
+		private var _systems:Dictionary;
 		
 		/**
 		 * Counter used to create unique entity component IDs.
@@ -402,6 +409,41 @@ package tetragon
 			component.id = "component" + _componentIDCount;
 			_componentIDCount++;
 			return component;
+		}
+		
+		
+		/**
+		 * Registers a system.
+		 */
+		public function registerSystem(id:String, system:ISystem):void
+		{
+			if (!_systems) _systems = new Dictionary();
+			if (_systems[id])
+			{
+				Log.notice("A system with the ID \"" + id + "\" is aready registered.", this);
+				return;
+			}
+			_systems[id] = system;
+		}
+		
+		
+		/**
+		 * Unregisters a system.
+		 */
+		public function unregisterSystem(id:String):void
+		{
+			if (!_systems) return;
+			delete _systems[id];
+		}
+		
+		
+		/**
+		 * Obtains a system.
+		 */
+		public function getSystem(id:String):*
+		{
+			if (!_systems) return null;
+			return _systems[id];
 		}
 		
 		
