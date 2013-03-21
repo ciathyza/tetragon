@@ -494,9 +494,10 @@ package tetragon.file.resource
 		 * Processes the specified resource using a suitable resource processor.
 		 * 
 		 * @param resourceID The resource ID to process.
+		 * @param force If true forces processing the resource even it has already been processed.
 		 * @return The resource content or null.
 		 */
-		public function process(resourceID:String):*
+		public function process(resourceID:String, force:Boolean = false):*
 		{
 			if (resourceID == null) return null;
 			var resource:Resource = resourceIndex.getResource(resourceID);
@@ -507,6 +508,12 @@ package tetragon.file.resource
 					+ " has not yet been loaded.");
 				return null;
 			}
+			
+			if (!force && resource.status == ResourceStatus.PROCESSED)
+			{
+				return resource.content;
+			}
+			
 			var clazz:Class = _classRegistry.getResourceProcessorClass(resource.type);
 			if (!clazz)
 			{
@@ -530,6 +537,7 @@ package tetragon.file.resource
 			}
 			//Log.debug("Processing resource \"" + resourceID + "\" with " + processor.toString() + " ...", this);
 			processor.process(resource);
+			resource.setStatus(ResourceStatus.PROCESSED);
 			return resource.content;
 		}
 		

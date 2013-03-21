@@ -185,11 +185,14 @@ package tetragon.file.parsers
 		 * 
 		 * @param xml The XML from which to extract.
 		 * @param name The node or attribute name on the specified XML.
+		 * @param fallback A fallback number in case the extracted result is NaN.
 		 * @return The extracted number.
 		 */
-		protected static function extractNumber(xml:*, name:String):Number
+		protected static function extractNumber(xml:*, name:String, fallback:Number = NaN):Number
 		{
-			return Number(extractString(xml, name));
+			var num:Number = Number(extractString(xml, name));
+			if (isNaN(num)) num = fallback;
+			return num;
 		}
 		
 		

@@ -38,9 +38,10 @@ package tetragon.file.resource
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const INIT:String		= "init";
-		public static const LOADING:String	= "loading";
-		public static const LOADED:String	= "loaded";
-		public static const FAILED:String	= "failed";
+		public static const INIT:String			= "init";
+		public static const LOADING:String		= "loading";
+		public static const LOADED:String		= "loaded";
+		public static const PROCESSED:String	= "processed";
+		public static const FAILED:String		= "failed";
 	}
 }

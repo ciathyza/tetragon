@@ -846,10 +846,10 @@ package tetragon.view.render2d.extensions.scrollimage
 			// for no square ratio, unscale from square to orginal ratio
 			if (_textureRatio != 1) matrix.appendScale(1, _textureRatio, 1);
 			
-			matrix.appendTranslation(
-				_tilesPivotX - (layer.offsetX + tilesOffsetX) / _textureWidth * pOffset,
-				_tilesPivotY - (layer.offsetY + tilesOffsetY) / _textureHeight * pOffset,
-				0);
+			xs = _tilesPivotX - (layer.offsetX + tilesOffsetX) / _textureWidth * pOffset;
+			ys = _tilesPivotY - (layer.offsetY + tilesOffsetY) / _textureHeight * pOffset;
+			
+			matrix.appendTranslation(xs, ys, 0);
 			return matrix;
 		}
 
