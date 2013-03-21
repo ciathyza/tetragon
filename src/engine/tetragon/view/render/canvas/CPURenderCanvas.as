@@ -167,11 +167,11 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function blitImage(image:*, x:int, y:int, w:int, h:int):void
+		public function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void
 		{
 			_r.setTo(0, 0, w, h);
 			_p.setTo(x, y);
-			copyPixels(image as BitmapData, _r, _p);
+			copyPixels(displayObject as BitmapData, _r, _p);
 			++_drawCount;
 		}
 		

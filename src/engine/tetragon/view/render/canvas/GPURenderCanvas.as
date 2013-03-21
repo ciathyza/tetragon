@@ -181,17 +181,15 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function blitImage(image:*, x:int, y:int, w:int, h:int):void
+		public function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void
 		{
 			checkCommandBufferFull();
 			
 			var c:DrawCommand = _drawCommandBuffer[_drawCommandIndex];
 			c.type = 4;
-			c.image = image;
+			c.displayObject = displayObject;
 			c.x = x;
 			c.y = y;
-			c.w = w;
-			c.h = h;
 			
 			++_drawCommandIndex;
 		}
@@ -233,7 +231,7 @@ package tetragon.view.render.canvas
 					{
 						if (c.mixAlpha < 1.0)
 						{
-							(c.image as Image2D).color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);
+							c.image.color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);
 						}
 						_m.setTo(c.scale, 0, 0, c.scale, c.x, c.y);
 						_r.setTo(c.x, c.y, c.w, c.h);
@@ -243,8 +241,7 @@ package tetragon.view.render.canvas
 					else if (c.type == 4)
 					{
 						_m.setTo(1.0, 0, 0, 1.0, c.x, c.y);
-						_r.setTo(c.x, c.y, c.w, c.h);
-						_texture.drawImage(c.image, _m, _r);
+						_texture.draw(c.displayObject, _m);
 					}
 					
 					/* Invalidate command. */
@@ -374,6 +371,7 @@ package tetragon.view.render.canvas
 }
 
 
+import tetragon.view.render2d.display.DisplayObject2D;
 import tetragon.view.render2d.display.Image2D;
 
 /**
@@ -398,5 +396,6 @@ final class DrawCommand
 		color:uint,
 		mixColor:uint,
 		mixAlpha:Number,
-		image:Image2D;
+		image:Image2D,
+		displayObject:DisplayObject2D;
 }

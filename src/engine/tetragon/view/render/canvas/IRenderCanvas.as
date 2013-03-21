@@ -105,7 +105,7 @@ package tetragon.view.render.canvas
 		 * @param w
 		 * @param h
 		 */
-		function blitImage(image:*, x:int, y:int, w:int, h:int):void;
+		function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void;
 		
 		
 		/**
