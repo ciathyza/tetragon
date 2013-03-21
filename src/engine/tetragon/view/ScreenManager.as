@@ -882,6 +882,7 @@ package tetragon.view
 		 */
 		private function onTweenOutComplete():void
 		{
+			if (_render2D) _render2D.purge();
 			_nativeViewContainer.removeChild(_currentScreen);
 			_currentScreen.screenUnloadedSignal.addOnce(onScreenUnloaded);
 			_currentScreen.unloadScreen();

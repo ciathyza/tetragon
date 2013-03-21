@@ -232,10 +232,13 @@ package tetragon.view.render2d.display
 			dispose:Boolean = false):void
 		{
 			if (endIndex < 0 || endIndex >= numChildren)
+			{
 				endIndex = numChildren - 1;
-
+			}
 			for (var i:int = beginIndex; i <= endIndex; ++i)
+			{
 				removeChildAt(beginIndex, dispose);
+			}
 		}
 		
 		

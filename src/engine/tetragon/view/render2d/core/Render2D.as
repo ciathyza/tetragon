@@ -294,6 +294,16 @@ package tetragon.view.render2d.core
 		
 		
 		/**
+		 * Disposes and removes all children of the Render2D stage but not the stage itself,
+		 * so that the Render2D instance can be re-used afterwards.
+		 */
+		public function purge():void
+		{
+			if (_stage2D) _stage2D.removeChildren(0, -1, true);
+		}
+		
+		
+		/**
 		 * Calls <code>advanceTime()</code> (with the time that has passed since the last
 		 * frame) and <code>render()</code>.
 		 */
