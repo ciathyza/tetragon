@@ -190,7 +190,9 @@ package tetragon.file.parsers
 		 */
 		protected static function extractNumber(xml:*, name:String, fallback:Number = NaN):Number
 		{
-			var num:Number = Number(extractString(xml, name));
+			var s:String = extractString(xml, name);
+			if (s == null || s == "") return fallback;
+			var num:Number = Number(s);
 			if (isNaN(num)) num = fallback;
 			return num;
 		}
