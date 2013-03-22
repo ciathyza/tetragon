@@ -61,12 +61,12 @@ package tetragon.file.parsers
 				if (!loader.hasResourceID(id)) continue;
 				
 				/* Parse sub textures first. */
-				var len:int = (xml.SubTexture as XMLList).length();
-				if (len > 0)
+				var subList:XMLList = obtainXMLList(xml, "subTexture");
+				if (subList.length() > 0)
 				{
 					var c:int = 0;
-					var subTextures:Vector.<SubTextureBounds> = new Vector.<SubTextureBounds>(len, true);
-					for each (var s:XML in xml.SubTexture)
+					var subTextures:Vector.<SubTextureBounds> = new Vector.<SubTextureBounds>(subList.length(), true);
+					for each (var s:XML in subList)
 					{
 						var st:SubTextureBounds = new SubTextureBounds(extractString(s, "@name"));
 						st.x = extractNumber(s, "@x");
@@ -79,6 +79,10 @@ package tetragon.file.parsers
 						st.frameHeight = extractNumber(s, "@frameHeight");
 						subTextures[c++] = st;
 					}
+				}
+				else
+				{
+					warn("Texture Atlas with ID \"" + id + "\" has no sub textures.");
 				}
 				
 				/* Create new SpriteAtlas definition. */
