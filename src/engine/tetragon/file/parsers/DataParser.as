@@ -155,13 +155,13 @@ package tetragon.file.parsers
 		 * @param name The node or attribute name on the specified XML.
 		 * @return The extracted value.
 		 */
-		protected static function extractString(xml:*, name:String = null):String
+		protected static function extractString(xml:*, name:String = null, fallback:String = null):String
 		{
 			if (name != null)
 			{
 				var v:String = xml[name];
 				if (v && v.length > 0) return v;
-				return null;
+				return fallback;
 			}
 			return String(xml);
 		}
