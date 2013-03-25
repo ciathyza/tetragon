@@ -28,6 +28,8 @@
  */
 package tetragon.view.render2d.display
 {
+	import tetragon.data.constants.PlayDirection;
+	import tetragon.data.constants.PlayMode;
 	import tetragon.view.render2d.animation.IAnimatable2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -119,6 +121,8 @@ package tetragon.view.render2d.display
 			var numFrames:int = textures.length;
 			
 			_defaultFrameDuration = 1.0 / fps;
+			_playMode = PlayMode.LOOP;
+			_playDirection = PlayDirection.FORWARD;
 			_loop = true;
 			_playing = true;
 			_currentTime = 0.0;
@@ -396,14 +400,17 @@ package tetragon.view.render2d.display
 		}
 		
 		
-		// TODO Add support for different play modes!
+		// TODO Add full support for different play modes!
 		public function get playMode():String
 		{
 			return _playMode;
 		}
 		public function set playMode(v:String):void
 		{
+			if (v == _playMode) return;
 			_playMode = v;
+			if (_playMode == PlayMode.LOOP) _loop = true;
+			else if (_playMode == PlayMode.ONESHOT) _loop = false;
 		}
 		
 		
@@ -414,6 +421,7 @@ package tetragon.view.render2d.display
 		}
 		public function set playDirection(v:String):void
 		{
+			if (v == _playDirection) return;
 			_playDirection = v;
 		}
 		
