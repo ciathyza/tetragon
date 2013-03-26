@@ -104,6 +104,10 @@ package tetragon.core
 		private var _renderSignal:RenderSignal;
 		/** @private */
 		private var _frameRateChangedSignal:Signal;
+		/** @private */
+		private var _enterFrameSignal:Signal;
+		/** @private */
+		private var _exitFrameSignal:Signal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -215,6 +219,20 @@ package tetragon.core
 		}
 		
 		
+		public function get enterFrameSignal():Signal
+		{
+			if (!_enterFrameSignal) _enterFrameSignal = new Signal();
+			return _enterFrameSignal;
+		}
+		
+		
+		public function get exitFrameSignal():Signal
+		{
+			if (!_exitFrameSignal) _exitFrameSignal = new Signal();
+			return _exitFrameSignal;
+		}
+		
+		
 		public function get frameRateChangedSignal():Signal
 		{
 			if (!_frameRateChangedSignal) _frameRateChangedSignal = new Signal();
@@ -231,6 +249,8 @@ package tetragon.core
 		 */
 		private function onEnterFrame(e:Event):void
 		{
+			if (_enterFrameSignal) _enterFrameSignal.dispatch();
+			
 			var time:uint = getTimer();
 			var ms:uint = time - _total;
 			var ticks:uint = 0;
@@ -260,6 +280,8 @@ package tetragon.core
 			}
 			
 			_renderSignal.dispatch(ticks, ms, _renderFPS);
+			
+			if (_exitFrameSignal) _exitFrameSignal.dispatch();
 		}
 	}
 }
