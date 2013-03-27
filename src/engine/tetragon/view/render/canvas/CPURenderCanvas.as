@@ -110,7 +110,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
+		public function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
 			mixAlpha:Number = 1.0):void
 		{
 			_r.setTo(x, y, w, h);
@@ -141,7 +141,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function drawImage(image:*, x:int, y:int, w:int, h:int,
+		public function drawImage(image:*, x:Number, y:Number, w:Number, h:Number,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
 			++_drawCount;
@@ -167,7 +167,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void
+		public function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0):void
 		{
 			_r.setTo(0, 0, w, h);
 			_p.setTo(x, y);

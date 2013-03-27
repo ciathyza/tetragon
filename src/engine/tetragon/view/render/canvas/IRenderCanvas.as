@@ -57,7 +57,7 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
+		function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
 			mixAlpha:Number = 1.0):void;
 		
 		
@@ -91,7 +91,7 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawImage(image:*, x:int, y:int, w:int, h:int, scale:Number = 1.0,
+		function drawImage(image:*, x:Number, y:Number, w:Number, h:Number, scale:Number = 1.0,
 			mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
 		
 		
@@ -105,7 +105,7 @@ package tetragon.view.render.canvas
 		 * @param w
 		 * @param h
 		 */
-		function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void;
+		function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0):void;
 		
 		
 		/**

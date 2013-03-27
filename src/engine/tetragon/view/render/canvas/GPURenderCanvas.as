@@ -109,7 +109,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function drawRect(x:int, y:int, w:int, h:int, color:uint, mixColor:uint = 0x000000,
+		public function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
 			mixAlpha:Number = 1.0):void
 		{
 			checkCommandBufferFull();
@@ -158,7 +158,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function drawImage(image:*, x:int, y:int, w:int, h:int,
+		public function drawImage(image:*, x:Number, y:Number, w:Number, h:Number,
 			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
 		{
 			checkCommandBufferFull();
@@ -181,7 +181,7 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function blit(displayObject:*, x:int = 0, y:int = 0, w:int = 0, h:int = 0):void
+		public function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0):void
 		{
 			checkCommandBufferFull();
 			
@@ -387,11 +387,11 @@ final class DrawCommand
 	 * 4 = blitImage
 	 */
 	public var type:int,
-		x:int, y:int,
-		x2:int, y2:int,
-		x3:int, y3:int,
-		x4:int, y4:int,
-		w:int, h:int,
+		x:Number, y:Number,
+		x2:Number, y2:Number,
+		x3:Number, y3:Number,
+		x4:Number, y4:Number,
+		w:Number, h:Number,
 		scale:Number,
 		color:uint,
 		mixColor:uint,
