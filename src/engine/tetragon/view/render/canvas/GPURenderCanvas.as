@@ -109,8 +109,8 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
-			mixAlpha:Number = 1.0):void
+		public function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint,
+			mixColor:uint = 0x000000, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void
 		{
 			checkCommandBufferFull();
 			
@@ -123,6 +123,7 @@ package tetragon.view.render.canvas
 			c.color = color;
 			c.mixAlpha = mixAlpha;
 			c.mixColor = mixColor;
+			c.mixThreshold = mixThreshold;
 			
 			++_drawCommandIndex;
 		}
@@ -133,7 +134,7 @@ package tetragon.view.render.canvas
 		 */
 		public function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
-			mixColor:uint, mixAlpha:Number = 1.0):void
+			mixColor:uint, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void
 		{
 			checkCommandBufferFull();
 			
@@ -150,6 +151,7 @@ package tetragon.view.render.canvas
 			c.color = color;
 			c.mixAlpha = mixAlpha;
 			c.mixColor = mixColor;
+			c.mixThreshold = mixThreshold;
 			
 			++_drawCommandIndex;
 		}
@@ -159,7 +161,8 @@ package tetragon.view.render.canvas
 		 * @inheritDoc
 		 */
 		public function drawImage(image:*, x:Number, y:Number, w:Number, h:Number,
-			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
+			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0,
+			mixThreshold:Number = 1.0):void
 		{
 			checkCommandBufferFull();
 			
@@ -173,6 +176,7 @@ package tetragon.view.render.canvas
 			c.scale = scale;
 			c.mixAlpha = mixAlpha;
 			c.mixColor = mixColor;
+			c.mixThreshold = mixThreshold;
 			
 			++_drawCommandIndex;
 		}
@@ -181,7 +185,8 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
-		public function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0):void
+		public function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0,
+			h:Number = 0):void
 		{
 			checkCommandBufferFull();
 			
@@ -214,7 +219,10 @@ package tetragon.view.render.canvas
 					/* Draw Rect */
 					else if (c.type == 1)
 					{
-						if (c.mixAlpha < 1.0) c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
+						if (c.mixAlpha < c.mixThreshold)
+						{
+							c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
+						}
 						_rect.setTo(c.x, c.y, c.w, c.h);
 						_rect.color = c.color;
 						_texture.draw(_rect);
@@ -222,20 +230,24 @@ package tetragon.view.render.canvas
 					/* Draw Quad */
 					else if (c.type == 2)
 					{
-						if (c.mixAlpha < 1.0) c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
+						if (c.mixAlpha < c.mixThreshold)
+						{
+							c.color = mixColors(c.color, c.mixColor, c.mixAlpha);
+						}
 						_quad.update(c.x, c.y, c.x2, c.y2, c.x3, c.y3, c.x4, c.y4, c.color);
 						_texture.draw(_quad);
 					}
 					/* Draw Image */
 					else if (c.type == 3)
 					{
-						if (c.mixAlpha < 1.0)
+						if (c.mixAlpha < c.mixThreshold)
 						{
 							c.image.color = mixColors(0xFFFFFF, c.mixColor, c.mixAlpha);
 						}
 						_m.setTo(c.scale, 0, 0, c.scale, c.x, c.y);
 						_r.setTo(c.x, c.y, c.w, c.h);
 						_texture.drawImage(c.image, _m, _r);
+						c.image.color = 0xFFFFFF;
 					}
 					/* Blit Image */
 					else if (c.type == 4)
@@ -396,6 +408,7 @@ final class DrawCommand
 		color:uint,
 		mixColor:uint,
 		mixAlpha:Number,
+		mixThreshold:Number,
 		image:Image2D,
 		displayObject:DisplayObject2D;
 }

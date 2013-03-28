@@ -111,7 +111,7 @@ package tetragon.view.render.canvas
 		 * @inheritDoc
 		 */
 		public function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
-			mixAlpha:Number = 1.0):void
+			mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void
 		{
 			_r.setTo(x, y, w, h);
 			fillRect(_r, mixAlpha < 1.0 ? mixColors(color, mixColor, mixAlpha) : color);
@@ -125,7 +125,7 @@ package tetragon.view.render.canvas
 		 */
 		public function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
-			mixColor:uint, mixAlpha:Number = 1.0):void
+			mixColor:uint, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void
 		{
 			if (mixAlpha < 1.0) color = mixColors(color, mixColor, mixAlpha);
 			_buffer.length = 0;
@@ -142,7 +142,8 @@ package tetragon.view.render.canvas
 		 * @inheritDoc
 		 */
 		public function drawImage(image:*, x:Number, y:Number, w:Number, h:Number,
-			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void
+			scale:Number = 1.0, mixColor:uint = 0x000000, mixAlpha:Number = 1.0,
+			mixThreshold:Number = 1.0):void
 		{
 			++_drawCount;
 			

@@ -234,10 +234,10 @@ package tetragon.view.render2d.display
 		 */
 		public function set color(v:uint):void
 		{
-			for (var i:int = 0; i < 4; ++i)
-			{
-				setVertexColor(i, v);
-			}
+			setVertexColor(0, v);
+			setVertexColor(1, v);
+			setVertexColor(2, v);
+			setVertexColor(3, v);
 			if (v != 0xFFFFFF || alpha != 1.0) _tinted = true;
 			else _tinted = _vertexData.tinted;
 		}

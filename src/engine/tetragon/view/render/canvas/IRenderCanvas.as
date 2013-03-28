@@ -57,8 +57,8 @@ package tetragon.view.render.canvas
 		 * @param mixColor
 		 * @param mixAlpha
 		 */
-		function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint, mixColor:uint = 0x000000,
-			mixAlpha:Number = 1.0):void;
+		function drawRect(x:Number, y:Number, w:Number, h:Number, color:uint,
+			mixColor:uint = 0x000000, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void;
 		
 		
 		/**
@@ -75,7 +75,8 @@ package tetragon.view.render.canvas
 		 * @param mixAlpha
 		 */
 		function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number, x3:Number, y3:Number,
-			x4:Number, y4:Number, color:uint, mixColor:uint, mixAlpha:Number = 1.0):void;
+			x4:Number, y4:Number, color:uint, mixColor:uint, mixAlpha:Number = 1.0,
+			mixThreshold:Number = 1.0):void;
 		
 		
 		/**
@@ -92,7 +93,7 @@ package tetragon.view.render.canvas
 		 * @param mixAlpha
 		 */
 		function drawImage(image:*, x:Number, y:Number, w:Number, h:Number, scale:Number = 1.0,
-			mixColor:uint = 0x000000, mixAlpha:Number = 1.0):void;
+			mixColor:uint = 0x000000, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void;
 		
 		
 		/**
