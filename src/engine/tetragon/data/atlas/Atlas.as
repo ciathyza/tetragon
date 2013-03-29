@@ -30,6 +30,7 @@ package tetragon.data.atlas
 {
 	import tetragon.data.DataObject;
 
+	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -50,6 +51,8 @@ package tetragon.data.atlas
 		/** @private */
 		protected var _imageID:String;
 		/** @private */
+		protected var _alphaImageID:String;
+		/** @private */
 		protected var _subTextureBounds:Vector.<SubTextureBounds>;
 		/** @private */
 		protected var _source:*;
@@ -57,6 +60,8 @@ package tetragon.data.atlas
 		protected var _regions:Object;
 		/** @private */
 		protected var _frames:Object;
+		/** @private */
+		protected var _alphaMasks:Object;
 		/** @private */
 		protected var _processed:Boolean;
 		
@@ -76,12 +81,15 @@ package tetragon.data.atlas
 		 * @param id
 		 * @param imageID
 		 * @param subTextureBounds
+		 * @param alphaImageID
 		 */
-		public function Atlas(id:String, imageID:String, subTextureBounds:Vector.<SubTextureBounds>)
+		public function Atlas(id:String, imageID:String, subTextureBounds:Vector.<SubTextureBounds>,
+			alphaImageID:String = null)
 		{
 			_id = id;
 			_imageID = imageID;
 			_subTextureBounds = subTextureBounds;
+			_alphaImageID = alphaImageID;
 			_regions = {};
 			_frames = {};
 		}
@@ -186,11 +194,18 @@ package tetragon.data.atlas
 		 * @param id
 		 * @param region
 		 * @param frame
+		 * @param alphaBitmapData
 		 */
-		public function addRegion(id:String, region:Rectangle, frame:Rectangle = null):void
+		public function addRegion(id:String, region:Rectangle, frame:Rectangle = null,
+			alphaMask:BitmapData = null):void
 		{
 			_regions[id] = region;
 			if (frame) _frames[id] = frame;
+			if (alphaMask)
+			{
+				if (!_alphaMasks) _alphaMasks = {};
+				_alphaMasks[id] = alphaMask;
+			}
 		}
 		
 		
@@ -254,6 +269,12 @@ package tetragon.data.atlas
 		}
 		
 		
+		public function get alphaImageID():String
+		{
+			return _alphaImageID;
+		}
+		
+		
 		public function get source():*
 		{
 			return _source;
@@ -273,6 +294,12 @@ package tetragon.data.atlas
 		public function get frames():Object
 		{
 			return _frames;
+		}
+		
+		
+		public function get alphaMasks():Object
+		{
+			return _alphaMasks;
 		}
 		
 		

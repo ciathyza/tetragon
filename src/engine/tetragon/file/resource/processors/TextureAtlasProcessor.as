@@ -28,12 +28,14 @@
  */
 package tetragon.file.resource.processors
 {
-	import flash.display.BitmapData;
-	import flash.geom.Rectangle;
-	import flash.utils.ByteArray;
 	import tetragon.data.atlas.SubTextureBounds;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.view.render2d.textures.Texture2D;
+
+	import flash.display.BitmapData;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
 
 	
 	
@@ -72,6 +74,7 @@ package tetragon.file.resource.processors
 				}
 				
 				var image:* = resourceIndex.getResourceContent(textureAtlas.imageID);
+				var alpha:* = resourceIndex.getResourceContent(textureAtlas.alphaImageID);
 				
 				if (image is BitmapData)
 				{
@@ -107,7 +110,7 @@ package tetragon.file.resource.processors
 					continue;
 				}
 				
-				processTextureAtlas(textureAtlas);
+				processTextureAtlas(textureAtlas, alpha);
 			}
 			return true;
 		}
@@ -116,17 +119,30 @@ package tetragon.file.resource.processors
 		/**
 		 * Processes a texture atlas.
 		 */
-		private function processTextureAtlas(textureAtlas:TextureAtlas):void
+		private function processTextureAtlas(textureAtlas:TextureAtlas, alpha:* = null):void
 		{
 			var len:uint = textureAtlas.subTextureCount;
+			var alphaBitmap:BitmapData = (alpha && alpha is BitmapData) ? alpha : null;
+			var p:Point;
+			var mask:BitmapData;
+			
 			for (var i:uint = 0; i < len; i++)
 			{
-				var b:SubTextureBounds = textureAtlas.subTextureBounds[i];
-				var region:Rectangle = new Rectangle(b.x, b.y, b.width, b.height);
-				var frame:Rectangle = b.frameWidth > 0 && b.frameHeight > 0
-					? new Rectangle(b.frameX, b.frameY, b.frameWidth, b.frameHeight)
+				var s:SubTextureBounds = textureAtlas.subTextureBounds[i];
+				var region:Rectangle = new Rectangle(s.x, s.y, s.width, s.height);
+				var frame:Rectangle = s.frameWidth > 0 && s.frameHeight > 0
+					? new Rectangle(s.frameX, s.frameY, s.frameWidth, s.frameHeight)
 					: null;
-				textureAtlas.addRegion(b.id, region, frame);
+				
+				if (alphaBitmap)
+				{
+					if (!p) p = new Point(0, 0);
+					mask = new BitmapData(region.width, region.height, false, 0x000000);
+					// TODO Add support for regions with frames!
+					mask.copyPixels(alphaBitmap, region, p);
+				}
+				
+				textureAtlas.addRegion(s.id, region, frame, mask);
 			}
 			
 			textureAtlas.processed = true;

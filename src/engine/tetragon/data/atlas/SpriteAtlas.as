@@ -75,9 +75,9 @@ package tetragon.data.atlas
 		 */
 		public function SpriteAtlas(id:String, imageID:String,
 			subTextureBounds:Vector.<SubTextureBounds>, transparent:Boolean = false,
-			backgroundColor:uint = 0xFF00FF)
+			backgroundColor:uint = 0xFF00FF, alphaImageID:String = null)
 		{
-			super(id, imageID, subTextureBounds);
+			super(id, imageID, subTextureBounds, alphaImageID);
 			
 			_transparent = transparent;
 			_backgroundColor = backgroundColor;

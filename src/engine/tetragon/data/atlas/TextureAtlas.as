@@ -93,9 +93,9 @@ package tetragon.data.atlas
 		 * @param subTextureBounds
 		 */
 		public function TextureAtlas(id:String, imageID:String,
-			subTextureBounds:Vector.<SubTextureBounds>)
+			subTextureBounds:Vector.<SubTextureBounds>, alphaImageID:String = null)
 		{
-			super(id, imageID, subTextureBounds);
+			super(id, imageID, subTextureBounds, alphaImageID);
 		}
 		
 		
