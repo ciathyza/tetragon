@@ -327,25 +327,31 @@ package tetragon.view.render2d.core
 		 *  If you pass a 'resultRect', the result will be stored in this rectangle 
 		 *  instead of creating a new object. To use all vertices for the calculation, set
 		 *  'numVertices' to '-1'. */
-		public function getBounds(transformationMatrix:Matrix = null, vertexID:int = 0, numVertices:int = -1, resultRect:Rectangle = null):Rectangle
+		public function getBounds(transformationMatrix:Matrix = null, vertexID:int = 0,
+			numVertices:int = -1, resultRect:Rectangle = null):Rectangle
 		{
-			if (resultRect == null) resultRect = new Rectangle();
+			if (!resultRect) resultRect = new Rectangle();
 			if (numVertices < 0 || vertexID + numVertices > _numVertices)
-				numVertices = _numVertices - vertexID;
-
-			var minX:Number = Number.MAX_VALUE, maxX:Number = -Number.MAX_VALUE;
-			var minY:Number = Number.MAX_VALUE, maxY:Number = -Number.MAX_VALUE;
-			var offset:int = getOffset(vertexID) + POSITION_OFFSET;
-			var x:Number, y:Number, i:int;
-
-			if (transformationMatrix == null)
 			{
-				for (i = vertexID; i < numVertices; ++i)
+				numVertices = _numVertices - vertexID;
+			}
+			
+			var minX:Number = Number.MAX_VALUE,
+				maxX:Number = -Number.MAX_VALUE,
+				minY:Number = Number.MAX_VALUE,
+				maxY:Number = -Number.MAX_VALUE,
+				offset:int = getOffset(vertexID) + POSITION_OFFSET,
+				x:Number,
+				y:Number,
+				i:int;
+			
+			if (!transformationMatrix)
+			{
+				for (i = 0; i < numVertices; ++i)
 				{
 					x = _rawData[offset];
 					y = _rawData[int(offset + 1)];
 					offset += ELEMENTS_PER_VERTEX;
-
 					minX = minX < x ? minX : x;
 					maxX = maxX > x ? maxX : x;
 					minY = minY < y ? minY : y;
@@ -354,12 +360,11 @@ package tetragon.view.render2d.core
 			}
 			else
 			{
-				for (i = vertexID; i < numVertices; ++i)
+				for (i = 0; i < numVertices; ++i)
 				{
 					x = _rawData[offset];
 					y = _rawData[int(offset + 1)];
 					offset += ELEMENTS_PER_VERTEX;
-
 					MatrixUtil.transformCoords(transformationMatrix, x, y, _helperPoint);
 					minX = minX < _helperPoint.x ? minX : _helperPoint.x;
 					maxX = maxX > _helperPoint.x ? maxX : _helperPoint.x;
@@ -367,12 +372,12 @@ package tetragon.view.render2d.core
 					maxY = maxY > _helperPoint.y ? maxY : _helperPoint.y;
 				}
 			}
-
+			
 			resultRect.setTo(minX, minY, maxX - minX, maxY - minY);
 			return resultRect;
 		}
-
-
+		
+		
 		/** Changes the way alpha and color values are stored. Updates all exisiting vertices. */
 		public function setPremultipliedAlpha(value:Boolean, updateData:Boolean = true):void
 		{
