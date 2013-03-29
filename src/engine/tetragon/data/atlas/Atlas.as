@@ -210,6 +210,20 @@ package tetragon.data.atlas
 		
 		
 		/**
+		 * Returns the alpha mask for a specific subtexture, if available, otherwise
+		 * it returns null.
+		 * 
+		 * @param id ID of the subtexture.
+		 * @return A black and white BitmapData or null.
+		 */
+		public function getAlphaMask(id:String):BitmapData
+		{
+			if (!_alphaMasks) return null;
+			return _alphaMasks[id];
+		}
+		
+		
+		/**
 		 * Returns the region rectangle for a specific sprite.
 		 * 
 		 * @param id
