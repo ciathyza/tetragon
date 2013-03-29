@@ -149,6 +149,8 @@ package tetragon.debug
 		private var _glRenderMS:uint;
 		
 		/** @private */
+		private var _stageFrameRate:uint;
+		/** @private */
 		private var _stageFPS:uint;
 		/** @private */
 		private var _stageMS:uint;
@@ -212,6 +214,7 @@ package tetragon.debug
 				_statsDelay = 10;
 				_glTicks = 0;
 				_glRenderMS = 0;
+				_stageFrameRate = _stage.frameRate;
 				_last = getTimer();
 				
 				if (_gameLoop)
@@ -309,6 +312,7 @@ package tetragon.debug
 			if (delta >= 50)
 			{
 				_stageFPS = (_frames / delta * 1000);
+				if (_stageFPS > _stageFrameRate) _stageFPS = _stageFrameRate;
 				_frames = 0;
 				_last = time;
 				_stageMS = time - _prevTime;
@@ -346,6 +350,7 @@ package tetragon.debug
 		private function onClick(e:MouseEvent):void
 		{
 			(mouseY / height > .5) ? --_stage.frameRate : ++_stage.frameRate;
+			_stageFrameRate = _stage.frameRate;
 		}
 		
 		
@@ -508,7 +513,7 @@ package tetragon.debug
 			_graphBuffer.setPixel(240 - 1, 46 - (MIN(46, SQRT(SQRT(_mem * 5000))) - 2), _colorMem);
 			_graphBuffer.setPixel(240 - 1, 46 - (_glRenderMS >> 1), _colorEtc3);
 			_graphBuffer.setPixel(240 - 1, 46 - (_stageMS >> 1), _colorEtc2);
-			_graphBuffer.setPixel(240 - 1, 46 - MIN(46, (_stageFPS / _stage.frameRate) * 46), _colorFPS);
+			_graphBuffer.setPixel(240 - 1, 46 - MIN(46, (_stageFPS / _stageFrameRate) * 46), _colorFPS);
 			_graphBuffer.unlock();
 		}
 		
@@ -521,7 +526,7 @@ package tetragon.debug
 			if (_statsDelay++ < 10) return;
 			_statsDelay = 0;
 			
-			_fpsTF.text = "FPS:" + _stageFPS + "/" + _stage.frameRate;
+			_fpsTF.text = "FPS:" + _stageFPS + "/" + _stageFrameRate;
 			_mem1TF.text = "MEM:" + _mem.toFixed(2);
 			_mem2TF.text = "MAX:" + _memMax.toFixed(2);
 			_mem3TF.text = "PRC:" + _memPRC.toFixed(2);
