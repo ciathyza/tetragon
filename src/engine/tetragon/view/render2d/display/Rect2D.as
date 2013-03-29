@@ -263,6 +263,15 @@ package tetragon.view.render2d.display
 		}
 		
 		
+		/**
+		 * @inheritDoc
+		 */
+		public function get premultipliedAlpha():Boolean
+		{
+			return _vertexData.premultipliedAlpha;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------

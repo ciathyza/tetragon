@@ -126,5 +126,12 @@ package tetragon.view.render2d.display
 		 * Returns true if the quad (or any of its vertices) is non-white or non-opaque.
 		 */
 		function get tinted():Boolean;
+		
+		
+		/**
+		 * Indicates if the rgb values are stored premultiplied with the alpha value; this can
+		 * affect the rendering. (Most developers don't have to care, though.)
+		 */
+		function get premultipliedAlpha():Boolean;
 	}
 }

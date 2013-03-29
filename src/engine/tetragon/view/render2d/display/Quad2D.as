@@ -214,5 +214,14 @@ package tetragon.view.render2d.display
 		{
 			return _tinted;
 		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get premultipliedAlpha():Boolean
+		{
+			return _vertexData.premultipliedAlpha;
+		}
 	}
 }

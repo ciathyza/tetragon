@@ -274,7 +274,6 @@ package tetragon.view.render2d.display
 		{
 			if (!modelViewMatrix) modelViewMatrix = quad.transformationMatrix;
 			
-			var tinted:Boolean = texture ? (quad.tinted || parentAlpha != 1.0) : false;
 			var alpha:Number = parentAlpha * quad.alpha;
 			var vertexID:int = _numQuads * 4;
 			
@@ -282,13 +281,14 @@ package tetragon.view.render2d.display
 			{
 				expand();
 			}
+			
 			if (_numQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quad.blendMode;
 				_texture = texture;
-				_tinted = tinted;
+				_tinted = texture ? (quad.tinted || parentAlpha != 1.0) : false;
 				_smoothing = smoothing;
-				_vertexData.setPremultipliedAlpha(texture ? texture.premultipliedAlpha : true, false);
+				_vertexData.setPremultipliedAlpha(quad.premultipliedAlpha);
 			}
 			
 			quad.copyVertexDataTo(_vertexData, vertexID);
@@ -300,7 +300,7 @@ package tetragon.view.render2d.display
 			}
 			
 			_syncRequired = true;
-			_numQuads++;
+			_numQuads++;			
 		}
 		
 		
