@@ -32,13 +32,14 @@ package tetragon.view.render2d.text
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import com.hexagonstar.constants.HAlign;
+	import com.hexagonstar.constants.TextureSmoothing;
 	import com.hexagonstar.constants.VAlign;
 
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+
 
 	/** The BitmapFont class parses bitmap font files and arranges the glyphs 
 	 *  in the form of a text.
@@ -93,13 +94,13 @@ package tetragon.view.render2d.text
 
 		/** Creates a bitmap font by parsing an XML file and uses the specified texture. 
 		 *  If you don't pass any data, the "mini" font will be created. */
-		public function BitmapFont2D(texture:Texture2D = null, fontXML:XML = null)
+		public function BitmapFont2D(texture:Texture2D = null, fontXml:XML = null)
 		{
 			// if no texture is passed in, we create the minimal, embedded font
-			if (texture == null && fontXML == null)
+			if (texture == null && fontXml == null)
 			{
 				texture = MiniBitmapFont2D.texture;
-				fontXML = MiniBitmapFont2D.xml;
+				fontXml = MiniBitmapFont2D.xml;
 			}
 
 			mName = "unknown";
@@ -109,7 +110,7 @@ package tetragon.view.render2d.text
 			mHelperImage = new Image2D(texture);
 			mCharLocationPool = new <CharLocation>[];
 
-			if (fontXML) parseFontXml(fontXML);
+			if (fontXml) parseFontXml(fontXml);
 		}
 
 
@@ -132,11 +133,11 @@ package tetragon.view.render2d.text
 			mBaseline = parseFloat(fontXml.common.attribute("base")) / scale;
 
 			if (fontXml.info.attribute("smooth").toString() == "0")
-				smoothing = TextureSmoothing2D.NONE;
+				smoothing = TextureSmoothing.NONE;
 
 			if (mSize <= 0)
 			{
-				trace("[Render2D] Warning: invalid font size in '" + mName + "' font.");
+				trace("[Starling] Warning: invalid font size in '" + mName + "' font.");
 				mSize = (mSize == 0.0 ? 16.0 : mSize * -1.0);
 			}
 
@@ -271,7 +272,7 @@ package tetragon.view.render2d.text
 						}
 						else if (char == null)
 						{
-							trace("[Render2D] Missing character: " + charID);
+							trace("[Starling] Missing character: " + charID);
 						}
 						else
 						{
@@ -290,13 +291,6 @@ package tetragon.view.render2d.text
 
 							currentX += char.xAdvance;
 							lastCharID = charID;
-
-							if (currentLine.length == 1)
-							{
-								// the first character is not meant to have an xOffset
-								currentX -= char.xOffset;
-								charLocation.x -= char.xOffset;
-							}
 
 							if (charLocation.x + char.width > containerWidth)
 							{
@@ -371,9 +365,9 @@ package tetragon.view.render2d.text
 
 				if (numChars == 0) continue;
 
-				var lastLocation:CharLocation = line[line.length - 1];
-				var right:Number = lastLocation.x + lastLocation.char.width;
 				var xOffset:int = 0;
+				var lastLocation:CharLocation = line[line.length - 1];
+				var right:Number = lastLocation.x - lastLocation.char.xOffset + lastLocation.char.xAdvance;
 
 				if (hAlign == HAlign.RIGHT) xOffset = containerWidth - right;
 				else if (hAlign == HAlign.CENTER) xOffset = (containerWidth - right) / 2;
@@ -444,6 +438,8 @@ package tetragon.view.render2d.text
 		}
 	}
 }
+
+
 import tetragon.view.render2d.text.BitmapChar2D;
 
 class CharLocation
