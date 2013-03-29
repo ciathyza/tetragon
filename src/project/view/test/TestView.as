@@ -33,7 +33,6 @@ package view.test
 	import tetragon.data.Settings;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.View2D;
-	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -58,19 +57,6 @@ package view.test
 		
 		
 		// -----------------------------------------------------------------------------------------
-		// Constructor
-		// -----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function TestView()
-		{
-			super();
-		}
-		
-		
-		// -----------------------------------------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
 		
@@ -84,16 +70,19 @@ package view.test
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
 		
+		
+		// -----------------------------------------------------------------------------------------
+		// Private Methods
+		// -----------------------------------------------------------------------------------------
+		
 		/**
-		 * @private
+		 * @inheritDoc
 		 */
-		override protected function onAddedToStage(e:Event2D):void
+		override protected function setup():void
 		{
-			super.onAddedToStage(e);
-			
 			background = new Rect2D(10, 10, 0x00577C);
 			
-			var logoColor:uint = _main.registry.settings.getNumber(Settings.SPLASH_LOGO_COLOR);
+			var logoColor:uint = settings.getNumber(Settings.SPLASH_LOGO_COLOR);
 			if (isNaN(logoColor)) logoColor = 0xFFBF00;
 			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 8.0, 8.0, 2);
 			
@@ -108,32 +97,17 @@ package view.test
 			var texture:Texture2D = Texture2D.fromBitmapData(b, false);
 			var layer1:ScrollTile2D = new ScrollTile2D(texture);
 			
-			_scrollImage = new ScrollImage2D(_frameWidth, _frameHeight);
+			_scrollImage = new ScrollImage2D(stageWidth, stageHeight);
 			_scrollImage.addLayer(layer1);
 			addChild(_scrollImage);
 		}
 		
 		
-		// -----------------------------------------------------------------------------------------
-		// Private Methods
-		// -----------------------------------------------------------------------------------------
-		
 		/**
-		 * @private
+		 * @inheritDoc
 		 */
-		override protected function setup():void
-		{
-		}
-		
-		
-		//private var _zoomIn:Boolean;
-		
 		override protected function executeBeforeRender():void
 		{
-			//if (_scrollImage.tilesScale <= 1.0) _zoomIn = true;
-			//else if (_scrollImage.tilesScale >= 2.0) _zoomIn = false;
-			//_scrollImage.tilesScale += (_zoomIn) ? 0.001 : -0.001;
-			
 			_scrollImage.tilesOffsetX -= 1;
 			_scrollImage.tilesOffsetY -= 1;
 		}

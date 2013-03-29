@@ -180,6 +180,7 @@ package view.test
 		override protected function setup():void
 		{
 			super.setup();
+			_render2D = screenManager.render2D;
 		}
 		
 		
@@ -210,7 +211,6 @@ package view.test
 		override protected function createChildren():void
 		{
 			_view = new TestView();
-			_render2D = screenManager.render2D;
 			_render2D.rootView = _view;
 		}
 		

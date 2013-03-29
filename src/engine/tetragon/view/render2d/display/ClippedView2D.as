@@ -29,30 +29,33 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.Main;
-	import tetragon.data.Registry;
-	import tetragon.data.Settings;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.view.IView;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
+
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	
 	
 	/**
-	 * View2D class
-	 *
 	 * @author hexagon
 	 */
-	public class View2D extends DisplayObjectContainer2D implements IView
+	public class ClippedView2D extends DisplayObjectContainer2D implements IView
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		/** @private */
-		protected var _background:Rect2D;
+		protected var _main:Main;
 		
-		/** @private */
-		private static var _main:Main;
+		protected var _background:Rect2D;
+		private var _clipRect:Rectangle;
+		protected var _clipped:Boolean = true;
+		
+		protected var _frameWidth:int;
+		protected var _frameHeight:int;
+		
 		/** @private */
 		private static var _resourceIndex:ResourceIndex;
 		
@@ -64,10 +67,17 @@ package tetragon.view.render2d.display
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function View2D()
+		public function ClippedView2D()
 		{
+			_main = Main.instance;
+			_frameWidth = _main.stage.stageWidth;
+			_frameHeight = _main.stage.stageHeight;
+			
 			super();
+			
 			setup();
+			updateFrame();
+			
 			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -83,7 +93,7 @@ package tetragon.view.render2d.display
 		{
 			executeBeforeRender();
 			
-			/* Render background, which should not be part of the child collection. */
+			/* Render background, which is not in the child collection. */
 			if (_background)
 			{
 				support.pushMatrix();
@@ -92,13 +102,102 @@ package tetragon.view.render2d.display
 				support.popMatrix();
 			}
 			
+			if (!_clipped)
+			{
+				super.render(support, alpha);
+				return;
+			}
+			
+			support.finishQuadBatch();
+			support.scissorRectangle = _clipRect;
 			super.render(support, alpha);
+			support.finishQuadBatch();
+			support.scissorRectangle = null;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject2D
+		{
+			if (!_clipped)
+			{
+				return super.hitTest(localPoint, forTouch);
+			}
+			
+			// on a touch test, invisible or untouchable objects cause the test to fail
+			if (forTouch && (!visible || !touchable))
+			{
+				return null;
+			}
+			
+			if (_clipRect.containsPoint(localToGlobal(localPoint)))
+			{
+				return super.hitTest(localPoint, forTouch);
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		override public function set x(v:Number):void
+		{
+			if (v == super.x) return;
+			super.x = v;
+			updateFrame();
+		}
+		
+		
+		override public function set y(v:Number):void
+		{
+			if (v == super.y) return;
+			super.y = v;
+			updateFrame();
+		}
+		
+		
+		public function get frameWidth():int
+		{
+			return _frameWidth;
+		}
+		public function set frameWidth(v:int):void
+		{
+			if (v == _frameWidth) return;
+			_frameWidth = v;
+			updateFrame();
+		}
+		
+		
+		public function get frameHeight():int
+		{
+			return _frameHeight;
+		}
+		public function set frameHeight(v:int):void
+		{
+			if (v == _frameHeight) return;
+			_frameHeight = v;
+			updateFrame();
+		}
+		
+		
+		public function get clipped():Boolean
+		{
+			return _clipped;
+		}
+		public function set clipped(v:Boolean):void
+		{
+			if (v == _clipped) return;
+			_clipped = v;
+			updateFrame();
+		}
+		
 		
 		public function get background():Rect2D
 		{
@@ -108,45 +207,14 @@ package tetragon.view.render2d.display
 		{
 			if (v == _background) return;
 			_background = v;
-			updateBackground();
+			updateFrame();
 		}
 		
 		
-		protected static function get main():Main
+		public static function get resourceIndex():ResourceIndex
 		{
-			if (!_main) _main = Main.instance;
-			return _main;
-		}
-		
-		
-		protected function get registry():Registry
-		{
-			return main.registry;
-		}
-		
-		
-		protected function get settings():Settings
-		{
-			return registry.settings;
-		}
-		
-		
-		protected static function get resourceIndex():ResourceIndex
-		{
-			if (!_resourceIndex) _resourceIndex = main.resourceManager.resourceIndex;
+			if (!_resourceIndex) _resourceIndex = Main.instance.resourceManager.resourceIndex;
 			return _resourceIndex;
-		}
-		
-		
-		protected function get stageWidth():int
-		{
-			return main.stage.stageWidth;
-		}
-		
-		
-		protected function get stageHeight():int
-		{
-			return main.stage.stageHeight;
 		}
 		
 		
@@ -160,7 +228,6 @@ package tetragon.view.render2d.display
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			updateBackground();
 		}
 		
 		
@@ -177,30 +244,39 @@ package tetragon.view.render2d.display
 		
 		
 		/**
+		 * @private
+		 */
+		protected function updateFrame():void
+		{
+			if (_clipped)
+			{
+				if (_clipRect) _clipRect.setTo(x, y, _frameWidth, _frameHeight);
+				else _clipRect = new Rectangle(x, y, _frameWidth, _frameHeight);
+			}
+			else
+			{
+				_clipRect = null;
+			}
+			
+			if (_background)
+			{
+				_background.width = _frameWidth;
+				_background.height = _frameHeight;
+			}
+		}
+		
+		
+		protected static function getResource(resourceID:String):*
+		{
+			return resourceIndex.getResourceContent(resourceID);
+		}
+		
+		
+		/**
 		 * Executed at start of the render loop for the view.
 		 */
 		protected function executeBeforeRender():void
 		{
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		private function updateBackground():void
-		{
-			if (!_background || !stage) return;
-			_background.width = width;
-			_background.height = height;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		protected static function getResource(resourceID:String):*
-		{
-			return resourceIndex.getResourceContent(resourceID);
 		}
 	}
 }
