@@ -30,6 +30,8 @@ package tetragon.data.atlas
 {
 	import tetragon.data.DataObject;
 
+	import com.hexagonstar.types.PointInt;
+
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -62,6 +64,8 @@ package tetragon.data.atlas
 		protected var _frames:Object;
 		/** @private */
 		protected var _alphaMasks:Object;
+		/** @private */
+		protected var _polygonalDatas:Object;
 		/** @private */
 		protected var _processed:Boolean;
 		
@@ -194,10 +198,11 @@ package tetragon.data.atlas
 		 * @param id
 		 * @param region
 		 * @param frame
-		 * @param alphaBitmapData
+		 * @param alphaMask
+		 * @param polygonalData
 		 */
 		public function addRegion(id:String, region:Rectangle, frame:Rectangle = null,
-			alphaMask:BitmapData = null):void
+			alphaMask:BitmapData = null, polygonalData:Vector.<PointInt> = null):void
 		{
 			_regions[id] = region;
 			if (frame) _frames[id] = frame;
@@ -205,6 +210,11 @@ package tetragon.data.atlas
 			{
 				if (!_alphaMasks) _alphaMasks = {};
 				_alphaMasks[id] = alphaMask;
+			}
+			if (polygonalData)
+			{
+				if (!_polygonalDatas) _polygonalDatas = {};
+				_polygonalDatas[id] = polygonalData;
 			}
 		}
 		
@@ -220,6 +230,20 @@ package tetragon.data.atlas
 		{
 			if (!_alphaMasks) return null;
 			return _alphaMasks[id];
+		}
+		
+		
+		/**
+		 * Returns the polygonal data for a specific subtexture, if available, otherwise
+		 * it returns null.
+		 * 
+		 * @param id ID of the subtexture.
+		 * @return A Vector.<PointInt> or null.
+		 */
+		public function getPolygonalData(id:String):Vector.<PointInt>
+		{
+			if (!_polygonalDatas) return null;
+			return _polygonalDatas[id];
 		}
 		
 		

@@ -32,6 +32,9 @@ package tetragon.file.resource.processors
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.view.render2d.textures.Texture2D;
 
+	import com.hexagonstar.types.PointInt;
+	import com.hexagonstar.util.potrace.Polygonizer;
+
 	import flash.display.BitmapData;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -45,6 +48,13 @@ package tetragon.file.resource.processors
 	 */
 	public class TextureAtlasProcessor extends ResourceProcessor
 	{
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		private var _polygonizer:Polygonizer;
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
@@ -125,6 +135,7 @@ package tetragon.file.resource.processors
 			var alphaBitmap:BitmapData = (alpha && alpha is BitmapData) ? alpha : null;
 			var p:Point;
 			var mask:BitmapData;
+			var polygonData:Vector.<PointInt>;
 			
 			for (var i:uint = 0; i < len; i++)
 			{
@@ -137,12 +148,15 @@ package tetragon.file.resource.processors
 				if (alphaBitmap)
 				{
 					if (!p) p = new Point(0, 0);
+					if (!_polygonizer) _polygonizer = new Polygonizer(2, 6);
+					
 					mask = new BitmapData(region.width, region.height, false, 0x000000);
 					// TODO Add support for regions with frames!
 					mask.copyPixels(alphaBitmap, region, p);
+					polygonData = _polygonizer.polygonize(mask);
 				}
 				
-				textureAtlas.addRegion(s.id, region, frame, mask);
+				textureAtlas.addRegion(s.id, region, frame, mask, polygonData);
 			}
 			
 			textureAtlas.processed = true;
