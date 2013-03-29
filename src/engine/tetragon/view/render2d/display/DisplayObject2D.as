@@ -444,18 +444,40 @@ package tetragon.view.render2d.display
 			if (_orientationChanged)
 			{
 				_orientationChanged = false;
-				_transMatrix.identity();
-
-				if (_scaleX != 1.0 || _scaleY != 1.0) _transMatrix.scale(_scaleX, _scaleY);
-				if (_skewX != 0.0 || _skewY != 0.0) MatrixUtil.skew(_transMatrix, _skewX, _skewY);
-				if (_rotation != 0.0) _transMatrix.rotate(_rotation);
-				if (_x != 0.0 || _y != 0.0) _transMatrix.translate(_x, _y);
-
-				if (_pivotX != 0.0 || _pivotY != 0.0)
+				if (_skewX == 0.0 && _skewY == 0.0)
 				{
-					// prepend pivot transformation
-					_transMatrix.tx = _x - _transMatrix.a * _pivotX - _transMatrix.c * _pivotY;
-					_transMatrix.ty = _y - _transMatrix.b * _pivotX - _transMatrix.d * _pivotY;
+					// optimization: no skewing / rotation simplifies the matrix math:
+					if (_rotation == 0.0)
+					{
+						_transMatrix.setTo(_scaleX, 0.0, 0.0, _scaleY, _x - _pivotX * _scaleX,
+							_y - _pivotY * _scaleY);
+					}
+					else
+					{
+						var cos:Number = Math.cos(_rotation);
+						var sin:Number = Math.sin(_rotation);
+						var a:Number = _scaleX * cos;
+						var b:Number = _scaleX * sin;
+						var c:Number = _scaleY * -sin;
+						var d:Number = _scaleY * cos;
+						var tx:Number = _x - _pivotX * a - _pivotY * c;
+						var ty:Number = _y - _pivotX * b - _pivotY * d;
+						_transMatrix.setTo(a, b, c, d, tx, ty);
+					}
+				}
+				else
+				{
+					_transMatrix.identity();
+					_transMatrix.scale(_scaleX, _scaleY);
+					MatrixUtil.skew(_transMatrix, _skewX, _skewY);
+					_transMatrix.rotate(_rotation);
+					_transMatrix.translate(_x, _y);
+					if (_pivotX != 0.0 || _pivotY != 0.0)
+					{
+						// prepend pivot transformation
+						_transMatrix.tx = _x - _transMatrix.a * _pivotX - _transMatrix.c * _pivotY;
+						_transMatrix.ty = _y - _transMatrix.b * _pivotX - _transMatrix.d * _pivotY;
+					}
 				}
 			}
 			return _transMatrix;
