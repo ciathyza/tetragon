@@ -296,10 +296,17 @@ package tetragon.view.render2d.core
 		/**
 		 * Disposes and removes all children of the Render2D stage but not the stage itself,
 		 * so that the Render2D instance can be re-used afterwards.
+		 * 
+		 * This also clears the Stage3D backbuffer.
 		 */
 		public function purge():void
 		{
 			if (_stage2D) _stage2D.removeChildren(0, -1, true);
+			if (_stage3DProxy)
+			{
+				_stage3DProxy.clear();
+				_stage3DProxy.present();
+			}
 		}
 		
 		
