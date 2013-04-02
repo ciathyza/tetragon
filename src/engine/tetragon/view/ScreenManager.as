@@ -112,8 +112,8 @@ package tetragon.view
 		private var _tweenVars:TweenVars;
 		private var _screenOpenDelay:Number = 0.2;
 		private var _screenCloseDelay:Number = 0.2;
-		private var _tweenDuration:Number = 0.4;
-		private var _fastDuration:Number = 0.2;
+		private var _tweenDuration:Number = 0.2;
+		private var _fastDuration:Number = 0.1;
 		private var _backupDuration:Number;
 		private var _backupOpenDelay:Number;
 		private var _backupCloseDelay:Number;
@@ -1089,7 +1089,7 @@ package tetragon.view
 					return;
 				}
 				
-				if (_tweenDuration > 0)
+				if (_tweenDuration > 0.0)
 				{
 					_screenCover.alpha = 0.0;
 					/* Tween out current screen. */
@@ -1179,7 +1179,7 @@ package tetragon.view
 		private function showCurrentScreen():void
 		{
 			_switching = false;
-			if (_tweenDuration > 0)
+			if (_tweenDuration > 0.0)
 			{
 				/* Tween in next screen. */
 				_tweenVars.reset();
