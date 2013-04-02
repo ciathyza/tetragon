@@ -226,7 +226,7 @@ package tetragon.file.resource
 				}
 				
 				/* Resource has already been loaded. */
-				if (r.status == ResourceStatus.LOADED)
+				if (r.status == ResourceStatus.LOADED || r.status == ResourceStatus.PROCESSED)
 				{
 					debug("Resource \"" + r.id + "\" has already been loaded.");
 					r.increaseReferenceCount();
@@ -267,7 +267,7 @@ package tetragon.file.resource
 						{
 							bulk1 = new ResourceBulk(createBulkID(), getResourceProvider(
 								EmbeddedResourceProvider.ID), loadedHandler, failedHandler,
-								completeHandler, progressHandler);
+								completeHandler, progressHandler, alreadyLoadedHandler);
 						}
 						bulk1.addItem(item);
 					}
@@ -281,7 +281,7 @@ package tetragon.file.resource
 							{
 								bulk2 = new ResourceBulk(createBulkID(), getResourceProvider(
 									r.packageID), loadedHandler, failedHandler, completeHandler,
-										progressHandler);
+										progressHandler, alreadyLoadedHandler);
 							}
 							bulk2.addItem(item);
 						}
@@ -293,7 +293,7 @@ package tetragon.file.resource
 							{
 								bulk3 = new ResourceBulk(createBulkID(), getResourceProvider(
 									LoadedResourceProvider.ID), loadedHandler, failedHandler,
-									completeHandler, progressHandler);
+									completeHandler, progressHandler, alreadyLoadedHandler);
 							}
 							bulk3.addItem(item);
 						}
@@ -786,7 +786,8 @@ package tetragon.file.resource
 					a.push(_referencedIDQueue.dequeue());
 				}
 				debug("Loading " + a.length + " referenced resources ...");
-				load(a, b.completeHandler, b.loadedHandler, b.failedHandler, b.progressHandler);
+				load(a, b.completeHandler, b.loadedHandler, b.failedHandler, b.progressHandler,
+					b.alreadyLoadedHandler);
 				return;
 			}
 			

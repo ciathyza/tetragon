@@ -50,6 +50,7 @@ package tetragon.view
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.tween.Tween;
 	import com.hexagonstar.tween.TweenVars;
+	import com.hexagonstar.util.debug.Debug;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.display.DisplayObjectContainer;
@@ -895,6 +896,7 @@ package tetragon.view
 		 */
 		private function onScreenLoadProgress(progress:BulkProgress):void
 		{
+			Debug.trace(progress.dump());
 			if (!_loadProgressDisplay) return;
 			_loadProgressDisplay.update(progress);
 		}

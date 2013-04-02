@@ -60,6 +60,8 @@ package tetragon.file.resource
 		private var _completeHandler:Function;
 		/** @private */
 		private var _progressHandler:Function;
+		/** @private */
+		private var _alreadyLoadedHandler:Function;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -70,7 +72,7 @@ package tetragon.file.resource
 		 * Creates a new instance of the class.
 		 */
 		public function ResourceBulk(id:String, p:IResourceProvider, lh:Function, fh:Function,
-			ch:Function, ph:Function)
+			ch:Function, ph:Function, alh:Function)
 		{
 			_id = id;
 			_provider = p;
@@ -80,6 +82,7 @@ package tetragon.file.resource
 			_failedHandler = fh;
 			_completeHandler = ch;
 			_progressHandler = ph;
+			_alreadyLoadedHandler = alh;
 		}
 		
 		
@@ -220,6 +223,12 @@ package tetragon.file.resource
 		internal function get progressHandler():Function
 		{
 			return _progressHandler;
+		}
+		
+		
+		public function get alreadyLoadedHandler():Function
+		{
+			return _alreadyLoadedHandler;
 		}
 	}
 }
