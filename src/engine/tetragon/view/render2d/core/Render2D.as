@@ -307,6 +307,7 @@ package tetragon.view.render2d.core
 				_stage3DProxy.clear();
 				_stage3DProxy.present();
 			}
+			_drawCount = 0;
 		}
 		
 		
