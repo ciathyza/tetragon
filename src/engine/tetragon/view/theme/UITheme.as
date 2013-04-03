@@ -53,6 +53,8 @@ package tetragon.view.theme
 		/** @private */
 		protected var _uiStyles:Dictionary;
 		/** @private */
+		protected var _colors:Object;
+		/** @private */
 		protected var _sounds:Object;
 		
 		
@@ -104,8 +106,16 @@ package tetragon.view.theme
 		}
 		
 		
+		public function getColor(colorID:String):uint
+		{
+			if (!_colors) return 0;
+			return _colors[colorID];
+		}
+		
+		
 		public function getSound(soundID:String):Class
 		{
+			if (!_sounds) return null;
 			return _sounds[soundID];
 		}
 		
@@ -155,6 +165,15 @@ package tetragon.view.theme
 		/**
 		 * @inheritDoc
 		 */
+		public function get colors():Object
+		{
+			return _colors;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function get sounds():Object
 		{
 			return _sounds;
@@ -172,8 +191,6 @@ package tetragon.view.theme
 		{
 			_themeManager = UIThemeManager.instance;
 			_textFormats = new TextFormats();
-			_uiStyles = new Dictionary();
-			_sounds = {};
 			
 			/* Map default text formats. */
 			_textFormats.addFormat(TextFormats.DEFAULT_FORMAT_ID, "Bitstream Vera Sans", 16, 0xDDDDDD);
@@ -184,6 +201,7 @@ package tetragon.view.theme
 			addFonts();
 			addTextFormats();
 			addUIStyles();
+			addColors();
 			addSounds();
 		}
 		
@@ -222,6 +240,16 @@ package tetragon.view.theme
 		 * @private
 		 */
 		protected function addUIStyles():void
+		{
+			/* Abstract method! */
+		}
+		
+		
+		/**
+		 * Used to register colors that are needed for the theme.
+		 * @private
+		 */
+		protected function addColors():void
 		{
 			/* Abstract method! */
 		}
@@ -287,9 +315,23 @@ package tetragon.view.theme
 		 */
 		protected function addUIStyle(componentClass:Class, styleName:String, styleValue:*):void
 		{
+			if (!_uiStyles) _uiStyles = new Dictionary();
 			var componentStyles:Object = _uiStyles[componentClass] ? _uiStyles[componentClass] : {};
 			componentStyles[styleName] = styleValue;
 			_uiStyles[componentClass] = componentStyles;
+		}
+		
+		
+		/**
+		 * Adds a sound to the theme.
+		 * 
+		 * @param colorID
+		 * @param value
+		 */
+		protected function addColor(colorID:String, value:uint):void
+		{
+			if (!_colors) _colors = {};
+			_colors[colorID] = value;
 		}
 		
 		
@@ -301,6 +343,7 @@ package tetragon.view.theme
 		 */
 		protected function addSound(soundID:String, soundClass:Class):void
 		{
+			if (!_sounds) _sounds = {};
 			_sounds[soundID] = soundClass;
 		}
 	}
