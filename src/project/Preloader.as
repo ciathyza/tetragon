@@ -92,6 +92,8 @@ package
 		
 		/** @private */
 		private var _preloadDisplay:IPreloadDisplay;
+		/** @private */
+		private var _finished:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -128,12 +130,9 @@ package
 		 */
 		public function finish():void
 		{
-			if (_preloadDisplay is DisplayObject)
-			{
-				removeChild(_preloadDisplay as DisplayObject);
-			}
-			_preloadDisplay.dispose();
-			_preloadDisplay = null;
+			/* In any case make sure that finish is only called once! */
+			if (_finished) return;
+			_finished = true;
 			
 			/* SpriteAsset is always embedded! */
 			var link1:SpriteAsset;
@@ -147,6 +146,20 @@ package
 			var link7:SoundAsset;
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function dispose():void
+		{
+			if (_preloadDisplay is DisplayObject)
+			{
+				removeChild(_preloadDisplay as DisplayObject);
+			}
+			_preloadDisplay.dispose();
+			_preloadDisplay = null;
 		}
 		
 		

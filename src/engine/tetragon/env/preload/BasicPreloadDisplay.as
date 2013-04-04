@@ -85,7 +85,6 @@ package tetragon.env.preload
 		 */
 		public function dispose():void
 		{
-			_preloader.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		
@@ -147,6 +146,7 @@ package tetragon.env.preload
 		{
 			if (_preloader.framesLoaded == _preloader.totalFrames)
 			{
+				_preloader.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 				_preloader.finish();
 			}
 		}

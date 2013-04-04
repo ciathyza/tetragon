@@ -40,6 +40,7 @@ package tetragon
 	import tetragon.entity.EntityFactory;
 	import tetragon.entity.EntityManager;
 	import tetragon.entity.EntitySystemManager;
+	import tetragon.env.preload.IPreloader;
 	import tetragon.env.settings.LocalSettingsManager;
 	import tetragon.file.resource.ResourceManager;
 	import tetragon.input.KeyInputManager;
@@ -456,6 +457,11 @@ package tetragon
 		 */
 		private function onAllModulesComplete():void
 		{
+			if (_contextView is IPreloader)
+			{
+				(_contextView as IPreloader).dispose();
+			}
+			
 			/* Time to init the screen manager and open the initial screen. */
 			screenManager.init();
 		}

@@ -116,7 +116,6 @@ package tetragon.env.preload
 		 */
 		public function dispose():void
 		{
-			_preloader.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		
@@ -186,7 +185,7 @@ package tetragon.env.preload
 			{
 				if (_preloader.framesLoaded == _preloader.totalFrames)
 				{
-					_preloader.finish();
+					finish();
 				}
 				_skipDelay -= 1;
 			}
@@ -214,7 +213,7 @@ package tetragon.env.preload
 						else
 						{
 							alpha = 0.0;
-							_preloader.finish();
+							finish();
 						}
 					}
 				}
@@ -278,6 +277,16 @@ package tetragon.env.preload
 			{
 				y = Math.floor((_preloader.stage.stageHeight / 2) - (height / 2));
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		protected function finish():void
+		{
+			_preloader.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			_preloader.finish();
 		}
 	}
 }

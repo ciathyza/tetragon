@@ -31,7 +31,7 @@ package
 	import tetragon.Main;
 	import tetragon.env.preload.IPreloadable;
 	import tetragon.env.preload.IPreloader;
-	
+
 	import flash.display.DisplayObjectContainer;
 	
 	
@@ -52,18 +52,6 @@ package
 		//-----------------------------------------------------------------------------------------
 		
 		private var _main:Main;
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Constructor
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Creates a new instance of the class.
-		 */
-		public function Entry()
-		{
-		}
 		
 		
 		//-----------------------------------------------------------------------------------------

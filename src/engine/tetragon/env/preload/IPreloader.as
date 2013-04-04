@@ -43,6 +43,11 @@ package tetragon.env.preload
 		 */
 		function finish():void;
 		
+		/**
+		 * Removes the preload display from the stage.
+		 */
+		function dispose():void;
+		
 		function get totalFrames():int;
 		function get framesLoaded():int;
 		function get loaderInfo():LoaderInfo;
