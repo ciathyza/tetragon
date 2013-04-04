@@ -42,6 +42,7 @@ package tetragon.view.stage3d
 		// Constants
 		// -----------------------------------------------------------------------------------------
 		
+		public static const RESIZE:String				= "resize";
 		public static const CONTEXT3D_CREATED:String	= "Context3DCreated";
 		public static const CONTEXT3D_DISPOSED:String	= "Context3DDisposed";
 		public static const CONTEXT3D_RECREATED:String	= "Context3DRecreated";

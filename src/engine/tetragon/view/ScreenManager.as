@@ -796,6 +796,12 @@ package tetragon.view
 				_screenCover.height = _screenHeight;
 			}
 			
+			// TODO Add support for scaling Stage3D correctly when toggling to fullscreen mode!
+			if (_stage3DProxy)
+			{
+				_stage3DProxy.resize(_screenWidth, _screenHeight);
+			}
+			
 			if (_stageResizeSignal) _stageResizeSignal.dispatch();
 		}
 		

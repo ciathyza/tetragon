@@ -44,6 +44,7 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.touch.TouchPhase2D;
 	import tetragon.view.render2d.touch.TouchProcessor2D;
 	import tetragon.view.stage3d.Stage3DProxy;
+	import tetragon.view.stage3d.Stage3DSignal;
 
 	import com.hexagonstar.exception.FatalException;
 	import com.hexagonstar.exception.SingletonException;
@@ -278,8 +279,8 @@ package tetragon.view.render2d.core
 			
 			_nativeStage.removeEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_nativeStage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
-			_nativeStage.removeEventListener(Event.RESIZE, onResize);
 			_nativeStage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
+			_stage3DProxy.stage3DSignal.remove(onStage3DSignal);
 			
 			for each (var touchEventType:String in touchEventTypes)
 			{
@@ -741,11 +742,16 @@ package tetragon.view.render2d.core
 		/**
 		 * @private
 		 */
-		private function onResize(e:Event):void
+		private function onStage3DSignal(type:String):void
 		{
-			var stage:Stage = e.target as Stage;
-			_stage2D.dispatchEvent(new ResizeEvent2D(Event.RESIZE, stage.stageWidth,
-				stage.stageHeight));
+			if (type == Stage3DSignal.RESIZE)
+			{
+				var w:int = _nativeStage.stageWidth;
+				var h:int = _nativeStage.stageHeight;
+				_viewPort.width = w;
+				_viewPort.height = h;
+				_stage2D.dispatchEvent(new ResizeEvent2D(Event.RESIZE, w, h));
+			}
 		}
 		
 		
@@ -886,8 +892,8 @@ package tetragon.view.render2d.core
 			/* Register other event handlers. */
 			_nativeStage.addEventListener(KeyboardEvent.KEY_DOWN, onKey);
 			_nativeStage.addEventListener(KeyboardEvent.KEY_UP, onKey);
-			_nativeStage.addEventListener(Event.RESIZE, onResize);
 			_nativeStage.addEventListener(Event.MOUSE_LEAVE, onMouseLeave);
+			_stage3DProxy.stage3DSignal.add(onStage3DSignal);
 			
 			/* If we already got a context3D and it's not disposed. */
 			if (RenderSupport2D.context3D && RenderSupport2D.context3D.driverInfo != "Disposed")

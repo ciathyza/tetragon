@@ -351,6 +351,14 @@ package tetragon.view.stage3d
 		//}
 		
 		
+		public function resize(width:int, height:int):void
+		{
+			this.width = width;
+			this.height = height;
+			if (_stage3DSignal) _stage3DSignal.dispatch(Stage3DSignal.RESIZE);
+		}
+		
+		
 		/**
 		 * setRenderTarget
 		 * 
