@@ -30,6 +30,8 @@ package tetragon.view.native
 {
 	import tetragon.Main;
 
+	import com.hexagonstar.util.display.StageReference;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Stage;
@@ -78,7 +80,7 @@ package tetragon.view.native
 			if (!_stage)
 			{
 				var main:Main = Main.instance;
-				_stage = main.stage;
+				_stage = StageReference.stage;
 				_refWidth = main.appInfo.referenceWidth;
 				_refHeight = main.appInfo.referenceHeight;
 				_matrix = new Matrix();

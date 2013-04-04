@@ -37,6 +37,7 @@ package
 	import tetragon.env.preload.TetragonPreloadDisplay;
 
 	import com.hexagonstar.constants.Alignment;
+	import com.hexagonstar.util.display.StageReference;
 
 	import mx.core.BitmapAsset;
 	import mx.core.ByteArrayAsset;
@@ -109,6 +110,8 @@ package
 			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
+			
+			StageReference.stage = this.stage;
 			
 			/* Fetch Flashvars */
 			Main.params = new Params();
