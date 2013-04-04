@@ -28,6 +28,7 @@
  */
 package tetragon.file.resource.processors
 {
+	import tetragon.Main;
 	import tetragon.data.atlas.SubTextureBounds;
 	import tetragon.data.atlas.TextureAtlas;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -96,7 +97,15 @@ package tetragon.file.resource.processors
 					var sig:String = String.fromCharCode(bytes[0], bytes[1], bytes[2]);
 					if (sig == "ATF")
 					{
-						textureAtlas.source = Texture2D.fromATFData(bytes);
+						if (Main.instance.appInfo.swfVersion < 17)
+						{
+							error("ATF textures require at least SWF version 17!");
+							continue;
+						}
+						else
+						{
+							textureAtlas.source = Texture2D.fromATFData(bytes);
+						}
 					}
 					else
 					{
