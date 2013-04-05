@@ -53,6 +53,7 @@ package tetragon
 	import com.hexagonstar.exception.SingletonException;
 	import com.hexagonstar.util.debug.HLog;
 	import com.hexagonstar.util.display.StageReference;
+	import com.hexagonstar.util.time.CallLater;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
@@ -457,13 +458,12 @@ package tetragon
 		 */
 		private function onAllModulesComplete():void
 		{
-			if (_contextView is IPreloader)
+			CallLater.add(function():void
 			{
-				(_contextView as IPreloader).dispose();
-			}
-			
-			/* Time to init the screen manager and open the initial screen. */
-			screenManager.init();
+				if (_contextView is IPreloader) (_contextView as IPreloader).dispose();
+				/* Time to init the screen manager and open the initial screen. */
+				screenManager.init();
+			});
 		}
 		
 		
