@@ -29,8 +29,10 @@
 package tetragon.view.theme
 {
 	import tetragon.debug.Log;
+	import tetragon.view.ScreenManager;
 
 	import com.hexagonstar.util.color.colorHexToString;
+	import com.hexagonstar.util.debug.Debug;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.text.TextFormat;
@@ -104,8 +106,8 @@ package tetragon.view.theme
 		public function addFormat(id:String, font:String, size:int = 12,
 			color:uint = 0x000000, letterSpacing:Number = 0, leading:int = 0, align:String = null,
 			bold:Boolean = false, italic:Boolean = false, underline:Boolean = false,
-			kerning:Boolean = false, leftMargin:int = 0, rightMargin:int = 0,
-			indent:int = 0):Boolean
+			kerning:Boolean = false, scaledSize:Boolean = true, leftMargin:int = 0,
+			rightMargin:int = 0, indent:int = 0):Boolean
 		{
 			if (_formats[id])
 			{
@@ -113,6 +115,8 @@ package tetragon.view.theme
 			}
 			
 			if (align == null) align = TextFormatAlign.LEFT;
+			if (scaledSize) size = size * ScreenManager.scaleFactor;
+			Debug.trace(size);
 			var format:TextFormat = new TextFormat(font, size, color, bold, italic, underline, null,
 				null, align, leftMargin, rightMargin, indent, leading);
 			format.letterSpacing = letterSpacing;

@@ -50,6 +50,7 @@ package tetragon.view
 	import com.hexagonstar.signals.Signal;
 	import com.hexagonstar.tween.Tween;
 	import com.hexagonstar.tween.TweenVars;
+	import com.hexagonstar.util.number.average;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.display.DisplayObjectContainer;
@@ -99,9 +100,14 @@ package tetragon.view
 		private var _currentScreen:Screen;
 		private var _nextScreen:Screen;
 		
-		private var _screenWidth:int;
-		private var _screenHeight:int;
 		private var _screenScale:Number = 1.0;
+		
+		private static var _referenceWidth:int;
+		private static var _referenceHeight:int;
+		private static var _screenWidth:int;
+		private static var _screenHeight:int;
+		private static var _scaleFactorX:Number;
+		private static var _scaleFactorY:Number;
 		
 		private var _loadProgressDisplay:LoadProgressDisplay;
 		private var _loadedResourceCount:uint;
@@ -126,6 +132,7 @@ package tetragon.view
 		private var _hardwareRenderingEnabled:Boolean;
 		
 		private var _enableErrorChecking:Boolean;
+		
 		private static var _handleLostContext:Boolean;
 		
 		
@@ -163,6 +170,8 @@ package tetragon.view
 			_main = Main.instance;
 			_stage = _main.stage;
 			_contextView = _main.contextView;
+			_referenceWidth = _main.appInfo.referenceWidth;
+			_referenceHeight = _main.appInfo.referenceHeight;
 			
 			onStageResize(null);
 			
@@ -543,9 +552,31 @@ package tetragon.view
 		
 		
 		/**
+		 * The reference width of the application. This is the width of the project's
+		 * default build size and the size after which all graphicals assets are being
+		 * designed.
+		 */
+		public static function get referenceWidth():int
+		{
+			return _referenceWidth;
+		}
+
+
+		/**
+		 * The reference height of the application. This is the width of the project's
+		 * default build size and the size after which all graphicals assets are being
+		 * designed.
+		 */
+		public static function get referenceHeight():int
+		{
+			return _referenceHeight;
+		}
+		
+		
+		/**
 		 * The unscaled screen width. This always reflects stage.stageWidth.
 		 */
-		public function get screenWidth():int
+		public static function get screenWidth():int
 		{
 			return _screenWidth;
 		}
@@ -554,9 +585,40 @@ package tetragon.view
 		/**
 		 * The unscaled screen height. This always reflects stage.stageHeight.
 		 */
-		public function get screenHeight():int
+		public static function get screenHeight():int
 		{
 			return _screenHeight;
+		}
+		
+		
+		/**
+		 * The scale factor used to scale the width of the application if the build's
+		 * width is not the same as the reference width. This value changes if the stage
+		 * is resized.
+		 */
+		public static function get scaleFactorX():Number
+		{
+			return _scaleFactorX;
+		}
+
+
+		/**
+		 * The scale factor used to scale the height of the application if the build's
+		 * height is not the same as the reference height. This value changes if the stage
+		 * is resized.
+		 */
+		public static function get scaleFactorY():Number
+		{
+			return _scaleFactorY;
+		}
+		
+		
+		/**
+		 * The average scale factor.
+		 */
+		public static function get scaleFactor():Number
+		{
+			return average(_scaleFactorX, _scaleFactorY);
 		}
 		
 		
@@ -789,6 +851,8 @@ package tetragon.view
 		{
 			_screenWidth = _stage.stageWidth;
 			_screenHeight = _stage.stageHeight;
+			_scaleFactorX = _screenWidth / _referenceWidth;
+			_scaleFactorY = _screenHeight / _referenceHeight;
 			
 			if (_screenCover)
 			{
@@ -811,7 +875,7 @@ package tetragon.view
 		 */
 		private function onFullScreenToggle(e:FullScreenEvent):void
 		{
-			_stageResizeSignal.dispatch();
+			onStageResize(null);
 		}
 		
 		

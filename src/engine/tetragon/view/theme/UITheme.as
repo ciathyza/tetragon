@@ -195,7 +195,7 @@ package tetragon.view.theme
 			/* Map default text formats. */
 			_textFormats.addFormat(TextFormats.DEFAULT_FORMAT_ID, "Bitstream Vera Sans", 16, 0xDDDDDD);
 			_textFormats.addFormat(TextFormats.DEBUG_FORMAT_ID, "Terminalscope", 16, 0xFFFFFF,
-				0, 0, null, false, false, false, false, 4, 4, 0);
+				0, 0, null, false, false, false, false, false, 4, 4, 0);
 			
 			setup();
 			addFonts();
@@ -290,6 +290,8 @@ package tetragon.view.theme
 		 * @param italic
 		 * @param underline
 		 * @param kerning
+		 * @param scaledSize If true the font size will be scaled according to
+		 * 			ScreenManager.scaleFactor.
 		 * @param leftMargin
 		 * @param rightMargin
 		 * @param indent
@@ -298,11 +300,11 @@ package tetragon.view.theme
 		protected function addTextFormat(id:String, font:String, size:int = 12,
 			color:uint = 0x000000, letterSpacing:Number = 0, leading:int = 0, align:String = null,
 			bold:Boolean = false, italic:Boolean = false, underline:Boolean = false,
-			kerning:Boolean = false, leftMargin:int = 0, rightMargin:int = 0,
-			indent:int = 0):void
+			kerning:Boolean = false, scaledSize:Boolean = true, leftMargin:int = 0,
+			rightMargin:int = 0, indent:int = 0):void
 		{
 			_textFormats.addFormat(id, font, size, color, letterSpacing, leading,
-				align, bold, italic, underline, kerning, leftMargin, rightMargin, indent);
+				align, bold, italic, underline, kerning, scaledSize, leftMargin, rightMargin, indent);
 		}
 		
 		

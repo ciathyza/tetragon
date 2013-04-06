@@ -28,6 +28,8 @@
  */
 package tetragon.view.loadprogress
 {
+	import tetragon.view.ScreenManager;
+
 	import com.hexagonstar.util.filter.createOutlineFilter;
 	import com.hexagonstar.util.time.CallLater;
 
@@ -178,8 +180,8 @@ package tetragon.view.loadprogress
 			_tf.embedFonts = true;
 			_tf.focusRect = false;
 			_tf.selectable = false;
-			_tf.width = (screenManager.screenWidth / screenManager.screenScale) - 20;
-			_tf.height = (screenManager.screenHeight / screenManager.screenScale) - 20;
+			_tf.width = (ScreenManager.screenWidth / screenManager.screenScale) - 20;
+			_tf.height = (ScreenManager.screenHeight / screenManager.screenScale) - 20;
 			//_tf.border = true;
 			//_tf.borderColor = 0xFFFFFF;
 			_tf.defaultTextFormat = format;
