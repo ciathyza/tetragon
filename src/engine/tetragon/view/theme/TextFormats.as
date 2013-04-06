@@ -32,7 +32,6 @@ package tetragon.view.theme
 	import tetragon.view.ScreenManager;
 
 	import com.hexagonstar.util.color.colorHexToString;
-	import com.hexagonstar.util.debug.Debug;
 	import com.hexagonstar.util.string.TabularText;
 
 	import flash.text.TextFormat;
@@ -115,8 +114,7 @@ package tetragon.view.theme
 			}
 			
 			if (align == null) align = TextFormatAlign.LEFT;
-			if (scaledSize) size = size * ScreenManager.scaleFactor;
-			Debug.trace(size);
+			if (scaledSize) size = Math.ceil(size * ScreenManager.scaleFactor);
 			var format:TextFormat = new TextFormat(font, size, color, bold, italic, underline, null,
 				null, align, leftMargin, rightMargin, indent, leading);
 			format.letterSpacing = letterSpacing;
