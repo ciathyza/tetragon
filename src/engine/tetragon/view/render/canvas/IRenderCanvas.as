@@ -62,6 +62,15 @@ package tetragon.view.render.canvas
 		
 		
 		/**
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 */
+		function drawDebugRect(x:Number, y:Number, w:Number, h:Number, color:uint = 0xFF00FF):void;
+		
+		
+		/**
 		 * Draws a filled, four-sided polygon onto the render canvas.
 		 * 
 		 * @param x1		first point x coord

@@ -123,6 +123,14 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
+		public function drawDebugRect(x:Number, y:Number, w:Number, h:Number, color:uint = 0xFF00FF):void
+		{
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function drawQuad(x1:Number, y1:Number, x2:Number, y2:Number,
 			x3:Number, y3:Number, x4:Number, y4:Number, color:uint,
 			mixColor:uint, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void

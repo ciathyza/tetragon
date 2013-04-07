@@ -51,6 +51,7 @@ package tetragon.view.render.canvas
 		
 		private var _texture:RenderTexture2D;
 		private var _rect:Rect2D;
+		private var _debugRect:Rect2D;
 		private var _quad:Quad2D;
 		private var _r:Rectangle;
 		private var _m:Matrix;
@@ -203,6 +204,30 @@ package tetragon.view.render.canvas
 		/**
 		 * @inheritDoc
 		 */
+		public function drawDebugRect(x:Number, y:Number, w:Number, h:Number, color:uint = 0xFF00FF):void
+		{
+			checkCommandBufferFull();
+			if (!_debugRect)
+			{
+				_debugRect = new Rect2D(10, 10, color);
+				_debugRect.alpha = 0.4;
+			}
+			
+			var c:DrawCommand = _drawCommandBuffer[_drawCommandIndex];
+			c.type = 10;
+			c.x = x;
+			c.y = y;
+			c.w = w;
+			c.h = h;
+			c.color = color;
+			
+			++_drawCommandIndex;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function complete():void
 		{
 			_texture.drawBundled(function():void
@@ -254,6 +279,13 @@ package tetragon.view.render.canvas
 					{
 						_m.setTo(1.0, 0, 0, 1.0, c.x, c.y);
 						_texture.draw(c.displayObject, _m);
+					}
+					/* Draw Debug Rect */
+					else if (c.type == 10)
+					{
+						_debugRect.setTo(c.x, c.y, c.w, c.h);
+						_debugRect.color = c.color;
+						_texture.draw(_debugRect);
 					}
 					
 					/* Invalidate command. */
