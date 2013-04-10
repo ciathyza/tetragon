@@ -141,6 +141,10 @@ package tetragon.view.native
 		/** @private */
 		protected var _paused:Boolean;
 		/** @private */
+		protected var _layoutOnce:Boolean;
+		/** @private */
+		protected var _isLaidout:Boolean;
+		/** @private */
 		protected var _children:Vector.<View>;
 		/** @private */
 		private static var _resourceIndex:ResourceIndex;
@@ -213,7 +217,12 @@ package tetragon.view.native
 		{
 			executeOnChildren(EXEC_UPDATE);
 			updateDisplayText();
-			layoutChildren();
+			
+			if (!_layoutOnce || !_isLaidout)
+			{
+				_isLaidout = true;
+				layoutChildren();
+			}
 		}
 		
 		
@@ -406,6 +415,21 @@ package tetragon.view.native
 		public function get screen():Screen
 		{
 			return _screen;
+		}
+		
+		
+		/**
+		 * If true, layout() will only be called once and ignored on further update calls.
+		 * 
+		 * @default false
+		 */
+		protected function get layoutOnce():Boolean
+		{
+			return _layoutOnce;
+		}
+		protected function set layoutOnce(v:Boolean):void
+		{
+			_layoutOnce = v;
 		}
 		
 		
