@@ -198,6 +198,7 @@ package tetragon.view
 			
 			_main.stage.addEventListener(Event.RESIZE, onStageResize);
 			_main.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
+			_main.resourceManager.localeSwitchCompleteSignal.add(onLocaleSwitchComplete);
 		}
 		
 		
@@ -876,6 +877,15 @@ package tetragon.view
 		private function onFullScreenToggle(e:FullScreenEvent):void
 		{
 			onStageResize(null);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onLocaleSwitchComplete(locale:String):void
+		{
+			updateScreen();
 		}
 		
 		
