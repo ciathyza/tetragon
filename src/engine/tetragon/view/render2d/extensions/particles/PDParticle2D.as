@@ -26,36 +26,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.extensions.particles
 {
+	import com.hexagonstar.types.ARGB;
+	
+	
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * PDParticle2D class.
 	 */
-	public final class EngineInfo
+	public class PDParticle2D extends Particle2D
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
+		public var colorARGB:ARGB;
+		public var colorARGBDelta:ARGB;
+		public var startX:Number;
+		public var startY:Number;
+		public var velocityX:Number;
+		public var velocityY:Number;
+		public var radialAcceleration:Number;
+		public var tangentialAcceleration:Number;
+		public var emitRadius:Number;
+		public var emitRadiusDelta:Number;
+		public var emitRotation:Number;
+		public var emitRotationDelta:Number;
+		public var rotationDelta:Number;
+		public var scaleDelta:Number;
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "12567";
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function PDParticle2D()
+		{
+			colorARGB = new ARGB();
+			colorARGBDelta = new ARGB();
+		}
 	}
 }

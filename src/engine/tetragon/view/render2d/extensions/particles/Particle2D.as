@@ -26,36 +26,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon
+package tetragon.view.render2d.extensions.particles
 {
 	/**
-	 * Provides name- and version information about the engine.
-	 * NOTE: Ant auto-generated engine information class. Do not edit!
+	 * Particle2D class.
 	 */
-	public final class EngineInfo
+	public class Particle2D
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Name of the engine.
-		 */
-		public static const NAME:String = "Tetragon Engine";
+		public var x:Number;
+		public var y:Number;
+		public var scale:Number;
+		public var rotation:Number;
+		public var color:uint;
+		public var alpha:Number;
+		public var currentTime:Number;
+		public var totalTime:Number;
 		
-		/**
-		 * Version of the engine.
-		 */
-		public static const VERSION:String = "1.1.0";
 		
-		/**
-		 * Build number of the engine.
-		 */
-		public static const BUILD:String = "12567";
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Milestone name of the engine.
-		 */
-		public static const MILESTONE:String = "Centauri";
+		public function Particle2D()
+		{
+			x = y = rotation = currentTime = 0.0;
+			totalTime = alpha = scale = 1.0;
+			color = 0xFFFFFF;
+		}
 	}
 }
