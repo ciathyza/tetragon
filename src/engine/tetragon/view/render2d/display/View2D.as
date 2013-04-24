@@ -150,6 +150,18 @@ package tetragon.view.render2d.display
 		}
 		
 		
+		protected function get refWidth():int
+		{
+			return main.appInfo.referenceWidth;
+		}
+		
+		
+		protected function get refHeight():int
+		{
+			return main.appInfo.referenceHeight;
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
