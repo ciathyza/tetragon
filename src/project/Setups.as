@@ -29,6 +29,8 @@
 package 
 {
 	import setup.*;
+
+	import tetragon.setup.*;
 	
 	
 	/**
@@ -63,6 +65,25 @@ package
 		public function Setups()
 		{
 			_list = [];
+			
+			/* Add the base setup. */
+			_list.push(BaseSetup);
+			
+			/* Add base setups for specific build targets (Do not change!) */
+			CONFIG::IS_DESKTOP_BUILD
+			{
+				_list.push(DesktopSetup);
+			}
+			/* Add Android-specific setup(s) here. */
+			CONFIG::IS_ANDROID_BUILD
+			{
+				_list.push(AndroidSetup);
+			}
+			/* Add iOS-specific setup(s) here. */
+			CONFIG::IS_IOS_BUILD
+			{
+				_list.push(IOSSetup);
+			}
 			
 			/* Enable or disable any engine extra setup(s) here depending on your requirements. */
 			//_list.push(GameExtraSetup);

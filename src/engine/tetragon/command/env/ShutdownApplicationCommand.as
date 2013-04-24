@@ -32,10 +32,6 @@ package tetragon.command.env
 	import tetragon.command.CLICommand;
 	import tetragon.debug.Log;
 	import tetragon.env.desktop.WindowBoundsManager;
-	import tetragon.setup.AndroidSetup;
-	import tetragon.setup.BaseSetup;
-	import tetragon.setup.DesktopSetup;
-	import tetragon.setup.IOSSetup;
 	import tetragon.setup.Setup;
 
 	import com.hexagonstar.util.env.isPlugin;
@@ -136,22 +132,6 @@ package tetragon.command.env
 		{
 			var i:int;
 			_setups = new Vector.<SetupVO>();
-			
-			_setups.push(new SetupVO(new BaseSetup()));
-			
-			var vo:SetupVO = new SetupVO();
-			switch (main.appInfo.buildType)
-			{
-				case BuildType.DESKTOP:
-					vo.setup = new DesktopSetup();
-					break;
-				case BuildType.ANDROID:
-					vo.setup =  new AndroidSetup();
-					break;
-				case BuildType.IOS:
-					vo.setup = new IOSSetup();
-			}
-			if (vo.setup) _setups.push(vo);
 			
 			/* Add any additional setups that are listed in AppSetups ... */
 			var a:Array = main.setups;

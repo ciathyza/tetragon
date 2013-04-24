@@ -32,7 +32,17 @@ package tetragon.setup
 	import tetragon.Main;
 	import tetragon.command.cli.*;
 	import tetragon.command.ecs.*;
-	import tetragon.command.env.*;
+	import tetragon.command.env.ChangeLocaleCommand;
+	import tetragon.command.env.EnterStateCommand;
+	import tetragon.command.env.ForceGCCommand;
+	import tetragon.command.env.ListScreensCommand;
+	import tetragon.command.env.OpenScreenCommand;
+	import tetragon.command.env.SetFramerateCommand;
+	import tetragon.command.env.ShutdownApplicationCommand;
+	import tetragon.command.env.ToggleFullscreenAIRCommand;
+	import tetragon.command.env.ToggleFullscreenCommand;
+	import tetragon.command.env.ToggleStatsMonitorCommand;
+	import tetragon.command.env.ToggleStatsMonitorPosCommand;
 	import tetragon.command.file.*;
 	import tetragon.data.Config;
 	import tetragon.data.Params;

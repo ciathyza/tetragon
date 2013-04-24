@@ -28,7 +28,6 @@
  */
 package tetragon.command.env
 {
-	import tetragon.BuildType;
 	import tetragon.EngineInfo;
 	import tetragon.IAppInfo;
 	import tetragon.Main;
@@ -249,24 +248,6 @@ package tetragon.command.env
 		{
 			var i:uint;
 			_setups = new Vector.<SetupVO>();
-			
-			/* Add base setup ... */
-			_setups.push(new SetupVO(new BaseSetup()));
-			
-			/* Add build-dependent setup ... */
-			var vo:SetupVO = new SetupVO();
-			switch (main.appInfo.buildType)
-			{
-				case BuildType.DESKTOP:
-					vo.setup = new DesktopSetup();
-					break;
-				case BuildType.ANDROID:
-					vo.setup =  new AndroidSetup();
-					break;
-				case BuildType.IOS:
-					vo.setup = new IOSSetup();
-			}
-			if (vo.setup) _setups.push(vo);
 			
 			/* Add any additional setups that are listed in AppSetups ... */
 			var a:Array = main.setups;
