@@ -466,6 +466,36 @@ package tetragon.view.render2d.core
 		
 		
 		/**
+		 * Sets the boundaries of the Render2D viewport.
+		 * 
+		 * @param x
+		 * @param y
+		 * @param width
+		 * @param height
+		 */
+		public function setViewPortBoundaries(x:int, y:int, width:int, height:int):void
+		{
+			if (!_viewPort) _viewPort = new Rectangle();
+			_viewPort.setTo(x, y, width, height);
+		}
+		
+		
+		/**
+		 * Sets the size of the Render2D Stage. This does the same like setting
+		 * stageWidth and stageHeight of Render2D.stage directly.
+		 * 
+		 * @param width
+		 * @param height
+		 */
+		public function setStage2DSize(width:int, height:int):void
+		{
+			if (!_stage2D) return;
+			_stage2D.stageWidth = width;
+			_stage2D.stageHeight = height;
+		}
+		
+		
+		/**
 		 * Returns a String Representation of the class.
 		 * 
 		 * @return A String Representation of the class.
@@ -570,6 +600,7 @@ package tetragon.view.render2d.core
 		
 		/**
 		 * The viewport into which Render2D contents will be rendered.
+		 * The default values reflect the size of the whole Flash stage.
 		 */
 		public function get viewPort():Rectangle
 		{
@@ -587,7 +618,9 @@ package tetragon.view.render2d.core
 		 */
 		public function get contentScaleFactor():Number
 		{
-			return _viewPort.width / _stage2D.stageWidth;
+			//return _viewPort.width / _stage2D.stageWidth;
+			//return _stage2D.stageWidth / _viewPort.width;
+			return 1.0;
 		}
 		
 		
@@ -863,13 +896,27 @@ package tetragon.view.render2d.core
 			/* Register renderer for draw calls polling on Tetragon's stats monitor. */
 			if (_main.statsMonitor) _main.statsMonitor.registerDrawCallsPolling(this);
 			
-			_stage3D = _stage3DProxy.stage3D;
-			_viewPort = new Rectangle(0, 0, _stage3DProxy.width, _stage3DProxy.height);
+			var refW:int = _main.appInfo.referenceWidth;
+			var refH:int = _main.appInfo.referenceHeight;
+			var viewportW:int = _stage3DProxy.width;
+			var viewportH:int = _stage3DProxy.height;
+			
+			/* By default, if the viewport is smaller than the default stage size, adapt the
+			 * size to it. */
+			if (viewportW < refW) viewportW = refW;
+			if (viewportH < refH) viewportH = refH;
+			
+			_viewPort = new Rectangle(0, 0, viewportW, viewportH);
 			_previousViewPort = new Rectangle();
-			_stage2D = new Stage2D(_stage3DProxy.width, _stage3DProxy.height, _stage3DProxy.color);
+			_stage2D = new Stage2D(refW, refH, _stage3DProxy.color);
+			_stage3D = _stage3DProxy.stage3D;
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
 			_renderSupport = new RenderSupport2D(this);
+			
+			Log.debug("ViewPort Size: " + viewportW + " x " + viewportH, this);
+			Log.debug("Stage2D Size:  " + refW + " x " + refH, this);
+			Log.debug("contentScaleFactor: " + contentScaleFactor, this);
 			
 			_drawCount = 0;
 			_antiAliasing = 0;

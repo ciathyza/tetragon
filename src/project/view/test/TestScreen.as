@@ -28,6 +28,7 @@
  */
 package view.test
 {
+	import tetragon.BuildType;
 	import tetragon.view.Screen;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.render2d.core.Render2D;
@@ -70,6 +71,12 @@ package view.test
 		override public function start():void
 		{
 			super.start();
+			
+			if (main.console && (main.appInfo.buildType == BuildType.IOS
+				|| main.appInfo.buildType == BuildType.IOS))
+			{
+				main.console.toggle();
+			}
 		}
 		
 		

@@ -28,6 +28,7 @@
  */
 package tetragon.view.render2d.textures
 {
+	import tetragon.debug.Log;
 	import tetragon.view.ScreenManager;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.VertexData2D;
@@ -319,6 +320,13 @@ package tetragon.view.render2d.textures
 			var legalWidth:int = nextPowerOfTwo(origWidth);
 			var legalHeight:int = nextPowerOfTwo(origHeight);
 			var format:String = Context3DTextureFormat.BGRA;
+			
+			if (legalWidth > 2048 || legalHeight > 2048)
+			{
+				Log.fatal("Texture2D.empty(): Texture too large (size is: "
+					+ legalWidth + " x " + legalHeight + " )!");
+				return null;
+			}
 			
 			var nativeTexture:Texture = context3D.createTexture(legalWidth, legalHeight,
 				Context3DTextureFormat.BGRA, optimizeForRenderToTexture);
