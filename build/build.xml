@@ -856,11 +856,12 @@
 				<arg line="-strict=true"/>
 				<arg line="-compress=@{compress}"/>
 				<arg line="-warn-no-constructor=false"/>
-				<arg line="-load-config=${FLEX_HOME}/frameworks/@{config}"/>
+				
 				<arg line="-keep-as3-metadata=TypeHint"/>
 				<arg line="-keep-as3-metadata=Resource"/>
 				<arg line="-keep-as3-metadata=ResourceIndex"/>
 				<arg line="-keep-as3-metadata=Embed"/>
+				
 				<arg line="-define=CONFIG::IS_WEB_BUILD,@{isWebBuild}"/>
 				<arg line="-define=CONFIG::IS_AIR_BUILD,@{isAIRBuild}"/>
 				<arg line="-define=CONFIG::IS_DESKTOP_BUILD,@{isDesktopBuild}"/>
@@ -868,15 +869,15 @@
 				<arg line="-define=CONFIG::IS_ANDROID_BUILD,@{isAndroidBuild}"/>
 				<arg line="-define=CONFIG::IS_IOS_BUILD,@{isIOSBuild}"/>
 				<arg line="-define=CONFIG::USE_EMBEDDED_RESOURCES,${resource.useEmbed}"/>
+				
 				<arg line="-source-path=${path.libs.source}"/>
 				<arg line="-source-path+=${path.src.engine}"/>
 				<arg line="-source-path+=${path.src.project}"/>
-				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/air/aircore.swc"/>
-				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airframework.swc"/>
-				<arg line="-external-library-path+=${FLEX_HOME}/frameworks/libs/air/airglobal.swc"/>
-				<arg line="-library-path=${FLEX_HOME}/frameworks/libs/framework.swc"/>
-				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air/servicemonitor.swc"/>
-				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/textLayout.swc"/>
+				
+				<arg line="-external-library-path=${FLEX_HOME}/frameworks/libs/air/airglobal.swc"/>
+				
+				<arg line="-library-path=${FLEX_HOME}/frameworks/libs"/>
+				<arg line="-library-path+=${FLEX_HOME}/frameworks/libs/air"/>
 				<arg line="-library-path+=${path.libs.swc}"/>
 			</exec>
 		</sequential>

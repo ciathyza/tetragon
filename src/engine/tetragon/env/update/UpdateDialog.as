@@ -30,16 +30,15 @@ package tetragon.env.update
 {
 	import lib.display.UpdateDialogIcon;
 
-	import tetragon.util.ui.createButton;
-	import tetragon.util.ui.createLabel;
-	import tetragon.util.ui.createProgressBar;
-	import tetragon.util.ui.createTextArea;
-
 	import com.hexagonstar.display.shape.RectangleShape;
 	import com.hexagonstar.ui.controls.Button;
 	import com.hexagonstar.ui.controls.Label;
 	import com.hexagonstar.ui.controls.ProgressBar;
 	import com.hexagonstar.ui.controls.TextArea;
+	import com.hexagonstar.ui.util.createButton;
+	import com.hexagonstar.ui.util.createLabel;
+	import com.hexagonstar.ui.util.createProgressBar;
+	import com.hexagonstar.ui.util.createTextArea;
 	import com.hexagonstar.update.ui.UpdateUI;
 
 	import flash.events.Event;
