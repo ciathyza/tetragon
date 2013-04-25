@@ -13,6 +13,8 @@
 	<initialScreenID>testScreen</initialScreenID>
 	<!-- The ID of the used UI theme. -->
 	<themeID>default</themeID>
+	<!-- Determines wether the screen manager is enabled at all. Defaults to true. -->
+	<screenManagerEnabled>true</screenManagerEnabled>
 	
 	<!-- ================================================================================
 	SPLASH SCREEN SETTINGS

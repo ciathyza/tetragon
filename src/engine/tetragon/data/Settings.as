@@ -43,6 +43,7 @@ package tetragon.data
 		public static const FRAME_RATE:String				= "frameRate";
 		public static const SCREEN_SCALE:String				= "screenScale";
 		public static const INITIAL_SCREEN_ID:String		= "initialScreenID";
+		public static const SCREEN_MANAGER_ENABLED:String	= "screenManagerEnabled";
 		public static const THEME_ID:String					= "themeID";
 		
 		public static const SPLASH_SCREEN_ID:String			= "splashScreenID";
@@ -151,6 +152,15 @@ package tetragon.data
 		{
 			if (_map[key] && _map[key] is Array) return _map[key];
 			return null;
+		}
+		
+		
+		/**
+		 * Checks if a property is existing in the settings.
+		 */
+		public function hasProperty(key:String):Boolean
+		{
+			return _map.hasOwnProperty(key);
 		}
 		
 		

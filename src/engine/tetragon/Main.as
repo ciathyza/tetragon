@@ -34,6 +34,7 @@ package tetragon
 	import tetragon.core.GameLoop;
 	import tetragon.data.Params;
 	import tetragon.data.Registry;
+	import tetragon.data.Settings;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
 	import tetragon.debug.StatsMonitor;
@@ -458,12 +459,25 @@ package tetragon
 		 */
 		private function onAllModulesComplete():void
 		{
-			CallLater.add(function():void
+			var screenManagerEnabled:Boolean = true;
+			if (_registry.settings.hasProperty(Settings.SCREEN_MANAGER_ENABLED))
 			{
-				if (_contextView is IPreloader) (_contextView as IPreloader).dispose();
-				/* Time to init the screen manager and open the initial screen. */
-				screenManager.init();
-			});
+				screenManagerEnabled = _registry.settings.getBoolean(Settings.SCREEN_MANAGER_ENABLED);
+			}
+			
+			if (screenManagerEnabled)
+			{
+				CallLater.add(function():void
+				{
+					if (_contextView is IPreloader) (_contextView as IPreloader).dispose();
+					/* Time to init the screen manager and open the initial screen. */
+					screenManager.init();
+				});
+			}
+			else
+			{
+				Log.notice("ScreenManager is disabled!", this);
+			}
 		}
 		
 		
@@ -491,7 +505,7 @@ package tetragon
 			}
 			else
 			{
-				Log.error("Uncaught error occured - something went abysmally wrong!");
+				Log.error("Uncaught error occured - something went abysmally wrong!\n" + e.error);
 			}
 		}
 		
