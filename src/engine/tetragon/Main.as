@@ -489,7 +489,7 @@ package tetragon
 		private function onScreenManagerReady(context3D:Context3D):void
 		{
 			screenManager.screenManagerReadySignal.remove(onScreenManagerReady);
-			screenManager.start();
+			CallLater.add(screenManager.start);
 		}
 		
 		

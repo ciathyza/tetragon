@@ -419,7 +419,7 @@ package tetragon.view.stage3d
 		 */
 		public function toString():String
 		{
-			return "[Stage3DProxy index=" + _stage3DIndex + "]";
+			return "Stage3DProxy." + _stage3DIndex;
 		}
 		
 		
