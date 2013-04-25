@@ -28,6 +28,8 @@
  */
 package tetragon.view.stage3d
 {
+	import tetragon.debug.Log;
+
 	import flash.display.Stage;
 	
 	
@@ -114,7 +116,7 @@ package tetragon.view.stage3d
 				++i;
 			}
 			
-			throw new Error("Too many Stage3D instances used!");
+			Log.fatal("getFreeStage3DProxy:: Too many Stage3D instances used!", this);
 			return null;
 		}
 		

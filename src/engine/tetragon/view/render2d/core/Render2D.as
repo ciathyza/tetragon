@@ -46,7 +46,6 @@ package tetragon.view.render2d.core
 	import tetragon.view.stage3d.Stage3DProxy;
 	import tetragon.view.stage3d.Stage3DSignal;
 
-	import com.hexagonstar.exception.FatalException;
 	import com.hexagonstar.exception.SingletonException;
 
 	import flash.display.Stage;
@@ -246,6 +245,8 @@ package tetragon.view.render2d.core
 		private var _leftMouseDown:Boolean;
 		/** @private */
 		private var _shareContext:Boolean;
+		/** @private */
+		private var _ready:Boolean;
 		
 		/** @private */
 		private static var _contextData:Dictionary;
@@ -737,6 +738,12 @@ package tetragon.view.render2d.core
 		}
 		
 		
+		public function get ready():Boolean
+		{
+			return _ready;
+		}
+		
+		
 		/**
 		 * @private
 		 */
@@ -878,14 +885,16 @@ package tetragon.view.render2d.core
 		 */
 		private function setup():void
 		{
+			_ready = false;
 			_main = Main.instance;
 			_nativeStage = _main.stage;
 			_stage3DProxy = _main.screenManager.stage3DProxy;
 			
 			if (!_stage3DProxy)
 			{
-				throw new FatalException("Stage3DProxy is not available! Is hardware"
+				_main.screenManager.showOnScreenError("Stage3DProxy is not available! Is hardware"
 					+ " rendering enabled?");
+				return;
 			}
 			
 			/* Set shortcut to render2D instance in often used classes for faster access. */
@@ -948,6 +957,7 @@ package tetragon.view.render2d.core
 				_context = RenderSupport2D.context3D;
 				contextData[PROGRAM_DATA_NAME] = new Dictionary();
 				updateViewPort(true);
+				_ready = true;
 				Log.verbose("Render2D System v" + VERSION + " initialized.", this);
 				dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, _context);
 				

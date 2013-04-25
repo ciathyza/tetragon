@@ -52,6 +52,7 @@ package tetragon.view
 	import com.hexagonstar.tween.TweenVars;
 	import com.hexagonstar.util.number.average;
 	import com.hexagonstar.util.string.TabularText;
+	import com.hexagonstar.util.time.CallLater;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -335,7 +336,7 @@ package tetragon.view
 		{
 			Log.fatal(message, this);
 			var tf:TextField = new TextField();
-			var format:TextFormat = new TextFormat("Verdana", 14, 0xFFFFFF);
+			var format:TextFormat = new TextFormat("Verdana", 16, 0xFFFFFF);
 			format.align = TextFormatAlign.CENTER;
 			tf.defaultTextFormat = format;
 			tf.wordWrap = true;
@@ -346,8 +347,10 @@ package tetragon.view
 			tf.y = int((_stage.stageHeight - tf.height) * 0.5);
 			tf.background = true;
 			tf.backgroundColor = 0x440000;
-			if (_nativeViewContainer) _nativeViewContainer.addChild(tf);
-			else _contextView.addChild(tf);
+			
+			_main.contextView.addChild(tf);
+			//if (_nativeViewContainer) _nativeViewContainer.addChild(tf);
+			//else _contextView.addChild(tf);
 		}
 		
 		
@@ -367,13 +370,16 @@ package tetragon.view
 			if (_hardwareRenderingEnabled)
 			{
 				_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
-				_stage3DProxy.width = _screenWidth;
-				_stage3DProxy.height = _screenHeight;
-				_stage3DProxy.color = _stage.color;
-				_stage3DProxy.stage3DSignal.add(onStage3DSignal);
-				_stage3D = _stage3DProxy.stage3D;
-				_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
-				_stage3DProxy.requestContext3D();
+				if (_stage3DProxy)
+				{
+					_stage3DProxy.width = _screenWidth;
+					_stage3DProxy.height = _screenHeight;
+					_stage3DProxy.color = _stage.color;
+					_stage3DProxy.stage3DSignal.add(onStage3DSignal);
+					_stage3D = _stage3DProxy.stage3D;
+					_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
+					_stage3DProxy.requestContext3D();
+				}
 			}
 			else
 			{
@@ -832,7 +838,7 @@ package tetragon.view
 					else
 					{
 						initializeContext3D();
-						openInitialScreen();
+						CallLater.add(openInitialScreen);
 					}
 					break;
 				case Stage3DSignal.CONTEXT3D_RECREATED:
@@ -1067,7 +1073,7 @@ package tetragon.view
 			}
 			else
 			{
-				showCurrentScreen();
+				CallLater.add(showCurrentScreen);
 			}
 		}
 		
@@ -1084,7 +1090,7 @@ package tetragon.view
 				_nativeViewContainer.removeChild(_loadProgressDisplay);
 				_loadProgressDisplay.dispose();
 				_loadProgressDisplay = null;
-				showCurrentScreen();
+				CallLater.add(showCurrentScreen);
 			};
 			
 			Tween.to(_loadProgressDisplay, 0.4, _tweenVars);
