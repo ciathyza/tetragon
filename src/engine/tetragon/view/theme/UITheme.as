@@ -300,11 +300,12 @@ package tetragon.view.theme
 		protected function addTextFormat(id:String, font:String, size:int = 12,
 			color:uint = 0x000000, letterSpacing:Number = 0, leading:int = 0, align:String = null,
 			bold:Boolean = false, italic:Boolean = false, underline:Boolean = false,
-			kerning:Boolean = false, scaledSize:Boolean = true, leftMargin:int = 0,
-			rightMargin:int = 0, indent:int = 0):void
+			kerning:Boolean = false, scaledSize:Boolean = true, scaleFactor:Number = 1.0,
+			leftMargin:int = 0, rightMargin:int = 0, indent:int = 0):void
 		{
 			_textFormats.addFormat(id, font, size, color, letterSpacing, leading,
-				align, bold, italic, underline, kerning, scaledSize, leftMargin, rightMargin, indent);
+				align, bold, italic, underline, kerning, scaledSize, scaleFactor,
+				leftMargin, rightMargin, indent);
 		}
 		
 		
