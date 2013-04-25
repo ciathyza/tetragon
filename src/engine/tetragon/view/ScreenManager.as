@@ -126,6 +126,7 @@ package tetragon.view
 		private var _backupCloseDelay:Number;
 		
 		private var _initialized:Boolean;
+		private var _started:Boolean;
 		private var _debugFacilitiesInitialized:Boolean;
 		private var _switching:Boolean;
 		private var _screenAutoStart:Boolean;
@@ -195,7 +196,6 @@ package tetragon.view
 			_contextView.addChild(_nativeViewContainer);
 			
 			_fadeColor = _stage.color;
-			_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
 			
 			_main.stage.addEventListener(Event.RESIZE, onStageResize);
 			_main.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreenToggle);
@@ -271,7 +271,7 @@ package tetragon.view
 				}
 				
 				/* Only change screen alpha if we're actually using tweens! */
-				if (_tweenDuration > 0)
+				if (_screenCover && _tweenDuration > 0)
 				{
 					_nextScreen.visible = false;
 					_screenCover.alpha = 1.0;
@@ -365,6 +365,18 @@ package tetragon.view
 			if (_initialized) return;
 			_initialized = true;
 			
+			Log.verbose("Initializing screen manager ...", this);
+			
+			var useScreenFades:Boolean = true;
+			if (_main.registry.settings.hasProperty(Settings.USE_SCREEN_FADES))
+			{
+				useScreenFades = _main.registry.settings.getBoolean(Settings.USE_SCREEN_FADES);
+			}
+			if (useScreenFades)
+			{
+				_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
+			}
+			
 			_hardwareRenderingEnabled = _main.registry.config.getBoolean(Config.HARDWARE_RENDERING_ENABLED);
 			
 			if (_hardwareRenderingEnabled)
@@ -385,8 +397,19 @@ package tetragon.view
 			{
 				verbose("Hardware rendering is disabled.");
 				if (_screenManagerReadySignal) _screenManagerReadySignal.dispatch(null);
-				openInitialScreen();
 			}
+		}
+		
+		
+		/**
+		 * Starts the screen manager after it has been initialized.
+		 */
+		public function start():void
+		{
+			if (!_initialized || _started) return;
+			_started = true;
+			Log.verbose("Starting screen manager ...", this);
+			openInitialScreen();
 		}
 		
 		
@@ -828,6 +851,8 @@ package tetragon.view
 		 */
 		private function onStage3DSignal(type:String):void
 		{
+			Log.verbose("onStage3DSignal:: type=" + type, this);
+			
 			switch (type)
 			{
 				case Stage3DSignal.CONTEXT3D_CREATED:
@@ -838,7 +863,6 @@ package tetragon.view
 					else
 					{
 						initializeContext3D();
-						CallLater.add(openInitialScreen);
 					}
 					break;
 				case Stage3DSignal.CONTEXT3D_RECREATED:
@@ -860,6 +884,8 @@ package tetragon.view
 			_screenHeight = _stage.stageHeight;
 			_scaleFactorX = _screenWidth / _referenceWidth;
 			_scaleFactorY = _screenHeight / _referenceHeight;
+			
+			Log.verbose("onStageResize:: width=" + _screenWidth + " height=" + _screenHeight, this);
 			
 			if (_screenCover)
 			{
@@ -929,7 +955,7 @@ package tetragon.view
 			}
 			
 			/* Remove screen cover from display list. */
-			if (_nativeViewContainer.contains(_screenCover))
+			if (_screenCover && _nativeViewContainer.contains(_screenCover))
 			{
 				_nativeViewContainer.removeChild(_screenCover);
 			}
@@ -1176,7 +1202,7 @@ package tetragon.view
 					return;
 				}
 				
-				if (_tweenDuration > 0.0)
+				if (_screenCover && _tweenDuration > 0.0)
 				{
 					_screenCover.alpha = 0.0;
 					/* Tween out current screen. */
@@ -1266,7 +1292,7 @@ package tetragon.view
 		private function showCurrentScreen():void
 		{
 			_switching = false;
-			if (_tweenDuration > 0.0)
+			if (_screenCover && _tweenDuration > 0.0)
 			{
 				/* Tween in next screen. */
 				_tweenVars.reset();

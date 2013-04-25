@@ -44,6 +44,7 @@ package tetragon.data
 		public static const SCREEN_SCALE:String				= "screenScale";
 		public static const INITIAL_SCREEN_ID:String		= "initialScreenID";
 		public static const SCREEN_MANAGER_ENABLED:String	= "screenManagerEnabled";
+		public static const USE_SCREEN_FADES:String			= "useScreenFades";
 		public static const THEME_ID:String					= "themeID";
 		
 		public static const SPLASH_SCREEN_ID:String			= "splashScreenID";

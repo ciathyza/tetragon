@@ -59,6 +59,7 @@ package tetragon
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
 	import flash.display.StageDisplayState;
+	import flash.display3D.Context3D;
 	import flash.events.ErrorEvent;
 	import flash.events.UncaughtErrorEvent;
 	import flash.external.ExternalInterface;
@@ -471,6 +472,7 @@ package tetragon
 				{
 					if (_contextView is IPreloader) (_contextView as IPreloader).dispose();
 					/* Time to init the screen manager and open the initial screen. */
+					screenManager.screenManagerReadySignal.addOnce(onScreenManagerReady);
 					screenManager.init();
 				});
 			}
@@ -478,6 +480,16 @@ package tetragon
 			{
 				Log.notice("ScreenManager is disabled!", this);
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onScreenManagerReady(context3D:Context3D):void
+		{
+			screenManager.screenManagerReadySignal.remove(onScreenManagerReady);
+			screenManager.start();
 		}
 		
 		

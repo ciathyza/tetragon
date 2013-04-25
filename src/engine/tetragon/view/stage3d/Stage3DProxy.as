@@ -407,6 +407,17 @@ package tetragon.view.stage3d
 		}
 		
 		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return "[Stage3DProxy index=" + _stage3DIndex + "]";
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
@@ -632,6 +643,9 @@ package tetragon.view.stage3d
 		 */
 		private function onContext3DUpdate(e:Event):void
 		{
+			Log.verbose("onContext3DUpdate:: context3D=" + _stage3D.context3D + " backBufferWidth="
+				+ _backBufferWidth + " backBufferHeight=" + _backBufferHeight , this);
+			
 			if (_stage3D.context3D)
 			{
 				var hadContext:Boolean = (_context3D != null);

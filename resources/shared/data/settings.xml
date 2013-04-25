@@ -15,6 +15,8 @@
 	<themeID>default</themeID>
 	<!-- Determines wether the screen manager is enabled at all. Defaults to true. -->
 	<screenManagerEnabled>true</screenManagerEnabled>
+	<!-- Determines whether screens fade in and out. Defaults to true. -->
+	<useScreenFades>true</useScreenFades>
 	
 	<!-- ================================================================================
 	SPLASH SCREEN SETTINGS

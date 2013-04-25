@@ -111,6 +111,7 @@ package tetragon.view.stage3d
 					getStage3DProxy(i, forceSoftware);
 					_stageProxies[i].width = _stage.stageWidth;
 					_stageProxies[i].height = _stage.stageHeight;
+					Log.verbose("getFreeStage3DProxy:: " + _stageProxies[i], this);
 					return _stageProxies[i];
 				}
 				++i;
@@ -118,6 +119,17 @@ package tetragon.view.stage3d
 			
 			Log.fatal("getFreeStage3DProxy:: Too many Stage3D instances used!", this);
 			return null;
+		}
+		
+		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return "Stage3DManager";
 		}
 		
 		
