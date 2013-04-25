@@ -28,6 +28,7 @@
  */
 package tetragon.view.stage3d
 {
+	import tetragon.Main;
 	import tetragon.debug.Log;
 
 	import flash.display.Stage3D;
@@ -36,6 +37,7 @@ package tetragon.view.stage3d
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.display3D.textures.TextureBase;
+	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
@@ -145,8 +147,11 @@ package tetragon.view.stage3d
 			if (_contextRequested) return;
 			_contextRequested = true;
 			
+			Log.verbose("Requesting Context3D ...", this);
+			
 			/* Whatever happens, be sure this has highest priority. */
 			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate, false, 1000);
+			_stage3D.addEventListener(ErrorEvent.ERROR, onContext3DError, false, 999);
 			
 			// If forcing software, we can be certain that the
 			// returned Context3D will be running software mode.
@@ -673,8 +678,18 @@ package tetragon.view.stage3d
 			}
 			else
 			{
-				throw new Error("Stage3D rendering context lost!");
+				Main.instance.screenManager.showOnScreenError("Stage3D rendering context lost!");
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function onContext3DError(e:ErrorEvent):void
+		{
+			_stage3D.removeEventListener(ErrorEvent.ERROR, onContext3DError);
+			Log.error("Error requesting Context3D: " + e.text, this);
 		}
 		
 		
