@@ -103,16 +103,18 @@ package tetragon.view.stage3d
 		{
 			var i:uint;
 			var len:uint = _stageProxies.length;
+			var proxy:Stage3DProxy;
 			
 			while (i < len)
 			{
 				if (!_stageProxies[i])
 				{
-					getStage3DProxy(i, forceSoftware);
-					_stageProxies[i].width = _stage.stageWidth;
-					_stageProxies[i].height = _stage.stageHeight;
-					Log.verbose("getFreeStage3DProxy:: " + _stageProxies[i], this);
-					return _stageProxies[i];
+					proxy = getStage3DProxy(i, forceSoftware);
+					proxy.width = _stage.stageWidth;
+					proxy.height = _stage.stageHeight;
+					proxy.color = _stage.color;
+					Log.verbose("getFreeStage3DProxy:: " + proxy, this);
+					return proxy;
 				}
 				++i;
 			}

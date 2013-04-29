@@ -313,7 +313,6 @@ package view.test
 		override protected function executeBeforeStart():void
 		{
 			_render2D.start();
-			main.gameLoop.start();
 		}
 	}
 }

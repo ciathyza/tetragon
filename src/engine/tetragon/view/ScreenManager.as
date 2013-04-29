@@ -384,9 +384,9 @@ package tetragon.view
 				_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
 				if (_stage3DProxy)
 				{
-					_stage3DProxy.width = _screenWidth;
-					_stage3DProxy.height = _screenHeight;
-					_stage3DProxy.color = _stage.color;
+					//_stage3DProxy.width = _screenWidth;
+					//_stage3DProxy.height = _screenHeight;
+					//_stage3DProxy.color = _stage.color;
 					_stage3DProxy.stage3DSignal.add(onStage3DSignal);
 					_stage3D = _stage3DProxy.stage3D;
 					_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
@@ -1154,6 +1154,8 @@ package tetragon.view
 			RenderSupport2D.context3D =
 			FragmentFilter2D.context3D =
 			Texture2D.context3D = _context3D;
+			
+			_main.gameLoop.setStage3DProxy(_stage3DProxy);
 			
 			verbose("Context3D initialized. Display Driver: " + _context3D.driverInfo);
 			if (_screenManagerReadySignal) _screenManagerReadySignal.dispatch(_context3D);

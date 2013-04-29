@@ -31,8 +31,11 @@ package tetragon.view.stage3d
 	import tetragon.Main;
 	import tetragon.debug.Log;
 
+	import com.hexagonstar.util.time.CallLater;
+
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
+	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
@@ -58,7 +61,6 @@ package tetragon.view.stage3d
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		//private static var _frameEventDriver:Shape;
 		private static var _enableErrorChecking:Boolean;
 		
 		private var _stage3D:Stage3D;
@@ -95,6 +97,8 @@ package tetragon.view.stage3d
 		//-----------------------------------------------------------------------------------------
 		
 		private var _stage3DSignal:Stage3DSignal;
+//		private var _enterFrameSignal:Signal;
+//		private var _exitFrameSignal:Signal;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -114,8 +118,6 @@ package tetragon.view.stage3d
 		public function Stage3DProxy(stage3DIndex:int, stage3D:Stage3D,
 			stage3DManager:Stage3DManager, forceSoftware:Boolean = false)
 		{
-			//if (!_frameEventDriver) _frameEventDriver = new Shape();
-			
 			_stage3DIndex = stage3DIndex;
 			_stage3D = stage3D;
 			_stage3DManager = stage3DManager;
@@ -144,32 +146,36 @@ package tetragon.view.stage3d
 		 */
 		public function requestContext3D():void
 		{
+			Log.verbose("Requesting Context3D ... (contextRequested=" + _contextRequested + ")", this);
+			
 			if (_contextRequested) return;
 			_contextRequested = true;
 			
-			Log.verbose("Requesting Context3D ...", this);
-			
 			/* Whatever happens, be sure this has highest priority. */
 			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate, false, 1000);
-			_stage3D.addEventListener(ErrorEvent.ERROR, onContext3DError, false, 999);
+			_stage3D.addEventListener(ErrorEvent.ERROR, onContext3DError);
 			
 			// If forcing software, we can be certain that the
 			// returned Context3D will be running software mode.
 			// If not, we can't be sure and should stick to the
 			// old value (will likely be same if re-requesting.)
 			_usesSoftwareRendering ||= _forceSoftware;
+			Log.verbose("forceSoftware: " + _forceSoftware, this);
+			Log.verbose("usesSoftwareRendering: " + _usesSoftwareRendering, this);
 			
 			try
 			{
 				_stage3D.requestContext3D(_forceSoftware
 					? Context3DRenderMode.SOFTWARE
-					: Context3DRenderMode.AUTO);
+					: Context3DRenderMode.AUTO, Context3DProfile.BASELINE_CONSTRAINED);
 			}
 			catch (err:Error)
 			{
 				_contextRequested = false;
 				Log.fatal("Error requesting Context3D: " + err.message, this);
 			}
+			
+			Log.verbose("contextRequested: " + _contextRequested, this);
 		}
 		
 		
@@ -225,6 +231,7 @@ package tetragon.view.stage3d
 		{
 			_stage3DManager.removeStage3DProxy(this);
 			_stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate);
+			_stage3D.removeEventListener(ErrorEvent.ERROR, onContext3DError);
 			freeContext3D();
 			_stage3D = null;
 			_stage3DManager = null;
@@ -286,6 +293,23 @@ package tetragon.view.stage3d
 			_context3D.present();
 			_activeProgram3D = null;
 		}
+		
+		
+		/**
+		 * The Enter_Frame handler for processing the proxy.ENTER_FRAME and
+		 * proxy.EXIT_FRAME event handlers. Typically the proxy.ENTER_FRAME listener would
+		 * render the layers for this Stage3D instance.
+		 * 
+		 * @private
+		 */
+//		public function renderFrame():void
+//		{
+//			if (!_context3D) return;
+//			clear();
+//			notifyEnterFrame();
+//			present();
+//			notifyExitFrame();
+//		}
 		
 		
 		/**
@@ -636,6 +660,20 @@ package tetragon.view.stage3d
 		}
 		
 		
+//		public function get enterFrameSignal():Signal
+//		{
+//			if (!_enterFrameSignal) _enterFrameSignal = new Signal();
+//			return _enterFrameSignal;
+//		}
+//
+//
+//		public function get exitFrameSignal():Signal
+//		{
+//			if (!_exitFrameSignal) _exitFrameSignal = new Signal();
+//			return _exitFrameSignal;
+//		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -651,35 +689,37 @@ package tetragon.view.stage3d
 			Log.verbose("onContext3DUpdate:: context3D=" + _stage3D.context3D + " backBufferWidth="
 				+ _backBufferWidth + " backBufferHeight=" + _backBufferHeight , this);
 			
-			if (_stage3D.context3D)
+			CallLater.add(function():void
 			{
-				var hadContext:Boolean = (_context3D != null);
-				_context3D = _stage3D.context3D;
-				_context3D.enableErrorChecking = _enableErrorChecking;
-				_usesSoftwareRendering = (_context3D.driverInfo.indexOf('Software') == 0);
-				
-				// Only configure back buffer if width and height have been set,
-				// which they may not have been if View3D.render() has yet to be
-				// invoked for the first time.
-				if (_backBufferWidth && _backBufferHeight)
+				if (_stage3D.context3D)
 				{
-					_context3D.configureBackBuffer(_backBufferWidth, _backBufferHeight,
-						_antiAlias, _enableDepthAndStencil);
+					var hadContext:Boolean = (_context3D != null);
+					_context3D = _stage3D.context3D;
+					_context3D.enableErrorChecking = _enableErrorChecking;
+					_usesSoftwareRendering = (_context3D.driverInfo.indexOf('Software') == 0);
+					// Only configure back buffer if width and height have been set,
+					// which they may not have been if View3D.render() has yet to be
+					// invoked for the first time.
+					if (_backBufferWidth && _backBufferHeight)
+					{
+						_context3D.configureBackBuffer(_backBufferWidth, _backBufferHeight,
+							_antiAlias, _enableDepthAndStencil);
+					}
+					
+					// Dispatch the appropriate event depending on whether context was
+					// created for the first time or recreated after a device loss.
+					if (_stage3DSignal)
+					{
+						_stage3DSignal.dispatch(hadContext
+							? Stage3DSignal.CONTEXT3D_RECREATED
+							: Stage3DSignal.CONTEXT3D_CREATED);
+					}
 				}
-				
-				// Dispatch the appropriate event depending on whether context was
-				// created for the first time or recreated after a device loss.
-				if (_stage3DSignal)
+				else
 				{
-					_stage3DSignal.dispatch(hadContext
-						? Stage3DSignal.CONTEXT3D_RECREATED
-						: Stage3DSignal.CONTEXT3D_CREATED);
+					Main.instance.screenManager.showOnScreenError("Stage3D rendering context lost!");
 				}
-			}
-			else
-			{
-				Main.instance.screenManager.showOnScreenError("Stage3D rendering context lost!");
-			}
+			});
 		}
 		
 		
@@ -693,46 +733,9 @@ package tetragon.view.stage3d
 		}
 		
 		
-		/**
-		 * The Enter_Frame handler for processing the proxy.ENTER_FRAME and
-		 * proxy.EXIT_FRAME event handlers. Typically the proxy.ENTER_FRAME listener would
-		 * render the layers for this Stage3D instance.
-		 * 
-		 * @private
-		 */
-		//private function onEnterFrame(event:Event):void
-		//{
-		//	if (!_context3D) return;
-		//	clear();
-		//	notifyEnterFrame();
-		//	present();
-		//	notifyExitFrame();
-		//}
-		
-		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		//private function notifyEnterFrame():void
-		//{
-		//	if (!hasEventListener(Event.ENTER_FRAME)) return;
-		//	dispatchEvent(_enterFrame);
-		//}
-		
-		
-		/**
-		 * @private
-		 */
-		//private function notifyExitFrame():void
-		//{
-		//	if (!hasEventListener(Event.EXIT_FRAME)) return;
-		//	dispatchEvent(_exitFrame);
-		//}
-		
 		
 		/**
 		 * Frees the Context3D associated with this Stage3DProxy.

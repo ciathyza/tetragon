@@ -30,6 +30,7 @@ package tetragon.core
 {
 	import tetragon.Main;
 	import tetragon.data.Settings;
+	import tetragon.view.stage3d.Stage3DProxy;
 
 	import com.hexagonstar.signals.Signal;
 
@@ -83,6 +84,12 @@ package tetragon.core
 		 * @private
 		 */
 		private var _main:Main;
+		
+		/**
+		 * Reference to Stage3DProxy.
+		 * @private
+		 */
+		private var _stage3DProxy:Stage3DProxy;
 		
 		/** @private */
 		private var _renders:uint;
@@ -138,6 +145,15 @@ package tetragon.core
 			stageFrameRate = _main.contextView.stage.frameRate;
 			_accumulator = _step;
 			_total = 0;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		public function setStage3DProxy(stage3DProxy:Stage3DProxy):void
+		{
+			_stage3DProxy = stage3DProxy;
 		}
 		
 		
@@ -249,6 +265,7 @@ package tetragon.core
 		 */
 		private function onEnterFrame(e:Event):void
 		{
+			if (_stage3DProxy) _stage3DProxy.clear();
 			if (_enterFrameSignal) _enterFrameSignal.dispatch();
 			
 			var time:uint = getTimer();
@@ -281,6 +298,7 @@ package tetragon.core
 			
 			_renderSignal.dispatch(ticks, ms, _renderFPS);
 			
+			if (_stage3DProxy) _stage3DProxy.present();
 			if (_exitFrameSignal) _exitFrameSignal.dispatch();
 		}
 	}

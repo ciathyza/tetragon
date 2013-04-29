@@ -244,7 +244,7 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _leftMouseDown:Boolean;
 		/** @private */
-		private var _shareContext:Boolean;
+		private var _shareContext:Boolean = true;
 		/** @private */
 		private var _ready:Boolean;
 		

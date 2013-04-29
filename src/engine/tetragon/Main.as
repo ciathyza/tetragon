@@ -447,6 +447,7 @@ package tetragon
 		private function onStartupComplete(command:Command):void
 		{
 			_gameLoop.init();
+			_gameLoop.start();
 			
 			/* Start all registered and autoStart-set modules. */
 			moduleManager.allModulesCompleteSignal.addOnce(onAllModulesComplete);

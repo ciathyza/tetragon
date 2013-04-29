@@ -78,7 +78,9 @@
 				<key>UIStatusBarStyle</key>
 				<string>UIStatusBarStyleBlackOpaque</string>
 				<key>UIRequiresPersistentWiFi</key>
-				<string>YES</string>
+				<string>NO</string>
+				<key>UIApplicationExitsOnSuspend</key>
+				<true/>
 			]]>
 		</InfoAdditions>
 		<!-- <Entitlements>

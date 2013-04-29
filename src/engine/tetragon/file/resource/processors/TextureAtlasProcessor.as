@@ -104,7 +104,15 @@ package tetragon.file.resource.processors
 						}
 						else
 						{
-							textureAtlas.source = Texture2D.fromATFData(bytes);
+							try
+							{
+								textureAtlas.source = Texture2D.fromATFData(bytes);
+							}
+							catch (err:Error)
+							{
+								error("ATF texture atlas could not be created. (" + err.message + ")");
+								continue;
+							}
 						}
 					}
 					else
