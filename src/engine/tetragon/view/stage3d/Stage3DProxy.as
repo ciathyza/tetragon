@@ -35,7 +35,6 @@ package tetragon.view.stage3d
 
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
-	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
@@ -167,7 +166,7 @@ package tetragon.view.stage3d
 			{
 				_stage3D.requestContext3D(_forceSoftware
 					? Context3DRenderMode.SOFTWARE
-					: Context3DRenderMode.AUTO, Context3DProfile.BASELINE_CONSTRAINED);
+					: Context3DRenderMode.AUTO);
 			}
 			catch (err:Error)
 			{
