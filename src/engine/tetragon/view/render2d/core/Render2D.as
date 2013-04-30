@@ -244,8 +244,6 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _leftMouseDown:Boolean;
 		/** @private */
-		private var _shareContext:Boolean = true;
-		/** @private */
 		private var _ready:Boolean;
 		
 		/** @private */
@@ -291,7 +289,6 @@ package tetragon.view.render2d.core
 			if (_stage2D) _stage2D.dispose();
 			if (_renderSupport) _renderSupport.dispose();
 			if (_touchProcessor) _touchProcessor.dispose();
-			if (_context && !_shareContext) _context.dispose();
 		}
 		
 		
@@ -352,8 +349,6 @@ package tetragon.view.render2d.core
 			updateViewPort();
 			_renderSupport.nextFrame();
 			
-			if (!_shareContext) RenderSupport2D.clear(_stage2D.color, 1.0);
-			
 			var scaleX:Number = _viewPort.width / _stage2D.stageWidth;
 			var scaleY:Number = _viewPort.height / _stage2D.stageHeight;
 			
@@ -369,8 +364,6 @@ package tetragon.view.render2d.core
 			
 			_stage2D.render(_renderSupport, 1.0);
 			_renderSupport.finishQuadBatch();
-			
-			if (!_shareContext) _context.present();
 		}
 		
 		
@@ -678,22 +671,6 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * Indicates if the Context3D render calls are managed externally to Render2D, to
-		 * allow other frameworks to share the Stage3D instance.
-		 * 
-		 * @default false
-		 */
-		public function get shareContext():Boolean
-		{
-			return _shareContext;
-		}
-		public function set shareContext(v:Boolean):void
-		{
-			_shareContext = v;
-		}
-		
-		
-		/**
 		 * The Context3D profile as requested in the constructor. Beware that if you are using
 		 * a shared context, this might not be accurate. Possible values are:
 		 * 
@@ -988,30 +965,30 @@ package tetragon.view.render2d.core
 				// Constrained mode requires that the viewport is within the native stage bounds;
 				// thus, we use a clipped viewport when configuring the back buffer. (In baseline
 				// mode, that's not necessary, but it does not hurt either.)
-				_clippedViewPort = _viewPort.intersection(new Rectangle(0, 0, _nativeStage.stageWidth,
-					_nativeStage.stageHeight));
+				_clippedViewPort = _viewPort.intersection(new Rectangle(0, 0,
+					_nativeStage.stageWidth, _nativeStage.stageHeight));
 				
-				if (!_shareContext)
-				{
-					// setting x and y might move the context to invalid bounds (since changing
-					// the size happens in a separate operation) -- so we have no choice but to
-					// set the backbuffer to a very small size first, to be on the safe side.
-					if (_profile == "baselineConstrained")
-					{
-						_renderSupport.configureBackBuffer(32, 32, _antiAliasing, false);
-					}
-					
-					_stage3D.x = _clippedViewPort.x;
-					_stage3D.y = _clippedViewPort.y;
-					
-					_renderSupport.configureBackBuffer(_clippedViewPort.width,
-						_clippedViewPort.height, _antiAliasing, false);
-				}
-				else
-				{
+				//if (!_shareContext)
+				//{
+				//	// setting x and y might move the context to invalid bounds (since changing
+				//	// the size happens in a separate operation) -- so we have no choice but to
+				//	// set the backbuffer to a very small size first, to be on the safe side.
+				//	if (_profile == "baselineConstrained")
+				//	{
+				//		_renderSupport.configureBackBuffer(32, 32, _antiAliasing, false);
+				//	}
+				//	
+				//	_stage3D.x = _clippedViewPort.x;
+				//	_stage3D.y = _clippedViewPort.y;
+				//	
+				//	_renderSupport.configureBackBuffer(_clippedViewPort.width,
+				//		_clippedViewPort.height, _antiAliasing, false);
+				//}
+				//else
+				//{
 					_renderSupport.backBufferWidth = _clippedViewPort.width;
 					_renderSupport.backBufferHeight = _clippedViewPort.height;
-				}
+				//}
 			}
 		}
 	}

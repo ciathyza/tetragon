@@ -29,7 +29,6 @@
 package tetragon.core
 {
 	import tetragon.Main;
-	import tetragon.data.Settings;
 	import tetragon.view.stage3d.Stage3DProxy;
 
 	import com.hexagonstar.signals.Signal;
@@ -127,8 +126,9 @@ package tetragon.core
 		public function GameLoop()
 		{
 			_main = Main.instance;
-			_tickSignal = new TickSignal();
-			_renderSignal = new RenderSignal();
+			
+			init();
+			start();
 		}
 		
 		
@@ -138,22 +138,9 @@ package tetragon.core
 		
 		public function init():void
 		{
-			var f:Number = _main.registry.settings.getNumber(Settings.FRAME_RATE);
-			if (isNaN(f)) f = 60;
-			
-			frameRate = f;
-			stageFrameRate = _main.contextView.stage.frameRate;
+			stageFrameRate = frameRate = _main.contextView.stage.frameRate;
 			_accumulator = _step;
 			_total = 0;
-		}
-		
-		
-		/**
-		 * @private
-		 */
-		public function setStage3DProxy(stage3DProxy:Stage3DProxy):void
-		{
-			_stage3DProxy = stage3DProxy;
 		}
 		
 		
@@ -173,6 +160,18 @@ package tetragon.core
 		}
 		
 		
+		/**
+		 * Sets the used Stage3DProxy object if it becomes available. The engine sets
+		 * this internally!
+		 * 
+		 * @private
+		 */
+		public function setStage3DProxy(stage3DProxy:Stage3DProxy):void
+		{
+			_stage3DProxy = stage3DProxy;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------
@@ -188,6 +187,7 @@ package tetragon.core
 		}
 		public function set frameRate(v:Number):void
 		{
+			if (isNaN(v)) return;
 			v = v < 5 ? 5 : v > 200 ? 200 : v;
 			_step = 1000 / v;
 			if (_maxAccumulation < _step) _maxAccumulation = _step;
@@ -201,6 +201,7 @@ package tetragon.core
 		}
 		public function set stageFrameRate(v:Number):void
 		{
+			if (isNaN(v)) return;
 			_stageFrameRate = v;
 			_main.contextView.stage.frameRate = _stageFrameRate;
 			_maxAccumulation = 2000 / _stageFrameRate - 1;
@@ -225,12 +226,14 @@ package tetragon.core
 		
 		public function get tickSignal():TickSignal
 		{
+			if (!_tickSignal) _tickSignal = new TickSignal();
 			return _tickSignal;
 		}
 		
 		
 		public function get renderSignal():RenderSignal
 		{
+			if (!_renderSignal) _renderSignal = new RenderSignal();
 			return _renderSignal;
 		}
 		
@@ -281,11 +284,11 @@ package tetragon.core
 			while (_accumulator >= _step)
 			{
 				++ticks;
-				_tickSignal.dispatch();
+				if (_tickSignal) _tickSignal.dispatch();
 				_accumulator -= _step;
 			}
 			
-			/* Calculate render fps. */
+			/* Calculate render FPS. */
 			++_renders;
 			time = getTimer();
 			var delta:uint = time - _renderLast;
@@ -296,8 +299,7 @@ package tetragon.core
 				_renderLast = time;
 			}
 			
-			_renderSignal.dispatch(ticks, ms, _renderFPS);
-			
+			if (_renderSignal) _renderSignal.dispatch(ticks, ms, _renderFPS);
 			if (_stage3DProxy) _stage3DProxy.present();
 			if (_exitFrameSignal) _exitFrameSignal.dispatch();
 		}

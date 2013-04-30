@@ -367,6 +367,7 @@ package tetragon.view
 			
 			Log.verbose("Initializing screen manager ...", this);
 			
+			/* Check whether to use screen fades. Screen fades can be turned of for debugging. */ 
 			var useScreenFades:Boolean = true;
 			if (_main.registry.settings.hasProperty(Settings.USE_SCREEN_FADES))
 			{
@@ -377,16 +378,13 @@ package tetragon.view
 				_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
 			}
 			
+			/* Check if hardware (Stage3D) rendering should be used at all. */
 			_hardwareRenderingEnabled = _main.registry.config.getBoolean(Config.HARDWARE_RENDERING_ENABLED);
-			
 			if (_hardwareRenderingEnabled)
 			{
 				_stage3DProxy = _main.stage3DManager.getFreeStage3DProxy();
 				if (_stage3DProxy)
 				{
-					//_stage3DProxy.width = _screenWidth;
-					//_stage3DProxy.height = _screenHeight;
-					//_stage3DProxy.color = _stage.color;
 					_stage3DProxy.stage3DSignal.add(onStage3DSignal);
 					_stage3D = _stage3DProxy.stage3D;
 					_stage3D.addEventListener(ErrorEvent.ERROR, onStage3DError, false, 10);
@@ -1155,6 +1153,7 @@ package tetragon.view
 			FragmentFilter2D.context3D =
 			Texture2D.context3D = _context3D;
 			
+			/* Time to let the gameloop know of the Stage3D proxy! */
 			_main.gameLoop.setStage3DProxy(_stage3DProxy);
 			
 			verbose("Context3D initialized. Display Driver: " + _context3D.driverInfo);
@@ -1309,17 +1308,6 @@ package tetragon.view
 				onScreenTweenInComplete();
 			}
 		}
-		
-		
-		/**
-		 * Removes all child views from the view container that are part of the
-		 * specified screen.
-		 * 
-		 * @private
-		 */
-		//private function removeScreenChildren(screen:Screen):void
-		//{
-		//}
 		
 		
 		/**

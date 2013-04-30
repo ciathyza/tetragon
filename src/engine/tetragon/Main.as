@@ -446,9 +446,6 @@ package tetragon
 		 */
 		private function onStartupComplete(command:Command):void
 		{
-			_gameLoop.init();
-			_gameLoop.start();
-			
 			/* Start all registered and autoStart-set modules. */
 			moduleManager.allModulesCompleteSignal.addOnce(onAllModulesComplete);
 			moduleManager.startModules(true);
@@ -461,6 +458,7 @@ package tetragon
 		 */
 		private function onAllModulesComplete():void
 		{
+			/* Check if screen manager should be enabled! It can be disabled for debugging. */
 			var screenManagerEnabled:Boolean = true;
 			if (_registry.settings.hasProperty(Settings.SCREEN_MANAGER_ENABLED))
 			{
@@ -472,7 +470,7 @@ package tetragon
 				CallLater.add(function():void
 				{
 					if (_contextView is IPreloader) (_contextView as IPreloader).dispose();
-					/* Time to init the screen manager and open the initial screen. */
+					/* Time to init the screen manager. */
 					screenManager.screenManagerReadySignal.addOnce(onScreenManagerReady);
 					screenManager.init();
 				});

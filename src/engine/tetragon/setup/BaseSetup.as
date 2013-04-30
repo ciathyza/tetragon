@@ -146,6 +146,9 @@ package tetragon.setup
 		 */
 		override public function startupPostSettings():void
 		{
+			/* Set gameloop framerate according to value from settings. */
+			main.gameLoop.frameRate = settings.getNumber(Settings.FRAME_RATE);
+			
 			/* Set the used theme. */
 			main.themeManager.activateTheme(settings.getString(Settings.THEME_ID));
 			
