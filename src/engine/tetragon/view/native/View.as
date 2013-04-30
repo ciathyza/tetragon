@@ -141,6 +141,8 @@ package tetragon.view.native
 		/** @private */
 		protected var _paused:Boolean;
 		/** @private */
+		protected var _flattened:Boolean;
+		/** @private */
 		protected var _layoutOnce:Boolean;
 		/** @private */
 		protected var _isLaidout:Boolean;
@@ -258,6 +260,28 @@ package tetragon.view.native
 			if (!_started) return;
 			executeOnChildren(EXEC_STOP);
 			_started = false;
+		}
+		
+		
+		/**
+		 * Flattens the view. This will change all of the view's contents to be flattened
+		 * and rendered to a single bitmap (baked). If the view is resized after it was
+		 * flattened, it will be re-flattened with the new size.
+		 */
+		public function flatten():void
+		{
+			_flattened = true;
+			// TODO
+		}
+		
+		
+		/**
+		 * Unflattens the view.
+		 */
+		public function unflatten():void
+		{
+			_flattened = false;
+			// TODO
 		}
 		
 		
