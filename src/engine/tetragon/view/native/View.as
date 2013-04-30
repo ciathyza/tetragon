@@ -417,6 +417,15 @@ package tetragon.view.native
 		
 		
 		/**
+		 * Determines whether the view is flattened or not.
+		 */
+		public function get flattened():Boolean
+		{
+			return _flattened;
+		}
+		
+		
+		/**
 		 * Determines whether the view is auto-started (i.e. it's <code>start()</code>
 		 * method called) by the parent view or screen. This accessor can be overriden in
 		 * <code>View</code> subclasses and <code>false</code> can be returned instead if
