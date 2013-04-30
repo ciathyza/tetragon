@@ -349,8 +349,7 @@ package tetragon.debug
 		 */
 		private function onClick(e:MouseEvent):void
 		{
-			(mouseY / height > .5) ? --_stage.frameRate : ++_stage.frameRate;
-			_stageFrameRate = _stage.frameRate;
+			togglePosition();
 		}
 		
 		
