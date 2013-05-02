@@ -86,7 +86,17 @@ package tetragon.util.json
 				if (obj) return obj;
 			}
 			
-			return LegacyJSON.decode(text);
+			try
+			{
+				obj = LegacyJSON.decode(text);
+			}
+			catch (err2:Error)
+			{
+				Log.error("JSONWrapper: Could not parse JSON data with legacy JSON API! (Error was: " + err2.message + ")");
+			}
+			
+			if (obj != null) return obj;
+			return null;
 		}
 		
 		
