@@ -142,6 +142,7 @@ package tetragon.debug.cli
 						var argName:String = arg;
 						var argType:String = "String";
 						var optional:Boolean = false;
+						var isBoolean:Boolean = false;
 						
 						/* Argument comes with specified type */
 						if (arg.indexOf(":") != -1)
@@ -149,8 +150,15 @@ package tetragon.debug.cli
 							var a:Array = arg.split(":");
 							argName = a[0];
 							argType = String(a[1]).toLowerCase();
-							if (argType == "int" || argType == "uint") argType = "number";
-							else if (argType == "boolean") argType = "identifier";
+							if (argType == "int" || argType == "uint")
+							{
+								argType = "number";
+							}
+							else if (argType == "boolean")
+							{
+								argType = "identifier";
+								isBoolean = true;
+							}
 						}
 						
 						/* Check if the argument is optional (starts with +) */
@@ -164,7 +172,7 @@ package tetragon.debug.cli
 							argCount++;
 						}
 						
-						args.push(new Argument(argName, argType, optional));
+						args.push(new Argument(argName, argType, optional, isBoolean));
 					}
 				}
 				
@@ -193,6 +201,26 @@ package tetragon.debug.cli
 						if (ar.type == "number" && String(t.value).substr(0, 2) == "0x")
 						{
 							ar.type = t.type;
+						}
+						
+						/* Special treatment for boolean arguments! */
+						if (ar.isBoolean)
+						{
+							var tValue:String = String(t.value).toLowerCase();
+							if (tValue == "false")
+							{
+								t.value = false;
+							}
+							else if (tValue == "true")
+							{
+								t.value = true;
+							}
+							else
+							{
+								fail("Command argument type mismatch. Argument nr. " + (i + 1)
+									+ " is a boolean and must be either <true> or <false>.");
+								return null;
+							}
 						}
 						
 						if (ar.type != t.type)
@@ -272,11 +300,13 @@ final class Argument
 	public var name:String;
 	public var type:String;
 	public var optional:Boolean;
+	public var isBoolean:Boolean;
 	
-	public function Argument(n:String, t:String, o:Boolean)
+	public function Argument(n:String, t:String, o:Boolean, b:Boolean)
 	{
 		name = n;
 		type = t;
 		optional = o;
+		isBoolean = b;
 	}
 }
