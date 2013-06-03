@@ -38,6 +38,7 @@ package
 
 	import com.hexagonstar.constants.Alignment;
 	import com.hexagonstar.util.display.StageReference;
+	import com.hexagonstar.util.time.CallLater;
 
 	import mx.core.BitmapAsset;
 	import mx.core.ByteArrayAsset;
@@ -119,8 +120,14 @@ package
 			Main.params = new Params();
 			Main.params.parse(LoaderInfo(root.loaderInfo).parameters);
 			
-			configure();
-			start();
+			/* Configure and start the preloader after one frame has passed to prevent
+			 * a Flash-related bug with Internet Explorer where the stage dimensions
+			 * are not instantly available! */
+			CallLater.add(function():void
+			{
+				configure();
+				start();
+			});
 		}
 		
 		
