@@ -39,6 +39,7 @@ package tetragon.view.native
 
 	import com.hexagonstar.util.reflection.getClassName;
 
+	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
 	
@@ -327,6 +328,16 @@ package tetragon.view.native
 		override public function toString():String
 		{
 			return getClassName(this);
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		override public function addChild(child:DisplayObject):DisplayObject
+		{
+			if (!child) return null;
+			return super.addChild(child);
 		}
 		
 		
