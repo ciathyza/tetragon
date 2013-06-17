@@ -657,6 +657,7 @@ package tetragon.view.native
 		 */
 		protected final function registerChild(child:View):void
 		{
+			if (!child) return;
 			if (!_children) _children = new Vector.<View>();
 			child.setViewParams(_screen);
 			_children.push(child);
@@ -674,7 +675,7 @@ package tetragon.view.native
 		 */
 		protected final function unregisterChild(child:View):Boolean
 		{
-			if (!_children) return false;
+			if (!child || !_children) return false;
 			var i:int = _children.indexOf(child);
 			if (i > -1)
 			{
@@ -722,6 +723,7 @@ package tetragon.view.native
 		 */
 		protected function disposeChildView(child:View):void
 		{
+			if (!child) return;
 			unregisterChild(child);
 			if (contains(child)) removeChild(child);
 			child.dispose();
