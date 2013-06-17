@@ -28,6 +28,7 @@
  */
 package
 {
+	import tetragon.BuildType;
 	import tetragon.IAppInfo;
 	
 	
@@ -46,9 +47,9 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "12728";}
+		public function get build():String {return "12733";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "10-June-2013 15:17";}
+		public function get buildDate():String {return "17-June-2013 14:03";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
@@ -101,9 +102,39 @@ package
 		public function get swfVersion():int {return 19;}
 		
 		/** @inheritDoc */
-		public function get isDebug():Boolean {return false;}
+		public function get isDebug():Boolean {return true;}
 		
 		/** @inheritDoc */
 		public function get usePackedResources():Boolean {return false;}
+		
+		/** @inheritDoc */
+		public function get isWebBuild():Boolean
+		{
+			return buildType == BuildType.WEB;
+		}
+		
+		/** @inheritDoc */
+		public function get isDesktopBuild():Boolean
+		{
+			return buildType == BuildType.DESKTOP;
+		}
+		
+		/** @inheritDoc */
+		public function get isIOSBuild():Boolean
+		{
+			return buildType == BuildType.IOS;
+		}
+		
+		/** @inheritDoc */
+		public function get isAndroidBuild():Boolean
+		{
+			return buildType == BuildType.ANDROID;
+		}
+		
+		/** @inheritDoc */
+		public function get isMobileBuild():Boolean
+		{
+			return buildType == BuildType.IOS || buildType == BuildType.ANDROID;
+		}
 	}
 }

@@ -193,5 +193,30 @@ package tetragon
 		 * or not (<code>false</code>).
 		 */
 		function get usePackedResources():Boolean;
+		
+		/**
+		 * Determines whether the build is a web build (true) or not (false).
+		 */
+		function get isWebBuild():Boolean;
+		
+		/**
+		 * Determines whether the build is a desktop build (true) or not (false).
+		 */
+		function get isDesktopBuild():Boolean;
+		
+		/**
+		 * Determines whether the build is an iOS build (true) or not (false).
+		 */
+		function get isIOSBuild():Boolean;
+		
+		/**
+		 * Determines whether the build is an Android build (true) or not (false).
+		 */
+		function get isAndroidBuild():Boolean;
+		
+		/**
+		 * Determines whether the build is a mobile build (true) or not (false).
+		 */
+		function get isMobileBuild():Boolean;
 	}
 }
