@@ -47,9 +47,9 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "12733";}
+		public function get build():String {return "12736";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "17-June-2013 14:03";}
+		public function get buildDate():String {return "20-June-2013 16:31";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
@@ -102,7 +102,7 @@ package
 		public function get swfVersion():int {return 19;}
 		
 		/** @inheritDoc */
-		public function get isDebug():Boolean {return true;}
+		public function get isDebug():Boolean {return false;}
 		
 		/** @inheritDoc */
 		public function get usePackedResources():Boolean {return false;}
