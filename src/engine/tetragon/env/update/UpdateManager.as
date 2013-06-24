@@ -31,12 +31,12 @@ package tetragon.env.update
 	import tetragon.Main;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
+	import tetragon.env.update.airupdater.ApplicationUpdater;
+	import tetragon.env.update.airupdater.events.StatusUpdateErrorEvent;
+	import tetragon.env.update.airupdater.events.StatusUpdateEvent;
+	import tetragon.env.update.airupdater.events.UpdateEvent;
 
 	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.update.ApplicationUpdater;
-	import com.hexagonstar.update.events.StatusUpdateErrorEvent;
-	import com.hexagonstar.update.events.StatusUpdateEvent;
-	import com.hexagonstar.update.events.UpdateEvent;
 
 	import flash.events.Event;
 	
