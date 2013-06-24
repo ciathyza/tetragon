@@ -33,7 +33,7 @@ package tetragon.view.ui.core
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const THEME_PATH:String						= "com.hexagonstar.ui.theme.ThemeAssets_";
+		public static const THEME_PATH:String						= "tetragon.view.ui.theme.ThemeAssets_";
 		
 		public static const DEFAULT_TEXTFORMAT:String				= "defaultTextFormat";
 		public static const DEFAULT_TEXTFORMAT_DISABLED:String		= "defaultTextFormatDisabled";
