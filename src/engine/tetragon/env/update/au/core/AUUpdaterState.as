@@ -99,7 +99,7 @@ package tetragon.env.update.au.core
 						_descriptor.validate();
 						saveToStorage();
 					}
-					catch(err:Error)
+					catch (err:Error)
 					{
 						Log.warn("Invalid state (1) - " + err.message, this);
 						_descriptor = AUStateDescriptor.defaultState();
@@ -116,7 +116,7 @@ package tetragon.env.update.au.core
 					_descriptor = new AUStateDescriptor(xml);
 					_descriptor.validate();
 				}
-				catch(err:Error)
+				catch (err:Error)
 				{
 					Log.warn("Invalid state (2) - " + err.message, this);
 					_descriptor = AUStateDescriptor.defaultState();
