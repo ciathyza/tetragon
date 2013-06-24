@@ -1,5 +1,6 @@
 package tetragon.env.update.au.core
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.descriptors.AUApplicationDescriptor;
 	import tetragon.env.update.au.descriptors.AUUpdateDescriptor;
 	import tetragon.env.update.au.events.AUDownloadErrorEvent;
@@ -15,8 +16,6 @@ package tetragon.env.update.au.core
 	import tetragon.env.update.au.utils.AUConstants;
 	import tetragon.env.update.au.utils.AUFileUtils;
 	import tetragon.env.update.au.utils.AUVersionUtils;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
@@ -557,7 +556,7 @@ package tetragon.env.update.au.core
 			}
 			catch(err:Error)
 			{
-				HLog.warn(toString() + ": Error validating file descriptor - " + err.message);
+				Log.warn("Error validating file descriptor - " + err.message, this);
 				_lastErrorEvent = new AUStatusFileUpdateErrorEvent(AUStatusFileUpdateErrorEvent.FILE_UPDATE_ERROR, false, true, err.message, err.errorID);
 				transition(onStateErrored);
 			}
@@ -592,7 +591,7 @@ package tetragon.env.update.au.core
 			}
 			catch(err:Error)
 			{
-				HLog.warn(toString() + ": Error loading/validating downloaded descriptor - " + err.message);
+				Log.warn("Error loading/validating downloaded descriptor - " + err.message, this);
 				_lastErrorEvent = new AUStatusUpdateErrorEvent(AUStatusUpdateErrorEvent.UPDATE_ERROR, false, false, err.message, err.errorID);
 				transition(onStateErrored);
 			}

@@ -1,10 +1,9 @@
 package tetragon.env.update.au.core
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.states.AUHSM;
 	import tetragon.env.update.au.states.AUHSMEvent;
 	import tetragon.env.update.au.utils.AUConstants;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
@@ -242,7 +241,7 @@ package tetragon.env.update.au.core
 			switch (e.type)
 			{
 				case AUHSMEvent.ENTER:
-					HLog.debug(toString() + ": Unpackaging " + _identifier);
+					Log.verbose("Unpackaging " + _identifier, this);
 					_source = new URLStream();
 					_source.endian = Endian.LITTLE_ENDIAN;
 					_source.addEventListener(ProgressEvent.PROGRESS, dispatch);
@@ -607,7 +606,7 @@ package tetragon.env.update.au.core
 						_mUCFParseState = AT_COMPLETE;
 						if (_mEnableSignatureValidation && _mValidator["packageSignatureStatus"] != 0)
 						{
-							HLog.warn(toString() + ".onComplete: Signature is not valid.");
+							Log.warn("onComplete:: Signature is not valid.", this);
 							dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, "Signature is not valid."));
 							transition(onErrored);
 						}
@@ -675,7 +674,7 @@ package tetragon.env.update.au.core
 		
 		private function dispatchError(error:Error):void
 		{
-			HLog.warn(toString() + ": " + error.message);
+			Log.warn(error.message, this);
 			_mUCFParseState = AT_ERROR;
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, error.message, error.errorID));
 		}
@@ -699,7 +698,7 @@ package tetragon.env.update.au.core
 		protected function fail(message:String, errorID:int = 0, throwError:Boolean = true):void
 		{
 			var msg:String = toString() + ": " + message;
-			HLog.error(msg);
+			Log.error(msg, this);
 			if (throwError) throw new Error(msg, errorID);
 		}
 	}

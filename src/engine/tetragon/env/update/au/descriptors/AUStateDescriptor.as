@@ -1,8 +1,7 @@
 package tetragon.env.update.au.descriptors
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.utils.AUConstants;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.filesystem.File;
 	
@@ -319,7 +318,7 @@ package tetragon.env.update.au.descriptors
 		
 		private function fail(message:String, errorID:int = 0, throwError:Boolean = true):void
 		{
-			HLog.error("StateDescriptor: " + message);
+			Log.error("StateDescriptor: " + message, this);
 			if (throwError)
 			{
 				throw new Error("StateDescriptor: " + message, errorID);

@@ -1,5 +1,6 @@
 package tetragon.env.update.au
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.core.AUUpdaterConfiguration;
 	import tetragon.env.update.au.core.AUUpdaterHSM;
 	import tetragon.env.update.au.core.AUUpdaterState;
@@ -16,8 +17,6 @@ package tetragon.env.update.au
 	import tetragon.env.update.au.utils.AUConstants;
 	import tetragon.env.update.au.utils.AUFileUtils;
 	import tetragon.env.update.au.utils.AUVersionUtils;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.desktop.Updater;
 	import flash.events.ErrorEvent;
@@ -515,7 +514,7 @@ package tetragon.env.update.au
 			}
 			catch(err:Error)
 			{
-				HLog.warn(toString() + ": The application cannot be updated (state file). " + err.message);
+				Log.warn("The application cannot be updated (state file). " + err.message, this);
 			}
 		}
 		
@@ -529,7 +528,7 @@ package tetragon.env.update.au
 				throw new Error(toString() + ": Cannot create update UI.");
 				return;
 			}
-			HLog.debug(toString() + ": Initialized.");
+			Log.debug("Initialized.", this);
 			dispatch(new AUUpdateEvent(AUUpdateEvent.INITIALIZED));
 		}
 		
@@ -561,7 +560,7 @@ package tetragon.env.update.au
 		
 		protected function doInstall():void
 		{
-			HLog.debug(toString() + ": doInstall() ...");
+			Log.debug("doInstall() ...", this);
 			var updateFile:File = AUFileUtils.getLocalUpdateFile();
 			if (!updateFile.exists)
 			{
@@ -582,7 +581,7 @@ package tetragon.env.update.au
 			catch(err:Error)
 			{
 				var msg:String = toString() + ": The application cannot be updated (URL). " + err.message;
-				HLog.warn(msg);
+				Log.warn(msg, this);
 				_state.resetUpdateData();
 				_state.saveToStorage();
 				_updaterHSM.cancel();
@@ -593,7 +592,7 @@ package tetragon.env.update.au
 		
 		protected function doFileInstall():void
 		{
-			HLog.debug(toString() + ": doFileInstall() ...");
+			Log.debug("doFileInstall() ...", this);
 			var updateFile:File = _updaterHSM.airFile;
 			if (!updateFile.exists)
 			{
@@ -613,7 +612,7 @@ package tetragon.env.update.au
 			catch(err:Error)
 			{
 				var msg:String = toString() + ": The application cannot be updated (file). " + err.message;
-				HLog.warn(msg);
+				Log.warn(msg, this);
 				_state.resetUpdateData();
 				_state.saveToStorage();
 				_updaterHSM.cancel();
@@ -685,7 +684,7 @@ package tetragon.env.update.au
 					}
 					catch(e:Error)
 					{
-						HLog.warn(toString() + ": The application cannot be updated when launched from ADL. " + e.message);
+						Log.warn("The application cannot be updated when launched from ADL. " + e.message, this);
 						_state.resetUpdateData();
 						_state.saveToStorage();
 					}
@@ -743,7 +742,7 @@ package tetragon.env.update.au
 		
 		private function doUpdate(file:File, version:String):void
 		{
-			HLog.debug(toString() + ": Approaching update install ... \"" + file.nativePath + "\" (" + version + ")");
+			Log.debug("Approaching update install ... \"" + file.nativePath + "\" (" + version + ")", this);
 			var updater:Updater = new Updater();
 			updater.update(file, version);
 		}

@@ -1,10 +1,10 @@
 package tetragon.env.update.au.ui
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.AUApplicationUpdater;
 	import tetragon.env.update.au.events.AUDownloadErrorEvent;
 	import tetragon.env.update.au.events.AUUpdateEvent;
 
-	import com.hexagonstar.util.debug.HLog;
 	import com.hexagonstar.util.display.StageReference;
 
 	import flash.desktop.NativeApplication;
@@ -340,7 +340,7 @@ package tetragon.env.update.au.ui
 		
 		private function fail(message:String):void
 		{
-			HLog.warn(toString() + ": " + message);
+			Log.warn(message, this);
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
 		}
 	}

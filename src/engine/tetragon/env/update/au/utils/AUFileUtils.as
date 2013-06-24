@@ -1,6 +1,6 @@
 package tetragon.env.update.au.utils
 {
-	import com.hexagonstar.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
@@ -55,7 +55,7 @@ package tetragon.env.update.au.utils
 			var idx:int = url.lastIndexOf("/");
 			if (idx == -1)
 			{
-				HLog.warn("FileUtils: Cannot get filename from \"" + url + "\".");
+				Log.warn("AUFileUtils: Cannot get filename from \"" + url + "\".");
 				return "";
 			}
 			return url.substr(idx + 1);

@@ -1,6 +1,6 @@
 package tetragon.env.update.au.descriptors
 {
-	import com.hexagonstar.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.display.NativeWindowSystemChrome;
 	import flash.geom.Point;
@@ -630,7 +630,7 @@ package tetragon.env.update.au.descriptors
 		
 		private function fail(message:String, throwError:Boolean = true):void
 		{
-			HLog.error("ApplicationDescriptor: " + message);
+			Log.error("ApplicationDescriptor: " + message, this);
 			if (throwError)
 			{
 				throw new Error("ApplicationDescriptor: " + message);

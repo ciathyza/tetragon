@@ -1,9 +1,8 @@
 package tetragon.env.update.au.descriptors
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.utils.AUConstants;
 
-	import com.hexagonstar.util.debug.HLog;
-	
 	
 	/**
 	 * ConfigurationDescriptor class.
@@ -210,7 +209,7 @@ package tetragon.env.update.au.descriptors
 		
 		private function fail(message:String, errorID:int = 0, throwError:Boolean = true):void
 		{
-			HLog.error("ConfigurationDescriptor: " + message);
+			Log.error("ConfigurationDescriptor: " + message, this);
 			if (throwError)
 			{
 				throw new Error("ConfigurationDescriptor: " + message, errorID);

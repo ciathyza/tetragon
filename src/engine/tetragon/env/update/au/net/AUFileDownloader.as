@@ -1,10 +1,9 @@
 package tetragon.env.update.au.net
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.events.AUDownloadErrorEvent;
 	import tetragon.env.update.au.events.AUUpdateEvent;
 	import tetragon.env.update.au.utils.AUConstants;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.errors.EOFError;
 	import flash.errors.IOError;
@@ -118,7 +117,7 @@ package tetragon.env.update.au.net
 			}
 			catch(err:Error)
 			{
-				HLog.warn(toString() + ": Error during canceling the download - " + err.message);
+				Log.warn("Error during canceling the download - " + err.message, this);
 			}
 		}
 		
@@ -175,7 +174,7 @@ package tetragon.env.update.au.net
 		
 		private function onDownloadOpen(e:Event):void
 		{
-			HLog.debug(toString() + ": Opening file on disk ...");
+			Log.debug("Opening file on disk ...", this);
 			_fileStream = new FileStream();
 			try
 			{
@@ -183,7 +182,7 @@ package tetragon.env.update.au.net
 			}
 			catch(err:Error)
 			{
-				HLog.warn(toString() + ": Error opening file on disk - " + err.message);
+				Log.warn("Error opening file on disk - " + err.message, this);
 				_isInError = true;
 				dispatchErrorEvent(err.message, AUConstants.ERROR_IO_FILE, err.errorID);
 				return;
@@ -237,13 +236,13 @@ package tetragon.env.update.au.net
 			catch(err1:EOFError)
 			{
 				_isInError = true;
-				HLog.warn(toString() + ": EOFError - " + err1);
+				Log.warn("EOFError - " + err1, this);
 				dispatchErrorEvent(err1.message, AUConstants.ERROR_EOF_DOWNLOAD, err1.errorID);
 			}
 			catch(err2:IOError)
 			{
 				_isInError = true;
-				HLog.warn(toString() + ": IOError - " + err2);
+				Log.warn("IOError - " + err2, this);
 				dispatchErrorEvent(err2.message, AUConstants.ERROR_IO_FILE, err2.errorID);
 			}
 		}

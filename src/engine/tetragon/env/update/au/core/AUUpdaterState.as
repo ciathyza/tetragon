@@ -1,10 +1,9 @@
 package tetragon.env.update.au.core
 {
+	import tetragon.debug.Log;
 	import tetragon.env.update.au.descriptors.AUStateDescriptor;
 	import tetragon.env.update.au.utils.AUConstants;
 	import tetragon.env.update.au.utils.AUFileUtils;
-
-	import com.hexagonstar.util.debug.HLog;
 
 	import flash.filesystem.File;
 	
@@ -102,7 +101,7 @@ package tetragon.env.update.au.core
 					}
 					catch(err:Error)
 					{
-						HLog.warn(toString() + ": Invalid state (1) - " + err.message);
+						Log.warn("Invalid state (1) - " + err.message, this);
 						_descriptor = AUStateDescriptor.defaultState();
 						saveToStorage();
 					}
@@ -119,7 +118,7 @@ package tetragon.env.update.au.core
 				}
 				catch(err:Error)
 				{
-					HLog.warn(toString() + ": Invalid state (2) - " + err.message);
+					Log.warn("Invalid state (2) - " + err.message, this);
 					_descriptor = AUStateDescriptor.defaultState();
 					saveToStorage();
 				}
@@ -130,7 +129,7 @@ package tetragon.env.update.au.core
 			var updateFile:File = AUFileUtils.getLocalUpdateFile();
 			if (descriptor.currentVersion && !updateFile.exists && !descriptor.updaterLaunched)
 			{
-				HLog.warn(toString() + ": Missing update file!");
+				Log.warn("Missing update file!", this);
 				_descriptor = AUStateDescriptor.defaultState();
 				saveToStorage();
 			}
