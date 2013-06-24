@@ -53,6 +53,8 @@ package tetragon.view.theme
 		/** @private */
 		protected var _uiStyles:Dictionary;
 		/** @private */
+		protected var _uiAssetMappings:Dictionary;
+		/** @private */
 		protected var _colors:Object;
 		/** @private */
 		protected var _sounds:Object;
@@ -117,6 +119,13 @@ package tetragon.view.theme
 		{
 			if (!_sounds) return null;
 			return _sounds[soundID];
+		}
+		
+		
+		public function getUIComponentAssetClass(assetID:String):Class
+		{
+			if (!_uiAssetMappings) return null;
+			return _uiAssetMappings[assetID];
 		}
 		
 		
@@ -200,6 +209,7 @@ package tetragon.view.theme
 			setup();
 			addFonts();
 			addTextFormats();
+			mapUIComponentAssets();
 			addUIStyles();
 			addColors();
 			addSounds();
@@ -230,6 +240,15 @@ package tetragon.view.theme
 		 * @private
 		 */
 		protected function addTextFormats():void
+		{
+			/* Abstract method! */
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		protected function mapUIComponentAssets():void
 		{
 			/* Abstract method! */
 		}
@@ -322,6 +341,16 @@ package tetragon.view.theme
 			var componentStyles:Object = _uiStyles[componentClass] ? _uiStyles[componentClass] : {};
 			componentStyles[styleName] = styleValue;
 			_uiStyles[componentClass] = componentStyles;
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		protected function mapUIAsset(assetID:String, assetClass:Class):void
+		{
+			if (!_uiAssetMappings) _uiAssetMappings = new Dictionary();
+			_uiAssetMappings[assetID] = assetClass;
 		}
 		
 		

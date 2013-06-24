@@ -39,6 +39,7 @@ package setup
 
 	import view.splash.SplashScreen;
 	import view.test.TestScreen;
+	import view.theme.ApplicationTheme;
 
 	import com.hexagonstar.util.env.isDomainPermitted;
 	
@@ -181,6 +182,7 @@ package setup
 		 */
 		override protected function registerThemes():void
 		{
+			registrar.registerTheme(ApplicationTheme.ID, ApplicationTheme, true);
 		}
 		
 		

@@ -27,13 +27,13 @@
  */
 package tetragon.view.ui.constants
 {
+	
+	
 	public final class UIStyles
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
-		
-		public static const THEME_PATH:String						= "tetragon.view.ui.core.ThemeAssets_";
 		
 		public static const DEFAULT_TEXTFORMAT:String				= "defaultTextFormat";
 		public static const DEFAULT_TEXTFORMAT_DISABLED:String		= "defaultTextFormatDisabled";
