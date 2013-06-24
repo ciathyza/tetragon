@@ -29,10 +29,10 @@
  */
 package tetragon.view.ui.containers
 {
+	import tetragon.view.ui.constants.InvalidationType;
+	import tetragon.view.ui.constants.ScrollBarDirection;
+	import tetragon.view.ui.constants.ScrollPolicy;
 	import tetragon.view.ui.controls.ScrollBar;
-	import tetragon.view.ui.controls.ScrollBarDirection;
-	import tetragon.view.ui.controls.ScrollPolicy;
-	import tetragon.view.ui.core.InvalidationType;
 	import tetragon.view.ui.core.UIComponent;
 	import tetragon.view.ui.event.UIScrollEvent;
 

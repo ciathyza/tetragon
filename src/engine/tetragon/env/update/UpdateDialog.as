@@ -31,14 +31,14 @@ package tetragon.env.update
 	import lib.display.UpdateDialogIcon;
 
 	import tetragon.env.update.au.ui.AUUpdateUI;
+	import tetragon.util.ui.createUIButton;
+	import tetragon.util.ui.createUILabel;
+	import tetragon.util.ui.createUIProgressBar;
+	import tetragon.util.ui.createUITextArea;
 	import tetragon.view.ui.controls.Button;
 	import tetragon.view.ui.controls.Label;
 	import tetragon.view.ui.controls.ProgressBar;
 	import tetragon.view.ui.controls.TextArea;
-	import tetragon.view.ui.util.createButton;
-	import tetragon.view.ui.util.createLabel;
-	import tetragon.view.ui.util.createProgressBar;
-	import tetragon.view.ui.util.createTextArea;
 
 	import com.hexagonstar.display.shape.RectangleShape;
 
@@ -148,24 +148,24 @@ package tetragon.env.update
 		 */
 		override protected function createUpdateAvailableState():void
 		{
-			_titleLabel = createLabel(110, 10, 370, 35, _titleFormat, false, "Update Available");
+			_titleLabel = createUILabel(110, 10, 370, 35, _titleFormat, false, "Update Available");
 			_uiContainer.addChild(_titleLabel);
 			
 			var message:String = "An updated version of " + _applicationName
 				+ " is available and can be downloaded."
 				+ "\n\nInstalled version:\t" + _currentVersion
 				+ "\nUpdate version:\t" + _updateVersion;
-			_messageLabel = createLabel(110, 50, 370, 94, _textFormat, true, message);
+			_messageLabel = createUILabel(110, 50, 370, 94, _textFormat, true, message);
 			_uiContainer.addChild(_messageLabel);
 			
-			_releaseNotes = createTextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
+			_releaseNotes = createUITextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
 			_uiContainer.addChild(_releaseNotes);
 			
-			_okButton = createButton(110, 250, 140, 28, true, "Download now");
+			_okButton = createUIButton(110, 250, 140, 28, true, "Download now");
 			_okButton.addEventListener(MouseEvent.CLICK, onOKButtonClick);
 			_uiContainer.addChild(_okButton);
 			
-			_cancelButton = createButton(260, 250, 140, 28, false, "Download later");
+			_cancelButton = createUIButton(260, 250, 140, 28, false, "Download later");
 			_cancelButton.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
 			_uiContainer.addChild(_cancelButton);
 		}
@@ -176,19 +176,19 @@ package tetragon.env.update
 		 */
 		override protected function createUpdateDownloadState():void
 		{
-			_titleLabel = createLabel(110, 10, 370, 35, _titleFormat, false, "Downloading Update");
+			_titleLabel = createUILabel(110, 10, 370, 35, _titleFormat, false, "Downloading Update");
 			_uiContainer.addChild(_titleLabel);
 			
-			_messageLabel = createLabel(110, 70, 370, 18, _textFormat, true, "Progress: " + _progress + "%");
+			_messageLabel = createUILabel(110, 70, 370, 18, _textFormat, true, "Progress: " + _progress + "%");
 			_uiContainer.addChild(_messageLabel);
 			
-			_progressBar = createProgressBar(110, 92, 370, 16);
+			_progressBar = createUIProgressBar(110, 92, 370, 16);
 			_uiContainer.addChild(_progressBar);
 			
-			_releaseNotes = createTextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
+			_releaseNotes = createUITextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
 			_uiContainer.addChild(_releaseNotes);
 			
-			_cancelButton = createButton(110, 250, 140, 28, false, "Cancel");
+			_cancelButton = createUIButton(110, 250, 140, 28, false, "Cancel");
 			_cancelButton.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
 			_uiContainer.addChild(_cancelButton);
 		}
@@ -199,23 +199,23 @@ package tetragon.env.update
 		 */
 		override protected function createUpdateInstallState():void
 		{
-			_titleLabel = createLabel(110, 10, 370, 35, _titleFormat, false, "Install Update");
+			_titleLabel = createUILabel(110, 10, 370, 35, _titleFormat, false, "Install Update");
 			_uiContainer.addChild(_titleLabel);
 			
 			var message:String = "The update for " + _applicationName + " is downloaded and ready to be installed."
 				+ "\n\nInstalled version:\t" + _currentVersion
 				+ "\nUpdate version:\t" + _updateVersion;
-			_messageLabel = createLabel(110, 50, 370, 94, _textFormat, true, message);
+			_messageLabel = createUILabel(110, 50, 370, 94, _textFormat, true, message);
 			_uiContainer.addChild(_messageLabel);
 			
-			_releaseNotes = createTextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
+			_releaseNotes = createUITextArea(110, 140, 380, 92, _notesFormat, true, false, _updateDescription);
 			_uiContainer.addChild(_releaseNotes);
 			
-			_okButton = createButton(110, 250, 140, 28, true, "Install now");
+			_okButton = createUIButton(110, 250, 140, 28, true, "Install now");
 			_okButton.addEventListener(MouseEvent.CLICK, onOKButtonClick);
 			_uiContainer.addChild(_okButton);
 			
-			_cancelButton = createButton(260, 250, 140, 28, false, "Postpone until restart");
+			_cancelButton = createUIButton(260, 250, 140, 28, false, "Postpone until restart");
 			_cancelButton.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
 			_uiContainer.addChild(_cancelButton);
 		}
@@ -226,17 +226,17 @@ package tetragon.env.update
 		 */
 		override protected function createUpdateErrorState():void
 		{
-			_titleLabel = createLabel(110, 10, 360, 35, _titleFormat, false, "Update Error");
+			_titleLabel = createUILabel(110, 10, 360, 35, _titleFormat, false, "Update Error");
 			_uiContainer.addChild(_titleLabel);
 			
 			var message:String = "An error occured while updating:";
-			_messageLabel = createLabel(110, 70, 360, 34, _textFormat, false, message);
+			_messageLabel = createUILabel(110, 70, 360, 34, _textFormat, false, message);
 			_uiContainer.addChild(_messageLabel);
 			
-			_releaseNotes = createTextArea(110, 100, 360, 82, _notesFormat, true, false, _errorText);
+			_releaseNotes = createUITextArea(110, 100, 360, 82, _notesFormat, true, false, _errorText);
 			_uiContainer.addChild(_releaseNotes);
 			
-			_cancelButton = createButton(110, 250, 140, 28, false, "Close");
+			_cancelButton = createUIButton(110, 250, 140, 28, false, "Close");
 			_cancelButton.addEventListener(MouseEvent.CLICK, onCancelButtonClick);
 			_uiContainer.addChild(_cancelButton);
 		}

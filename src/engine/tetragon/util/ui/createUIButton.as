@@ -26,25 +26,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.util
+package tetragon.util.ui
 {
-	import tetragon.view.ui.controls.ProgressBar;
+	import tetragon.view.ui.controls.Button;
 	
 	
 	/**
-	 * Creates a UI ProgressBar.
+	 * Creates a UI Button.
 	 * 
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height
-	 * @param mode
+	 * @param emphasized
+	 * @param text
 	 */
-	public function createProgressBar(x:int = 0, y:int = 0, width:int = 100, height:int = 14,
-		mode:String = "manual"):ProgressBar
+	public function createUIButton(x:int = 0, y:int = 0, width:int = 0, height:int = 0,
+		emphasized:Boolean = false, label:String = null):Button
 	{
-		var item:ProgressBar = new ProgressBar(x, y, width, height);
-		item.mode = mode;
+		var item:Button = new Button(x, y, width, height);
+		item.emphasized = emphasized;
+		item.label = label;
 		return item;
 	}
 }

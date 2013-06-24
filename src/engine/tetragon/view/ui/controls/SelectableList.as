@@ -29,10 +29,12 @@
  */
 package tetragon.view.ui.controls
 {
+	import tetragon.view.ui.constants.InvalidationType;
+	import tetragon.view.ui.constants.ScrollBarDirection;
+	import tetragon.view.ui.constants.ScrollPolicy;
 	import tetragon.view.ui.containers.BaseScrollPane;
 	import tetragon.view.ui.controls.listclasses.CellRenderer;
 	import tetragon.view.ui.controls.listclasses.ICellRenderer;
-	import tetragon.view.ui.core.InvalidationType;
 	import tetragon.view.ui.data.UIDataProvider;
 	import tetragon.view.ui.event.UIDataChangeEvent;
 	import tetragon.view.ui.event.UIDataChangeType;

@@ -1,4 +1,4 @@
-package tetragon.view.ui.controls
+package tetragon.view.ui.constants
 {
 	/**
 	 * The ProgressBarDirection class defines the values for the <code>direction</code> 

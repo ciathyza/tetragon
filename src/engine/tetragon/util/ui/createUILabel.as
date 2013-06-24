@@ -26,15 +26,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.ui.util
+package tetragon.util.ui
 {
-	import tetragon.view.ui.controls.TextArea;
+	import tetragon.view.ui.controls.Label;
 
 	import flash.text.TextFormat;
 	
 	
 	/**
-	 * Creates a UI TextArea.
+	 * Creates a UI Label.
 	 * 
 	 * @param x
 	 * @param y
@@ -42,16 +42,15 @@ package tetragon.view.ui.util
 	 * @param height
 	 * @param textFormat
 	 * @param multiline
-	 * @param editable
 	 * @param text
 	 */
-	public function createTextArea(x:int = 0, y:int = 0, width:int = 0, height:int = 0,
-		textFormat:TextFormat = null, multiline:Boolean = true, editable:Boolean = false,
-		text:String = null):TextArea
+	public function createUILabel(x:int = 0, y:int = 0, width:int = -1, height:int = -1,
+		textFormat:TextFormat = null, multiline:Boolean = false, text:String = null):Label
 	{
-		var item:TextArea = new TextArea(x, y, width, height);
+		var item:Label = new Label(width, height);
+		item.x = x;
+		item.y = y;
 		item.wordWrap = multiline;
-		item.editable = editable;
 		if (textFormat)
 		{
 			item.setStyle("textFormat", textFormat);

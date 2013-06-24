@@ -29,9 +29,10 @@
  */
 package tetragon.view.ui.controls 
 {
+	import tetragon.view.ui.constants.InvalidationType;
+	import tetragon.view.ui.constants.ScrollPolicy;
 	import tetragon.view.ui.controls.listclasses.ICellRenderer;
 	import tetragon.view.ui.controls.listclasses.ListData;
-	import tetragon.view.ui.core.InvalidationType;
 	import tetragon.view.ui.core.UIComponent;
 	import tetragon.view.ui.managers.IFocusManagerComponent;
 

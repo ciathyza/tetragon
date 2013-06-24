@@ -29,6 +29,7 @@
  */
 package tetragon.view.ui.controls 
 {
+	import tetragon.view.ui.constants.ButtonLabelPlacement;
 	import tetragon.view.ui.managers.IFocusManager;
 	import tetragon.view.ui.managers.IFocusManagerGroup;
 

@@ -1,7 +1,9 @@
 package tetragon.view.ui.controls
 {
-	import tetragon.view.ui.controls.progressBarClasses.IndeterminateBar;
-	import tetragon.view.ui.core.InvalidationType;
+	import tetragon.view.ui.constants.InvalidationType;
+	import tetragon.view.ui.constants.ProgressBarDirection;
+	import tetragon.view.ui.constants.ProgressBarMode;
+	import tetragon.view.ui.controls.progressbarclasses.IndeterminateBar;
 	import tetragon.view.ui.core.UIComponent;
 
 	import flash.display.DisplayObject;

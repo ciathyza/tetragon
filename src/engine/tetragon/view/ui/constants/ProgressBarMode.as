@@ -1,4 +1,4 @@
-package tetragon.view.ui.controls
+package tetragon.view.ui.constants
 {
 	/**
 	 * The ProgressBarMode class defines the values for the <code>mode</code> 

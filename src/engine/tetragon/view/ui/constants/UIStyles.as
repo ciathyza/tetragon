@@ -25,7 +25,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package tetragon.view.ui.core
+package tetragon.view.ui.constants
 {
 	public final class UIStyles
 	{
@@ -33,7 +33,7 @@ package tetragon.view.ui.core
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		public static const THEME_PATH:String						= "tetragon.view.ui.theme.ThemeAssets_";
+		public static const THEME_PATH:String						= "tetragon.view.ui.core.ThemeAssets_";
 		
 		public static const DEFAULT_TEXTFORMAT:String				= "defaultTextFormat";
 		public static const DEFAULT_TEXTFORMAT_DISABLED:String		= "defaultTextFormatDisabled";

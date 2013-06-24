@@ -1,6 +1,6 @@
-package tetragon.view.ui.controls.progressBarClasses
+package tetragon.view.ui.controls.progressbarclasses
 {
-	import tetragon.view.ui.core.InvalidationType;
+	import tetragon.view.ui.constants.InvalidationType;
 	import tetragon.view.ui.core.UIComponent;
 
 	import flash.display.BitmapData;
