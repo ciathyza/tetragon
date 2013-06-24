@@ -1,6 +1,5 @@
 package tetragon.env.update.au.descriptors
 {
-	import tetragon.debug.Log;
 	import tetragon.env.update.au.utils.AUConstants;
 
 	
@@ -209,7 +208,6 @@ package tetragon.env.update.au.descriptors
 		
 		private function fail(message:String, errorID:int = 0, throwError:Boolean = true):void
 		{
-			Log.error("ConfigurationDescriptor: " + message, this);
 			if (throwError)
 			{
 				throw new Error("ConfigurationDescriptor: " + message, errorID);
