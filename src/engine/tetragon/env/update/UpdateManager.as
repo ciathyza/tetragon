@@ -31,10 +31,10 @@ package tetragon.env.update
 	import tetragon.Main;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
-	import tetragon.env.update.airupdater.ApplicationUpdater;
-	import tetragon.env.update.airupdater.events.StatusUpdateErrorEvent;
-	import tetragon.env.update.airupdater.events.StatusUpdateEvent;
-	import tetragon.env.update.airupdater.events.UpdateEvent;
+	import tetragon.env.update.au.AUApplicationUpdater;
+	import tetragon.env.update.au.events.AUStatusUpdateErrorEvent;
+	import tetragon.env.update.au.events.AUStatusUpdateEvent;
+	import tetragon.env.update.au.events.AUUpdateEvent;
 
 	import com.hexagonstar.signals.Signal;
 
@@ -51,7 +51,7 @@ package tetragon.env.update
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		private var _updater:ApplicationUpdater;
+		private var _updater:AUApplicationUpdater;
 		/** @private */
 		private var _isInstallPostponed:Boolean;
 		/** @private */
@@ -127,7 +127,7 @@ package tetragon.env.update
 		/**
 		 * @private
 		 */
-		private function onUpdaterInitialized(e:UpdateEvent):void
+		private function onUpdaterInitialized(e:AUUpdateEvent):void
 		{
 			_updater.applicationName = Main.instance.appInfo.name;
 			Log.debug("Initialized (current version: " + _updater.currentVersion + ").", this);
@@ -139,7 +139,7 @@ package tetragon.env.update
 		/**
 		 * @private
 		 */
-		private function onStatusUpdate(e:StatusUpdateEvent):void
+		private function onStatusUpdate(e:AUStatusUpdateEvent):void
 		{
 			e.preventDefault();
 			if (e.available)
@@ -162,7 +162,7 @@ package tetragon.env.update
 		/**
 		 * @private
 		 */
-		private function onStatusUpdateError(e:StatusUpdateErrorEvent):void
+		private function onStatusUpdateError(e:AUStatusUpdateErrorEvent):void
 		{
 			/* Could not reach the update file on the server. Don't bother! */
 			e.preventDefault();
@@ -192,10 +192,10 @@ package tetragon.env.update
 			if (!_finishedSignal) _finishedSignal = new Signal();
 			if (!_updater)
 			{
-				_updater = new ApplicationUpdater();
-				_updater.addEventListener(UpdateEvent.INITIALIZED, onUpdaterInitialized);
-				_updater.addEventListener(StatusUpdateEvent.UPDATE_STATUS, onStatusUpdate);
-				_updater.addEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, onStatusUpdateError);
+				_updater = new AUApplicationUpdater();
+				_updater.addEventListener(AUUpdateEvent.INITIALIZED, onUpdaterInitialized);
+				_updater.addEventListener(AUStatusUpdateEvent.UPDATE_STATUS, onStatusUpdate);
+				_updater.addEventListener(AUStatusUpdateErrorEvent.UPDATE_ERROR, onStatusUpdateError);
 				_updater.addEventListener(Event.COMPLETE, onUpdaterFinished);
 				_updater.updateUIClass = UpdateDialog;
 				_updater.updateURL = Main.instance.registry.config.getString(Config.UPDATE_URL);
@@ -212,9 +212,9 @@ package tetragon.env.update
 		{
 			if (_updater)
 			{
-				_updater.removeEventListener(UpdateEvent.INITIALIZED, onUpdaterInitialized);
-				_updater.removeEventListener(StatusUpdateEvent.UPDATE_STATUS, onStatusUpdate);
-				_updater.removeEventListener(StatusUpdateErrorEvent.UPDATE_ERROR, onStatusUpdateError);
+				_updater.removeEventListener(AUUpdateEvent.INITIALIZED, onUpdaterInitialized);
+				_updater.removeEventListener(AUStatusUpdateEvent.UPDATE_STATUS, onStatusUpdate);
+				_updater.removeEventListener(AUStatusUpdateErrorEvent.UPDATE_ERROR, onStatusUpdateError);
 				_updater.removeEventListener(Event.COMPLETE, onUpdaterFinished);
 				_updater.dispose();
 				_updater = null;

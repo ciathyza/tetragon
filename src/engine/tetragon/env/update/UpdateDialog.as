@@ -30,7 +30,7 @@ package tetragon.env.update
 {
 	import lib.display.UpdateDialogIcon;
 
-	import tetragon.env.update.airupdater.ui.UpdateUI;
+	import tetragon.env.update.au.ui.AUUpdateUI;
 	import tetragon.view.ui.controls.Button;
 	import tetragon.view.ui.controls.Label;
 	import tetragon.view.ui.controls.ProgressBar;
@@ -50,7 +50,7 @@ package tetragon.env.update
 	/**
 	 * UpdateDialog class
 	 */
-	public class UpdateDialog extends UpdateUI
+	public class UpdateDialog extends AUUpdateUI
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
