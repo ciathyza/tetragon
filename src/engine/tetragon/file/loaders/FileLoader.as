@@ -35,12 +35,12 @@ package tetragon.file.loaders
 	import tetragon.core.file.types.IFile;
 	import tetragon.core.file.types.XMLFile;
 	import tetragon.core.signals.Signal;
-	import tetragon.core.structures.queues.Queue;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.util.env.getSeparator;
 	import tetragon.util.env.isAIRApplication;
 	import tetragon.util.reflection.getClassName;
+	import tetragon.util.structures.queues.Queue;
 
 	import flash.system.Capabilities;
 	

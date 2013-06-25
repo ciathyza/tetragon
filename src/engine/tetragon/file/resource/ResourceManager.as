@@ -32,11 +32,11 @@ package tetragon.file.resource
 	import tetragon.Main;
 	import tetragon.core.file.BulkProgress;
 	import tetragon.core.signals.Signal;
-	import tetragon.core.structures.IIterator;
-	import tetragon.core.structures.queues.Queue;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.processors.ResourceProcessor;
+	import tetragon.util.structures.IIterator;
+	import tetragon.util.structures.queues.Queue;
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
