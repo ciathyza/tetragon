@@ -28,8 +28,17 @@
  */
 package tetragon.core.ioc
 {
-	import tetragon.core.ioc.injectionpoints.*;
-	import tetragon.core.ioc.injectionresults.*;
+	import tetragon.core.ioc.injectionpoints.ConstructorInjectionPoint;
+	import tetragon.core.ioc.injectionpoints.InjectionPoint;
+	import tetragon.core.ioc.injectionpoints.MethodInjectionPoint;
+	import tetragon.core.ioc.injectionpoints.NoParamsConstructorInjectionPoint;
+	import tetragon.core.ioc.injectionpoints.PostConstructInjectionPoint;
+	import tetragon.core.ioc.injectionpoints.PropertyInjectionPoint;
+	import tetragon.core.ioc.injectionresults.InjectClassResult;
+	import tetragon.core.ioc.injectionresults.InjectOtherRuleResult;
+	import tetragon.core.ioc.injectionresults.InjectSingletonResult;
+	import tetragon.core.ioc.injectionresults.InjectValueResult;
+	import tetragon.util.reflection.getConstructor;
 
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;

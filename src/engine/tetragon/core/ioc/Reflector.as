@@ -28,6 +28,8 @@
  */
 package tetragon.core.ioc
 {
+	import tetragon.util.reflection.getConstructor;
+
 	import flash.system.ApplicationDomain;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;

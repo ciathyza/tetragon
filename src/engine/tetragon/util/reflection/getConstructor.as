@@ -26,14 +26,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.ioc
+package tetragon.util.reflection
 {
 	import flash.utils.Proxy;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	
 	
-	internal function getConstructor(value:Object):Class
+	public function getConstructor(value:Object):Class
 	{
 		/*
 		There are several types for which the 'constructor' property doesn't work:
