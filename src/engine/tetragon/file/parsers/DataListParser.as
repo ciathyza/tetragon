@@ -28,12 +28,11 @@
  */
 package tetragon.file.parsers
 {
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.data.DataList;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.types.KeyValuePair;
 	
 	
 	/**

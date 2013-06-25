@@ -31,6 +31,7 @@ package tetragon
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
+	import tetragon.core.exception.SingletonException;
 	import tetragon.data.Params;
 	import tetragon.data.Registry;
 	import tetragon.data.Settings;
@@ -47,14 +48,12 @@ package tetragon
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
 	import tetragon.systems.gl.GameLoop;
+	import tetragon.util.debug.HLog;
+	import tetragon.util.display.StageReference;
+	import tetragon.util.time.CallLater;
 	import tetragon.view.ScreenManager;
 	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;
-
-	import com.hexagonstar.exception.SingletonException;
-	import com.hexagonstar.util.debug.HLog;
-	import com.hexagonstar.util.display.StageReference;
-	import com.hexagonstar.util.time.CallLater;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;

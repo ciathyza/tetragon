@@ -28,7 +28,7 @@
  */
 package tetragon.data
 {
-	import com.hexagonstar.types.KeyValuePair;
+	import tetragon.core.types.KeyValuePair;
 	
 	
 	/**

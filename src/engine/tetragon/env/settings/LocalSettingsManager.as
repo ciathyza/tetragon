@@ -28,8 +28,8 @@
  */
 package tetragon.env.settings
 {
-	import com.hexagonstar.net.SharedObjectStatus;
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.constants.SharedObjectStatus;
+	import tetragon.core.signals.Signal;
 
 	import flash.events.NetStatusEvent;
 	import flash.net.SharedObject;

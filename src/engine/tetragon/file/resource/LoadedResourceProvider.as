@@ -28,11 +28,10 @@
  */
 package tetragon.file.resource
 {
+	import tetragon.core.file.BulkLoader;
+	import tetragon.core.file.types.IFile;
 	import tetragon.data.Config;
-
-	import com.hexagonstar.file.BulkLoader;
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.util.string.stringIsEmptyOrNull;
+	import tetragon.util.string.stringIsEmptyOrNull;
 	
 	
 	/**

@@ -28,12 +28,11 @@
  */
 package tetragon.view.render2d.touch
 {
+	import tetragon.util.geom.MatrixUtil;
+	import tetragon.util.string.formatString;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
-
-	import com.hexagonstar.util.geom.MatrixUtil;
-	import com.hexagonstar.util.string.formatString;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;

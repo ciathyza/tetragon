@@ -33,9 +33,8 @@ package tetragon.command.env
 	import tetragon.debug.Log;
 	import tetragon.env.desktop.WindowBoundsManager;
 	import tetragon.setup.Setup;
-
-	import com.hexagonstar.util.env.isPlugin;
-	import com.hexagonstar.util.env.isStandAlone;
+	import tetragon.util.env.isPlugin;
+	import tetragon.util.env.isStandAlone;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;

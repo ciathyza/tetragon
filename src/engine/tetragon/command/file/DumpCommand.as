@@ -31,10 +31,9 @@ package tetragon.command.file
 	import tetragon.command.CLICommand;
 	import tetragon.data.DataList;
 	import tetragon.data.DataObject;
+	import tetragon.debug.LogLevel;
 	import tetragon.entity.EntityDefinition;
 	import tetragon.file.resource.Resource;
-
-	import com.hexagonstar.util.debug.LogLevel;
 	
 	
 	public class DumpCommand extends CLICommand

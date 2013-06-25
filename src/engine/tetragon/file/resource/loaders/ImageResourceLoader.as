@@ -28,10 +28,9 @@
  */
 package tetragon.file.resource.loaders
 {
+	import tetragon.core.file.types.ImageFile;
 	import tetragon.file.resource.ResourceBulkFile;
-
-	import com.hexagonstar.file.types.ImageFile;
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

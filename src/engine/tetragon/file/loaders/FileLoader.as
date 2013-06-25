@@ -29,19 +29,18 @@
 package tetragon.file.loaders
 {
 	import tetragon.Main;
+	import tetragon.core.file.BulkLoader;
+	import tetragon.core.file.BulkProgress;
+	import tetragon.core.file.IFileIOSignalListener;
+	import tetragon.core.file.types.IFile;
+	import tetragon.core.file.types.XMLFile;
+	import tetragon.core.signals.Signal;
+	import tetragon.core.structures.queues.Queue;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.file.BulkLoader;
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.file.IFileIOSignalListener;
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.file.types.XMLFile;
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.structures.queues.Queue;
-	import com.hexagonstar.util.env.getSeparator;
-	import com.hexagonstar.util.env.isAIRApplication;
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.env.getSeparator;
+	import tetragon.util.env.isAIRApplication;
+	import tetragon.util.reflection.getClassName;
 
 	import flash.system.Capabilities;
 	

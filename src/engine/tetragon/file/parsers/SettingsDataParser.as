@@ -29,10 +29,9 @@
 package tetragon.file.parsers
 {
 	import tetragon.Main;
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.data.Settings;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.types.KeyValuePair;
 	
 	
 	/**

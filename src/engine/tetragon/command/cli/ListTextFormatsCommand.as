@@ -29,8 +29,7 @@
 package tetragon.command.cli
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	public class ListTextFormatsCommand extends CLICommand

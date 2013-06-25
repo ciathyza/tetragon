@@ -28,16 +28,15 @@
  */
 package tetragon.file.loaders
 {
+	import tetragon.core.file.types.IFile;
+	import tetragon.core.file.types.XMLFile;
+	import tetragon.core.file.types.ZipFile;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceCollection;
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.ResourceIndex;
-
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.file.types.XMLFile;
-	import com.hexagonstar.file.types.ZipFile;
-	import com.hexagonstar.util.env.getSeparator;
+	import tetragon.util.env.getSeparator;
 
 	import flash.system.System;
 	

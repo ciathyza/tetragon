@@ -28,11 +28,10 @@
  */
 package tetragon.file.resource
 {
+	import tetragon.core.file.ZipLoader;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.file.ZipLoader;
-	import com.hexagonstar.util.string.stringIsEmptyOrNull;
+	import tetragon.util.string.stringIsEmptyOrNull;
 
 	import flash.filesystem.File;
 	

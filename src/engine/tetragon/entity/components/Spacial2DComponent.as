@@ -28,9 +28,8 @@
  */
 package tetragon.entity.components
 {
+	import tetragon.core.types.Point2D;
 	import tetragon.entity.EntityComponent;
-
-	import com.hexagonstar.types.Point2D;
 	
 	
 	/**

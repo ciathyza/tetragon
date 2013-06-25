@@ -30,7 +30,7 @@ package tetragon.view.loadprogress
 {
 	import lib.display.LoadProgressBar;
 
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
 
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;

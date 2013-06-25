@@ -30,10 +30,9 @@ package tetragon.file.parsers
 {
 	import tetragon.ClassRegistry;
 	import tetragon.Main;
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceIDType;
-
-	import com.hexagonstar.types.KeyValuePair;
 	
 	
 	/**

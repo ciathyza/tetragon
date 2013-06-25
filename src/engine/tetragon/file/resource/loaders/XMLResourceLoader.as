@@ -28,10 +28,9 @@
  */
 package tetragon.file.resource.loaders
 {
+	import tetragon.core.file.types.BinaryFile;
 	import tetragon.file.resource.ResourceBulkFile;
 	import tetragon.file.resource.ResourceBulkItem;
-
-	import com.hexagonstar.file.types.BinaryFile;
 
 	import flash.utils.ByteArray;
 	

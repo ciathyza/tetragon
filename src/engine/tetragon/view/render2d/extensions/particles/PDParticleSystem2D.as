@@ -28,11 +28,10 @@
  */
 package tetragon.view.render2d.extensions.particles
 {
+	import tetragon.core.types.ARGB;
+	import tetragon.util.color.colorARGBToHex;
+	import tetragon.util.geom.degToRad;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.types.ARGB;
-	import com.hexagonstar.util.color.colorARGBToHex;
-	import com.hexagonstar.util.geom.degToRad;
 
 	import flash.display3D.Context3DBlendFactor;
 

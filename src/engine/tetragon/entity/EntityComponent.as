@@ -28,7 +28,7 @@
  */
 package tetragon.entity
 {
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 	
 	
 	/**

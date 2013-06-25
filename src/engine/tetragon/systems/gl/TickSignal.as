@@ -28,7 +28,7 @@
  */
 package tetragon.systems.gl
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 	
 	
 	/**

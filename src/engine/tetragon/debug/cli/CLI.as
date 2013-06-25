@@ -33,8 +33,7 @@ package tetragon.debug.cli
 	import tetragon.command.CommandManager;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	/**

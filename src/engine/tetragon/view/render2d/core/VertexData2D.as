@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.core
 {
-	import com.hexagonstar.util.geom.MatrixUtil;
+	import tetragon.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;

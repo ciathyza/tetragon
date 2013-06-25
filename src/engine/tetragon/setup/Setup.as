@@ -32,8 +32,7 @@ package tetragon.setup
 	import tetragon.data.Config;
 	import tetragon.data.Registry;
 	import tetragon.data.Settings;
-
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 	
 	
 	/**

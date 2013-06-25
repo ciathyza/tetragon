@@ -31,8 +31,7 @@ package tetragon.command.cli
 	import tetragon.command.CLICommand;
 	import tetragon.debug.Console;
 	import tetragon.debug.cli.CLICommandVO;
-
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 	
 	
 	/**

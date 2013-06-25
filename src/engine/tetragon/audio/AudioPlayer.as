@@ -31,8 +31,6 @@ package tetragon.audio
 	import tetragon.Main;
 	import tetragon.file.resource.ResourceIndex;
 
-	import com.hexagonstar.audio.PitchableSound;
-
 	import flash.media.Sound;
 	
 	

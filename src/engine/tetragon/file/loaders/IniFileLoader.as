@@ -29,12 +29,11 @@
 package tetragon.file.loaders
 {
 	import tetragon.BuildType;
+	import tetragon.core.file.types.IFile;
+	import tetragon.core.file.types.TextFile;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.file.types.TextFile;
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
 
 	import flash.events.Event;
 	import flash.filesystem.File;

@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.extensions.particles
 {
-	import com.hexagonstar.types.ARGB;
+	import tetragon.core.types.ARGB;
 	
 	
 	/**

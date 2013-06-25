@@ -29,8 +29,7 @@
 package tetragon.data.swf
 {
 	import tetragon.data.DataObject;
-
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;

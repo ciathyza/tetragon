@@ -29,8 +29,7 @@
 package tetragon.command.env
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 
 	
 	public class ListScreensCommand extends CLICommand

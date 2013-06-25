@@ -28,6 +28,8 @@
  */
 package tetragon.view.render2d.text
 {
+	import tetragon.core.constants.HAlign;
+	import tetragon.core.constants.VAlign;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.DisplayObjectContainer2D;
@@ -37,9 +39,6 @@ package tetragon.view.render2d.text
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.constants.HAlign;
-	import com.hexagonstar.constants.VAlign;
 
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;

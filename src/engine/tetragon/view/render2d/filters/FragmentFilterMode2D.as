@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.filters
 {
-	import com.hexagonstar.exception.AbstractClassException;
+	import tetragon.core.exception.AbstractClassException;
 
 	/** A class that provides constant values for filter modes. The values are used in the
 	 *  FragmentFilter.mode property and define how a filter result is combined with the 

@@ -29,11 +29,10 @@
 package tetragon.view.loadprogress
 {
 	import tetragon.Main;
+	import tetragon.core.file.BulkProgress;
+	import tetragon.core.signals.Signal;
 	import tetragon.view.Screen;
 	import tetragon.view.ScreenManager;
-
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.signals.Signal;
 
 	import flash.display.Sprite;
 	

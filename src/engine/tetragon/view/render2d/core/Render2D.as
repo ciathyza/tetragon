@@ -29,6 +29,7 @@
 package tetragon.view.render2d.core
 {
 	import tetragon.Main;
+	import tetragon.core.exception.SingletonException;
 	import tetragon.debug.IDrawCallsPollingSource;
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
@@ -45,8 +46,6 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.touch.TouchProcessor2D;
 	import tetragon.view.stage3d.Stage3DProxy;
 	import tetragon.view.stage3d.Stage3DSignal;
-
-	import com.hexagonstar.exception.SingletonException;
 
 	import flash.display.Stage;
 	import flash.display.Stage3D;

@@ -34,8 +34,7 @@ package tetragon.file.resource.processors
 	import tetragon.file.resource.ResourceCollection;
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.ResourceIndex;
-
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 	
 	
 	/**

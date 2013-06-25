@@ -30,17 +30,16 @@ package tetragon.file.resource
 {
 	import tetragon.ClassRegistry;
 	import tetragon.Main;
+	import tetragon.core.file.BulkProgress;
+	import tetragon.core.file.types.IFile;
+	import tetragon.core.signals.Signal;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.file.parsers.DataObjectParser;
 	import tetragon.file.parsers.IFileDataParser;
 	import tetragon.file.resource.loaders.ResourceLoader;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 	
 	
 	/**

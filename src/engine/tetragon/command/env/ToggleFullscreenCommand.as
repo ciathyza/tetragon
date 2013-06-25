@@ -30,8 +30,7 @@ package tetragon.command.env
 {
 	import tetragon.command.CLICommand;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.env.getRuntimeVersion;
+	import tetragon.util.env.getRuntimeVersion;
 
 	import flash.display.StageDisplayState;
 	

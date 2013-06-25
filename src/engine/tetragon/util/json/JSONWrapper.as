@@ -31,9 +31,7 @@ package tetragon.util.json
 	import tetragon.BuildType;
 	import tetragon.Main;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.env.getRuntimeVersion;
-	import com.hexagonstar.util.json.LegacyJSON;
+	import tetragon.util.env.getRuntimeVersion;
 	
 	
 	/**

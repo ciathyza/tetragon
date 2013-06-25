@@ -53,8 +53,7 @@ package tetragon.setup
 	import tetragon.entity.components.*;
 	import tetragon.file.parsers.*;
 	import tetragon.file.resource.processors.*;
-
-	import com.hexagonstar.util.env.getSeparator;
+	import tetragon.util.env.getSeparator;
 
 	import flash.display.Stage;
 	import flash.geom.Rectangle;

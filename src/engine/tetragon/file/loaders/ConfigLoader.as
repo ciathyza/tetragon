@@ -29,11 +29,10 @@
 package tetragon.file.loaders
 {
 	import tetragon.BuildType;
+	import tetragon.core.file.types.TextFile;
 	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.file.types.TextFile;
 	
 	
 	/**

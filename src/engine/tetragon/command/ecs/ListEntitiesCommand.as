@@ -29,8 +29,7 @@
 package tetragon.command.ecs
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	public class ListEntitiesCommand extends CLICommand

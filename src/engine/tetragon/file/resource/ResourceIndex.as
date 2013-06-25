@@ -34,8 +34,7 @@ package tetragon.file.resource
 	import tetragon.Main;
 	import tetragon.data.DataObject;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

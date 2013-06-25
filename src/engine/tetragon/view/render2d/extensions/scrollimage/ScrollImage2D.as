@@ -28,14 +28,13 @@
  */
 package tetragon.view.render2d.extensions.scrollimage
 {
+	import tetragon.core.constants.TextureSmoothing;
+	import tetragon.util.agal.AGALMiniAssembler;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
-
-	import com.hexagonstar.constants.TextureSmoothing;
-	import com.hexagonstar.util.agal.AGALMiniAssembler;
 
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;

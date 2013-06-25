@@ -29,12 +29,11 @@
 package tetragon.file.resource.loaders
 {
 	import tetragon.Main;
+	import tetragon.core.file.types.MP3File;
+	import tetragon.core.file.types.SoundFile;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceBulkFile;
-
-	import com.hexagonstar.file.types.MP3File;
-	import com.hexagonstar.file.types.SoundFile;
-	import com.hexagonstar.util.env.getRuntimeVersion;
+	import tetragon.util.env.getRuntimeVersion;
 
 	import flash.media.Sound;
 	

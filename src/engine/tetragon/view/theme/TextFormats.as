@@ -29,10 +29,9 @@
 package tetragon.view.theme
 {
 	import tetragon.debug.Log;
+	import tetragon.util.color.colorHexToString;
+	import tetragon.util.string.TabularText;
 	import tetragon.view.ScreenManager;
-
-	import com.hexagonstar.util.color.colorHexToString;
-	import com.hexagonstar.util.string.TabularText;
 
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;

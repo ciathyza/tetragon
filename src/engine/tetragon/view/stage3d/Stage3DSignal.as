@@ -28,7 +28,7 @@
  */
 package tetragon.view.stage3d
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 	
 	
 	/**

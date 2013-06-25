@@ -29,6 +29,11 @@
 package tetragon.view
 {
 	import tetragon.Main;
+	import tetragon.core.display.shape.RectangleShape;
+	import tetragon.core.file.BulkProgress;
+	import tetragon.core.signals.Signal;
+	import tetragon.core.tween.Tween;
+	import tetragon.core.tween.TweenVars;
 	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
@@ -36,6 +41,9 @@ package tetragon.view
 	import tetragon.debug.StatsMonitor;
 	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
+	import tetragon.util.number.average;
+	import tetragon.util.string.TabularText;
+	import tetragon.util.time.CallLater;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
@@ -44,15 +52,6 @@ package tetragon.view
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.stage3d.Stage3DProxy;
 	import tetragon.view.stage3d.Stage3DSignal;
-
-	import com.hexagonstar.display.shape.RectangleShape;
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.tween.Tween;
-	import com.hexagonstar.tween.TweenVars;
-	import com.hexagonstar.util.number.average;
-	import com.hexagonstar.util.string.TabularText;
-	import com.hexagonstar.util.time.CallLater;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;

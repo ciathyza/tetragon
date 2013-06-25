@@ -28,7 +28,7 @@
  */
 package tetragon.input
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 
 	import flash.events.MouseEvent;
 	

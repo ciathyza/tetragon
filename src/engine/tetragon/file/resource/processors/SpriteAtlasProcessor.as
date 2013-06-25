@@ -28,10 +28,11 @@
  */
 package tetragon.file.resource.processors
 {
-	import flash.display.BitmapData;
-	import flash.geom.Rectangle;
 	import tetragon.data.atlas.SpriteAtlas;
 	import tetragon.data.atlas.SubTextureBounds;
+
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 
 	
 	

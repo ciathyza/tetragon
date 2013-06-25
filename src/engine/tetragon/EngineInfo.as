@@ -46,16 +46,16 @@ package tetragon
 		/**
 		 * Version of the engine.
 		 */
-		public static const VERSION:String = "1.1.0";
+		public static const VERSION:String = "1.2.0";
 		
 		/**
 		 * Build number of the engine.
 		 */
-		public static const BUILD:String = "12789";
+		public static const BUILD:String = "12795";
 		
 		/**
 		 * Milestone name of the engine.
 		 */
-		public static const MILESTONE:String = "Centauri";
+		public static const MILESTONE:String = "Lalande";
 	}
 }

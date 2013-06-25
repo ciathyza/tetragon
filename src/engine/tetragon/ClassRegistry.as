@@ -28,16 +28,15 @@
  */
 package tetragon
 {
+	import tetragon.core.types.Point2D;
+	import tetragon.core.types.Point3D;
+	import tetragon.core.types.Vector2D;
 	import tetragon.debug.Log;
 	import tetragon.entity.IEntityComponent;
 	import tetragon.file.parsers.*;
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.loaders.*;
 	import tetragon.systems.ISystem;
-
-	import com.hexagonstar.types.Point2D;
-	import com.hexagonstar.types.Point3D;
-	import com.hexagonstar.types.Vector2D;
 
 	import flash.geom.Point;
 	import flash.geom.Rectangle;

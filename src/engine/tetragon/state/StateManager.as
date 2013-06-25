@@ -29,8 +29,7 @@
 package tetragon.state
 {
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 	
 	
 	/**

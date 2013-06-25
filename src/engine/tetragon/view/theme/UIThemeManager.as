@@ -33,10 +33,9 @@ package tetragon.view.theme
 	import lib.fonts.TerminalscopeFont;
 	import lib.fonts.TerminalscopeInverseFont;
 
+	import tetragon.core.exception.SingletonException;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.exception.SingletonException;
-	import com.hexagonstar.util.string.stringIsEmptyOrNull;
+	import tetragon.util.string.stringIsEmptyOrNull;
 
 	import flash.text.Font;
 	import flash.utils.Dictionary;

@@ -30,8 +30,7 @@ package tetragon.modules
 {
 	import tetragon.Main;
 	import tetragon.data.Registry;
-
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 
 	import flash.display.Stage;
 	

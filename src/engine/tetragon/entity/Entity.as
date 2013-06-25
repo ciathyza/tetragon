@@ -28,7 +28,7 @@
  */
 package tetragon.entity
 {
-	import com.hexagonstar.util.reflection.describeTypeProperties;
+	import tetragon.util.reflection.describeTypeProperties;
 
 	import flash.utils.Dictionary;
 	

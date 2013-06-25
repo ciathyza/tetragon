@@ -28,15 +28,14 @@
  */
 package tetragon.view
 {
+	import tetragon.core.file.BulkProgress;
+	import tetragon.core.signals.NativeSignal;
+	import tetragon.core.signals.Signal;
 	import tetragon.file.resource.Resource;
 	import tetragon.file.resource.ResourceCollection;
 	import tetragon.view.loadprogress.DebugLoadProgressDisplay;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.native.View;
-
-	import com.hexagonstar.file.BulkProgress;
-	import com.hexagonstar.signals.NativeSignal;
-	import com.hexagonstar.signals.Signal;
 
 	import flash.events.Event;
 	

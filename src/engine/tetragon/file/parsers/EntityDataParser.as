@@ -29,14 +29,13 @@
 package tetragon.file.parsers
 {
 	import tetragon.Main;
+	import tetragon.core.types.KeyValuePair;
 	import tetragon.debug.Log;
 	import tetragon.entity.EntityDefinition;
 	import tetragon.entity.EntityFamily;
 	import tetragon.entity.EntityManager;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.types.KeyValuePair;
 	
 	
 	/**

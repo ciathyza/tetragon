@@ -30,8 +30,7 @@ package tetragon.file.resource.processors
 {
 	import tetragon.data.swf.SWFAsset;
 	import tetragon.data.swf.SWFAssetCatalog;
-
-	import com.hexagonstar.util.reflection.describeTypeProperties;
+	import tetragon.util.reflection.describeTypeProperties;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;

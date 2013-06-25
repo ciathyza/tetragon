@@ -28,10 +28,9 @@
  */
 package tetragon.modules
 {
+	import tetragon.core.signals.Signal;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 	
 	
 	/**

@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.animation
 {
-	import com.hexagonstar.exception.AbstractClassException;
+	import tetragon.core.exception.AbstractClassException;
 
 	import flash.utils.Dictionary;
 

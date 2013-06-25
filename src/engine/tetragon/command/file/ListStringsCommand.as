@@ -29,8 +29,7 @@
 package tetragon.command.file
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	/**

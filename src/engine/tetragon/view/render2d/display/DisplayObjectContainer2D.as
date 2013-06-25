@@ -28,11 +28,10 @@
  */
 package tetragon.view.render2d.display
 {
+	import tetragon.util.geom.MatrixUtil;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
-
-	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;

@@ -30,8 +30,7 @@ package tetragon.command.cli
 {
 	import tetragon.IAppInfo;
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	public class OutputAppInfoCommand extends CLICommand

@@ -29,10 +29,9 @@
 package tetragon.file.parsers
 {
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.reflection.getClassName;
-	import com.hexagonstar.util.string.createStringVector;
-	import com.hexagonstar.util.string.unwrapString;
+	import tetragon.util.reflection.getClassName;
+	import tetragon.util.string.createStringVector;
+	import tetragon.util.string.unwrapString;
 
 	import flash.system.System;
 	

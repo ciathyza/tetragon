@@ -28,15 +28,14 @@
  */
 package tetragon.view.render2d.extensions.particles
 {
+	import tetragon.util.agal.AGALMiniAssembler;
+	import tetragon.util.geom.MatrixUtil;
 	import tetragon.view.render2d.animation.IAnimatable2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.agal.AGALMiniAssembler;
-	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DBlendFactor;

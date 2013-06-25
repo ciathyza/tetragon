@@ -28,7 +28,7 @@
  */
 package tetragon.state
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 	
 	
 	public class StateSignal extends Signal

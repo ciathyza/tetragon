@@ -28,6 +28,9 @@
  */
 package tetragon.view.render2d.filters
 {
+	import tetragon.util.geom.MatrixUtil;
+	import tetragon.util.geom.RectangleUtil;
+	import tetragon.util.math.nextPowerOfTwo;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
@@ -38,10 +41,6 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.display.Stage2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.geom.MatrixUtil;
-	import com.hexagonstar.util.geom.RectangleUtil;
-	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;

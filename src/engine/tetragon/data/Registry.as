@@ -28,7 +28,7 @@
  */
 package tetragon.data
 {
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 
 	import flash.utils.Dictionary;
 	

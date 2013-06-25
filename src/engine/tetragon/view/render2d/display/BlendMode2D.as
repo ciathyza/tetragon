@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.display
 {
-	import com.hexagonstar.exception.AbstractClassException;
+	import tetragon.core.exception.AbstractClassException;
 
 	import flash.display3D.Context3DBlendFactor;
 

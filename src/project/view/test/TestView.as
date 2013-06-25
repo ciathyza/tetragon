@@ -31,13 +31,12 @@ package view.test
 	import lib.display.TetragonLogo;
 
 	import tetragon.data.Settings;
+	import tetragon.util.color.colorHexToColorTransform;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.color.colorHexToColorTransform;
 
 	import flash.display.BitmapData;
 	import flash.filters.DropShadowFilter;

@@ -29,10 +29,9 @@
 package tetragon.systems.gl
 {
 	import tetragon.Main;
+	import tetragon.core.signals.Signal;
 	import tetragon.systems.ISystem;
 	import tetragon.view.stage3d.Stage3DProxy;
-
-	import com.hexagonstar.signals.Signal;
 
 	import flash.events.Event;
 	import flash.utils.getTimer;

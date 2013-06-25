@@ -29,9 +29,8 @@
 package tetragon.command.cli
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.debug.LogLevel;
+	import tetragon.util.string.TabularText;
 
 	import flash.text.Font;
 	

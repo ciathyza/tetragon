@@ -29,11 +29,10 @@
 package tetragon.command.file
 {
 	import tetragon.command.CLICommand;
+	import tetragon.core.types.Byte;
 	import tetragon.data.DataObject;
+	import tetragon.debug.LogLevel;
 	import tetragon.file.resource.Resource;
-
-	import com.hexagonstar.types.Byte;
-	import com.hexagonstar.util.debug.LogLevel;
 
 	import flash.display.BitmapData;
 	import flash.media.Sound;

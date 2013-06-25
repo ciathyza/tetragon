@@ -29,12 +29,11 @@
 package tetragon.view.render2d.textures
 {
 	import tetragon.debug.Log;
+	import tetragon.util.math.nextPowerOfTwo;
 	import tetragon.view.ScreenManager;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.events.Event2D;
-
-	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

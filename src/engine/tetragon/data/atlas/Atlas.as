@@ -28,9 +28,8 @@
  */
 package tetragon.data.atlas
 {
+	import tetragon.core.types.PointInt;
 	import tetragon.data.DataObject;
-
-	import com.hexagonstar.types.PointInt;
 
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;

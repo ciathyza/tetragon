@@ -29,14 +29,13 @@
 package tetragon.env.update
 {
 	import tetragon.Main;
+	import tetragon.core.signals.Signal;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.env.update.au.AUApplicationUpdater;
 	import tetragon.env.update.au.events.AUStatusUpdateErrorEvent;
 	import tetragon.env.update.au.events.AUStatusUpdateEvent;
 	import tetragon.env.update.au.events.AUUpdateEvent;
-
-	import com.hexagonstar.signals.Signal;
 
 	import flash.events.Event;
 	

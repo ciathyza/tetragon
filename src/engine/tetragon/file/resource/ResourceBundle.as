@@ -30,9 +30,8 @@ package tetragon.file.resource
 {
 	import tetragon.ClassRegistry;
 	import tetragon.Main;
+	import tetragon.core.exception.FatalException;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.exception.FatalException;
 
 	import flash.utils.describeType;
 	

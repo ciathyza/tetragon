@@ -30,7 +30,7 @@ package tetragon.env.preload
 {
 	import lib.display.LoadProgressBar;
 
-	import com.hexagonstar.constants.Alignment;
+	import tetragon.core.constants.Alignment;
 
 	import flash.display.Sprite;
 	import flash.events.Event;

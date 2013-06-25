@@ -28,7 +28,7 @@
  */
 package tetragon.entity
 {
-	import com.hexagonstar.types.IDisposable;
+	import tetragon.core.types.IDisposable;
 
 	import flash.utils.Dictionary;
 	

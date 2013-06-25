@@ -30,8 +30,7 @@ package tetragon.view.stage3d
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.time.CallLater;
+	import tetragon.util.time.CallLater;
 
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;

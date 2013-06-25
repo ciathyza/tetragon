@@ -29,13 +29,12 @@
 package tetragon.command.cli
 {
 	import tetragon.command.CLICommand;
+	import tetragon.debug.LogLevel;
 	import tetragon.input.KeyCodes;
 	import tetragon.input.KeyCombination;
 	import tetragon.input.KeyInputManager;
 	import tetragon.input.KeyMode;
-
-	import com.hexagonstar.util.debug.LogLevel;
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 	
 	
 	public class ListKeyAssignmentsCommand extends CLICommand

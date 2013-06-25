@@ -29,10 +29,9 @@
 package tetragon.file.resource
 {
 	import tetragon.Main;
+	import tetragon.core.file.types.IFile;
 	import tetragon.data.Config;
 	import tetragon.file.resource.loaders.XMLResourceLoader;
-
-	import com.hexagonstar.file.types.IFile;
 
 	
 	/**

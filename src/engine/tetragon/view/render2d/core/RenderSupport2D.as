@@ -28,15 +28,14 @@
  */
 package tetragon.view.render2d.core
 {
+	import tetragon.util.agal.AGALMiniAssembler;
+	import tetragon.util.color.ColorUtil;
+	import tetragon.util.geom.MatrixUtil;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.IQuad2D;
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.agal.AGALMiniAssembler;
-	import com.hexagonstar.util.color.ColorUtil;
-	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;

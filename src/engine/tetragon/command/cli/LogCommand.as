@@ -30,8 +30,7 @@ package tetragon.command.cli
 {
 	import tetragon.command.CLICommand;
 	import tetragon.debug.Log;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	/**

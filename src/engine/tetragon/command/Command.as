@@ -28,8 +28,8 @@
  */
 package tetragon.command
 {
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.core.signals.Signal;
+	import tetragon.util.reflection.getClassName;
 
 	
 	/**

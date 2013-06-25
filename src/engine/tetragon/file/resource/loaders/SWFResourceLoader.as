@@ -28,10 +28,9 @@
  */
 package tetragon.file.resource.loaders
 {
+	import tetragon.core.exception.IllegalStateException;
+	import tetragon.core.file.types.SWFFile;
 	import tetragon.file.resource.ResourceBulkFile;
-
-	import com.hexagonstar.exception.IllegalStateException;
-	import com.hexagonstar.file.types.SWFFile;
 
 	import flash.display.Loader;
 	import flash.display.MovieClip;

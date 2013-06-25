@@ -29,12 +29,11 @@
 package tetragon.file.resource.processors
 {
 	import tetragon.Main;
+	import tetragon.core.types.PointInt;
 	import tetragon.data.atlas.SubTextureBounds;
 	import tetragon.data.atlas.TextureAtlas;
+	import tetragon.util.potrace.Polygonizer;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.types.PointInt;
-	import com.hexagonstar.util.potrace.Polygonizer;
 
 	import flash.display.BitmapData;
 	import flash.geom.Point;

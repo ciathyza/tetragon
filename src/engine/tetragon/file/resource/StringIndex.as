@@ -28,7 +28,7 @@
  */
 package tetragon.file.resource
 {
-	import com.hexagonstar.util.string.TabularText;
+	import tetragon.util.string.TabularText;
 
 	
 	/**

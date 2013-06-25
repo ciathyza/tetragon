@@ -28,14 +28,13 @@
  */
 package tetragon.file.resource.loaders
 {
+	import tetragon.core.constants.Status;
+	import tetragon.core.exception.InvalidDataException;
+	import tetragon.core.file.types.IFile;
+	import tetragon.core.signals.Signal;
 	import tetragon.debug.Log;
 	import tetragon.file.resource.ResourceBulkFile;
-
-	import com.hexagonstar.constants.Status;
-	import com.hexagonstar.exception.InvalidDataException;
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.signals.Signal;
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 
 	import flash.events.Event;
 	import flash.utils.ByteArray;

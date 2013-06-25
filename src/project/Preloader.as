@@ -29,16 +29,15 @@
 package 
 {
 	import tetragon.Main;
+	import tetragon.core.constants.Alignment;
 	import tetragon.data.Params;
 	import tetragon.env.preload.BasicPreloadDisplay;
 	import tetragon.env.preload.IPreloadDisplay;
 	import tetragon.env.preload.IPreloadable;
 	import tetragon.env.preload.IPreloader;
 	import tetragon.env.preload.TetragonPreloadDisplay;
-
-	import com.hexagonstar.constants.Alignment;
-	import com.hexagonstar.util.display.StageReference;
-	import com.hexagonstar.util.time.CallLater;
+	import tetragon.util.display.StageReference;
+	import tetragon.util.time.CallLater;
 
 	import mx.core.BitmapAsset;
 	import mx.core.ByteArrayAsset;

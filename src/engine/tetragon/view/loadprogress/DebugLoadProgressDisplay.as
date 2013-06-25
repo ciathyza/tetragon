@@ -28,10 +28,9 @@
  */
 package tetragon.view.loadprogress
 {
+	import tetragon.util.filter.createOutlineFilter;
+	import tetragon.util.time.CallLater;
 	import tetragon.view.ScreenManager;
-
-	import com.hexagonstar.util.filter.createOutlineFilter;
-	import com.hexagonstar.util.time.CallLater;
 
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;

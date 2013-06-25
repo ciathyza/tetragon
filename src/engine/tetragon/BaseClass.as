@@ -31,8 +31,7 @@ package tetragon
 	import tetragon.data.Registry;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.ResourceManager;
-
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 	
 	
 	/**

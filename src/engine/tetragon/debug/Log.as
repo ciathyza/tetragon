@@ -31,8 +31,6 @@ package tetragon.debug
 	import tetragon.Main;
 	import tetragon.data.Config;
 
-	import com.hexagonstar.util.debug.LogLevel;
-
 	import flash.display.Stage;
 	
 	

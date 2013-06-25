@@ -4,8 +4,7 @@ package tetragon.env.update.au.ui
 	import tetragon.env.update.au.AUApplicationUpdater;
 	import tetragon.env.update.au.events.AUDownloadErrorEvent;
 	import tetragon.env.update.au.events.AUUpdateEvent;
-
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
 
 	import flash.desktop.NativeApplication;
 	import flash.display.NativeWindow;

@@ -35,6 +35,7 @@ package tetragon.command.env
 	import tetragon.data.Params;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
+	import tetragon.debug.LogLevel;
 	import tetragon.file.loaders.ConfigLoader;
 	import tetragon.file.loaders.KeyBindingsLoader;
 	import tetragon.file.resource.Resource;
@@ -42,8 +43,6 @@ package tetragon.command.env
 	import tetragon.file.resource.ResourceManager;
 	import tetragon.file.resource.ResourceStatus;
 	import tetragon.setup.*;
-
-	import com.hexagonstar.util.debug.LogLevel;
 
 	import flash.events.Event;
 	

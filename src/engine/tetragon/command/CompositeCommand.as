@@ -28,7 +28,7 @@
  */
 package tetragon.command
 {
-	import com.hexagonstar.signals.Signal;
+	import tetragon.core.signals.Signal;
 	
 	
 	/**

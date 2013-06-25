@@ -29,16 +29,15 @@
 package tetragon.env.desktop
 {
 	import tetragon.Main;
+	import tetragon.core.file.FileWriter;
+	import tetragon.core.file.types.BinaryFile;
+	import tetragon.core.file.types.IFile;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.util.file.getUserDataPath;
-
-	import com.hexagonstar.file.FileWriter;
-	import com.hexagonstar.file.types.BinaryFile;
-	import com.hexagonstar.file.types.IFile;
-	import com.hexagonstar.util.image.IImageEncoder;
-	import com.hexagonstar.util.image.JPGEncoder;
-	import com.hexagonstar.util.image.PNGEncoder;
+	import tetragon.util.image.IImageEncoder;
+	import tetragon.util.image.JPGEncoder;
+	import tetragon.util.image.PNGEncoder;
 
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;

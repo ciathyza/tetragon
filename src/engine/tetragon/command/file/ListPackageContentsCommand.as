@@ -29,10 +29,9 @@
 package tetragon.command.file
 {
 	import tetragon.command.CLICommand;
+	import tetragon.debug.LogLevel;
 	import tetragon.file.resource.IResourceProvider;
 	import tetragon.file.resource.PackedResourceProvider;
-
-	import com.hexagonstar.util.debug.LogLevel;
 	
 	
 	/**

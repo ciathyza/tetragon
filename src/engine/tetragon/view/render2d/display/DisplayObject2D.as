@@ -28,14 +28,13 @@
  */
 package tetragon.view.render2d.display
 {
+	import tetragon.core.exception.AbstractMethodException;
+	import tetragon.util.geom.MatrixUtil;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
-
-	import com.hexagonstar.exception.AbstractMethodException;
-	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
 	import flash.geom.Matrix;

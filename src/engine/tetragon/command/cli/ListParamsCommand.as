@@ -30,8 +30,7 @@ package tetragon.command.cli
 {
 	import tetragon.Main;
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.debug.LogLevel;
 	
 	
 	public class ListParamsCommand extends CLICommand

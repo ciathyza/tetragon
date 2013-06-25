@@ -28,8 +28,8 @@
  */
 package tetragon.data
 {
-	import com.hexagonstar.types.IDisposable;
-	import com.hexagonstar.util.reflection.getClassNameWithParams;
+	import tetragon.core.types.IDisposable;
+	import tetragon.util.reflection.getClassNameWithParams;
 	
 	
 	/**

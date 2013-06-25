@@ -28,7 +28,7 @@
  */
 package tetragon.view.theme
 {
-	import com.hexagonstar.util.reflection.getClassName;
+	import tetragon.util.reflection.getClassName;
 
 	import flash.text.TextFormat;
 	import flash.utils.Dictionary;

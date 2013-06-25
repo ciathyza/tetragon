@@ -28,9 +28,8 @@
  */
 package tetragon.view.render2d.filters
 {
+	import tetragon.util.color.ColorUtil;
 	import tetragon.view.render2d.textures.Texture2D;
-
-	import com.hexagonstar.util.color.ColorUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;

@@ -29,9 +29,8 @@
 package tetragon.command.env
 {
 	import tetragon.command.CLICommand;
-
-	import com.hexagonstar.types.Byte;
-	import com.hexagonstar.util.debug.LogLevel;
+	import tetragon.core.types.Byte;
+	import tetragon.debug.LogLevel;
 
 	import flash.system.System;
 	import flash.utils.setTimeout;

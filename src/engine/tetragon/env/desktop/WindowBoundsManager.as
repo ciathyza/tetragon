@@ -29,10 +29,9 @@
 package tetragon.env.desktop
 {
 	import tetragon.Main;
+	import tetragon.core.exception.SingletonException;
 	import tetragon.debug.Log;
 	import tetragon.env.settings.LocalSettingsManager;
-
-	import com.hexagonstar.exception.SingletonException;
 
 	import flash.display.NativeWindow;
 	import flash.display.Screen;

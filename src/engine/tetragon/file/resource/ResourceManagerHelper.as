@@ -29,12 +29,11 @@
 package tetragon.file.resource
 {
 	import tetragon.Main;
+	import tetragon.core.exception.IllegalArgumentException;
 	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.file.loaders.EmbeddedResourceIndexLoader;
 	import tetragon.file.loaders.ResourceIndexLoader;
-
-	import com.hexagonstar.exception.IllegalArgumentException;
 
 	import flash.utils.Dictionary;
 	

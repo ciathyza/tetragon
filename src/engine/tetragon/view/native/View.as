@@ -34,10 +34,9 @@ package tetragon.view.native
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.ResourceManager;
 	import tetragon.file.resource.StringIndex;
+	import tetragon.util.reflection.getClassName;
 	import tetragon.view.IView;
 	import tetragon.view.Screen;
-
-	import com.hexagonstar.util.reflection.getClassName;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;

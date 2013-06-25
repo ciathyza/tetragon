@@ -29,8 +29,7 @@
 package tetragon.view.native
 {
 	import tetragon.Main;
-
-	import com.hexagonstar.util.display.StageReference;
+	import tetragon.util.display.StageReference;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

@@ -14,8 +14,8 @@
 <project default="000 Full Build" basedir=".." name="tetragon.base.swc">
 	
 	<property name="engine.name"		value="Tetragon Engine"/>
-	<property name="engine.version"		value="1.1.0"/>
-	<property name="engine.milestone"	value="Centauri"/>
+	<property name="engine.version"		value="1.2.0"/>
+	<property name="engine.milestone"	value="Lalande"/>
 	<property name="swc.filename"		value="tetragon"/>
 	
 	<property name="swfversion"		value="14"/>

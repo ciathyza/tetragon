@@ -1,5 +1,7 @@
 package tetragon.view.render2d.extensions.graphics
 {
+	import tetragon.core.exception.AbstractMethodException;
+	import tetragon.core.exception.MissingContext3DException;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -7,9 +9,6 @@ package tetragon.view.render2d.extensions.graphics
 	import tetragon.view.render2d.extensions.graphics.materials.StandardMaterial2D;
 	import tetragon.view.render2d.extensions.graphics.shaders.fragment.VertexColorFragmentShader2D;
 	import tetragon.view.render2d.extensions.graphics.shaders.vertex.StandardVertexShader2D;
-
-	import com.hexagonstar.exception.AbstractMethodException;
-	import com.hexagonstar.exception.MissingContext3DException;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.IndexBuffer3D;

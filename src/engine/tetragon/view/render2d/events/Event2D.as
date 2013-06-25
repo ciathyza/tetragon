@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.events
 {
-	import com.hexagonstar.util.string.formatString;
+	import tetragon.util.string.formatString;
 
 	import flash.utils.getQualifiedClassName;
 	
