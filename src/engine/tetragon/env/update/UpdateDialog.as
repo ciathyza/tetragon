@@ -30,8 +30,8 @@ package tetragon.env.update
 {
 	import lib.display.UpdateDialogIcon;
 
+	import tetragon.core.au.ui.AUUpdateUI;
 	import tetragon.core.display.shape.RectangleShape;
-	import tetragon.env.update.au.ui.AUUpdateUI;
 	import tetragon.util.ui.createUIButton;
 	import tetragon.util.ui.createUILabel;
 	import tetragon.util.ui.createUIProgressBar;
