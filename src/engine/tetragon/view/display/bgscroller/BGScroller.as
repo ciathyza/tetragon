@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.bitmap
+package tetragon.view.display.bgscroller
 {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;

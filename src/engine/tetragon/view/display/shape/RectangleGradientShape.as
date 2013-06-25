@@ -26,37 +26,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.shape
+package tetragon.view.display.shape
 {
 	import tetragon.util.reflection.getClassName;
 
-	import flash.display.BitmapData;
+	import flash.display.GradientType;
+	import flash.display.InterpolationMethod;
 	import flash.display.Shape;
+	import flash.display.SpreadMethod;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 	
 	
 	/**
-	 * A scale-9 Shape that uses a bitmap fill.
+	 * RectangleGradientShape is a rectangle shape filled with a color gradient.
 	 */
-	public class Scale9BitmapShape extends Shape implements IShape
+	public class RectangleGradientShape extends Shape implements IShape
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		protected var _bitmapData:BitmapData;
+		protected var _width:Number;
 		/** @private */
-		protected var _width:Number = 0;
+		protected var _height:Number;
 		/** @private */
-		protected var _height:Number = 0;
+		protected var _rotation:Number;
 		/** @private */
-		protected var _inner:Rectangle;
+		protected var _colors:Array;
 		/** @private */
-		protected var _outer:Rectangle;
+		protected var _alphas:Array;
 		/** @private */
-		protected var _smoothing:Boolean;
+		protected var _ratios:Array;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -64,24 +65,19 @@ package tetragon.core.display.shape
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Creates a new instance of the class.
+		 * Creates a new RectangleGradientShape instance.
 		 * 
-		 * @param bitmapData BitmapData source.
-		 * @param width Draw width.
-		 * @param height Draw height.
-		 * @param inner Inner rectangle (relative to 0,0).
-		 * @param outer Outer rectangle (relative to 0,0).
-		 * @param smoothing If <code>false</code>, upscaled bitmap images are rendered by
-		 *            using a nearest-neighbor algorithm and look pixelated. If
-		 *            <code>true</code>, upscaled bitmap images are rendered by using a
-		 *            bilinear algorithm. Rendering by using the nearest neighbor algorithm is
-		 *            usually faster.
+		 * @param width The width of the rectangle.
+		 * @param height The height of the rectangle.
+		 * @param rotation The rotation of the gradient.
+		 * @param colors The color values for the gradient. The default is [0x000000, 0xFFFFFF].
+		 * @param alphas The alpha values for the gradient. The default is [1.0, 1.0].
+		 * @param ratios The ratio values for the gradient. The default is [0, 255].
 		 */
-		public function Scale9BitmapShape(bitmapData:BitmapData = null, width:Number = 0,
-			height:Number = 0, inner:Rectangle = null, outer:Rectangle = null,
-			smoothing:Boolean = false)
+		public function RectangleGradientShape(width:int = 0, height:int = 0, rotation:Number = -90,
+			colors:Array = null, alphas:Array = null, ratios:Array = null)
 		{
-			setProperties(bitmapData, width, height, inner, outer, smoothing);
+			setProperties(width, height, rotation, colors, alphas, ratios);
 			draw();
 		}
 		
@@ -91,25 +87,17 @@ package tetragon.core.display.shape
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Allows to set all properties at once without updating.
-		 * 
-		 * @param bitmapData
-		 * @param width
-		 * @param height
-		 * @param inner
-		 * @param outer
-		 * @param smoothing
+		 * Allows to set all properties at once without re-drawing.
 		 */
-		public function setProperties(bitmapData:BitmapData = null, width:Number = NaN,
-			height:Number = NaN, inner:Rectangle = null, outer:Rectangle = null,
-			smoothing:Boolean = false):void
+		public function setProperties(width:Number = NaN, height:Number = NaN, rotation:Number = NaN,
+			colors:Array = null, alphas:Array = null, ratios:Array = null):void
 		{
-			if (bitmapData) _bitmapData = bitmapData;
 			if (!isNaN(width)) _width = width < 0 ? 0 : width;
 			if (!isNaN(height)) _height = height < 0 ? 0 : height;
-			if (inner) _inner = inner;
-			if (outer) _outer = outer;
-			_smoothing = smoothing;
+			if (!isNaN(rotation)) _rotation = rotation;
+			if (colors) _colors = colors;
+			if (alphas) _alphas = alphas;
+			if (ratios) _ratios = ratios;
 		}
 		
 		
@@ -118,7 +106,7 @@ package tetragon.core.display.shape
 		 */
 		public function draw():void
 		{
-			if (_bitmapData && _width > 0 && _height > 0) drawShape();
+			if (_width > 0 && _height > 0) drawShape();
 		}
 		
 		
@@ -168,50 +156,47 @@ package tetragon.core.display.shape
 		}
 		
 		
-		public function get bitmapData():BitmapData
+		override public function get rotation():Number
 		{
-			return _bitmapData;
+			return _rotation;
 		}
-		public function set bitmapData(v:BitmapData):void
+		override public function set rotation(v:Number):void
 		{
-			if (v == _bitmapData) return;
-			_bitmapData = v;
+			if (v == _rotation) return;
+			_rotation = v;
 			draw();
 		}
 		
 		
-		public function get inner():Rectangle
+		public function get colors():Array
 		{
-			return _inner;
+			return _colors;
 		}
-		public function set inner(v:Rectangle):void
+		public function set colors(v:Array):void
 		{
-			if (v == _inner) return;
-			_inner = v;
+			_colors = v;
 			draw();
 		}
 		
 		
-		public function get outer():Rectangle
+		public function get alphas():Array
 		{
-			return _outer;
+			return _alphas;
 		}
-		public function set outer(v:Rectangle):void
+		public function set alphas(v:Array):void
 		{
-			if (v == _outer) return;
-			_outer = v;
+			_alphas = v;
 			draw();
 		}
 		
 		
-		public function get smoothing():Boolean
+		public function get ratios():Array
 		{
-			return _smoothing;
+			return _ratios;
 		}
-		public function set smoothing(v:Boolean):void
+		public function set ratios(v:Array):void
 		{
-			if (v == _smoothing) return;
-			_smoothing = v;
+			_ratios = v;
 			draw();
 		}
 		
@@ -225,57 +210,18 @@ package tetragon.core.display.shape
 		 */
 		protected function drawShape():void
 		{
-			if (!_inner)
-			{
-				_inner = new Rectangle(10, 10, _bitmapData.width - 10, _bitmapData.height - 10);
-			}
-			
-			var x:int, y:int;
-			var ox:Number = 0, oy:Number;
-			var dx:Number = 0, dy:Number;
-			var w:Number, h:Number, dw:Number, dh:Number;
-			var sw:int = _bitmapData.width;
-			var sh:int = _bitmapData.height;
-			
-			var widths:Array = [_inner.left + 1, _inner.width - 2, sw - _inner.right + 1];
-			var heights:Array = [_inner.top + 1, _inner.height - 2, sh - _inner.bottom + 1];
-			var rx:Number = _width - widths[0] - widths[2];
-			var ry:Number = _height - heights[0] - heights[2];
-			var ol:Number = _outer ? -_outer.left : 0;
-			var ot:Number = _outer ? -_outer.top : 0;
+			if (!_colors) _colors = [0x000000, 0xFFFFFF];
+			if (!_alphas) _alphas = [1.0, 1.0];
+			if (!_ratios) _ratios = [0, 255];
 			
 			var m:Matrix = new Matrix();
+			m.createGradientBox(_width, _height, (_rotation * Math.PI / 180));
 			
-			for (x; x < 3 ; x++)
-			{
-				w = widths[x];
-				dw = x == 1 ? rx : w;
-				dy = oy = 0;
-				m.a = dw / w;
-
-				for (y = 0; y < 3; y++)
-				{
-					h = heights[y];
-					dh = y == 1 ? ry : h;
-
-					if (dw > 0 && dh > 0)
-					{
-						m.d = dh / h;
-						m.tx = -ox * m.a + dx;
-						m.ty = -oy * m.d + dy;
-						m.translate(ol, ot);
-						graphics.beginBitmapFill(_bitmapData, m, false, _smoothing);
-						graphics.drawRect(dx + ol, dy + ot, dw, dh);
-					}
-					
-					oy += h;
-					dy += dh;
-				}
-				
-				ox += w;
-				dx += dw;
-			}
-			
+			graphics.clear();
+			graphics.lineStyle();
+			graphics.beginGradientFill(GradientType.LINEAR, _colors, _alphas, _ratios, m,
+				SpreadMethod.PAD, InterpolationMethod.RGB);
+			graphics.drawRect(0, 0, _width, _height);
 			graphics.endFill();
 		}
 		
@@ -283,10 +229,10 @@ package tetragon.core.display.shape
 		/**
 		 * @private
 		 */
-		private static function cloneShape(s:Scale9BitmapShape):Scale9BitmapShape
+		private static function cloneShape(s:RectangleGradientShape):RectangleGradientShape
 		{
 			var clazz:Class = (s as Object)['constructor'];
-			return new clazz(s.bitmapData, s.width, s.height, s.inner, s.outer, s.smoothing);
+			return new clazz(s.width, s.height, s.rotation, s.colors, s.alphas, s.ratios);
 		}
 	}
 }

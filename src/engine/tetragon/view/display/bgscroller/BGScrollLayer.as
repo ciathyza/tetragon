@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.bitmap
+package tetragon.view.display.bgscroller
 {
 	import tetragon.util.geom.degToRad;
 	import tetragon.util.geom.radToDeg;
@@ -104,7 +104,7 @@ package tetragon.core.display.bitmap
 			{
 				w = BitmapData(image).width;
 				h = BitmapData(image).height;
-				if (image is PatternBitmap) this.repeatFill = true;
+				if (image is BGPatternBitmap) this.repeatFill = true;
 			}
 			else
 			{

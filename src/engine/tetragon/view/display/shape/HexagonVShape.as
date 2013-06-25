@@ -26,33 +26,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.shape
+package tetragon.view.display.shape
 {
 	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 
 	
 	/**
-	 * Creates a regular horizontal hexagonal shape. You specify the width of the hexagon
-	 * and the height of it is calculated automatically from the six same-length sides.
+	 * Creates a regular vertical hexagonal shape. You specify the height of the hexagon
+	 * and the width of it is calculated automatically from the six same-length sides.
 	 * 
-	 * <p>Additionally you can use the calculateHeight method to receive the height of the
-	 * hexagon by specifying it's width before the hexagon is actually created.</p>
+	 * <p>Additionally you can use the calculateWidth method to receive the width of the
+	 * hexagon by specifying it's height before the hexagon is actually created.</p>
 	 */
-	public class HexagonHShape extends BaseShape
+	public class HexagonVShape extends BaseShape
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		private static var _angle:Number = 30 * Math.PI / 180;
-		/** @private */
 		private static var _drawCommands:Vector.<int>;
 		/** @private */
 		protected var _drawData:Vector.<Number>;
 		/** @private */
-		protected var _oldWidth:Number;
+		private static var _angle:Number = 30 * Math.PI / 180;
+		/** @private */
+		protected var _oldHeight:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -60,16 +60,16 @@ package tetragon.core.display.shape
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Creates a new HexagonShape instance.
+		 * Creates a new HexagonVShape instance.
 		 * 
-		 * @param width The height of the hexagon.
+		 * @param height The height of the hexagon.
 		 * @param fillColor The fill color for the hexagon.
 		 * @param fillAlpha The fill alpha for the hexagon.
 		 * @param lineThickness Determines the thickness of the border line.
 		 * @param lineColor The line color for the hexagon.
 		 * @param lineAlpha The line alpha for the hexagon.
 		 */
-		public function HexagonHShape(width:int = 0, fillColor:uint = 0xFF00FF,
+		public function HexagonVShape(height:int = 0, fillColor:uint = 0xFF00FF,
 			fillAlpha:Number = 1.0, lineThickness:Number = NaN, lineColor:uint = 0x000000,
 			lineAlpha:Number = 1.0)
 		{
@@ -86,7 +86,7 @@ package tetragon.core.display.shape
 				_drawCommands[6] = 2;
 			}
 			
-			super(width, 0, fillColor, fillAlpha, lineThickness, lineColor, lineAlpha);
+			super(0, height, fillColor, fillAlpha, lineThickness, lineColor, lineAlpha);
 		}
 		
 		
@@ -99,7 +99,7 @@ package tetragon.core.display.shape
 		 */
 		override public function draw():void
 		{
-			if (_width > 0) drawShape();
+			if (_height > 0) drawShape();
 		}
 		
 		
@@ -113,21 +113,20 @@ package tetragon.core.display.shape
 		
 		
 		/**
-		 * Calculates the height of a HexagonHShape that has the specified width.
+		 * Calculates the width of a HexagonVShape that has the specified height.
 		 * 
-		 * @param width The width of the HexagonHshape.
-		 * @return The height that a HexagonHShape with the specified height would have.
+		 * @param height The height of the HexagonVShape.
+		 * @return The width that a HexagonVShape with the specified height would have.
 		 */
-		public static function calculateHeight(width:Number):Number
+		public static function calculateWidth(height:Number):Number
 		{
 			/* Calculate the sides of the triangle that is one edge of the 'hexagon-square'.
 			 * o = opposite leg, a = adjacent leg, s = hypotenuse (= hexagon side length). */
-			var o:Number = width / 2;
+			var o:Number = height / 2;
 			var a:Number = Math.round(o * Math.tan(_angle));
 			var s:Number = Math.round(Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2)));
-			var h:Number = (a * 2) + s;
-			//Log.trace("o:" + o + " a:" + a + " s:" + s + " h:" + h);
-			return h;
+			var w:Number = (a * 2) + s;
+			return w;
 		}
 		
 		
@@ -135,20 +134,20 @@ package tetragon.core.display.shape
 		// Accessors
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * Read Only! Setting width on the HexagonVShape has no effect as the width is
+		 * automatically calculated.
+		 */
 		override public function set width(v:Number):void
 		{
-			if (v == _width) return;
-			_width = v < 0 ? 0 : v;
-			draw();
 		}
 		
 		
-		/**
-		 * Read Only! Setting height on the HexagonHShape has no effect as the width is
-		 * automatically calculated.
-		 */
 		override public function set height(v:Number):void
 		{
+			if (v == _height) return;
+			_height = v < 0 ? 0 : v;
+			draw();
 		}
 		
 		
@@ -161,12 +160,12 @@ package tetragon.core.display.shape
 		 */
 		override protected function drawShape():void
 		{
-			/* Only renew draw data if the width has changed! */
-			if (_width != _oldWidth)
+			/* Only renew draw commands if the height has changed! */
+			if (_height != _oldHeight)
 			{
-				_oldWidth = _width;
-				_height = calculateHeight(_width);
-				_drawData = generateDrawData(_width);
+				_oldHeight = _height;
+				_width = calculateWidth(_height);
+				_drawData = generateDrawData(_height);
 			}
 			
 			graphics.clear();
@@ -181,30 +180,30 @@ package tetragon.core.display.shape
 		/**
 		 * @private
 		 */
-		protected static function generateDrawData(width:Number):Vector.<Number>
+		protected static function generateDrawData(height:Number):Vector.<Number>
 		{
 			/* Calculate the sides of the triangle that is one edge of the 'hexagon-square'.
 			 * o = opposite leg, a = adjacent leg, s = hypotenuse (= hexagon side length). */
-			var o:Number = width / 2;
+			var o:Number = height / 2;
 			var a:int = Math.round(o * Math.tan(_angle));
 			var s:int = Math.round(Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2)));
-			var h:int = (a * 2) + s;
+			var w:int = (a * 2) + s;
 			
 			/* Create the vector with data for the drawPath operation */
 			var d:Vector.<Number> = new Vector.<Number>(14, true);
-			d[0] = o;			// Start X
+			d[0] = a;			// Start X
 			d[1] = 0;			// Start Y
-			d[2] = width;		// 1. vertex X
-			d[3] = a;			// 1. vertex Y
-			d[4] = width;		// 2. vertex X
-			d[5] = a + s;		// 2. vertex Y
-			d[6] = o;			// 3. vertex X
-			d[7] = h;			// 3. vertex Y
-			d[8] = 0;			// 4. vertex X
-			d[9] = a + s;		// 4. vertex Y
+			d[2] = a + s;		// 1. vertex X
+			d[3] = 0;			// 1. vertex Y
+			d[4] = w;			// 2. vertex X
+			d[5] = o;			// 2. vertex Y
+			d[6] = a + s;		// 3. vertex X
+			d[7] = height;		// 3. vertex Y
+			d[8] = a;			// 4. vertex X
+			d[9] = height;		// 4. vertex Y
 			d[10] = 0;			// 5. vertex X
-			d[11] = a;			// 5. vertex Y
-			d[12] = o;			// End X
+			d[11] = o;			// 5. vertex Y
+			d[12] = a;			// End X
 			d[13] = 0;			// End Y
 			
 			return d;
@@ -217,7 +216,7 @@ package tetragon.core.display.shape
 		private static function cloneShape(s:BaseShape):BaseShape
 		{
 			var clazz:Class = (s as Object)['constructor'];
-			return new clazz(s.width, s.fillColor, s.fillAlpha, s.lineThickness, s.lineColor,
+			return new clazz(s.height, s.fillColor, s.fillAlpha, s.lineThickness, s.lineColor,
 				s.lineAlpha);
 		}
 	}

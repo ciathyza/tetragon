@@ -26,12 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.bitmap
+package tetragon.view.display.bgscroller
 {
 	import flash.display.BitmapData;
 	
 	
-	public class PatternBitmap extends BitmapData
+	public class BGPatternBitmap extends BitmapData
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -68,7 +68,7 @@ package tetragon.core.display.bitmap
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function PatternBitmap(pattern:Array = null, colors:Array = null,
+		public function BGPatternBitmap(pattern:Array = null, colors:Array = null,
 			transparent:Boolean = false, fillColor:uint = 0x000000)
 		{
 			if (pattern && pattern[0] is Array) _pattern = pattern;

@@ -31,11 +31,11 @@ package tetragon.env.update
 	import lib.display.UpdateDialogIcon;
 
 	import tetragon.core.au.ui.AUUpdateUI;
-	import tetragon.core.display.shape.RectangleShape;
 	import tetragon.util.ui.createUIButton;
 	import tetragon.util.ui.createUILabel;
 	import tetragon.util.ui.createUIProgressBar;
 	import tetragon.util.ui.createUITextArea;
+	import tetragon.view.display.shape.RectangleShape;
 	import tetragon.view.ui.controls.Button;
 	import tetragon.view.ui.controls.Label;
 	import tetragon.view.ui.controls.ProgressBar;

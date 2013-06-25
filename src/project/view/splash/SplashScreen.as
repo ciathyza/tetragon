@@ -28,10 +28,10 @@
  */
 package view.splash
 {
-	import tetragon.core.display.shape.RectangleGradientShape;
 	import tetragon.data.Settings;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
+	import tetragon.view.display.shape.RectangleGradientShape;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 
 	import flash.events.Event;

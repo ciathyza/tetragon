@@ -29,7 +29,6 @@
 package tetragon.debug
 {
 	import tetragon.Main;
-	import tetragon.core.display.shape.RectangleShape;
 	import tetragon.core.signals.Signal;
 	import tetragon.core.tween.Tween;
 	import tetragon.core.tween.TweenVars;
@@ -37,6 +36,7 @@ package tetragon.debug
 	import tetragon.data.Config;
 	import tetragon.debug.cli.CLI;
 	import tetragon.input.KeyInputManager;
+	import tetragon.view.display.shape.RectangleShape;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -823,7 +823,7 @@ package tetragon.debug
 }
 
 
-import tetragon.core.display.shape.RectangleShape;
+import tetragon.view.display.shape.RectangleShape;
 
 import flash.display.Sprite;
 import flash.text.AntiAliasType;

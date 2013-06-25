@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.bitmap
+package tetragon.view.display.bgscroller
 {
 	import tetragon.util.number.random;
 	import tetragon.util.number.randomFloat;
@@ -36,7 +36,7 @@ package tetragon.core.display.bitmap
 	import flash.geom.Matrix;
 	
 	
-	public class StampBitmap extends BitmapData
+	public class BGStampBitmap extends BitmapData
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -54,7 +54,7 @@ package tetragon.core.display.bitmap
 		 * @param transparent
 		 * @param fillColor
 		 */
-		public function StampBitmap(width:int, height:int, stamps:Array, stampCount:int,
+		public function BGStampBitmap(width:int, height:int, stamps:Array, stampCount:int,
 			minScale:Number = 0.5, maxScale:Number = 1.5, transparent:Boolean = true,
 			fillColor:uint = 0x00000000)
 		{

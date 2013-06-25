@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.scroll
+package tetragon.view.display.pscroller
 {
 	import flash.display.BitmapData;
 	import flash.geom.Point;

@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.canvas
+package tetragon.view.display.rendercanvas
 {
 	import tetragon.Main;
 	import tetragon.debug.IDrawCallsPollingSource;

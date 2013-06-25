@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.render.canvas
+package tetragon.view.display.rendercanvas
 {
 	/**
 	 * Interface for render canvas classes that use a render surface to draw

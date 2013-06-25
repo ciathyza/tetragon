@@ -26,9 +26,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.display.sprite
+package tetragon.view.display.sprite
 {
-	import tetragon.core.display.shape.Scale9BitmapShape;
+	import tetragon.view.display.shape.Scale9BitmapShape;
 
 	import flash.display.BitmapData;
 	import flash.display.Sprite;

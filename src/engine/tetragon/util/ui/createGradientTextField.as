@@ -29,8 +29,8 @@
 package tetragon.util.ui
 {
 	import tetragon.Main;
-	import tetragon.core.display.text.GradientTextField;
 	import tetragon.core.types.Gradient;
+	import tetragon.view.display.text.GradientTextField;
 	import tetragon.view.theme.TextFormats;
 
 	import flash.text.TextFormat;

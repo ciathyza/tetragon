@@ -26,7 +26,7 @@
  * HOLDER OR ELSEWHERE WILL CREATE ANY WARRANTY OR CONDITION NOT EXPRESSLY STATED
  * IN THIS AGREEMENT.
  */
-package tetragon.view.native
+package tetragon.view.display.bitmap
 {
 	import tetragon.Main;
 	import tetragon.util.display.StageReference;
