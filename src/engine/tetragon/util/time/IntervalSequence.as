@@ -26,7 +26,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core.time
+package tetragon.util.time
 {
 	/**
 	 * A simple organizational class to easily create a sequence of intervals

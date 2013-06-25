@@ -25,7 +25,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */package tetragon.core.time{	import tetragon.core.exception.IllegalArgumentException;	import tetragon.util.display.StageReference;	import flash.events.Event;	import flash.events.EventDispatcher;	import flash.events.TimerEvent;		/**	 * A more precise timer class than the default ActionScript Timer class.	 * You must set StageReference.stage before using this class!	 */	public class PreciseTimer extends EventDispatcher	{
+ */package tetragon.util.time{	import tetragon.core.exception.IllegalArgumentException;	import tetragon.util.display.StageReference;	import flash.events.Event;	import flash.events.EventDispatcher;	import flash.events.TimerEvent;		/**	 * A more precise timer class than the default ActionScript Timer class.	 * You must set StageReference.stage before using this class!	 */	public class PreciseTimer extends EventDispatcher	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------				protected var _delay:Number;		protected var _repeatCount:int;		protected var _currentCount:int;		protected var _offset:int;		protected var _currentTime:Date;		protected var _isRunning:Boolean = false;				
