@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	internal class VariableExpression extends Expression
@@ -61,7 +61,7 @@ package tetragon.util.agal.macro
 		 */
 		override public function print(depth:int):void
 		{
-			HLog.trace(spaces(depth) + "variable=" + name);
+			Log.trace(spaces(depth) + "variable=" + name, this);
 		}
 		
 		
@@ -72,7 +72,7 @@ package tetragon.util.agal.macro
 		{
 			if (AGALPreAssembler.TRACE_VM)
 			{
-				HLog.trace("::VariableExpression push var " + name + " value " + vm.vars[name]);
+				Log.trace("::VariableExpression push var " + name + " value " + vm.vars[name], this);
 			}
 			if (isNaN(vm.vars[ name]))
 			{

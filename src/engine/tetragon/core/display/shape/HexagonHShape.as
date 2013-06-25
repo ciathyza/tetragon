@@ -27,8 +27,6 @@
  */
 package tetragon.core.display.shape
 {
-	import tetragon.util.debug.HLog;
-
 	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 
@@ -127,7 +125,7 @@ package tetragon.core.display.shape
 			var a:Number = Math.round(o * Math.tan(_angle));
 			var s:Number = Math.round(Math.sqrt(Math.pow(o, 2) + Math.pow(a, 2)));
 			var h:Number = (a * 2) + s;
-			HLog.trace("o:" + o + " a:" + a + " s:" + s + " h:" + h);
+			//Log.trace("o:" + o + " a:" + a + " s:" + s + " h:" + h);
 			return h;
 		}
 		

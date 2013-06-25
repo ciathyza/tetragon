@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	internal class UnaryExpression extends Expression
@@ -48,7 +48,7 @@ package tetragon.util.agal.macro
 		 */
 		override public function print(depth:int):void
 		{
-			if (AGALPreAssembler.TRACE_VM) HLog.trace(spaces(depth) + "not");
+			if (AGALPreAssembler.TRACE_VM) Log.trace(spaces(depth) + "not", this);
 			right.print(depth + 1);
 		}
 		
@@ -63,7 +63,7 @@ package tetragon.util.agal.macro
 			var varRight:Number = vm.stack.pop();
 			var value:Number = (varRight == 0) ? 1 : 0;
 			
-			if (AGALPreAssembler.TRACE_VM) HLog.trace("::NotExpression push " + value);
+			if (AGALPreAssembler.TRACE_VM) Log.trace("::NotExpression push " + value, this);
 			if (isNaN(varRight)) throw new Error("UnaryExpression NaN");
 			vm.stack.push(value);
 		}

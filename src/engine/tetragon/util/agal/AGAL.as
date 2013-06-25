@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.display3D.Context3DProgramType;
 	import flash.utils.ByteArray;
@@ -800,8 +800,8 @@ package tetragon.util.agal
 		private function log(msg:*, warn:Boolean = false):void
 		{
 			msg = "[AGAL] " + msg;
-			if (!warn) HLog.debug(msg);
-			else HLog.warn(msg);
+			if (!warn) Log.debug(msg, this);
+			else Log.warn(msg, this);
 		}
 	}
 }

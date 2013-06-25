@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	/*
@@ -116,7 +116,7 @@ package tetragon.util.agal.macro
 					{
 						slot = tokens[pos + 1];
 						_vm.vars[ slot ] = Number.NaN;
-						if (TRACE_PREPROC) HLog.trace("#define #i");
+						if (TRACE_PREPROC) Log.trace("#define #i", this);
 						pos += 3;
 					}
 					else if (types.length >= 3 && types.substr(pos, 3) == "#i=")
@@ -126,7 +126,7 @@ package tetragon.util.agal.macro
 						result = _vm.stack.pop();
 						slot = tokens[pos + 1];
 						_vm.vars[slot] = result;
-						if (TRACE_PREPROC) HLog.trace("#define= " + slot + "=" + result);
+						if (TRACE_PREPROC) Log.trace("#define= " + slot + "=" + result, this);
 					}
 					else
 					{
@@ -135,14 +135,14 @@ package tetragon.util.agal.macro
 						result = _vm.stack.pop();
 						slot = tokens[pos + 1];
 						_vm.vars[slot] = result;
-						if (TRACE_PREPROC) HLog.trace("#define " + slot + "=" + result);
+						if (TRACE_PREPROC) Log.trace("#define " + slot + "=" + result, this);
 					}
 				}
 				else if (tokens[pos] == "#undef")
 				{
 					slot = tokens[pos + 1];
 					_vm.vars[slot] = null;
-					if (TRACE_PREPROC) HLog.trace("#undef");
+					if (TRACE_PREPROC) Log.trace("#undef", this);
 					pos += 3;
 				}
 				else if (tokens[pos] == "#if")
@@ -153,7 +153,7 @@ package tetragon.util.agal.macro
 					exp.exec(_vm);
 					result = _vm.stack.pop();
 					_vm.setIf(result);
-					if (TRACE_PREPROC) HLog.trace("#if " + ((result) ? "true" : "false"));
+					if (TRACE_PREPROC) Log.trace("#if " + ((result) ? "true" : "false"), this);
 				}
 				else if (tokens[pos] == "#elif")
 				{
@@ -162,7 +162,7 @@ package tetragon.util.agal.macro
 					exp.exec(_vm);
 					result = _vm.stack.pop();
 					_vm.setIf(result);
-					if (TRACE_PREPROC) HLog.trace("#elif " + ((result) ? "true" : "false"));
+					if (TRACE_PREPROC) Log.trace("#elif " + ((result) ? "true" : "false"), this);
 				}
 				else if (tokens[pos] == "#else")
 				{
@@ -170,14 +170,14 @@ package tetragon.util.agal.macro
 					_vm.setIf(_vm.ifWasTrue() ? 0 : 1);
 					if (TRACE_PREPROC)
 					{
-						HLog.trace("#else " + ((_vm.ifWasTrue()) ? "true" : "false"));
+						Log.trace("#else " + ((_vm.ifWasTrue()) ? "true" : "false"), this);
 					}
 				}
 				else if (tokens[pos] == "#endif")
 				{
 					_vm.popEndif();
 					++pos;
-					if (TRACE_PREPROC) HLog.trace("#endif");
+					if (TRACE_PREPROC) Log.trace("#endif", this);
 				}
 				else
 				{

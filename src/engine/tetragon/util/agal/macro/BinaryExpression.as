@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	internal class BinaryExpression extends Expression
@@ -50,7 +50,7 @@ package tetragon.util.agal.macro
 		 */
 		override public function print(depth:int):void
 		{
-			if (AGALPreAssembler.TRACE_VM) HLog.trace(spaces(depth) + "binary op " + op);
+			if (AGALPreAssembler.TRACE_VM) Log.trace(spaces(depth) + "binary op " + op, this);
 			left.print(depth + 1);
 			right.print(depth + 1);
 		}
@@ -125,8 +125,8 @@ package tetragon.util.agal.macro
 			
 			if (AGALPreAssembler.TRACE_VM)
 			{
-				HLog.trace("::BinaryExpression op" + op + " left=" + varLeft
-					+ " right=" + varRight + " push " + vm.stack[vm.stack.length - 1]);
+				Log.trace("::BinaryExpression op" + op + " left=" + varLeft
+					+ " right=" + varRight + " push " + vm.stack[vm.stack.length - 1], this);
 			}
 		}
 	}

@@ -27,7 +27,7 @@
  */
 package tetragon.core.signals
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.errors.IllegalOperationError;
 
@@ -158,7 +158,7 @@ package tetragon.core.signals
 		 */
 		internal static function fail(caller:String, message:String, error:Class = null):void
 		{
-			HLog.fatal(caller + ": " + message);
+			Log.fatal("Signal: " + caller + ": " + message);
 			if (error) throw new error(caller + ": " + message);
 		}
 		

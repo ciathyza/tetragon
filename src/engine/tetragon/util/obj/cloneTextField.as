@@ -27,7 +27,7 @@
  */
 package tetragon.util.obj
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.geom.Transform;
 	import flash.text.TextField;
@@ -60,7 +60,7 @@ package tetragon.util.obj
 				}
 				catch(err:Error)
 				{
-					HLog.error("cloneTextField: " + err.message);
+					Log.error("cloneTextField: " + err.message, this);
 				}
 			}
 		}

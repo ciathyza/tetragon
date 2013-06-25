@@ -48,7 +48,6 @@ package tetragon
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
 	import tetragon.systems.gl.GameLoop;
-	import tetragon.util.debug.HLog;
 	import tetragon.util.display.StageReference;
 	import tetragon.util.time.CallLater;
 	import tetragon.view.ScreenManager;
@@ -553,11 +552,6 @@ package tetragon
 			XML.ignoreWhitespace = true;
 			XML.ignoreProcessingInstructions = true;
 			XML.ignoreComments = true;
-			
-			/* We make the logger available as soon as possible so that any log
-			 * messages from the hexagonLib come through even before the console
-			 * would be available! */
-			HLog.registerExternalLogger(Log);
 			
 			/* Set contextview stage on StageReference. */
 			StageReference.stage = _contextView.stage;

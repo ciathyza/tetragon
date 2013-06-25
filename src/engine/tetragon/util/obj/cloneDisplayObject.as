@@ -27,7 +27,7 @@
  */
 package tetragon.util.obj
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	import tetragon.util.reflection.describeTypeProperties;
 
 	import flash.display.DisplayObject;
@@ -78,7 +78,7 @@ package tetragon.util.obj
 			}
 			catch (err:Error)
 			{
-				HLog.error("cloneDisplayObject: Could not clone scale9Grid - " + err.message);
+				Log.error("cloneDisplayObject: Could not clone scale9Grid - " + err.message, this);
 			}
 		}
 		

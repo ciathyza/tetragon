@@ -27,20 +27,20 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	public class Expression
 	{
 		public function print(depth:int):void
 		{
-			HLog.trace("top");
+			Log.trace("top", this);
 		}
 		
 		
 		public function exec(vm:VM):void
 		{
-			HLog.trace("WTF");
+			Log.trace("WTF", this);
 		}
 		
 		

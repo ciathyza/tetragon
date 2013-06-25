@@ -27,7 +27,7 @@
  */
 package tetragon.util.agal.macro
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 	
 	
 	internal class NumberExpression extends Expression
@@ -62,7 +62,7 @@ package tetragon.util.agal.macro
 		 */
 		override public function print(depth:int):void
 		{
-			HLog.trace(spaces(depth) + "number=" + value);
+			Log.trace(spaces(depth) + "number=" + value, this);
 		}
 		
 		
@@ -71,7 +71,7 @@ package tetragon.util.agal.macro
 		 */
 		override public function exec(vm:VM):void
 		{
-			if (AGALPreAssembler.TRACE_VM) HLog.trace("::NumberExpression push " + value);
+			if (AGALPreAssembler.TRACE_VM) Log.trace("::NumberExpression push " + value, this);
 			if (isNaN(value)) throw new Error("NumberExpression: Pushing NaN to stack.");
 			vm.stack.push(value);
 		}

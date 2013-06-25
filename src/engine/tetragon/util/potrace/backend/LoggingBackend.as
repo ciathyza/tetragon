@@ -1,6 +1,6 @@
 package tetragon.util.potrace.backend
 {
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.geom.Point;
 
@@ -9,37 +9,37 @@ package tetragon.util.potrace.backend
 	{
 		public function init(width:int, height:int):void
 		{
-			HLog.trace("Canvas width:" + width + ", height:" + height);
+			Log.trace("Canvas width:" + width + ", height:" + height, this);
 		}
 
 
 		public function initShape():void
 		{
-			HLog.trace("  Shape");
+			Log.trace("  Shape", this);
 		}
 
 
 		public function initSubShape(positive:Boolean):void
 		{
-			HLog.trace("    SubShape positive:" + positive);
+			Log.trace("    SubShape positive:" + positive, this);
 		}
 
 
 		public function moveTo(a:Point):void
 		{
-			HLog.trace("      MoveTo a:" + a);
+			Log.trace("      MoveTo a:" + a, this);
 		}
 
 
 		public function addBezier(a:Point, cpa:Point, cpb:Point, b:Point):void
 		{
-			HLog.trace("      Bezier a:" + a + ", cpa:" + cpa + ", cpb:" + cpb + ", b:" + b);
+			Log.trace("      Bezier a:" + a + ", cpa:" + cpa + ", cpb:" + cpb + ", b:" + b, this);
 		}
 
 
 		public function addLine(a:Point, b:Point):void
 		{
-			HLog.trace("      Line a:" + a + ", b:" + b);
+			Log.trace("      Line a:" + a + ", b:" + b, this);
 		}
 
 

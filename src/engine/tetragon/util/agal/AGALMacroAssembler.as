@@ -27,9 +27,9 @@
  */
 package tetragon.util.agal
 {
+	import tetragon.debug.Log;
 	import tetragon.util.agal.macro.AGALPreAssembler;
 	import tetragon.util.agal.macro.AGALVar;
-	import tetragon.util.debug.HLog;
 
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
@@ -271,7 +271,7 @@ package tetragon.util.agal
 				{
 					var desc:String = _stages[k].name + " --> " + _stages[k + 1].name + " = "
 						+ ((_stages[k + 1].time - _stages[k].time) / 1000);
-					HLog.trace(desc);
+					Log.trace(desc, this);
 					profileTrace += desc + "\n";
 				}
 			}
@@ -860,9 +860,10 @@ package tetragon.util.agal
 }
 
 
-import tetragon.util.debug.HLog;
-import flash.utils.getTimer;
+import tetragon.debug.Log;
 import tetragon.util.agal.AGALMacroAssembler;
+
+import flash.utils.getTimer;
 
 
 /**
@@ -878,12 +879,12 @@ final class Macro
 	
 	public function traceMacro():void
 	{
-		HLog.trace("Macro: " + name + " [" + mangledName + "]");
-		HLog.trace("  args: " + args);
-		HLog.trace("<==");
+		Log.trace("Macro: " + name + " [" + mangledName + "]", this);
+		Log.trace("  args: " + args, this);
+		Log.trace("<==", this);
 		var s:String = AGALMacroAssembler.joinTokens(body);
-		HLog.trace(s);
-		HLog.trace("==>");
+		Log.trace(s, this);
+		Log.trace("==>", this);
 	}
 }
 

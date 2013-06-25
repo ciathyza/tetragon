@@ -29,7 +29,7 @@ package tetragon.core.file
 {
 	import tetragon.core.file.types.IFile;
 	import tetragon.core.signals.Signal;
-	import tetragon.util.debug.HLog;
+	import tetragon.debug.Log;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -117,8 +117,8 @@ package tetragon.core.file
 			}
 			catch (err1:Error)
 			{
-				HLog.error("[BulkFileAIR] Could not set the nativePath for File to " + _file.path
-					+ " (Error was: " + err1.message + ").");
+				Log.error("Could not set the nativePath for File to " + _file.path
+					+ " (Error was: " + err1.message + ").", this);
 				onIOError(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, err1.message));
 				return;
 			}
