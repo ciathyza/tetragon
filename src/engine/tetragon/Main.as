@@ -572,6 +572,9 @@ package tetragon
 			_entityManager = new EntityManager();
 			_entitySystemManager = new EntitySystemManager();
 			_entityFactory = new EntityFactory();
+			
+			/* Register default systems. */
+			_classRegistry.registerSystem(GameLoop.SYSTEM_ID, _gameLoop);
 		}
 	}
 }

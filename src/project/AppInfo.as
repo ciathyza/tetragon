@@ -47,13 +47,13 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "12798";}
+		public function get build():String {return "12809";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "25-June-2013 14:30";}
+		public function get buildDate():String {return "25-June-2013 16:14";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
-		public function get buildType():String {return "web";}
+		public function get buildType():String {return "desktop";}
 		/** @inheritDoc */
 		public function get releaseStage():String {return "alpha";}
 		/** @inheritDoc */
