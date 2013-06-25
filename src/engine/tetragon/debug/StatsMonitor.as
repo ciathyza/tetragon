@@ -31,8 +31,8 @@ package tetragon.debug
 	import lib.fonts.TerminalstatsFont;
 
 	import tetragon.Main;
-	import tetragon.core.GameLoop;
 	import tetragon.data.Config;
+	import tetragon.systems.gl.GameLoop;
 	import tetragon.util.ui.createTextField;
 
 	import flash.display.Bitmap;

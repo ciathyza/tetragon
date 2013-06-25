@@ -29,8 +29,8 @@
 package tetragon.entity
 {
 	import tetragon.Main;
-	import tetragon.core.RenderSignal;
-	import tetragon.core.TickSignal;
+	import tetragon.systems.gl.RenderSignal;
+	import tetragon.systems.gl.TickSignal;
 
 	import com.hexagonstar.util.reflection.getClassName;
 	

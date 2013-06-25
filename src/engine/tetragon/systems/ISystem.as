@@ -36,5 +36,13 @@ package tetragon.systems
 		 * Disposes the system.
 		 */
 		function dispose():void;
+		
+		
+		/**
+		 * Returns a String Representation of the system.
+		 * 
+		 * @return A String Representation of the system.
+		 */
+		function toString():String;
 	}
 }

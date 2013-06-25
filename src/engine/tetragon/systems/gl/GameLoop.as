@@ -26,9 +26,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core
+package tetragon.systems.gl
 {
 	import tetragon.Main;
+	import tetragon.systems.ISystem;
 	import tetragon.view.stage3d.Stage3DProxy;
 
 	import com.hexagonstar.signals.Signal;
@@ -40,7 +41,7 @@ package tetragon.core
 	/**
 	 * A system that executes the main game loop by dispatching a tick and a render signal.
 	 */
-	public final class GameLoop
+	public final class GameLoop implements ISystem
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -169,6 +170,24 @@ package tetragon.core
 		public function setStage3DProxy(stage3DProxy:Stage3DProxy):void
 		{
 			_stage3DProxy = stage3DProxy;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function dispose():void
+		{
+			stop();
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function toString():String
+		{
+			return "GameLoop";
 		}
 		
 		

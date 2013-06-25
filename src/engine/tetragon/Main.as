@@ -31,7 +31,6 @@ package tetragon
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
-	import tetragon.core.GameLoop;
 	import tetragon.data.Params;
 	import tetragon.data.Registry;
 	import tetragon.data.Settings;
@@ -47,6 +46,7 @@ package tetragon
 	import tetragon.input.KeyInputManager;
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
+	import tetragon.systems.gl.GameLoop;
 	import tetragon.view.ScreenManager;
 	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;

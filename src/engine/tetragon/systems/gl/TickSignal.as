@@ -26,15 +26,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.core
+package tetragon.systems.gl
 {
 	import com.hexagonstar.signals.Signal;
 	
 	
 	/**
-	 * RenderSignal class
+	 * TickSignal class
 	 */
-	public class RenderSignal extends Signal
+	public class TickSignal extends Signal
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constructor
@@ -42,14 +42,10 @@ package tetragon.core
 		
 		/**
 		 * Creates a new instance of the class.
-		 * 
-		 * @param ticks (uint) The ticks that occured since the last frame.
-		 * @param ms (uint) The milliseconds that passed since the last frame.
-		 * @param fps (uint) The current render fps.
 		 */
-		public function RenderSignal()
+		public function TickSignal()
 		{
-			super(uint, uint, uint);
+			super();
 		}
 	}
 }
