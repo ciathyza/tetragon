@@ -31,8 +31,6 @@ package tetragon.view
 	import tetragon.Main;
 	import tetragon.core.file.BulkProgress;
 	import tetragon.core.signals.Signal;
-	import tetragon.core.tween.Tween;
-	import tetragon.core.tween.TweenVars;
 	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
@@ -43,6 +41,8 @@ package tetragon.view
 	import tetragon.util.number.average;
 	import tetragon.util.string.TabularText;
 	import tetragon.util.time.CallLater;
+	import tetragon.util.tween.Tween;
+	import tetragon.util.tween.TweenVars;
 	import tetragon.view.display.shape.RectangleShape;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.render2d.core.Render2D;

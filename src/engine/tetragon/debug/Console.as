@@ -30,12 +30,12 @@ package tetragon.debug
 {
 	import tetragon.Main;
 	import tetragon.core.signals.Signal;
-	import tetragon.core.tween.Tween;
-	import tetragon.core.tween.TweenVars;
-	import tetragon.core.tween.easing.Cubic;
 	import tetragon.data.Config;
 	import tetragon.debug.cli.CLI;
 	import tetragon.input.KeyInputManager;
+	import tetragon.util.tween.Tween;
+	import tetragon.util.tween.TweenVars;
+	import tetragon.util.tween.easing.Cubic;
 	import tetragon.view.display.shape.RectangleShape;
 
 	import flash.display.DisplayObjectContainer;

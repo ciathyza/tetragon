@@ -28,8 +28,8 @@
  */
 package tetragon.audio
 {
-	import tetragon.core.tween.Tween;
-	import tetragon.core.tween.TweenVars;
+	import tetragon.util.tween.Tween;
+	import tetragon.util.tween.TweenVars;
 
 	import flash.events.Event;
 	import flash.media.Sound;
