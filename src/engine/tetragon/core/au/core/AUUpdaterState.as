@@ -101,7 +101,7 @@ package tetragon.core.au.core
 					}
 					catch (err:Error)
 					{
-						Log.warn("Invalid state (1) - " + err.message, this);
+						//Log.warn("Invalid state (1) - " + err.message, this);
 						_descriptor = AUStateDescriptor.defaultState();
 						saveToStorage();
 					}
@@ -118,7 +118,7 @@ package tetragon.core.au.core
 				}
 				catch (err:Error)
 				{
-					Log.warn("Invalid state (2) - " + err.message, this);
+					//Log.warn("Invalid state (2) - " + err.message, this);
 					_descriptor = AUStateDescriptor.defaultState();
 					saveToStorage();
 				}

@@ -28,6 +28,7 @@
  */
 package tetragon
 {
+	import tetragon.audio.AudioManager;
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
@@ -123,6 +124,8 @@ package tetragon
 		private var _entitySystemManager:EntitySystemManager;
 		/** @private */
 		private var _entityFactory:EntityFactory;
+		/** @private */
+		private var _audioManager:AudioManager;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -386,6 +389,20 @@ package tetragon
 		public function get entityFactory():EntityFactory
 		{
 			return _entityFactory;
+		}
+		
+		
+		/**
+		 * A reference to the audio manager.
+		 */
+		public function get audioManager():AudioManager
+		{
+			if (!_audioManager)
+			{
+				_audioManager = new AudioManager(this);
+				_audioManager.init();
+			}
+			return _audioManager;
 		}
 		
 		

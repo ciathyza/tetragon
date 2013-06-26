@@ -36,8 +36,6 @@ package view.splash
 
 	import flash.events.Event;
 	import flash.events.TimerEvent;
-	import flash.media.Sound;
-	import flash.media.SoundChannel;
 	import flash.ui.Mouse;
 	import flash.utils.Timer;
 	
@@ -63,7 +61,6 @@ package view.splash
 		private var _view:SplashView;
 		
 		private var _timer:Timer;
-		private var _tetragonLogoSoundChannel:SoundChannel;
 		private var _allowSplashAbort:Boolean;
 		private var _splashScreenWaitTime:int;
 		private var _initialScreenID:String;
@@ -78,8 +75,7 @@ package view.splash
 			super.start();
 			_timer.start();
 			
-			var sound:Sound = getResource("audioLogoTetragon");
-			if (sound) _tetragonLogoSoundChannel = sound.play();
+			main.audioManager.playSound("audioLogoTetragon");
 			
 			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
 			if (_allowSplashAbort)
@@ -94,7 +90,6 @@ package view.splash
 		{
 			super.stop();
 			if (_timer) _timer.stop();
-			if (_tetragonLogoSoundChannel) _tetragonLogoSoundChannel.stop();
 		}
 		
 		
@@ -102,7 +97,6 @@ package view.splash
 		{
 			super.dispose();
 			_timer = null;
-			_tetragonLogoSoundChannel = null;
 		}
 		
 		//-----------------------------------------------------------------------------------------
