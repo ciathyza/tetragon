@@ -117,7 +117,14 @@ package tetragon.audio
 		override public function play(startTime:Number = NaN, loops:Number = NaN,
 			st:SoundTransform = null):SoundChannel
 		{
-			if (!sound || _soundChannel) return _soundChannel;
+			if (!sound) return null;
+			
+			/* Stop sound if already playing. */
+			if (_soundChannel)
+			{
+				_soundChannel.stop();
+				_startTime = 0;
+			}
 			
 			if (!isNaN(startTime)) _startTime = startTime;
 			if (!isNaN(loops)) _loops = loops;

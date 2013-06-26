@@ -30,6 +30,8 @@ package tetragon.audio
 	import tetragon.util.tween.Tween;
 	import tetragon.util.tween.TweenVars;
 
+	import com.hexagonstar.util.debug.Debug;
+
 	import flash.events.Event;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
@@ -274,6 +276,7 @@ package tetragon.audio
 		
 		private function getNextBar():BasicSound
 		{
+			Debug.trace(_bar);
 			if (_bar == _sequence.length - 1) _bar = -1;
 			_bar++;
 			var loopNr:int = _sequence[_bar];

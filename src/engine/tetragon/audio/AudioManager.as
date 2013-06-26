@@ -114,12 +114,13 @@ package tetragon.audio
 		
 		/**
 		 * Initializes the audio manager.
-		 * @private
+		 * A call to this method removes all mapped music objects.
 		 */
 		public function init():void
 		{
 			dispose();
 			calculateVolumes();
+			_musics = new Dictionary();
 		}
 		
 		
@@ -135,13 +136,26 @@ package tetragon.audio
 		 * @return the sound's ID.
 		 */
 		public function playSound(sound:*, loops:int = 0, volume:Number = NaN,
-			pan:Number = NaN):String
+			pan:Number = NaN, pitchRate:Number = NaN):String
 		{
 			if (_muted || !sound) return null;
-			var snd:BasicSound = createSound(sound, loops, volume, pan);
+			
+			var snd:BasicSound;
+			
+			/* Re-use sound if already mapped. */
+			if (sound is String)
+			{
+				snd = _sounds[sound as String];
+			}
+			if (!snd)
+			{
+				snd = createSound(sound, loops, volume, pan, pitchRate);
+				_sounds[snd.id] = snd;
+			}
+			
 			if (!snd) return null;
-			_sounds[snd.id] = snd;
 			snd.play();
+			
 			return snd.id;
 		}
 		
@@ -178,22 +192,21 @@ package tetragon.audio
 		 * 
 		 * @param id ID of the music.
 		 * @param loops Array of audio loops.
-		 * @param sequence Array of sequence numbers.
+		 * @param sequence Array of sequence numbers. If null, a seq with [0] is used.
 		 * @return A Music object.
 		 */
-		public function createMusic(id:String, loops:Array, sequence:Array):Music
+		public function createMusic(id:String, loops:Array, sequence:Array = null):Music
 		{
-			if (!_musics) _musics = new Dictionary();
 			if (_musics[id]) return _musics[id];
 			
 			var music:Music = new Music(id);
 			for (var i:uint = 0; i < loops.length; i++)
 			{
-				var bsd:BasicSound = createSound(loops[i], 0, 1.0, 0.0);
+				var bsd:BasicSound = createSound(loops[i], 0, 1.0, 0.0, NaN);
 				if (bsd) music.addLoop(bsd);
 			}
 			
-			music.sequence = sequence;
+			music.sequence = sequence || [0];
 			_musics[id] = music;
 			
 			return music;
@@ -234,7 +247,8 @@ package tetragon.audio
 		
 		/**
 		 * Disposes all sounds. This resets the internal map in that all sounds
-		 * are stored. The audiomanager can be reused afterwards.
+		 * are stored. Created music objects are not disposed! The audiomanager
+		 * can be reused afterwards.
 		 */
 		public function dispose():void
 		{
@@ -250,6 +264,26 @@ package tetragon.audio
 			}
 			_soundIDCounter = 0;
 			_sounds = new Dictionary();
+		}
+		
+		
+		/**
+		 * @param id
+		 * @return BasicSound
+		 */
+		public function getSound(id:String):BasicSound
+		{
+			return _sounds[id];
+		}
+		
+		
+		/**
+		 * @param id
+		 * @return Music
+		 */
+		public function getMusic(id:String):Music
+		{
+			return _musics[id];
 		}
 		
 		
@@ -320,7 +354,7 @@ package tetragon.audio
 		public function set paused(v:Boolean):void
 		{
 			_paused = v;
-			var music:Music = _musics ? _musics[_currentMusicID] : null;
+			var music:Music = _musics[_currentMusicID];
 			if (music) music.paused = v;
 			for each (var s:BasicSound in _sounds)
 			{
@@ -407,7 +441,8 @@ package tetragon.audio
 		 * Creates the basic sound object.
 		 * @private
 		 */
-		private function createSound(sound:*, loops:int, volume:Number, pan:Number):BasicSound
+		private function createSound(sound:*, loops:int, volume:Number, pan:Number,
+			pitchRate:Number):BasicSound
 		{
 			var snd:*;
 			var id:String;
@@ -441,7 +476,13 @@ package tetragon.audio
 				Log.warn("createSound:: Could not create sound from " + sound + ".", this);
 				return null;
 			}
-				
+			
+			if (!isNaN(pitchRate))
+			{
+				return new PitchableSound(id, snd, isNaN(volume) ? _effectsVolume : volume,
+					isNaN(pan) ? 0.0 : pan, loops, pitchRate);
+			}
+			
 			return new BasicSound(id, snd, isNaN(volume) ? _effectsVolume : volume,
 				isNaN(pan) ? 0.0 : pan, loops);
 		}

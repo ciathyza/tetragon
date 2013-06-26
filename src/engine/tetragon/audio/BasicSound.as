@@ -84,9 +84,7 @@ package tetragon.audio
 			_id = id;
 			
 			this.sound = sound;
-			this.volume = volume;
-			this.pan = pan;
-			this.loops = loops;
+			setParams(volume, pan, loops);
 			
 			_soundTransform = new SoundTransform();
 			_startTime = 0;
@@ -98,12 +96,32 @@ package tetragon.audio
 		// -----------------------------------------------------------------------------------------
 		
 		/**
+		 * @param volume
+		 * @param pan
+		 * @param loops
+		 */
+		public function setParams(volume:Number = 1.0, pan:Number = 0.0, loops:int = 0):void
+		{
+			_volume = volume < 0.0 ? 0.0 : volume > 1.0 ? 1.0 : volume;
+			_pan = pan < -1.0 ? -1.0 : pan > 1.0 ? 1.0 : pan;
+			_loops = loops < -1 ? -1 : loops > int.MAX_VALUE ? int.MAX_VALUE : loops;
+		}
+		
+		
+		/**
 		 * Plays the sound.
 		 */
 		public function play(startTime:Number = NaN, loops:Number = NaN,
 			st:SoundTransform = null):SoundChannel
 		{
-			if (!sound || _soundChannel) return _soundChannel;
+			if (!sound) return null;
+			
+			/* Stop sound if already playing. */
+			if (_soundChannel)
+			{
+				_soundChannel.stop();
+				_startTime = 0;
+			}
 			
 			if (!isNaN(startTime)) _startTime = startTime;
 			if (!isNaN(loops)) _loops = loops;
@@ -120,6 +138,7 @@ package tetragon.audio
 			
 			_soundChannel = sound.play(_startTime, (_loops == -1 ? int.MAX_VALUE : _loops),
 				_soundTransform);
+			
 			return _soundChannel;
 		}
 		
@@ -246,6 +265,12 @@ package tetragon.audio
 			{
 				play();
 			}
+		}
+		
+		
+		public function get playing():Boolean
+		{
+			return _soundChannel != null;
 		}
 	}
 }
