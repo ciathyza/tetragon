@@ -94,7 +94,7 @@ package tetragon.command.cli
 				count++;
 			}
 			
-			main.console.log("Key Assignments (count: " + count + "):\n" + t, LogLevel.INFO);
+			main.console.log("Key Assignments (count: " + count + "):\n" + t.toString(), LogLevel.INFO);
 			complete();
 		}
 		

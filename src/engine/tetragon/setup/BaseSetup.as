@@ -382,6 +382,7 @@ package tetragon.setup
 			registrar.registerCommand("cli", "listkeyassignments", "lka", ListKeyAssignmentsCommand, "Outputs a list of all current key assignments.");
 			registrar.registerCommand("cli", "listparams", "lpa", ListParamsCommand, "Lists all application params.");
 			registrar.registerCommand("cli", "listregistryobjects", "lro", ListRegistryObjectsCommand, "Lists all objects that are mapped in the data model registry.");
+			registrar.registerCommand("cli", "listsounds", "lsn", ListSoundsCommand, "Lists all sound objects that are currently mapped in the audio manager.");
 			
 			registrar.registerCommand("env", "setfps", "stf", SetFramerateCommand, "Sets the stage framerate to the specified value.");
 			registrar.registerCommand("env", "gc", null, ForceGCCommand, "Forces a garbage collection mark/sweep.");
