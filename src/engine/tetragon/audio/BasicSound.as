@@ -28,6 +28,8 @@
  */
 package tetragon.audio
 {
+	import tetragon.util.reflection.getClassNameWithParams;
+
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
@@ -47,6 +49,8 @@ package tetragon.audio
 		 */
 		public var sound:Sound;
 		
+		/** @private */
+		protected var _id:String;
 		/** @private */
 		protected var _volume:Number;
 		/** @private */
@@ -68,14 +72,17 @@ package tetragon.audio
 		// -----------------------------------------------------------------------------------------
 		
 		/**
+		 * @param id
 		 * @param sound
 		 * @param volume
 		 * @param pan
 		 * @param loops
 		 */
-		public function BasicSound(sound:Sound = null, volume:Number = 1.0, pan:Number = 0.0,
+		public function BasicSound(id:String, sound:Sound, volume:Number = 1.0, pan:Number = 0.0,
 			loops:int = 0)
 		{
+			_id = id;
+			
 			this.sound = sound;
 			this.volume = volume;
 			this.pan = pan;
@@ -95,11 +102,12 @@ package tetragon.audio
 		 */
 		public function play():void
 		{
-			if (!sound) return;
+			if (!sound || _soundChannel) return;
 			
 			_soundTransform.volume = _volume;
 			_soundTransform.pan = _pan;
-			_soundChannel = sound.play(_startTime, _loops, _soundTransform);
+			_soundChannel = sound.play(_startTime, (_loops == -1 ? int.MAX_VALUE : _loops),
+				_soundTransform);
 		}
 		
 		
@@ -123,9 +131,29 @@ package tetragon.audio
 		}
 		
 		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return getClassNameWithParams(this, "id=" + _id);
+		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		/**
+		 * Unique ID of the sound.
+		 */
+		public function get id():String
+		{
+			return _id;
+		}
+		
 		
 		/**
 		 * @default 1.0
@@ -154,6 +182,8 @@ package tetragon.audio
 		
 		
 		/**
+		 * If set to -1 the sound will loop indefinitely.
+		 * 
 		 * @default 0
 		 */
 		public function get loops():int
@@ -162,7 +192,7 @@ package tetragon.audio
 		}
 		public function set loops(v:int):void
 		{
-			_loops = v < -1 ? -1 : v;
+			_loops = v < -1 ? -1 : v > int.MAX_VALUE ? int.MAX_VALUE : v;
 		}
 		
 		

@@ -313,8 +313,8 @@ package tetragon.view.native
 		 */
 		public function dispose():void
 		{
-			executeOnChildren(EXEC_DISPOSE);
 			stop();
+			executeOnChildren(EXEC_DISPOSE);
 			removeListeners();
 		}
 		

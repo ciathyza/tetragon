@@ -79,6 +79,7 @@ package tetragon.audio
 		// -----------------------------------------------------------------------------------------
 		
 		/**
+		 * @param id
 		 * @param sound
 		 * @param volume
 		 * @param pan
@@ -87,10 +88,10 @@ package tetragon.audio
 		 * @param skippedStartBytes
 		 * @param skippedEndBytes
 		 */
-		public function PitchableSound(sound:Sound = null, volume:Number = 1.0, pan:Number = 0.0,
+		public function PitchableSound(id:String, sound:Sound, volume:Number = 1.0, pan:Number = 0.0,
 			loops:int = 0, rate:Number = 1.0, skippedStartBytes:uint = 0, skippedEndBytes:uint = 0)
 		{
-			super(sound, volume, pan, loops);
+			super(id, sound, volume, pan, loops);
 			
 			this.skippedStartBytes = skippedStartBytes;
 			this.skippedEndBytes = skippedEndBytes;
@@ -117,7 +118,8 @@ package tetragon.audio
 			
 			_soundTransform.volume = _volume;
 			_soundTransform.pan = _pan;
-			_soundChannel = _buffer.play(_startTime, _loops, _soundTransform);
+			_soundChannel = _buffer.play(_startTime, (_loops == -1 ? int.MAX_VALUE : _loops),
+				_soundTransform);
 		}
 		
 		

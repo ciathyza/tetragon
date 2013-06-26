@@ -296,7 +296,6 @@ package tetragon.view
 		 */
 		internal function unloadScreen():void
 		{
-			stop();
 			dispose();
 			unloadResources();
 			if (_screenUnloadedSignal)

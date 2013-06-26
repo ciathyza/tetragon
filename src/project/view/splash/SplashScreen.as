@@ -89,6 +89,7 @@ package view.splash
 		override public function stop():void
 		{
 			super.stop();
+			main.audioManager.stopSound("audioLogoTetragon");
 			if (_timer) _timer.stop();
 		}
 		
@@ -115,6 +116,8 @@ package view.splash
 		
 		private function onUserInput(type:String, e:Event):void
 		{
+			main.screenManager.mouseSignal.remove(onUserInput);
+			main.keyInputManager.keySignal.remove(onUserInput);
 			if (_timer) _timer.stop();
 			Mouse.show();
 			screenManager.openScreen(_initialScreenID, true, true);
