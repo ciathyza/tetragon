@@ -32,6 +32,8 @@ package tetragon.audio
 
 	import flash.events.SampleDataEvent;
 	import flash.media.Sound;
+	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	import flash.utils.ByteArray;
 	
 	
@@ -112,14 +114,27 @@ package tetragon.audio
 		/**
 		 * @inheritDoc
 		 */
-		override public function play():void
+		override public function play(startTime:Number = NaN, loops:Number = NaN,
+			st:SoundTransform = null):SoundChannel
 		{
-			if (!sound) return;
+			if (!sound || _soundChannel) return _soundChannel;
 			
-			_soundTransform.volume = _volume;
-			_soundTransform.pan = _pan;
+			if (!isNaN(startTime)) _startTime = startTime;
+			if (!isNaN(loops)) _loops = loops;
+			
+			if (st)
+			{
+				_soundTransform = st;
+			}
+			else
+			{
+				_soundTransform.volume = _volume;
+				_soundTransform.pan = _pan;
+			}
+			
 			_soundChannel = _buffer.play(_startTime, (_loops == -1 ? int.MAX_VALUE : _loops),
 				_soundTransform);
+			return _soundChannel;
 		}
 		
 		

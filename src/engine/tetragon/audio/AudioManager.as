@@ -39,7 +39,7 @@ package tetragon.audio
 	
 	
 	/**
-	 * AudioMan class
+	 * AudioManager class
 	 *
 	 * @author Hexagon
 	 */
@@ -63,17 +63,23 @@ package tetragon.audio
 		private var _resourceIndex:ResourceIndex;
 		/** @private */
 		private var _sounds:Dictionary;
+		/** @private */
+		private var _musics:Dictionary;
 		
 		/** @private */
 		private var _globalVolume:Number;
 		/** @private */
 		private var _effectsVolume:Number;
 		/** @private */
+		private var _effectsVolumeDefault:Number;
+		/** @private */
 		private var _musicVolume:Number;
 		/** @private */
 		private var _musicVolumeDefault:Number;
 		
 		private var _soundIDCounter:uint;
+		/** @private */
+		private var _currentMusicID:String;
 		
 		/** @private */
 		private var _paused:Boolean;
@@ -168,15 +174,79 @@ package tetragon.audio
 		
 		
 		/**
+		 * Creates and maps a music object.
+		 * 
+		 * @param id ID of the music.
+		 * @param loops Array of audio loops.
+		 * @param sequence Array of sequence numbers.
+		 * @return A Music object.
+		 */
+		public function createMusic(id:String, loops:Array, sequence:Array):Music
+		{
+			if (!_musics) _musics = new Dictionary();
+			if (_musics[id]) return _musics[id];
+			
+			var music:Music = new Music(id);
+			for (var i:uint = 0; i < loops.length; i++)
+			{
+				var bsd:BasicSound = createSound(loops[i], 0, 1.0, 0.0);
+				if (bsd) music.addLoop(bsd);
+			}
+			
+			music.sequence = sequence;
+			_musics[id] = music;
+			
+			return music;
+		}
+		
+		
+		/**
+		 * Starts playing a specific music.
+		 * 
+		 * @param id
+		 */
+		public function startMusic(id:String):void
+		{
+			if (_muted) return;
+			if (id == _currentMusicID) return;
+			var music:Music = _musics[id];
+			if (!music) return;
+			if (music.isPlaying) return;
+			
+			_currentMusicID = id;
+			music.volume = _musicVolume;
+			music.play();
+		}
+		
+		
+		/**
+		 * Stops currently played music.
+		 */
+		public function stopMusic():void
+		{
+			if (_currentMusicID == null || !_musics) return;
+			var music:Music = _musics[_currentMusicID];
+			if (!music) return;
+			music.stop();
+			_currentMusicID = null;
+		}
+		
+		
+		/**
 		 * Disposes all sounds. This resets the internal map in that all sounds
 		 * are stored. The audiomanager can be reused afterwards.
 		 */
 		public function dispose():void
 		{
 			stopAllSounds();
+			stopMusic();
 			for each (var s:BasicSound in _sounds)
 			{
 				s.dispose();
+			}
+			for each (var m:Music in _musics)
+			{
+				m.dispose();
 			}
 			_soundIDCounter = 0;
 			_sounds = new Dictionary();
@@ -199,6 +269,48 @@ package tetragon.audio
 		//-----------------------------------------------------------------------------------------
 		
 		/**
+		 * The global volume that is used as a base for all other volumes.
+		 */
+		public function get globalVolume():Number
+		{
+			return _globalVolume;
+		}
+		public function set globalVolume(v:Number):void
+		{
+			_globalVolume = v;
+			calculateVolumes();
+		}
+		
+		
+		/**
+		 * The general audio volume for music.
+		 */
+		public function get musicVolume():Number
+		{
+			return _musicVolume;
+		}
+		public function set musicVolume(v:Number):void
+		{
+			_musicVolume = v;
+			calculateVolumes();
+		}
+		
+		
+		/**
+		 * The general audio volume for sound effects.
+		 */
+		public function get effectsVolume():Number
+		{
+			return _effectsVolume;
+		}
+		public function set effectsVolume(v:Number):void
+		{
+			_effectsVolume = v;
+			calculateVolumes();
+		}
+		
+		
+		/**
 		 * Pauses/unpauses currently played sounds and music.
 		 */
 		public function get paused():Boolean
@@ -208,6 +320,12 @@ package tetragon.audio
 		public function set paused(v:Boolean):void
 		{
 			_paused = v;
+			var music:Music = _musics ? _musics[_currentMusicID] : null;
+			if (music) music.paused = v;
+			for each (var s:BasicSound in _sounds)
+			{
+				s.paused = _paused;
+			}
 		}
 		
 		
@@ -221,12 +339,24 @@ package tetragon.audio
 		public function set muted(v:Boolean):void
 		{
 			_muted = v;
+			if (_muted)
+			{
+				_musicVolume = _effectsVolume = 0;
+			}
+			else
+			{
+				_musicVolume = _musicVolumeDefault;
+				_effectsVolume = _effectsVolumeDefault;
+			}
+			for each (var m:Music in _musics)
+			{
+				m.volume = _musicVolume;
+			}
+			for each (var s:BasicSound in _sounds)
+			{
+				s.volume = _effectsVolume;
+			}
 		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Callback Handlers
-		//-----------------------------------------------------------------------------------------
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -257,6 +387,7 @@ package tetragon.audio
 			_effectsVolume = calculateVolumeOffset(isNaN(_effectsVolume) ? 1.0 : _effectsVolume);
 			if (_effectsVolume < 0.0) _effectsVolume = 0.0;
 			else if (_effectsVolume > 1.0) _effectsVolume = 1.0;
+			_effectsVolumeDefault = _effectsVolume;
 		}
 		
 		

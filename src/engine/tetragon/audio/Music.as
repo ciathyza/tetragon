@@ -31,7 +31,6 @@ package tetragon.audio
 	import tetragon.util.tween.TweenVars;
 
 	import flash.events.Event;
-	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
 	
@@ -47,15 +46,18 @@ package tetragon.audio
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _loops:Vector.<Sound>;
+		private var _id:String;
+		private var _loops:Vector.<BasicSound>;
 		private var _sequence:Array;
 		private var _soundTransform:SoundTransform;
 		private var _soundChannel:SoundChannel;
 		private var _tweenVars:TweenVars;
+		
 		private var _volume:Number;
 		private var _bar:int;
 		private var _pausedPosition:Number;
 		private var _pausedBar:int;
+		
 		private var _isPlaying:Boolean;
 		private var _isFadeOut:Boolean;
 		private var _isPausing:Boolean;
@@ -70,8 +72,9 @@ package tetragon.audio
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function Music(volume:Number = 1.0)
+		public function Music(id:String, volume:Number = 1.0)
 		{
+			_id = id;
 			_soundTransform = new SoundTransform(0);
 			_tweenVars = new TweenVars();
 			_tweenVars.onUpdate = onTweenUpdate;
@@ -84,16 +87,16 @@ package tetragon.audio
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
-		public function addLoop(loop:Sound):void
+		public function addLoop(loop:BasicSound):void
 		{
-			if (!_loops) _loops = new Vector.<Sound>();
+			if (!_loops) _loops = new Vector.<BasicSound>();
 			_loops.push(loop);
 		}
 		
 		
 		public function play():void
 		{
-			if (!_loops) return;
+			if (!_sequence || !_loops || _loops.length < 1 || _sequence.length < 1) return;
 			
 			_soundTransform.volume = 0;
 			
@@ -141,13 +144,27 @@ package tetragon.audio
 		 */
 		public function dispose():void
 		{
-			Tween.killTweensOf(_soundTransform);
+			if (_soundTransform)
+			{
+				Tween.killTweensOf(_soundTransform);
+			}
+			if (_soundChannel)
+			{
+				_soundChannel.stop();
+				_soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+			}
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Accessors
 		//-----------------------------------------------------------------------------------------
+		
+		public function get id():String
+		{
+			return _id;
+		}
+		
 		
 		public function get volume():Number
 		{
@@ -248,14 +265,14 @@ package tetragon.audio
 		
 		private function playNextLoop():void
 		{
-			var bar:Sound = getNextBar();
+			var bar:BasicSound = getNextBar();
 			_soundChannel = bar.play(_pausedPosition, 1, _soundTransform);
 			_soundChannel.soundTransform = _soundTransform;
 			_soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 		}
 		
 		
-		private function getNextBar():Sound
+		private function getNextBar():BasicSound
 		{
 			if (_bar == _sequence.length - 1) _bar = -1;
 			_bar++;

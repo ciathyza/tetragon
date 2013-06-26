@@ -40,6 +40,8 @@ package tetragon.audio
 	/**
 	 * A SoundSequence can be useds to play a sequence of succeeding sounds and
 	 * loop the sequence infinitely.
+	 * 
+	 * TODO Obsolete class!
 	 */
 	public class SoundSequence
 	{

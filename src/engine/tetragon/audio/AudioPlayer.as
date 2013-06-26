@@ -36,6 +36,8 @@ package tetragon.audio
 	
 	/**
 	 * AudioPlayer class
+	 * 
+	 * TODO Obsolete class!
 	 */
 	public class AudioPlayer
 	{

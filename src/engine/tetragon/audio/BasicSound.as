@@ -28,7 +28,7 @@
  */
 package tetragon.audio
 {
-	import tetragon.util.reflection.getClassNameWithParams;
+	import tetragon.util.reflection.getClassName;
 
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
@@ -100,14 +100,27 @@ package tetragon.audio
 		/**
 		 * Plays the sound.
 		 */
-		public function play():void
+		public function play(startTime:Number = NaN, loops:Number = NaN,
+			st:SoundTransform = null):SoundChannel
 		{
-			if (!sound || _soundChannel) return;
+			if (!sound || _soundChannel) return _soundChannel;
 			
-			_soundTransform.volume = _volume;
-			_soundTransform.pan = _pan;
+			if (!isNaN(startTime)) _startTime = startTime;
+			if (!isNaN(loops)) _loops = loops;
+			
+			if (st)
+			{
+				_soundTransform = st;
+			}
+			else
+			{
+				_soundTransform.volume = _volume;
+				_soundTransform.pan = _pan;
+			}
+			
 			_soundChannel = sound.play(_startTime, (_loops == -1 ? int.MAX_VALUE : _loops),
 				_soundTransform);
+			return _soundChannel;
 		}
 		
 		
@@ -138,7 +151,7 @@ package tetragon.audio
 		 */
 		public function toString():String
 		{
-			return getClassNameWithParams(this, "id=" + _id);
+			return getClassName(this);
 		}
 		
 		
@@ -218,23 +231,21 @@ package tetragon.audio
 		}
 		public function set paused(v:Boolean):void
 		{
-			if (v == _paused || !_soundChannel) return;
+			if (v == _paused) return;
 			_paused = v;
+			
 			if (v)
 			{
-				_startTime = _soundChannel.position;
-				_soundChannel.stop();
+				if (_soundChannel)
+				{
+					_startTime = _soundChannel.position;
+					_soundChannel.stop();
+				}
 			}
 			else
 			{
 				play();
 			}
 		}
-		
-		
-		// -----------------------------------------------------------------------------------------
-		// Event Handlers
-		// -----------------------------------------------------------------------------------------
-		
 	}
 }
