@@ -490,8 +490,8 @@ package tetragon.audio
 			else if (sound is BasicSound || sound is PitchableSound)
 			{
 				var bsd:BasicSound = sound;
-				bsd.volume = volume;
-				bsd.pan = pan;
+				if (!isNaN(volume)) bsd.volume = volume;
+				if (!isNaN(pan)) bsd.pan = pan;
 				bsd.loops = loops;
 				return bsd;
 			}
