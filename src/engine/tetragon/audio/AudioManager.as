@@ -246,6 +246,22 @@ package tetragon.audio
 		
 		
 		/**
+		 * Toggles only thew music volume on/off.
+		 */
+		public function toggleMusicVolume():void
+		{
+			if (_musicVolume > 0) _musicVolume = 0;
+			else _musicVolume = _musicVolumeDefault;
+			
+			var currentMusic:Music = _musics[_currentMusicID];
+			if (currentMusic)
+			{
+				currentMusic.volume = _musicVolume;
+			}
+		}
+		
+		
+		/**
 		 * Disposes all sounds. This resets the internal map in that all sounds
 		 * are stored. Created music objects are not disposed! The audiomanager
 		 * can be reused afterwards.
