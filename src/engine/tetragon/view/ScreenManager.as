@@ -31,6 +31,7 @@ package tetragon.view
 	import tetragon.Main;
 	import tetragon.core.file.BulkProgress;
 	import tetragon.core.signals.Signal;
+	import tetragon.core.types.IDisposable;
 	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
@@ -53,6 +54,7 @@ package tetragon.view
 	import tetragon.view.stage3d.Stage3DProxy;
 	import tetragon.view.stage3d.Stage3DSignal;
 
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -85,7 +87,9 @@ package tetragon.view
 		private var _contextView:DisplayObjectContainer;
 		private var _render2D:Render2D;
 		private var _nativeViewContainer:Sprite;
-		private var _screenCover:RectangleShape;
+		private var _screenCover:DisplayObject;
+		private var _screenBackgroundClass:Class;
+		private var _screenBackground:DisplayObject;
 		
 		private var _utilityContainer:Sprite;
 		private var _console:Console;
@@ -131,6 +135,7 @@ package tetragon.view
 		private var _screenAutoStart:Boolean;
 		private var _screenLoaded:Boolean;
 		private var _hardwareRenderingEnabled:Boolean;
+		private var _useScreenFades:Boolean = true;
 		
 		private var _enableErrorChecking:Boolean;
 		
@@ -277,7 +282,15 @@ package tetragon.view
 					_nativeViewContainer.addChild(_screenCover);
 				}
 				
-				_nativeViewContainer.addChildAt(_nextScreen, 0);
+				if (_screenBackground && _nativeViewContainer.contains(_screenBackground))
+				{
+					_nativeViewContainer.addChildAt(_nextScreen, 1);
+				}
+				else
+				{
+					_nativeViewContainer.addChildAt(_nextScreen, 0);
+				}
+				
 				closePreviousScreen();
 			}
 			else
@@ -367,12 +380,11 @@ package tetragon.view
 			Log.verbose("Initializing screen manager ...", this);
 			
 			/* Check whether to use screen fades. Screen fades can be turned of for debugging. */ 
-			var useScreenFades:Boolean = true;
 			if (_main.registry.settings.hasProperty(Settings.USE_SCREEN_FADES))
 			{
-				useScreenFades = _main.registry.settings.getBoolean(Settings.USE_SCREEN_FADES);
+				_useScreenFades = _main.registry.settings.getBoolean(Settings.USE_SCREEN_FADES);
 			}
-			if (useScreenFades)
+			if (_useScreenFades && !_screenCover)
 			{
 				_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
 			}
@@ -698,7 +710,10 @@ package tetragon.view
 		public function set fadeColor(v:uint):void
 		{
 			_fadeColor = v;
-			if (_screenCover) _screenCover.fillColor = _fadeColor;
+			if (_screenCover && (_screenCover is RectangleShape))
+			{
+				(_screenCover as RectangleShape).fillColor = _fadeColor;
+			}
 		}
 		
 		
@@ -708,6 +723,50 @@ package tetragon.view
 		public function get nativeViewContainer():Sprite
 		{
 			return _nativeViewContainer;
+		}
+		
+		
+		/**
+		 * Allows to set a display object as a background that is permanently displayed.
+		 */
+		public function get screenBackgroundClass():Class
+		{
+			return _screenBackgroundClass;
+		}
+		public function set screenBackgroundClass(v:Class):void
+		{
+			_screenBackgroundClass = v;
+			
+			var obj:* = new _screenBackgroundClass();
+			var tmp:DisplayObject = null;
+			
+			if (obj is DisplayObject)
+			{
+				tmp = obj;
+			}
+			
+			if (_screenBackground)
+			{
+				if (_nativeViewContainer.contains(_screenBackground))
+					_nativeViewContainer.removeChild(_screenBackground);
+				if (_screenBackground is IDisposable)
+					(_screenBackground as IDisposable).dispose();
+				_screenBackground = null;
+			}
+			
+			_screenBackground = tmp;
+			
+			if (_screenBackground)
+			{
+				_nativeViewContainer.addChildAt(_screenBackground, 0);
+				if (_useScreenFades) _screenCover = new _screenBackgroundClass();
+			}
+		}
+		
+		
+		public function get screenBackground():DisplayObject
+		{
+			return _screenBackground;
 		}
 		
 		
