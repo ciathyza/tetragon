@@ -235,7 +235,6 @@ package tetragon.command.env
 		{
 			if (r) Log.warn("Failed to preload resource with ID \"" + r.id + "\".", this);
 			else Log.warn("Failed to preload an undefined resource.", this);
-			finalize();
 		}
 		
 		
