@@ -211,6 +211,8 @@ package tetragon.view.render2d.core
 		private static var _context:Context3D;
 		
 		/** @private */
+		private var _background:DisplayObject2D;
+		/** @private */
 		private var _rootView:View2D;
 		
 		/** @private */
@@ -299,7 +301,11 @@ package tetragon.view.render2d.core
 		 */
 		public function purge():void
 		{
-			if (_stage2D) _stage2D.removeChildren(0, -1, true);
+			if (_stage2D)
+			{
+				if (_background) _stage2D.removeChildren(1, -1, true);
+				else _stage2D.removeChildren(0, -1, true);
+			}
 			if (_stage3DProxy)
 			{
 				_stage3DProxy.clear();
@@ -491,6 +497,32 @@ package tetragon.view.render2d.core
 		
 		
 		/**
+		 * 
+		 */
+		public function setBackground(background:DisplayObject2D):void
+		{
+			removeBackground();
+			_background = background;
+			_stage2D.addChildAt(_background, 0);
+		}
+		
+		
+		/**
+		 * 
+		 */
+		public function removeBackground():void
+		{
+			if (_background && _stage2D.contains(_background))
+			{
+				_stage2D.removeChild(_background, false);
+				_background.dispose();
+				_background = null;
+				
+			}
+		}
+		
+		
+		/**
 		 * Returns a String Representation of the class.
 		 * 
 		 * @return A String Representation of the class.
@@ -665,7 +697,7 @@ package tetragon.view.render2d.core
 			if (v)
 			{
 				_rootView = v;
-				_stage2D.addChildAt(_rootView, 0);
+				_stage2D.addChild(_rootView);
 				dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
 			}
 		}

@@ -31,7 +31,6 @@ package tetragon.view
 	import tetragon.Main;
 	import tetragon.core.file.BulkProgress;
 	import tetragon.core.signals.Signal;
-	import tetragon.core.types.IDisposable;
 	import tetragon.data.Config;
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
@@ -89,8 +88,7 @@ package tetragon.view
 		private var _render2D:Render2D;
 		private var _nativeViewContainer:Sprite;
 		private var _screenCover:DisplayObject;
-		private var _screenBackgroundClass:Class;
-		private var _screenBackground:DisplayObject;
+		private var _screenBackground:ScreenBackground;
 		
 		private var _utilityContainer:Sprite;
 		private var _console:Console;
@@ -123,7 +121,7 @@ package tetragon.view
 		private var _tweenVars:TweenVars;
 		private var _screenOpenDelay:Number = 0.2;
 		private var _screenCloseDelay:Number = 0.2;
-		private var _tweenDuration:Number = 0.2;
+		private var _tweenDuration:Number = 2.2;
 		private var _fastDuration:Number = 0.1;
 		private var _backupDuration:Number;
 		private var _backupOpenDelay:Number;
@@ -283,7 +281,8 @@ package tetragon.view
 					_nativeViewContainer.addChild(_screenCover);
 				}
 				
-				if (_screenBackground && _nativeViewContainer.contains(_screenBackground))
+				if (_screenBackground && _screenBackground.nativeBackground
+					&& _nativeViewContainer.contains(_screenBackground.nativeBackground))
 				{
 					_nativeViewContainer.addChildAt(_nextScreen, 1);
 				}
@@ -730,44 +729,48 @@ package tetragon.view
 		/**
 		 * Allows to set a display object as a background that is permanently displayed.
 		 */
-		public function get screenBackgroundClass():Class
+		public function get screenBackground():ScreenBackground
 		{
-			return _screenBackgroundClass;
+			return _screenBackground;
 		}
-		public function set screenBackgroundClass(v:Class):void
+		public function set screenBackground(v:ScreenBackground):void
 		{
-			_screenBackgroundClass = v;
+			var tmp1:DisplayObject;
+			var tmp2:DisplayObject2D;
 			
-			var obj:* = new _screenBackgroundClass();
-			var tmp:DisplayObject = null;
-			
-			if (obj is DisplayObject)
+			if (v)
 			{
-				tmp = obj;
+				if (v.nativeBackground) tmp1 = v.nativeBackground;
+				if (v.render2DBackground) tmp2 = v.render2DBackground;
 			}
 			
+			/* Remove old bg stuff first. */
 			if (_screenBackground)
 			{
-				if (_nativeViewContainer.contains(_screenBackground))
-					_nativeViewContainer.removeChild(_screenBackground);
-				if (_screenBackground is IDisposable)
-					(_screenBackground as IDisposable).dispose();
+				if (_nativeViewContainer.contains(_screenBackground.nativeBackground))
+					_nativeViewContainer.removeChild(_screenBackground.nativeBackground);
+				if (_render2D) _render2D.removeBackground();
+				_screenBackground.dispose();
 				_screenBackground = null;
 			}
 			
-			_screenBackground = tmp;
+			_screenBackground = v;
 			
 			if (_screenBackground)
 			{
-				_nativeViewContainer.addChildAt(_screenBackground, 0);
-				if (_useScreenFades) _screenCover = new _screenBackgroundClass();
+				if (_render2D && _screenBackground.render2DBackground)
+				{
+					_render2D.setBackground(_screenBackground.render2DBackground);
+				}
+				if (_screenBackground.nativeBackground)
+				{
+					_nativeViewContainer.addChildAt(_screenBackground.nativeBackground, 0);
+				}
+				if (_useScreenFades && _screenBackground.screenCover)
+				{
+					_screenCover = _screenBackground.screenCover;
+				}
 			}
-		}
-		
-		
-		public function get screenBackground():DisplayObject
-		{
-			return _screenBackground;
 		}
 		
 		
