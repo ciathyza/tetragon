@@ -32,6 +32,8 @@ package tetragon.file.resource.processors
 	import tetragon.core.types.PointInt;
 	import tetragon.data.atlas.SubTextureBounds;
 	import tetragon.data.atlas.TextureAtlas;
+	import tetragon.file.resource.Resource;
+	import tetragon.file.resource.ResourceStatus;
 	import tetragon.util.potrace.Polygonizer;
 	import tetragon.view.render2d.textures.Texture2D;
 
@@ -66,7 +68,8 @@ package tetragon.file.resource.processors
 		{
 			for (var i:uint = 0; i < resources.length; i++)
 			{
-				var textureAtlas:TextureAtlas = resources[i].content;
+				var resource:Resource = resources[i];
+				var textureAtlas:TextureAtlas = resource.content;
 				
 				if (!textureAtlas)
 				{
@@ -137,6 +140,7 @@ package tetragon.file.resource.processors
 				}
 				
 				processTextureAtlas(textureAtlas, alpha);
+				resource.setStatus(ResourceStatus.PROCESSED);
 			}
 			return true;
 		}

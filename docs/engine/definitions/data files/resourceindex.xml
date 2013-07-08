@@ -23,7 +23,7 @@
 	======================================================================================= -->
 	<header>
 		<signature>tetragon1</signature>
-		<version>1.1</version>
+		<version>1.2</version>
 		<entriesCount></entriesCount>
 		<author></author>
 		<description></description>
@@ -263,5 +263,17 @@
 	<preload>
 		<resource id="textUI"/>
 	</preload>
+	
+	<!-- ======================================================================================
+	PREPROCESS LIST
+	
+	List of resources that are being preprocessed by the engine. Resources Listed here are being
+	processed automatically after the engine startup phase, even before the first screen is
+	opened.
+	
+	resource.id			The ID of any resource definition that should be preprocessed.
+	======================================================================================= -->
+	<preprocess>
+	</preprocess>
 	
 </resources>

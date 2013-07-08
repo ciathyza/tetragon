@@ -30,6 +30,8 @@ package tetragon.file.resource.processors
 {
 	import tetragon.data.swf.SWFAsset;
 	import tetragon.data.swf.SWFAssetCatalog;
+	import tetragon.file.resource.Resource;
+	import tetragon.file.resource.ResourceStatus;
 	import tetragon.util.reflection.describeTypeProperties;
 
 	import flash.display.DisplayObject;
@@ -56,7 +58,8 @@ package tetragon.file.resource.processors
 		{
 			for (var i:uint = 0; i < resources.length; i++)
 			{
-				var assetsSWF:SWFAssetCatalog = resources[i].content;
+				var resource:Resource = resources[i];
+				var assetsSWF:SWFAssetCatalog = resource.content;
 				
 				if (!assetsSWF)
 				{
@@ -83,6 +86,7 @@ package tetragon.file.resource.processors
 				}
 				
 				processAssetsSWF(assetsSWF);
+				resource.setStatus(ResourceStatus.PROCESSED);
 			}
 			return true;
 		}

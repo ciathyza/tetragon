@@ -99,6 +99,12 @@ package tetragon.file.resource
 		private var _preloadResourceIDs:Array;
 		
 		/**
+		 * A list that stores resource IDs for resources that are preprocessed.
+		 * @private
+		 */
+		private var _preprocessResourceIDs:Array;
+		
+		/**
 		 * A map that contains all available locale paths, mapped by their locale ID.
 		 * @private
 		 */
@@ -695,6 +701,25 @@ package tetragon.file.resource
 		
 		
 		/**
+		 * Adds a resource to the resource index that is defined as a resource for
+		 * preprocessing. Resources that are entered in the resource index file's preprocess
+		 * section are automatically processed by the engine after loading.
+		 * 
+		 * <p>You normally don't call this method manually. Instead the resource index
+		 * loader uses this method.</p>
+		 * 
+		 * @see tetragon.file.loaders.ResourceIndexLoader
+		 * 
+		 * @param id The ID of the preprocess resource.
+		 */
+		public function addPreprocessResource(id:String):void
+		{
+			if (!_preprocessResourceIDs) _preprocessResourceIDs = [];
+			_preprocessResourceIDs.push(id);
+		}
+		
+		
+		/**
 		 * Adds loaded, parsed data to a resource in the index. called by data parsers.
 		 * 
 		 * <p>You normally don't call this method manually. Instead data parsers use
@@ -830,6 +855,15 @@ package tetragon.file.resource
 		public function get preloadResourceIDs():Array
 		{
 			return _preloadResourceIDs;
+		}
+		
+		
+		/**
+		 * A List of all resource IDs that are being preprocessed  by the engine.
+		 */
+		public function get preprocessResourceIDs():Array
+		{
+			return _preprocessResourceIDs;
 		}
 		
 		

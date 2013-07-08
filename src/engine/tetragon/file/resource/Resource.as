@@ -112,6 +112,16 @@ package tetragon.file.resource
 		}
 		
 		
+		/**
+		 * Sets the status of the resource.
+		 * @private
+		 */
+		public function setStatus(status:String):void
+		{
+			_status = status;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Getters & Setters
 		//-----------------------------------------------------------------------------------------
@@ -247,15 +257,6 @@ package tetragon.file.resource
 			_content = null;
 			_referenceCount = 0;
 			_status = ResourceStatus.INIT;
-		}
-		
-		
-		/**
-		 * Sets the status of the resource.
-		 */
-		internal function setStatus(status:String):void
-		{
-			_status = status;
 		}
 		
 		

@@ -36,6 +36,7 @@ package tetragon.view
 	import tetragon.data.Settings;
 	import tetragon.debug.Console;
 	import tetragon.debug.Log;
+	import tetragon.debug.LogLevel;
 	import tetragon.debug.StatsMonitor;
 	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
@@ -919,6 +920,7 @@ package tetragon.view
 					else
 					{
 						initializeContext3D();
+						preprocessTextures();
 					}
 					break;
 				case Stage3DSignal.CONTEXT3D_RECREATED:
@@ -1216,6 +1218,32 @@ package tetragon.view
 			
 			verbose("Context3D initialized. Display Driver: " + _context3D.driverInfo);
 			if (_screenManagerReadySignal) _screenManagerReadySignal.dispatch(_context3D);
+		}
+		
+		
+		/**
+		 * @private
+		 * 
+		 * TODO Optimally this should take place earlier, right after resources have been
+		 * loaded. However the Stage3D is not ready up this point and so texture resources
+		 * cannot beo processed earlier than this.
+		 */
+		private function preprocessTextures():void
+		{
+			var ids:Array = _main.resourceManager.resourceIndex.preprocessResourceIDs;
+			if (!ids || ids.length == 0) return;
+			
+			if (Log.verboseLoggingEnabled)
+			{
+				Log.delimiter(40, LogLevel.DEBUG);
+				Log.verbose("PREPROCESSING RESOURCES ...", this);
+			}
+			
+			for (var i:uint = 0; i < ids.length; i++)
+			{
+				var id:String = ids[i];
+				_main.resourceManager.process(id);
+			}
 		}
 		
 		

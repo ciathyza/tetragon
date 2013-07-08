@@ -244,6 +244,7 @@ package tetragon.file.loaders
 			parseXML(xml);
 			parseText(xml);
 			parsePreloadResources(xml);
+			parsePreprocessResources(xml);
 			
 			System.disposeXML(xml);
 			Log.verbose("Total resource entries parsed: " + _resCount, this);
@@ -548,6 +549,18 @@ package tetragon.file.loaders
 			for each (var x:XML in xml.preload.resource)
 			{
 				_resourceIndex.addPreloadResource(x.@id);
+			}
+		}
+		
+		
+		/**
+		 * Parses resource entry IDs that should be preprocessed.
+		 */
+		protected function parsePreprocessResources(xml:XML):void
+		{
+			for each (var x:XML in xml.preprocess.resource)
+			{
+				_resourceIndex.addPreprocessResource(x.@id);
 			}
 		}
 		

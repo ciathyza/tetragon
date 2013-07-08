@@ -534,6 +534,7 @@ package tetragon.file.resource
 					+ resource.type + "\" is not of type ResourceProcessor.");
 				return null;
 			}
+			
 			//Log.debug("Processing resource \"" + resourceID + "\" with " + processor.toString() + " ...", this);
 			processor.process(resource);
 			resource.setStatus(ResourceStatus.PROCESSED);

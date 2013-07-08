@@ -30,6 +30,8 @@ package tetragon.file.resource.processors
 {
 	import tetragon.data.atlas.SpriteAtlas;
 	import tetragon.data.atlas.SubTextureBounds;
+	import tetragon.file.resource.Resource;
+	import tetragon.file.resource.ResourceStatus;
 
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
@@ -53,7 +55,8 @@ package tetragon.file.resource.processors
 		{
 			for (var i:uint = 0; i < resources.length; i++)
 			{
-				var spriteAtlas:SpriteAtlas = resources[i].content;
+				var resource:Resource = resources[i];
+				var spriteAtlas:SpriteAtlas = resource.content;
 				
 				if (!spriteAtlas)
 				{
@@ -92,6 +95,7 @@ package tetragon.file.resource.processors
 				}
 				
 				processSpriteAtlas(spriteAtlas);
+				resource.setStatus(ResourceStatus.PROCESSED);
 			}
 			return true;
 		}
