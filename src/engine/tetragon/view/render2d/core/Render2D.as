@@ -376,6 +376,7 @@ package tetragon.view.render2d.core
 		{
 			_started = true;
 			_lastFrameTimestamp = getTimer() / 1000.0;
+			Log.verbose("Render2D started.", this);
 		}
 		
 		
@@ -387,6 +388,7 @@ package tetragon.view.render2d.core
 		public function stop():void
 		{
 			_started = false;
+			Log.verbose("Render2D stopped.", this);
 		}
 		
 		
