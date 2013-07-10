@@ -246,6 +246,40 @@ package tetragon.file.resource
 		
 		
 		/**
+		 * Allows to retrieve a number of resources and filter them by their datatype.
+		 * 
+		 * If null is specified, all resources will be returned.
+		 * If a datatype is specified all resources of that type will be returned,
+		 * ResourceCollections will not be included.
+		 * 
+		 * @param datatype
+		 * @return Vector.<Resource>
+		 */
+		public function getResources(datatype:String = null):Vector.<Resource>
+		{
+			var a:Array = [];
+			
+			for each (var r:Resource in _resources)
+			{
+				if (datatype == null
+					|| (r.type != null && r.type == datatype && !(r.content is ResourceCollection)))
+				{
+					a.push(r);
+				}
+			}
+			a.sortOn("type");
+			
+			var v:Vector.<Resource> = new Vector.<Resource>(a.length, true);
+			for (var i:uint = 0; i < v.length; i++)
+			{
+				v[i] = a[i];
+			}
+			
+			return v;
+		}
+		
+		
+		/**
 		 * Returns the data type of the resource that is mapped with the specified ID.
 		 * Only data resources (data objects, data lists, entities) have a data type.
 		 * For media-, text- and raw XML resources this method returns null.
