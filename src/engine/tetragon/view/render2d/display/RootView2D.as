@@ -42,11 +42,14 @@ package tetragon.view.render2d.display
 	 *
 	 * @author hexagon
 	 */
-	public class View2D extends Sprite2D implements IView
+	public class RootView2D extends DisplayObjectContainer2D implements IView
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
+		
+		/** @private */
+		protected var _rootBackground:Rect2D;
 		
 		/** @private */
 		private static var _main:Main;
@@ -61,7 +64,7 @@ package tetragon.view.render2d.display
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function View2D()
+		public function RootView2D()
 		{
 			super();
 			setup();
@@ -79,6 +82,16 @@ package tetragon.view.render2d.display
 		public override function render(support:RenderSupport2D, alpha:Number):void
 		{
 			executeBeforeRender();
+			
+			/* Render background, which should not be part of the child collection. */
+			if (_rootBackground)
+			{
+				support.pushMatrix();
+				support.transformMatrix(_rootBackground);
+				_rootBackground.render(support, alpha);
+				support.popMatrix();
+			}
+			
 			super.render(support, alpha);
 		}
 		
@@ -86,6 +99,18 @@ package tetragon.view.render2d.display
 		// -----------------------------------------------------------------------------------------
 		// Accessors
 		// -----------------------------------------------------------------------------------------
+		
+		public function get rootBackground():Rect2D
+		{
+			return _rootBackground;
+		}
+		public function set rootBackground(v:Rect2D):void
+		{
+			if (v == _rootBackground) return;
+			_rootBackground = v;
+			updateRootBackground();
+		}
+		
 		
 		protected static function get main():Main
 		{
@@ -147,6 +172,7 @@ package tetragon.view.render2d.display
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+			updateRootBackground();
 		}
 		
 		
@@ -167,6 +193,17 @@ package tetragon.view.render2d.display
 		 */
 		protected function executeBeforeRender():void
 		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		private function updateRootBackground():void
+		{
+			if (!_rootBackground || !stage) return;
+			_rootBackground.width = width;
+			_rootBackground.height = height;
 		}
 		
 		

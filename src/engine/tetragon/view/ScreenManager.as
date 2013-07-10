@@ -121,7 +121,7 @@ package tetragon.view
 		private var _tweenVars:TweenVars;
 		private var _screenOpenDelay:Number = 0.2;
 		private var _screenCloseDelay:Number = 0.2;
-		private var _tweenDuration:Number = 2.2;
+		private var _tweenDuration:Number = 0.2;
 		private var _fastDuration:Number = 0.1;
 		private var _backupDuration:Number;
 		private var _backupOpenDelay:Number;
@@ -735,21 +735,18 @@ package tetragon.view
 		}
 		public function set screenBackground(v:ScreenBackground):void
 		{
-			var tmp1:DisplayObject;
-			var tmp2:DisplayObject2D;
-			
-			if (v)
-			{
-				if (v.nativeBackground) tmp1 = v.nativeBackground;
-				if (v.render2DBackground) tmp2 = v.render2DBackground;
-			}
-			
 			/* Remove old bg stuff first. */
 			if (_screenBackground)
 			{
-				if (_nativeViewContainer.contains(_screenBackground.nativeBackground))
+				if (_screenBackground.nativeBackground
+					&& _nativeViewContainer.contains(_screenBackground.nativeBackground))
+				{
 					_nativeViewContainer.removeChild(_screenBackground.nativeBackground);
-				if (_render2D) _render2D.removeBackground();
+				}
+				if (_render2D)
+				{
+					_render2D.removeBackground();
+				}
 				_screenBackground.dispose();
 				_screenBackground = null;
 			}

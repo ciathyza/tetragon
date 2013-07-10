@@ -33,6 +33,6 @@ package tetragon.view
 	 */
 	public interface IView
 	{
-		
+		function dispose():void;
 	}
 }

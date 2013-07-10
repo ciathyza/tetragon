@@ -33,7 +33,7 @@ package view.test
 	import tetragon.data.Settings;
 	import tetragon.util.color.colorHexToColorTransform;
 	import tetragon.view.render2d.display.Rect2D;
-	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.display.RootView2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollTile2D;
 	import tetragon.view.render2d.textures.Texture2D;
@@ -46,7 +46,7 @@ package view.test
 	/**
 	 * @author hexagon
 	 */
-	public class TestView extends View2D
+	public class TestView extends RootView2D
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
@@ -79,7 +79,7 @@ package view.test
 		 */
 		override protected function setup():void
 		{
-			background = new Rect2D(10, 10, 0x00577C);
+			rootBackground = new Rect2D(10, 10, 0x00577C);
 			
 			var logoColor:uint = settings.getNumber(Settings.SPLASH_LOGO_COLOR);
 			if (isNaN(logoColor)) logoColor = 0xFFBF00;

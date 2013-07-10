@@ -34,8 +34,8 @@ package tetragon.view.render2d.core
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.display.RootView2D;
 	import tetragon.view.render2d.display.Stage2D;
-	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.KeyboardEvent2D;
@@ -213,7 +213,7 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _background:DisplayObject2D;
 		/** @private */
-		private var _rootView:View2D;
+		private var _rootView:RootView2D;
 		
 		/** @private */
 		private var _juggler:Juggler2D;
@@ -683,11 +683,11 @@ package tetragon.view.render2d.core
 		 * Allows to get and set the root view after Render2D has been instantiated.
 		 * Note that the rootview can only be set once!
 		 */
-		public function get rootView():View2D
+		public function get rootView():RootView2D
 		{
 			return _rootView;
 		}
-		public function set rootView(v:View2D):void
+		public function set rootView(v:RootView2D):void
 		{
 			if (_rootView)
 			{
