@@ -28,6 +28,7 @@
  */
 package tetragon.view.render2d.core
 {
+	import tetragon.debug.Log;
 	import tetragon.util.agal.AGALMiniAssembler;
 	import tetragon.util.color.ColorUtil;
 	import tetragon.util.geom.MatrixUtil;
@@ -393,11 +394,22 @@ package tetragon.view.render2d.core
 		{
 			if (!resultProgram)
 			{
-				resultProgram = context3D.createProgram();
+				try
+				{
+					resultProgram = context3D.createProgram();
+				}
+				catch (err:Error)
+				{
+					Log.warn("RenderSupport2D: assembleAgal:: " + err.message);
+				}
 			}
 			
-			resultProgram.upload(agal.assemble(Context3DProgramType.VERTEX, vertexShader),
-				agal.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
+			if (resultProgram)
+			{
+				resultProgram.upload(agal.assemble(Context3DProgramType.VERTEX, vertexShader),
+					agal.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
+			}
+			
 			return resultProgram;
 		}
 		
