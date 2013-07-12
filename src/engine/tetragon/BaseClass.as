@@ -28,6 +28,7 @@
  */
 package tetragon
 {
+	import tetragon.core.types.IDisposable;
 	import tetragon.data.Registry;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.file.resource.ResourceManager;
@@ -35,21 +36,21 @@ package tetragon
 	
 	
 	/**
-	 * A simple heloer class that provides references to often used classes in Tetragon.
+	 * A simple helper class that provides references to often used classes in Tetragon.
 	 * Can be used as super class for other classes that need these properties.
 	 *
 	 * @author Hexagon
 	 */
-	public class BaseClass
+	public class BaseClass implements IDisposable
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
-		private var _registry:Registry;
-		private var _resourceManager:ResourceManager;
-		private var _resourceIndex:ResourceIndex;
+		private static var _main:Main;
+		private static var _registry:Registry;
+		private static var _resourceManager:ResourceManager;
+		private static var _resourceIndex:ResourceIndex;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -73,7 +74,7 @@ package tetragon
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Disposes the object.
+		 * @inheritDoc
 		 */
 		public function dispose():void
 		{
@@ -117,6 +118,19 @@ package tetragon
 		protected function get resourceIndex():ResourceIndex
 		{
 			return _resourceIndex;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected static function getResource(resourceID:String):*
+		{
+			return _resourceIndex.getResourceContent(resourceID);
 		}
 	}
 }

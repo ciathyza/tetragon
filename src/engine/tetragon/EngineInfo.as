@@ -51,7 +51,7 @@ package tetragon
 		/**
 		 * Build number of the engine.
 		 */
-		public static const BUILD:String = "12860";
+		public static const BUILD:String = "12861";
 		
 		/**
 		 * Milestone name of the engine.
