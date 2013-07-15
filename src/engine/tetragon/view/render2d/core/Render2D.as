@@ -503,6 +503,8 @@ package tetragon.view.render2d.core
 		{
 			removeBackground();
 			_background = background;
+			_background.width = _stage2D.stageWidth;
+			_background.height = _stage2D.stageHeight;
 			_stage2D.addChildAt(_background, 0);
 		}
 		
