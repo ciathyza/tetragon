@@ -278,6 +278,8 @@ package tetragon.view
 				{
 					_nextScreen.visible = false;
 					_screenCover.alpha = 1.0;
+					_screenCover.width = _screenWidth;
+					_screenCover.height = _screenHeight;
 					_nativeViewContainer.addChild(_screenCover);
 				}
 				
