@@ -31,8 +31,11 @@ package tetragon.view
 	import tetragon.Main;
 	import tetragon.core.types.IDisposable;
 	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.display.Image2D;
 
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
 	
 	
 	/**
@@ -46,9 +49,9 @@ package tetragon.view
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		public var render2DBackground:DisplayObject2D;
-		public var nativeBackground:DisplayObject;
-		public var screenCover:DisplayObject;
+		protected var _nativeBackground:DisplayObject;
+		protected var _screenCover:DisplayObject;
+		protected var _render2DBackground:DisplayObject2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -72,7 +75,48 @@ package tetragon.view
 		 */
 		public function dispose():void
 		{
+			if (_render2DBackground) _render2DBackground.dispose();
 		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get nativeBackground():DisplayObject
+		{
+			return _nativeBackground;
+		}
+		
+		
+		public function get screenCover():DisplayObject
+		{
+			if (!_screenCover) _screenCover = _nativeBackground;
+			return _screenCover;
+		}
+		
+		
+		public function get render2DBackground():DisplayObject2D
+		{
+			if (!_render2DBackground)
+			{
+				if (_nativeBackground is Bitmap)
+				{
+					_render2DBackground = Image2D.fromBitmap(_nativeBackground as Bitmap, false, 1.0);
+				}
+				else if (_nativeBackground is MovieClip)
+				{
+					// TODO Add support for MovieClips with multi-frames!
+					_render2DBackground = Image2D.fromDisplayObject(_nativeBackground, false, 1.0);
+				}
+				else if (_nativeBackground is DisplayObject)
+				{
+					_render2DBackground = Image2D.fromDisplayObject(_nativeBackground, false, 1.0);
+				}
+			}
+			return _render2DBackground;
+		}
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods

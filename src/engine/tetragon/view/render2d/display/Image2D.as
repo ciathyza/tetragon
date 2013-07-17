@@ -28,12 +28,16 @@
  */
 package tetragon.view.render2d.display
 {
+	import tetragon.util.display.bakeToBitmap;
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
+	import flash.display.PixelSnapping;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -123,6 +127,32 @@ package tetragon.view.render2d.display
 			scale:Number = 1.0):Image2D
 		{
 			return new Image2D(Texture2D.fromBitmap(bitmap, generateMipMaps, false, scale));
+		}
+		
+		
+		/**
+		 * @param bitmapData
+		 * @param generateMipMaps
+		 * @param scale
+		 */
+		public static function fromBitmapData(bitmapData:BitmapData, generateMipMaps:Boolean = true,
+			scale:Number = 1.0):Image2D
+		{
+			return new Image2D(Texture2D.fromBitmap(new Bitmap(bitmapData), generateMipMaps,
+				false, scale));
+		}
+		
+		
+		/**
+		 * @param d
+		 * @param generateMipMaps
+		 * @param scale
+		 */
+		public static function fromDisplayObject(d:DisplayObject, generateMipMaps:Boolean = true,
+			scale:Number = 1.0):Image2D
+		{
+			var b:Bitmap = bakeToBitmap(d, true, 0x00000000, false, PixelSnapping.AUTO);
+			return fromBitmap(b, generateMipMaps, scale);
 		}
 		
 		
