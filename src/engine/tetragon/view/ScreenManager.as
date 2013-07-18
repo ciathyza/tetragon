@@ -64,6 +64,7 @@ package tetragon.view
 	import flash.events.Event;
 	import flash.events.FullScreenEvent;
 	import flash.events.MouseEvent;
+	import flash.system.Capabilities;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -107,10 +108,13 @@ package tetragon.view
 		
 		private static var _referenceWidth:int;
 		private static var _referenceHeight:int;
+		private static var _fullScreenWidth:int;
+		private static var _fullScreenHeight:int;
 		private static var _screenWidth:int;
 		private static var _screenHeight:int;
 		private static var _scaleFactorX:Number;
 		private static var _scaleFactorY:Number;
+		private static var _isFullscreen:Boolean;
 		
 		private var _loadProgressDisplay:LoadProgressDisplay;
 		private var _loadedResourceCount:uint;
@@ -614,6 +618,24 @@ package tetragon.view
 		}
 		
 		
+		static public function get isFullscreen():Boolean
+		{
+			return _isFullscreen;
+		}
+		
+		
+		static public function get fullScreenWidth():int
+		{
+			return _fullScreenWidth;
+		}
+
+
+		static public function get fullScreenHeight():int
+		{
+			return _fullScreenHeight;
+		}
+		
+		
 		/**
 		 * The unscaled screen width. This always reflects stage.stageWidth.
 		 */
@@ -884,6 +906,18 @@ package tetragon.view
 		}
 		
 		
+		public function get screenOpenedSignal():Signal
+		{
+			return _screenOpenedSignal;
+		}
+
+
+		public function get screenCloseSignal():Signal
+		{
+			return _screenCloseSignal;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
@@ -940,12 +974,17 @@ package tetragon.view
 		 */
 		private function onStageResize(e:Event):void
 		{
+			_fullScreenWidth = Capabilities.screenResolutionX;
+			_fullScreenHeight = Capabilities.screenResolutionY;
 			_screenWidth = _stage.stageWidth;
 			_screenHeight = _stage.stageHeight;
 			_scaleFactorX = _screenWidth / _referenceWidth;
 			_scaleFactorY = _screenHeight / _referenceHeight;
 			
-			Log.verbose("onStageResize:: width=" + _screenWidth + " height=" + _screenHeight, this);
+			Log.verbose("onStageResize:: width=" + _screenWidth
+				+ " height=" + _screenHeight
+				+ " scaleFactorX=" + _scaleFactorX
+				+ " scaleFactorY=" + _scaleFactorY, this);
 			
 			if (_screenCover)
 			{
@@ -968,6 +1007,7 @@ package tetragon.view
 		 */
 		private function onFullScreenToggle(e:FullScreenEvent):void
 		{
+			_isFullscreen = !_isFullscreen;
 			onStageResize(null);
 		}
 		

@@ -800,8 +800,16 @@ package tetragon.view.render2d.core
 			{
 				var w:int = _nativeStage.stageWidth;
 				var h:int = _nativeStage.stageHeight;
+				
 				_viewPort.width = w;
 				_viewPort.height = h;
+				
+				Log.verbose("stage size:         " + _nativeStage.stageWidth + " x " + _nativeStage.stageHeight);
+				Log.verbose("stage3D size:       " + _stage3DProxy.width + " x " + _stage3DProxy.height);
+				Log.verbose("stage2D size:       " + _stage2D.stageWidth + " x " + _stage2D.stageHeight);
+				Log.verbose("viewPort size:      " + _viewPort.width + " x " + _viewPort.height);
+				Log.verbose("cl. viewPort size:  " + _clippedViewPort.width + " x " + _clippedViewPort.height);
+				
 				_stage2D.dispatchEvent(new ResizeEvent2D(Event.RESIZE, w, h));
 			}
 		}
