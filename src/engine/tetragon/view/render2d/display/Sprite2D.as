@@ -107,6 +107,7 @@ package tetragon.view.render2d.display
 		 */
 		public function flatten():void
 		{
+			if (isFlattened) return;
 			_flattenRequested = true;
 			broadcastEventWith(Event2D.FLATTEN);
 		}
@@ -118,6 +119,7 @@ package tetragon.view.render2d.display
 		 */
 		public function unflatten():void
 		{
+			if (!isFlattened) return;
 			_flattenRequested = false;
 			disposeFlattenedContents();
 		}

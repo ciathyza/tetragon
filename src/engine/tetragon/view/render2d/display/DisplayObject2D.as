@@ -214,8 +214,18 @@ package tetragon.view.render2d.display
 		{
 			if (_parent) _parent.removeChild(this, dispose);
 		}
-
-
+		
+		
+		/**
+		 * 
+		 */
+		public function bringToFront():void
+		{
+			if (!_parent) return;
+			_parent.setChildIndex(this, _parent.numChildren);
+		}
+		
+		
 		/**
 		 * Creates a matrix that represents the transformation from the local coordinate
 		 * system to another. If you pass a 'resultMatrix', the result will be stored in
