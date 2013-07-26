@@ -98,6 +98,7 @@ package tetragon.data
 		public static const USER_CONFIG_FOLDER:String				= "userConfigFolder";
 		public static const USER_LOGS_FOLDER:String					= "userLogsFolder";
 		public static const USER_MODS_FOLDER:String					= "userModsFolder";
+		public static const USER_RESOURCES_FOLDER:String			= "userResourcesFolder";
 		
 		/* Update settings */
 		public static const UPDATE_ENABLED:String					= "updateEnabled";
@@ -114,7 +115,7 @@ package tetragon.data
 		public static const ALLOWED_DOMAINS:String					= "allowedDomains";
 		
 		/* Render settings */
-		public static const HARDWARE_RENDERING_ENABLED:String			= "hardwareRenderingEnabled";
+		public static const HARDWARE_RENDERING_ENABLED:String		= "hardwareRenderingEnabled";
 		
 		
 		//-----------------------------------------------------------------------------------------

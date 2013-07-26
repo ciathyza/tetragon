@@ -306,6 +306,7 @@ package tetragon.setup
 			config.setProperty(Config.USER_CONFIG_FOLDER, "config");
 			config.setProperty(Config.USER_LOGS_FOLDER, "logs");
 			config.setProperty(Config.USER_MODS_FOLDER, "mods");
+			config.setProperty(Config.USER_RESOURCES_FOLDER, "resources");
 			
 			config.setProperty(Config.UPDATE_ENABLED, true);
 			config.setProperty(Config.UPDATE_URL, "");

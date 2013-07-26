@@ -60,6 +60,7 @@ package tetragon.data
 		public static const USER_CONFIG_DIR:String			= "userConfigDir";
 		public static const USER_LOGS_DIR:String			= "userLogsDir";
 		public static const USER_MODS_DIR:String			= "userModsDir";
+		public static const USER_RESOURCES_DIR:String		= "userResourcesDir";
 		
 		public static const USER_CONFIG_FILE:String			= "userConfigFile";
 		public static const USER_KEYBINDINGS_FILE:String	= "userKeyBindingsFile";

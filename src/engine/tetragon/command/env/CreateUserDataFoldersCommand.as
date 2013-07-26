@@ -73,11 +73,12 @@ package tetragon.command.env
 			_sep = File.separator;
 			
 			createUserDataFolder();
-			createSubFolder(Settings.USER_LOGS_DIR, _config.getString(Config.USER_LOGS_FOLDER));
 			createSubFolder(Settings.USER_CONFIG_DIR, _config.getString(Config.USER_CONFIG_FOLDER));
+			createSubFolder(Settings.USER_LOGS_DIR, _config.getString(Config.USER_LOGS_FOLDER));
+			createSubFolder(Settings.USER_MODS_DIR, _config.getString(Config.USER_MODS_FOLDER));
+			createSubFolder(Settings.USER_RESOURCES_DIR, _config.getString(Config.USER_RESOURCES_FOLDER));
 			createSubFolder(Settings.USER_SAVEGAMES_DIR, _config.getString(Config.USER_SAVEGAMES_FOLDER));
 			createSubFolder(Settings.USER_SCREENSHOTS_DIR, _config.getString(Config.USER_SCREENSHOTS_FOLDER));
-			createSubFolder(Settings.USER_MODS_DIR, _config.getString(Config.USER_MODS_FOLDER));
 			copyDefaultFiles();
 			
 			complete();
