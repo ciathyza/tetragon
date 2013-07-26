@@ -105,6 +105,11 @@ package tetragon.file.resource
 		private var _preprocessResourceIDs:Array;
 		
 		/**
+		 * @private
+		 */
+		private var _substitutionIDs:Object;
+		
+		/**
 		 * A map that contains all available locale paths, mapped by their locale ID.
 		 * @private
 		 */
@@ -241,7 +246,9 @@ package tetragon.file.resource
 		 */
 		public function getResource(id:String):Resource
 		{
-			return _resources[id];
+			var r:Resource = _resources[id];
+			if (!r) r = getResourceFromSubstitutedID(id);
+			return r;
 		}
 		
 		
@@ -291,7 +298,7 @@ package tetragon.file.resource
 		 */
 		public function getResourceDataType(id:String):String
 		{
-			var r:Resource = _resources[id];
+			var r:Resource = getResource(id);
 			if (r) return r.type;
 			return null;
 		}
@@ -310,7 +317,7 @@ package tetragon.file.resource
 		 */
 		public function getResourceContent(id:String):*
 		{
-			var r:Resource = _resources[id];
+			var r:Resource = getResource(id);
 			if (!r) return null;
 			return r.content;
 		}
@@ -336,7 +343,7 @@ package tetragon.file.resource
 		public function getImage(id:String, allowPlaceholder:Boolean = true,
 			placeholderWidth:uint = 64, placeholderHeight:uint = 64):BitmapData
 		{
-			var r:Resource = _resources[id];
+			var r:Resource = getResource(id);
 			if (r && r.content)
 			{
 				if (r.content is BitmapData) return r.content;
@@ -399,6 +406,36 @@ package tetragon.file.resource
 		
 		
 		/**
+		 * @param id
+		 */
+		public function getResourceFromSubstitutedID(id:String):Resource
+		{
+			if (!_substitutionIDs) return null;
+			var substitutedIDs:Array = _substitutionIDs[id];
+			if (!substitutedIDs || substitutedIDs.length == 0) return null;
+			
+			for (var i:uint = 0; i < substitutedIDs.length; i++)
+			{
+				var substitutedID:String = substitutedIDs[i];
+				var r:Resource = _resources[substitutedID];
+				if (r) return r;
+			}
+			
+			return null;
+		}
+		
+		
+		/**
+		 * @param id
+		 */
+		public function isSubstitutionID(id:String):Boolean
+		{
+			if (!_substitutionIDs) return false;
+			return _substitutionIDs[id] != null;
+		}
+		
+		
+		/**
 		 * Removes the resource from the resource index that is mapped with the
 		 * specified ID.
 		 * 
@@ -425,7 +462,7 @@ package tetragon.file.resource
 		 */
 		public function resetResource(id:String):void
 		{
-			var r:Resource = _resources[id];
+			var r:Resource = getResource(id);
 			if (!r) return;
 			
 			/* Resource collections may not be reset! */
@@ -473,7 +510,8 @@ package tetragon.file.resource
 		 */
 		public function isResourceLoaded(id:String):Boolean
 		{
-			return (_resources[id] && (_resources[id] as Resource).referenceCount > 0);
+			var r:Resource = getResource(id);
+			return (r && r.referenceCount > 0);
 		}
 		
 		
@@ -750,6 +788,18 @@ package tetragon.file.resource
 		{
 			if (!_preprocessResourceIDs) _preprocessResourceIDs = [];
 			_preprocessResourceIDs.push(id);
+		}
+		
+		
+		/**
+		 * @param id
+		 * @param substitutedIDs
+		 */
+		public function addSubstitution(id:String, substitutedIDs:Array):void
+		{
+			if (id == null || !substitutedIDs || substitutedIDs.length == 0) return;
+			if (!_substitutionIDs) _substitutionIDs = {};
+			_substitutionIDs[id] = substitutedIDs;
 		}
 		
 		

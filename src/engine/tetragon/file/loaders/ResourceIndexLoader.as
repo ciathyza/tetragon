@@ -37,6 +37,7 @@ package tetragon.file.loaders
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.ResourceIndex;
 	import tetragon.util.env.getSeparator;
+	import tetragon.util.xml.extractStringFromXML;
 
 	import flash.system.System;
 	
@@ -245,6 +246,7 @@ package tetragon.file.loaders
 			parseText(xml);
 			parsePreloadResources(xml);
 			parsePreprocessResources(xml);
+			parseSubstitutions(xml);
 			
 			System.disposeXML(xml);
 			Log.verbose("Total resource entries parsed: " + _resCount, this);
@@ -561,6 +563,26 @@ package tetragon.file.loaders
 			for each (var x:XML in xml.preprocess.resource)
 			{
 				_resourceIndex.addPreprocessResource(x.@id);
+			}
+		}
+		
+		
+		/**
+		 * Parses resource ID substitutions.
+		 */
+		protected function parseSubstitutions(xml:XML):void
+		{
+			for each (var x:XML in xml.substitutions.substitution)
+			{
+				var substitutionID:String = extractStringFromXML(x, "@id");
+				var substitutedIDs:Array = [];
+				
+				for each (var xl:XML in x.resource)
+				{
+					substitutedIDs.push(extractStringFromXML(xl, "@id"));
+				}
+				
+				_resourceIndex.addSubstitution(substitutionID, substitutedIDs);
 			}
 		}
 		

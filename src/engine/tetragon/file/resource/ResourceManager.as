@@ -773,6 +773,7 @@ package tetragon.file.resource
 		{
 			var b:ResourceBulk = bf.bulk;
 			var a:Array;
+			var r:Resource;
 			
 			/* We can decrease the bulk ID count anytime a bulk completed loading. */
 			if (_bulkIDCount > 1) _bulkIDCount--;
@@ -783,7 +784,19 @@ package tetragon.file.resource
 				a = [];
 				while (_referencedIDQueue.size > 0)
 				{
-					a.push(_referencedIDQueue.dequeue());
+					var id:String = _referencedIDQueue.dequeue();
+					/* Check whether the ID is a substitution ID and a resource with the
+					 * substituted ID(s) is already loaded. */
+					if (_resourceIndex.isSubstitutionID(id))
+					{
+						r = _resourceIndex.getResourceFromSubstitutedID(id);
+						if (r)
+						{
+							debug("Substituting resource ID \"" + id + "\" with \"" + r.id + "\".");
+							id = r.id;
+						}
+					}
+					a.push(id);
 				}
 				debug("Loading " + a.length + " referenced resources ...");
 				load(a, b.completeHandler, b.loadedHandler, b.failedHandler, b.progressHandler,
@@ -799,7 +812,7 @@ package tetragon.file.resource
 			for (var i:uint = 0; i < bf.items.length; i++)
 			{
 				var item:ResourceBulkItem = bf.items[i];
-				var r:Resource = item.resource;
+				r = item.resource;
 				
 				/* Call any waiting handlers that might have been
 				 * added while the resource was loading. */
