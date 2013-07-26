@@ -44,6 +44,7 @@ package tetragon
 	import tetragon.entity.EntitySystemManager;
 	import tetragon.env.preload.IPreloader;
 	import tetragon.env.settings.LocalSettingsManager;
+	import tetragon.file.IFileAPIProxy;
 	import tetragon.file.resource.ResourceManager;
 	import tetragon.input.KeyInputManager;
 	import tetragon.modules.ModuleManager;
@@ -126,6 +127,8 @@ package tetragon
 		private var _entityFactory:EntityFactory;
 		/** @private */
 		private var _audioManager:AudioManager;
+		/** @private */
+		private var _fileAPIProxy:IFileAPIProxy;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -148,14 +151,16 @@ package tetragon
 		 * @param appInfo
 		 * @param setups
 		 * @param resourceBundleClass
+		 * @param fileAPIProxy
 		 */
 		public function init(contextView:DisplayObjectContainer, appInfo:IAppInfo,
-			setups:Array, resourceBundleClass:Class):void
+			setups:Array, resourceBundleClass:Class, fileAPIProxy:IFileAPIProxy):void
 		{
 			_contextView = contextView;
 			_appInfo = appInfo;
 			_setups = setups;
 			_resourceBundleClass = resourceBundleClass;
+			_fileAPIProxy = fileAPIProxy;
 			
 			setup();
 			
@@ -403,6 +408,12 @@ package tetragon
 				_audioManager.init();
 			}
 			return _audioManager;
+		}
+		
+		
+		public function get fileAPIProxy():IFileAPIProxy
+		{
+			return _fileAPIProxy;
 		}
 		
 		

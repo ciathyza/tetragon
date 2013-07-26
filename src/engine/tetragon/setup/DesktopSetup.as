@@ -32,6 +32,7 @@ package tetragon.setup
 	import tetragon.command.file.*;
 	import tetragon.data.Config;
 	import tetragon.env.desktop.WindowBoundsManager;
+	import tetragon.modules.app.AIRModule;
 	import tetragon.modules.app.DesktopModule;
 
 	import flash.desktop.NativeApplication;
@@ -132,6 +133,7 @@ package tetragon.setup
 		 */
 		override protected function registerModules():void
 		{
+			registrar.registerModule(AIRModule.defaultID, AIRModule, null);
 			registrar.registerModule(DesktopModule.defaultID, DesktopModule, null);
 		}
 		

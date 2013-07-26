@@ -29,7 +29,8 @@
 package
 {
 	import tetragon.Main;
-	
+	import tetragon.file.AIRFileAPIProxy;
+
 	import flash.display.NativeWindow;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -74,7 +75,7 @@ package
 			if (appInfo.isDebug && NativeWindow.isSupported) stage.nativeWindow.visible = true;
 			
 			_main = Main.instance;
-			_main.init(this, appInfo, new Setups().list, AppResourceBundle);
+			_main.init(this, appInfo, new Setups().list, AppResourceBundle, new AIRFileAPIProxy());
 		}
 	}
 }

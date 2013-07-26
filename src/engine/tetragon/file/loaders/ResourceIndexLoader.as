@@ -36,7 +36,7 @@ package tetragon.file.loaders
 	import tetragon.file.resource.ResourceCollection;
 	import tetragon.file.resource.ResourceFamily;
 	import tetragon.file.resource.ResourceIndex;
-	import tetragon.util.env.getSeparator;
+	import tetragon.file.resource.ResourceUtil;
 	import tetragon.util.xml.extractStringFromXML;
 
 	import flash.system.System;
@@ -88,12 +88,9 @@ package tetragon.file.loaders
 			_resCount = 0;
 			_subCount = 0;
 			
-			/* Create resource index file path */
-			var path:String = main.registry.config.getString(Config.RESOURCE_FOLDER);
-			if (path == null) path = "";
-			if (path.length > 0) path += getSeparator();
-			path += main.registry.config.getString(Config.FILENAME_RESOURCEINDEX);
-			path = main.registry.config.getString(Config.IO_BASE_PATH) + path;
+			/* Get the path for the resource index file. */
+			var fileName:String = main.registry.config.getString(Config.FILENAME_RESOURCEINDEX);
+			var path:String = ResourceUtil.getResourceFilePath(fileName);
 			
 			addFile(path, "resourceIndexFile");
 		}

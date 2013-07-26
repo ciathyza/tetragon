@@ -30,6 +30,7 @@ package tetragon.setup
 {
 	import tetragon.command.env.CreateUserDataFoldersCommand;
 	import tetragon.command.file.*;
+	import tetragon.modules.app.AIRModule;
 
 	import flash.desktop.NativeApplication;
 	
@@ -79,6 +80,7 @@ package tetragon.setup
 		 */
 		override protected function registerModules():void
 		{
+			registrar.registerModule(AIRModule.defaultID, AIRModule, null);
 		}
 		
 		
