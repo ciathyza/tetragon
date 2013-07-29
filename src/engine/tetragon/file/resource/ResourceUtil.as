@@ -71,9 +71,7 @@ package tetragon.file.resource
 			if (_userDataPath != null)
 			{
 				path = _userDataPath + _sep + _resourceFolder + _sep + subPath;
-				//_file = _file.resolvePath(path);
 				var file:* = _fileAPIProxy.resolvePath(path);
-				//if (_file.exists) return path;
 				if (_fileAPIProxy.exists(file)) return path;
 			}
 			

@@ -210,6 +210,8 @@ package tetragon.file.resource
 		 */
 		override protected function addBulkFile(bulkFile:ResourceBulkFile):void
 		{
+			// TODO Add support for resource overriding here too!
+			
 			/* If we get false returned by the zip load it is probably because the
 			 * path is wrong, so mark the resource as failed (Otherwise we'd get stuck
 			 * after such a resource). */

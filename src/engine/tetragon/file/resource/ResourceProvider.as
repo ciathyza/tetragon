@@ -324,22 +324,20 @@ package tetragon.file.resource
 		 */
 		protected function createLoaderFor(bulkFile:ResourceBulkFile):void
 		{
-			var loader:ResourceLoader;
 			var item:ResourceBulkItem = bulkFile.item;
 			var clazz:Class = item.resource.loaderClass;
-			try
+			var loader:* = new clazz();
+			
+			if (loader is ResourceLoader)
 			{
-				loader = new clazz();
+				bulkFile.resourceLoader = loader;
 			}
-			catch (err:Error)
+			else
 			{
 				fail(bulkFile, "The specified resource loader class \"" + item.resource.loaderClass
 					+ "\" for resource with ID \"" + item.resource.id + "\" could not be"
-					+ " instantiated because it is not of type ResourceLoader (" + err.message + ").");
-				return;
+					+ " instantiated because it is not of type ResourceLoader.");
 			}
-			
-			bulkFile.resourceLoader = loader;
 		}
 		
 		

@@ -148,7 +148,11 @@ package tetragon.file.resource
 		{
 			/* For files loaded from the filesystem we need to add the resourcefolder to the path. */
 			var file:IFile = bulkFile.resourceLoader.file;
-			file.path = _prePath + file.path;
+			var path:String = ResourceUtil.getResourceFilePath(file.path);
+			
+			//file.path = _prePath + file.path;
+			file.path = path;
+			
 			_loader.addFile(file);
 			super.addBulkFile(bulkFile);
 		}

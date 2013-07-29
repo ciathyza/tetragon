@@ -57,6 +57,8 @@ package tetragon.file.loaders
 		/** @private */
 		protected var _locale:String;
 		/** @private */
+		protected var _sep:String;
+		/** @private */
 		protected var _state:int;
 		/** @private */
 		protected var _resCount:int;
@@ -84,6 +86,7 @@ package tetragon.file.loaders
 			
 			_resourceIndex = resourceIndex;
 			_locale = main.registry.config.getString(Config.LOCALE_CURRENT);
+			_sep = main.fileAPIProxy.getSeparator();
 			_state = 0;
 			_resCount = 0;
 			_subCount = 0;
@@ -598,11 +601,15 @@ package tetragon.file.loaders
 			var packageID:String = resourceXML.@packageID;
 			var dataFileID:String = resourceXML.@fileID;
 			var rc:Class = main.classRegistry.getResourceLoaderClassByID(loaderClassID);
+			
 			if (!rc)
 			{
 				Log.warn("No resource file type loader class found for resource with ID \"" + id
 					+ "\" (loaderClassID: " + loaderClassID + ").", this);
 			}
+			
+			/* Replace all separators to the one used by the OS. */
+			path = path.replace(/[\\|\/]/g, _sep);
 			
 			_resourceIndex.addResource(id, path, packageID, dataFileID, rc, resourceFamily,
 				resourceType);
