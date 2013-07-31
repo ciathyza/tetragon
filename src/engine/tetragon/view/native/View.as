@@ -292,11 +292,12 @@ package tetragon.view.native
 		 * 
 		 * @param x
 		 * @param y
+		 * @param scale
 		 */
-		public function setPosition(x:Number, y:Number):void
+		public function setPosition(x:Number, y:Number, scale:Number = 1.0):void
 		{
-			this.x = x;
-			this.y = y;
+			this.x = x * scale;
+			this.y = y * scale;
 		}
 		
 		
