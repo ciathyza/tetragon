@@ -40,6 +40,7 @@ package tetragon.view.native
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.geom.Rectangle;
 	
 	
 	/**
@@ -288,11 +289,56 @@ package tetragon.view.native
 		/**
 		 * Can be used to set the x,y position of the view with one call instead of
 		 * accessors.
+		 * 
+		 * @param x
+		 * @param y
 		 */
 		public function setPosition(x:Number, y:Number):void
 		{
 			this.x = x;
 			this.y = y;
+		}
+		
+		
+		/**
+		 * Can be used to set the size of the view with one call instead of
+		 * accessors.
+		 * 
+		 * @param width
+		 * @param height
+		 */
+		public function setSize(width:Number, height:Number):void
+		{
+			this.width = width;
+			this.height = height;
+		}
+		
+		
+		/**
+		 * Can be used to set the scale of the view with one call instead of
+		 * accessors.
+		 * 
+		 * @param scale
+		 */
+		public function setScale(scale:Number):void
+		{
+			scaleX = scaleY = scale;
+		}
+		
+		
+		/**
+		 * Can be used to set the position and size of the view with one call instead of
+		 * accessors.
+		 * 
+		 * @param r
+		 */
+		public function setBounds(r:Rectangle):void
+		{
+			if (!r) return;
+			x = r.x;
+			y = r.y;
+			width = r.width;
+			height = r.height;
 		}
 		
 		
