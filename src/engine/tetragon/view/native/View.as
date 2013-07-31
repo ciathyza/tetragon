@@ -292,12 +292,28 @@ package tetragon.view.native
 		 * 
 		 * @param x
 		 * @param y
-		 * @param scale
 		 */
-		public function setPosition(x:Number, y:Number, scale:Number = 1.0):void
+		public function setPosition(x:Number, y:Number):void
 		{
-			this.x = x * scale;
-			this.y = y * scale;
+			this.x = x;
+			this.y = y;
+		}
+		
+		
+		/**
+		 * Can be used to set the x,y position of the view with one call instead of
+		 * accessors.
+		 * 
+		 * @param x
+		 * @param y
+		 * @param scaleX
+		 * @param scaleY
+		 */
+		public function setScaledPosition(x:Number, y:Number, scaleX:Number = 1.0,
+			scaleY:Number = 1.0):void
+		{
+			this.x = x * scaleX;
+			this.y = y * scaleY;
 		}
 		
 		
