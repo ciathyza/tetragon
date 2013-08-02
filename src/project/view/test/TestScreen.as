@@ -30,6 +30,7 @@ package view.test
 {
 	import lib.display.TetragonLogo;
 
+	import tetragon.debug.Log;
 	import tetragon.util.color.colorHexToColorTransform;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
@@ -37,6 +38,7 @@ package view.test
 	import tetragon.view.render2d.core.Render2D;
 
 	import flash.filters.DropShadowFilter;
+	import flash.media.Sound;
 	
 	
 	/**
@@ -78,14 +80,12 @@ package view.test
 		{
 			super.start();
 			
-			if (main.appInfo.isDesktopBuild)
-			{
-				main.statsMonitor.toggle();
-			}
-			else if (main.appInfo.isIOSBuild && main.console)
+			if (main.appInfo.isIOSBuild && main.console)
 			{
 				main.console.toggle();
 			}
+			
+			main.audioManager.startMusic("demoMusic");
 		}
 		
 		
@@ -218,6 +218,7 @@ package view.test
 		override protected function registerResources():void
 		{
 			registerResource("settings");
+			registerResource("demoMusic");
 		}
 		
 		
@@ -233,6 +234,16 @@ package view.test
 			_logo = new TetragonLogo();
 			_logo.filters = [ds];
 			_logo.transform.colorTransform = colorHexToColorTransform(0xFF0000);
+			
+			var music:* = resourceIndex.getInstanceFromSWFResource("demoMusic", "assets.audio.DemoMusic");
+			if (music && music is Sound)
+			{
+				main.audioManager.createMusic("demoMusic", [music]);
+			}
+			else
+			{
+				Log.notice("Music could not be created: " + music, this);
+			}
 		}
 		
 		
@@ -329,6 +340,7 @@ package view.test
 		 */
 		override protected function executeBeforeStart():void
 		{
+			main.statsMonitor.toggle();
 			_render2D.start();
 		}
 	}

@@ -83,7 +83,9 @@
 		</image32>
 		<atf>
 		</atf>
-		<swf/>
+		<swf>
+			<resource id="demoMusic" path="swf/demo_music.swf" packageID="resourcePackage"/>
+		</swf>
 		<shader>
 		</shader>
 		<mp3>
