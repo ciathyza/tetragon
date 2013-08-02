@@ -30,6 +30,7 @@ package tetragon.env.desktop
 {
 	import tetragon.Main;
 	import tetragon.core.exception.SingletonException;
+	import tetragon.data.Config;
 	import tetragon.debug.Log;
 	import tetragon.env.settings.LocalSettingsManager;
 
@@ -143,7 +144,10 @@ package tetragon.env.desktop
 			}
 			_main.stage.stageWidth = wb.width;
 			_main.stage.stageHeight = wb.height;
-			_main.stage.fullScreenSourceRect = new Rectangle(0, 0, wb.width, wb.height);
+			if (_main.registry.config.getBoolean(Config.ENV_SCALE_FULLSCREEN))
+			{
+				_main.stage.fullScreenSourceRect = new Rectangle(0, 0, wb.width, wb.height);
+			}
 			return wb;
 		}
 		

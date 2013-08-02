@@ -179,8 +179,8 @@ package tetragon.view.loadprogress
 			_tf.embedFonts = true;
 			_tf.focusRect = false;
 			_tf.selectable = false;
-			_tf.width = (ScreenManager.screenWidth / screenManager.screenScale) - 20;
-			_tf.height = (ScreenManager.screenHeight / screenManager.screenScale) - 20;
+			_tf.width = (ScreenManager.stageWidth / screenManager.screenScale) - 20;
+			_tf.height = (ScreenManager.stageHeight / screenManager.screenScale) - 20;
 			//_tf.border = true;
 			//_tf.borderColor = 0xFFFFFF;
 			_tf.defaultTextFormat = format;

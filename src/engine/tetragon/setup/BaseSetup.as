@@ -167,7 +167,8 @@ package tetragon.setup
 		{
 			/* Set fullScreenSourceRect for web builds only here! For other builds
 			 * it is set in their responsible setup classes. */
-			if (main.appInfo.buildType == BuildType.WEB)
+			if (main.appInfo.buildType == BuildType.WEB &&
+				main.registry.config.getBoolean(Config.ENV_SCALE_FULLSCREEN))
 			{
 				var s:Stage = main.contextView.stage;
 				s.fullScreenSourceRect = new Rectangle(0, 0, s.stageWidth, s.stageHeight);
@@ -317,6 +318,7 @@ package tetragon.setup
 			config.setProperty(Config.HARDWARE_RENDERING_ENABLED, true);
 			
 			config.setProperty(Config.ENV_START_FULLSCREEN, false);
+			config.setProperty(Config.ENV_SCALE_FULLSCREEN, false);
 			config.setProperty(Config.ENV_BG_FRAMERATE, -1);
 		}
 		

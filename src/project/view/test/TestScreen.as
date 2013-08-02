@@ -30,7 +30,6 @@ package view.test
 {
 	import lib.display.TetragonLogo;
 
-	import tetragon.BuildType;
 	import tetragon.util.color.colorHexToColorTransform;
 	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
@@ -79,8 +78,11 @@ package view.test
 		{
 			super.start();
 			
-			if (main.console && (main.appInfo.buildType == BuildType.IOS
-				|| main.appInfo.buildType == BuildType.IOS))
+			if (main.appInfo.isDesktopBuild)
+			{
+				main.statsMonitor.toggle();
+			}
+			else if (main.appInfo.isIOSBuild && main.console)
 			{
 				main.console.toggle();
 			}

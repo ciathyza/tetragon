@@ -39,6 +39,7 @@ package tetragon.view
 	import tetragon.debug.StatsMonitor;
 	import tetragon.file.resource.Resource;
 	import tetragon.input.MouseSignal;
+	import tetragon.util.display.getAspectRatio;
 	import tetragon.util.number.average;
 	import tetragon.util.string.TabularText;
 	import tetragon.util.time.CallLater;
@@ -108,10 +109,11 @@ package tetragon.view
 		
 		private static var _referenceWidth:int;
 		private static var _referenceHeight:int;
-		private static var _fullScreenWidth:int;
-		private static var _fullScreenHeight:int;
-		private static var _screenWidth:int;
-		private static var _screenHeight:int;
+		private static var _hostScreenWidth:int;
+		private static var _hostScreenHeight:int;
+		private static var _stageWidth:int;
+		private static var _stageHeight:int;
+		private static var _stageAspectRatio:Number;
 		private static var _scaleFactorX:Number;
 		private static var _scaleFactorY:Number;
 		private static var _isFullscreen:Boolean;
@@ -282,8 +284,8 @@ package tetragon.view
 				{
 					_nextScreen.visible = false;
 					_screenCover.alpha = 1.0;
-					_screenCover.width = _screenWidth;
-					_screenCover.height = _screenHeight;
+					_screenCover.width = _stageWidth;
+					_screenCover.height = _stageHeight;
 					_nativeViewContainer.addChild(_screenCover);
 				}
 				
@@ -385,6 +387,8 @@ package tetragon.view
 			
 			Log.verbose("Initializing screen manager ...", this);
 			
+			onStageResize(null);
+			
 			/* Check whether to use screen fades. Screen fades can be turned of for debugging. */ 
 			if (_main.registry.settings.hasProperty(Settings.USE_SCREEN_FADES))
 			{
@@ -392,7 +396,7 @@ package tetragon.view
 			}
 			if (_useScreenFades && !_screenCover)
 			{
-				_screenCover = new RectangleShape(_screenWidth, _screenHeight, _fadeColor, 1.0);
+				_screenCover = new RectangleShape(_stageWidth, _stageHeight, _fadeColor, 1.0);
 			}
 			
 			/* Check if hardware (Stage3D) rendering should be used at all. */
@@ -624,33 +628,42 @@ package tetragon.view
 		}
 		
 		
-		static public function get fullScreenWidth():int
+		static public function get hostScreenWidth():int
 		{
-			return _fullScreenWidth;
+			return _hostScreenWidth;
 		}
 
 
-		static public function get fullScreenHeight():int
+		static public function get hostScreenHeight():int
 		{
-			return _fullScreenHeight;
+			return _hostScreenHeight;
 		}
 		
 		
 		/**
-		 * The unscaled screen width. This always reflects stage.stageWidth.
+		 * The unscaled stage width. This always reflects stage.stageWidth.
 		 */
-		public static function get screenWidth():int
+		public static function get stageWidth():int
 		{
-			return _screenWidth;
+			return _stageWidth;
 		}
 		
 		
 		/**
-		 * The unscaled screen height. This always reflects stage.stageHeight.
+		 * The unscaled stage height. This always reflects stage.stageHeight.
 		 */
-		public static function get screenHeight():int
+		public static function get stageHeight():int
 		{
-			return _screenHeight;
+			return _stageHeight;
+		}
+		
+		
+		/**
+		 * Current aspect ratio of the stage.
+		 */
+		static public function get stageAspectRatio():Number
+		{
+			return _stageAspectRatio;
 		}
 		
 		
@@ -691,7 +704,7 @@ package tetragon.view
 		 */
 		public function get hCenter():int
 		{
-			return (_screenWidth / _screenScale) * 0.5;
+			return (_stageWidth / _screenScale) * 0.5;
 		}
 		
 		
@@ -701,7 +714,7 @@ package tetragon.view
 		 */
 		public function get vCenter():int
 		{
-			return (_screenHeight / _screenScale) * 0.5;
+			return (_stageHeight / _screenScale) * 0.5;
 		}
 		
 		
@@ -944,7 +957,7 @@ package tetragon.view
 		 */
 		private function onStage3DSignal(type:String):void
 		{
-			Log.verbose("onStage3DSignal:: type=" + type, this);
+			//Log.verbose("onStage3DSignal:: type=" + type, this);
 			
 			switch (type)
 			{
@@ -974,28 +987,34 @@ package tetragon.view
 		 */
 		private function onStageResize(e:Event):void
 		{
-			_fullScreenWidth = Capabilities.screenResolutionX;
-			_fullScreenHeight = Capabilities.screenResolutionY;
-			_screenWidth = _stage.stageWidth;
-			_screenHeight = _stage.stageHeight;
-			_scaleFactorX = _screenWidth / _referenceWidth;
-			_scaleFactorY = _screenHeight / _referenceHeight;
+			_hostScreenWidth = Capabilities.screenResolutionX;
+			_hostScreenHeight = Capabilities.screenResolutionY;
+			_stageWidth = _stage.stageWidth;
+			_stageHeight = _stage.stageHeight;
+			_stageAspectRatio = getAspectRatio(_stageWidth, _stageHeight);
+			_scaleFactorX = _stageWidth / _referenceWidth;
+			_scaleFactorY = _stageHeight / _referenceHeight;
 			
-			Log.verbose("onStageResize:: width=" + _screenWidth
-				+ " height=" + _screenHeight
-				+ " scaleFactorX=" + _scaleFactorX
-				+ " scaleFactorY=" + _scaleFactorY, this);
+			Log.verbose("Resized to "
+				+ " host=" + _hostScreenWidth + "x" + _hostScreenHeight
+				+ ", stage=" + _stageWidth + "x" + _stageHeight
+				+ ", ratio=" + _stageAspectRatio
+				+ ", scaleFactorX=" + _scaleFactorX
+				+ ", scaleFactorY=" + _scaleFactorY
+				+ (_render2D ? ", stage2D=" + _render2D.stage2D.width + "x"
+					+ _render2D.stage2D.height + ", viewport=" + _render2D.viewPort.width
+					+ "x" + _render2D.viewPort.height : "")
+				, this);
 			
 			if (_screenCover)
 			{
-				_screenCover.width = _screenWidth;
-				_screenCover.height = _screenHeight;
+				_screenCover.width = _stageWidth;
+				_screenCover.height = _stageHeight;
 			}
 			
-			// TODO Add support for scaling Stage3D correctly when toggling to fullscreen mode!
 			if (_stage3DProxy)
 			{
-				_stage3DProxy.resize(_screenWidth, _screenHeight);
+				_stage3DProxy.resize(_stageWidth, _stageHeight);
 			}
 			
 			if (_stageResizeSignal) _stageResizeSignal.dispatch();

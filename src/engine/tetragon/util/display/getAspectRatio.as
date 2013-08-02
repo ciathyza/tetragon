@@ -28,30 +28,21 @@
  */
 package tetragon.util.display
 {
-	import flash.display.DisplayObject;
 	
 	
 	/**
-	 * Returns the aspect ratio of the specified display object or that of the
-	 * stage if obj is null.
+	 * Returns the aspect ratio of width and height.
 	 * 
 	 * The function takes into account cases where the height is larger than
 	 * the width.
 	 * 
-	 * @param obj
+	 * @param width
+	 * @param height
 	 * @return Number or NaN.
 	 */
-	public function getAspectRatio(obj:DisplayObject = null):Number
+	public function getAspectRatio(width:Number, height:Number):Number
 	{
-		if (!obj) obj = StageReference.stage;
-		if (!obj) return NaN;
-		var w:Number = obj.width;
-		var h:Number = obj.height;
-		if (h > w)
-		{
-			h = obj.width;
-			w = obj.height;
-		}
-		return w / h;
+		if (width > height) return width / height;
+		return height / width;
 	}
 }

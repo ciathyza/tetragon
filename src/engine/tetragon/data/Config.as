@@ -109,6 +109,7 @@ package tetragon.data
 		
 		/* Environment-related settings */
 		public static const ENV_START_FULLSCREEN:String				= "envStartFullscreen";
+		public static const ENV_SCALE_FULLSCREEN:String				= "envScaleFullscreen";
 		public static const ENV_BG_FRAMERATE:String					= "envBGFrameRate";
 		
 		/* Domain Locker settings */
