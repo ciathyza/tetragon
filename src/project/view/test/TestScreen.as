@@ -28,14 +28,20 @@
  */
 package view.test
 {
+	import lib.display.TetragonLogo;
+
 	import tetragon.BuildType;
+	import tetragon.util.color.colorHexToColorTransform;
+	import tetragon.util.display.centerChild;
 	import tetragon.view.Screen;
 	import tetragon.view.loadprogress.LoadProgressDisplay;
 	import tetragon.view.render2d.core.Render2D;
+
+	import flash.filters.DropShadowFilter;
 	
 	
 	/**
-	 * An empty screen that does nothing special except for opening the debug console.
+	 * Screen used for Tetragon testing and demonstration.
 	 * 
 	 * @author Hexagon
 	 */
@@ -54,6 +60,7 @@ package view.test
 		
 		private var _render2D:Render2D;
 		private var _view:TestView;
+		private var _logo:TetragonLogo;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -219,6 +226,11 @@ package view.test
 		{
 			_view = new TestView();
 			_render2D.rootView = _view;
+			
+			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 8.0, 8.0, 2);
+			_logo = new TetragonLogo();
+			_logo.filters = [ds];
+			_logo.transform.colorTransform = colorHexToColorTransform(0xFF0000);
 		}
 		
 		
@@ -235,6 +247,7 @@ package view.test
 		 */
 		override protected function addChildren():void
 		{
+			addChild(_logo);
 		}
 		
 		
@@ -272,6 +285,8 @@ package view.test
 		 */
 		override protected function layoutChildren():void
 		{
+			_logo.scaleX = _logo.scaleY = 1.5;
+			centerChild(_logo);
 		}
 		
 		

@@ -61,7 +61,6 @@ package view.splash
 			var logoColor:uint = registry.settings.getNumber(Settings.SPLASH_LOGO_COLOR);
 			if (isNaN(logoColor)) logoColor = 0xFFBF00;
 			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 8.0, 8.0, 2);
-			
 			var logo:TetragonLogo = new TetragonLogo();
 			logo.filters = [ds];
 			var b:BitmapData = new BitmapData(logo.width + 40, logo.height + 40, true, 0x00000000);

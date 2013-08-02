@@ -30,8 +30,8 @@ package view.test
 {
 	import lib.display.TetragonLogo;
 
-	import tetragon.data.Settings;
 	import tetragon.util.color.colorHexToColorTransform;
+	import tetragon.util.number.randomFloat;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.RootView2D;
 	import tetragon.view.render2d.extensions.scrollimage.ScrollImage2D;
@@ -53,6 +53,8 @@ package view.test
 		// -----------------------------------------------------------------------------------------
 		
 		private var _scrollImage:ScrollImage2D;
+		private var _scaleInverse:Boolean;
+		private var _scaleStep:Number = 0.01;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -79,19 +81,16 @@ package view.test
 		 */
 		override protected function setup():void
 		{
-			rootBackground = new Rect2D(10, 10, 0x00577C);
+			rootBackground = new Rect2D(10, 10, 0xAAAAAA);
 			
-			var logoColor:uint = settings.getNumber(Settings.SPLASH_LOGO_COLOR);
-			if (isNaN(logoColor)) logoColor = 0xFFBF00;
-			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 8.0, 8.0, 2);
-			
+			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 1.0, 1.0, 1, 2, true);
 			var logo:TetragonLogo = new TetragonLogo();
 			logo.filters = [ds];
 			
 			var b:BitmapData = new BitmapData(logo.width + 40, logo.height + 40, true, 0x00000000);
 			var m:Matrix = new Matrix();
 			m.translate(20, 20);
-			b.draw(logo, m, colorHexToColorTransform(logoColor));
+			b.draw(logo, m, colorHexToColorTransform(0xBBBBBB));
 			
 			var texture:Texture2D = Texture2D.fromBitmapData(b, false);
 			var layer1:ScrollTile2D = new ScrollTile2D(texture);
@@ -107,8 +106,25 @@ package view.test
 		 */
 		override protected function executeBeforeRender():void
 		{
-			_scrollImage.tilesOffsetX -= 1;
-			_scrollImage.tilesOffsetY -= 1;
+			_scrollImage.tilesOffsetX -= 2;
+			_scrollImage.tilesOffsetY -= 2;
+			_scrollImage.tilesRotation -= 0.005;
+			
+			var scale:Number = _scrollImage.tilesScale;
+			if (scale <= 0.01)
+			{
+				scale = 0.01;
+				_scaleInverse = false;
+				_scaleStep = randomFloat(0.01, 0.05);
+			}
+			else if (scale >= 10.0)
+			{
+				scale = 10.0;
+				_scaleInverse = true;
+				_scaleStep = randomFloat(0.01, 0.05);
+			}
+			scale += (_scaleInverse ? -_scaleStep : _scaleStep);
+			_scrollImage.tilesScale = scale;
 		}
 	}
 }
