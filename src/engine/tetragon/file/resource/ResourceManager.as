@@ -204,7 +204,11 @@ package tetragon.file.resource
 			for (n = 0; n < total; n++)
 			{
 				item = items[n];
-				if (!item) continue;
+				if (!item)
+				{
+					done++;
+					continue;
+				}
 				
 				r = _resourceIndex.getResource(item.resourceID);
 				item.setResource(r);
@@ -304,7 +308,7 @@ package tetragon.file.resource
 			if (bulk2) bulk2.load();
 			if (bulk3) bulk3.load();
 			
-			//Log.debug("total: " + total + ", done: " + done, this);
+			Log.debug("total: " + total + ", done: " + done, this);
 			
 			/* If all failed/already loaded it means none of them went through any resource
 			 * provider but we still want the complete handler to be notified after that. */
