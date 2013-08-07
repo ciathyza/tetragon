@@ -28,7 +28,6 @@
  */
 package tetragon.file.loaders
 {
-	import tetragon.data.Config;
 	import tetragon.file.resource.Resource;
 	import tetragon.file.resource.ResourceBundle;
 	import tetragon.file.resource.ResourceIndex;
@@ -61,14 +60,8 @@ package tetragon.file.loaders
 		 */
 		public function EmbeddedResourceIndexLoader(resourceIndex:ResourceIndex, resourceBundle:ResourceBundle)
 		{
-			super(null);
-			
-			_resourceIndex = resourceIndex;
+			super(resourceIndex);
 			_resourceBundle = resourceBundle;
-			_locale = main.registry.config.getString(Config.LOCALE_CURRENT);
-			_state = 0;
-			_resCount = 0;
-			_subCount = 0;
 		}
 		
 		//-----------------------------------------------------------------------------------------

@@ -29,12 +29,11 @@
 package
 {
 	import tetragon.Main;
-	import tetragon.file.AIRFileAPIProxy;
+	import tetragon.env.preload.IPreloadable;
+	import tetragon.env.preload.IPreloader;
+	import tetragon.file.FileAPIProxy;
 
-	import flash.display.NativeWindow;
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
+	import flash.display.DisplayObjectContainer;
 	
 	
 	[SWF(width="1024", height="768", backgroundColor="#000000", frameRate="60")]
@@ -47,7 +46,7 @@ package
 	 * 
 	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
 	 */
-	public final class Entry extends Sprite
+	public final class Entry implements IPreloadable
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -57,25 +56,19 @@ package
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Constructor
+		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Creates a new instance of the class.
+		 * Invoked by the preloader after the application has been fully preloaded.
+		 * 
+		 * @param preloader a reference to the preloader.
 		 */
-		public function Entry()
+		public function onApplicationPreloaded(preloader:IPreloader):void
 		{
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
-			
-			var appInfo:AppInfo = new AppInfo();
-			
-			/* We make the app visible instantly for debug builds in case an exception
-			 * is thrown early on. Otherwise we would never see it. */
-			if (appInfo.isDebug && NativeWindow.isSupported) stage.nativeWindow.visible = true;
-			
 			_main = Main.instance;
-			_main.init(this, appInfo, new Setups().list, AppResourceBundle, new AIRFileAPIProxy());
+			_main.init(preloader as DisplayObjectContainer, new AppInfo(), new Setups().list,
+				AppResourceBundle, new FileAPIProxy());
 		}
 	}
 }

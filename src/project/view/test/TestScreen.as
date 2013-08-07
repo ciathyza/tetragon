@@ -219,6 +219,7 @@ package view.test
 		{
 			registerResource("settings");
 			registerResource("demoMusic");
+			registerResource("bgFillImage");
 		}
 		
 		

@@ -79,23 +79,28 @@ package tetragon.file.loaders
 		{
 			super();
 			
-			if (!resourceIndex) return;
+			_resourceIndex = resourceIndex;
 			
 			/* Use web loading API for this loader or it can't load packed files. */
 			_loader.useAIRFileAPI = false;
 			
-			_resourceIndex = resourceIndex;
 			_locale = main.registry.config.getString(Config.LOCALE_CURRENT);
 			_sep = main.fileAPIProxy.getSeparator();
 			_state = 0;
 			_resCount = 0;
 			_subCount = 0;
 			
-			/* Get the path for the resource index file. */
-			var fileName:String = main.registry.config.getString(Config.FILENAME_RESOURCEINDEX);
-			var path:String = ResourceUtil.getResourceFilePath(fileName);
-			
-			addFile(path, "resourceIndexFile");
+			if (_resourceIndex)
+			{
+				/* Get the path for the resource index file. */
+				var fileName:String = main.registry.config.getString(Config.FILENAME_RESOURCEINDEX);
+				var path:String = ResourceUtil.getResourceFilePath(fileName);
+				addFile(path, "resourceIndexFile");
+			}
+			else
+			{
+				/* Probably used in EmbeddedResourceIndexLoader. */
+			}
 		}
 		
 		

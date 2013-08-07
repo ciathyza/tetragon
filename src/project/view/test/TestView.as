@@ -28,9 +28,6 @@
  */
 package view.test
 {
-	import lib.display.TetragonLogo;
-
-	import tetragon.util.color.colorHexToColorTransform;
 	import tetragon.util.number.randomFloat;
 	import tetragon.view.render2d.display.Rect2D;
 	import tetragon.view.render2d.display.RootView2D;
@@ -39,8 +36,6 @@ package view.test
 	import tetragon.view.render2d.textures.Texture2D;
 
 	import flash.display.BitmapData;
-	import flash.filters.DropShadowFilter;
-	import flash.geom.Matrix;
 	
 	
 	/**
@@ -81,17 +76,9 @@ package view.test
 		 */
 		override protected function setup():void
 		{
-			rootBackground = new Rect2D(10, 10, 0xAAAAAA);
+			rootBackground = new Rect2D(10, 10, 0x888888);
 			
-			var ds:DropShadowFilter = new DropShadowFilter(1.0, 45, 0x000000, 0.4, 1.0, 1.0, 1, 2, true);
-			var logo:TetragonLogo = new TetragonLogo();
-			logo.filters = [ds];
-			
-			var b:BitmapData = new BitmapData(logo.width + 40, logo.height + 40, true, 0x00000000);
-			var m:Matrix = new Matrix();
-			m.translate(20, 20);
-			b.draw(logo, m, colorHexToColorTransform(0xBBBBBB));
-			
+			var b:BitmapData = resourceIndex.getImage("bgFillImage");
 			var texture:Texture2D = Texture2D.fromBitmapData(b, false);
 			var layer1:ScrollTile2D = new ScrollTile2D(texture);
 			
