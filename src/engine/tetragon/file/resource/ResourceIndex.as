@@ -414,13 +414,22 @@ package tetragon.file.resource
 			var substitutedIDs:Array = _substitutionIDs[id];
 			if (!substitutedIDs || substitutedIDs.length == 0) return null;
 			
+			var substitutedID:String;
+			var r:Resource;
+			
 			for (var i:uint = 0; i < substitutedIDs.length; i++)
 			{
-				var substitutedID:String = substitutedIDs[i];
-				var r:Resource = _resources[substitutedID];
-				if (r) return r;
+				substitutedID = substitutedIDs[i];
+				r = _resources[substitutedID];
+				/* If the one of the resources covered by the substituted ID is already loaded,
+				 * use that one! Otherwise it could load the wrong resoure. */
+				if (r && (r.status == ResourceStatus.LOADED || r.status == ResourceStatus.PROCESSED))
+				{
+					return r;
+				}
 			}
 			
+			if (r) return r;
 			return null;
 		}
 		
