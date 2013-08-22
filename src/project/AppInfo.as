@@ -47,13 +47,13 @@ package
 		/** @inheritDoc */
 		public function get version():String {return "1.0.0";}
 		/** @inheritDoc */
-		public function get build():String {return "12991";}
+		public function get build():String {return "12994";}
 		/** @inheritDoc */
-		public function get buildDate():String {return "07-August-2013 14:50";}
+		public function get buildDate():String {return "22-August-2013 15:01";}
 		/** @inheritDoc */
 		public function get milestone():String {return "";}
 		/** @inheritDoc */
-		public function get buildType():String {return "web";}
+		public function get buildType():String {return "desktop";}
 		/** @inheritDoc */
 		public function get releaseStage():String {return "alpha";}
 		/** @inheritDoc */
@@ -102,7 +102,7 @@ package
 		public function get swfVersion():int {return 19;}
 		
 		/** @inheritDoc */
-		public function get isDebug():Boolean {return true;}
+		public function get isDebug():Boolean {return false;}
 		
 		/** @inheritDoc */
 		public function get usePackedResources():Boolean {return false;}

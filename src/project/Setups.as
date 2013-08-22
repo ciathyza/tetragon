@@ -69,6 +69,7 @@ package
 			/* Add the base setup. */
 			_list.push(BaseSetup);
 			
+			/*FDT_IGNORE*/
 			/* Add base setups for specific build targets (Do not change!) */
 			CONFIG::IS_DESKTOP_BUILD
 			{
@@ -84,6 +85,7 @@ package
 			{
 				_list.push(IOSSetup);
 			}
+			/*FDT_IGNORE*/
 			
 			/* Enable or disable any engine extra setup(s) here depending on your requirements. */
 			//_list.push(GameExtraSetup);
@@ -93,6 +95,7 @@ package
 			/* Add application base setup(s) here. */
 			_list.push(AppBaseSetup);
 			
+			/*FDT_IGNORE*/
 			/* Add Desktop-specific setup(s) here. */
 			CONFIG::IS_DESKTOP_BUILD
 			{
@@ -108,6 +111,7 @@ package
 			{
 				_list.push(AppIOSSetup);
 			}
+			/*FDT_IGNORE*/
 		}
 		
 		
