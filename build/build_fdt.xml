@@ -30,8 +30,6 @@
 	<target name="000 ----------------------------------"/>
 	
 	<target name="010 FDT: Launch">
-		<echo message="${basedir}"/>
-		<echo message="${proj.name}"/>
 		<clean/>
 		<prepare buildType="desktop" debug="true" entryClassTemplate="EntryClassAIR.as" usePackedResources="false"/>
 		<generateFDTCorePrefs/>
