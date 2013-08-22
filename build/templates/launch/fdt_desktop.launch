@@ -1,60 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="com.powerflasher.fdt.ui.MobileApplicationGroup">
+	<launchConfiguration type="com.powerflasher.fdt.ui.MobileApplicationGroup">
 	<stringAttribute key="ADL_DESCRIPTOR_FILE" value="bin/@air_descriptor@"/>
+	<booleanAttribute key="ADVANCED_TELEMTRY" value="true"/>
 	<intAttribute key="AIR_VIEWER_CONF" value="1"/>
-	
-	<stringAttribute key="ARGUMENTS" value="
-		-static-link-runtime-shared-libraries=true
-		-swf-version=@swf_version@
-		-target-player=@fpv_version@
-		-library-path+='{flexSDK}/frameworks/locale/en_US'
-		-default-frame-rate=@air_desktop_framerate@
-		-default-background-color=0x@air_desktop_bgcolor@
-		-default-size=@air_desktop_width@,@air_desktop_height@
-		-default-script-limits=@max_recursiondepth@,@max_executiontime@
-		-optimize=true
-		-strict=true
-		-warn-no-constructor=false
-		-show-unused-type-selector-warnings=false
-		-keep-as3-metadata+=TypeHint
-		-keep-as3-metadata+=Resource
-		-keep-as3-metadata+=ResourceIndex
-		-keep-as3-metadata+=Embed
-		-define=CONFIG::IS_WEB_BUILD,false
-		-define=CONFIG::IS_AIR_BUILD,true
-		-define=CONFIG::IS_DESKTOP_BUILD,true
-		-define=CONFIG::IS_MOBILE_BUILD,false
-		-define=CONFIG::IS_ANDROID_BUILD,false
-		-define=CONFIG::IS_IOS_BUILD,false
-		-define=CONFIG::USE_EMBEDDED_RESOURCES,@resource_useEmbed@
-	"/>
-	
+	<stringAttribute key="APP_ARGUMENTS" value=""/>
+	<stringAttribute key="ARGUMENTS" value=""/>
+	<listAttribute key="COMPILER_CONSTANTS"/>
+	<stringAttribute key="COMPILER_TECHNOLOGY" value="Flex SDK"/>
+	<booleanAttribute key="CUSTOMIZE_ADL_ARGS" value="false"/>
+	<stringAttribute key="CUSTOM_ADL_CMD_LINE" value="${nodebug} ${profile} ${screensize} ${anesdir} ${desc} ${rootdir} ${appargs}"/>
 	<booleanAttribute key="DISABLE_COMPILE_PROCESS" value="false"/>
 	<stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
 	<intAttribute key="LAUNCH_METHOD" value="0"/>
 	<stringAttribute key="MAIN_CLASS" value="@path_src_code@/@entry_class@.as"/>
-	<intAttribute key="PACKAGE_METHOD" value="0"/>
-	
 	<booleanAttribute key="PASS_CP" value="true"/>
+	<booleanAttribute key="PASS_DEFINES" value="true"/>
 	<booleanAttribute key="PASS_EXTERNS" value="true"/>
 	<booleanAttribute key="PASS_MAIN_CLASS" value="true"/>
 	<booleanAttribute key="PASS_RSLS" value="false"/>
 	<booleanAttribute key="PASS_SWCS" value="true"/>
-	
 	<intAttribute key="PLAYER_HEIGHT" value="@air_desktop_width@"/>
 	<intAttribute key="PLAYER_WIDTH" value="@air_desktop_height@"/>
-	
 	<stringAttribute key="POST_COMPILE_ANT" value=""/>
 	<stringAttribute key="PRE_COMPILE_ANT" value=""/>
-	
 	<stringAttribute key="PROJECT_NAME" value="@project_name@"/>
+	<booleanAttribute key="SAMPLER" value="false"/>
+	<stringAttribute key="START_SWF_WITH" value="AIR Debug Launcher"/>
 	<stringAttribute key="TARGET_PLATFORM" value="AirDesktop"/>
-	<booleanAttribute key="USE_PROJECT_COMPILER_ARGUMENTS" value="false"/>
-	
+	<stringAttribute key="TARGET_PLATFORM_CONFIG" value="Primary"/>
+	<booleanAttribute key="USE_PROJECT_COMPILER_ARGUMENTS" value="true"/>
 	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-		<listEntry value="/@project_name@"/>
+	<listEntry value="/@project_name@"/>
 	</listAttribute>
 	<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
-		<listEntry value="4"/>
+	<listEntry value="4"/>
 	</listAttribute>
 </launchConfiguration>

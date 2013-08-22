@@ -210,10 +210,31 @@
 				<filterchain>
 					<replacetokens>
 						<token key="air_descriptor"				value="${air.descriptor}"/>
+						<token key="swf_version"				value="${version.swf}"/>
 						<token key="fpv_version"				value="${version.fp}"/>
+						<token key="app_localestring"			value="${app.localestring}"/>
+						<token key="air_desktop_framerate"		value="${air.desktop.framerate}"/>
+						<token key="air_desktop_bgcolor"		value="${air.desktop.bgcolor}"/>
+						<token key="air_desktop_width"			value="${air.desktop.width}"/>
+						<token key="air_desktop_height"			value="${air.desktop.height}"/>
+						<token key="max_recursiondepth"			value="${max.recursiondepth}"/>
+						<token key="max_executiontime"			value="${max.executiontime}"/>
+						<token key="accessible"					value="${accessible}"/>
+						<token key="benchmark"					value="${benchmark}"/>
+						<token key="resource_useEmbed"			value="${resource.useEmbed}"/>
+						<token key="meta_title"					value="${meta.title}"/>
+						<token key="meta_description"			value="${meta.description}"/>
+						<token key="build_date"					value="${build.date}"/>
+						<token key="app_language"				value="${app.language}"/>
+						<token key="meta_publisher"				value="${meta.publisher}"/>
+						<token key="meta_creator"				value="${meta.creator}"/>
+						<token key="meta_contributor"			value="${meta.contributor}"/>
+						<token key="path_src_code"				value="${path.src.project}"/>
+						<token key="entry_class"				value="${entry.class}"/>
 						<token key="project_name"				value="${project.name}"/>
 						<token key="path_bin_name"				value="${path.bin.name}"/>
 						<token key="path_pub_name"				value="${path.pub.name}"/>
+						<token key="air_pub_name"				value="${air.desktop.publishname}.air"/>
 						<token key="deploy_desktop_icons"		value="${deploy.desktop.icons}"/>
 						<token key="deploy_android_icons"		value="${deploy.android.icons}"/>
 						<token key="deploy_ios_icons"			value="${deploy.ios.icons}"/>
