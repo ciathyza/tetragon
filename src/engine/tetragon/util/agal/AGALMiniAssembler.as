@@ -1,74 +1,92 @@
 /*
- *      _________  __      __
- *    _/        / / /____ / /________ ____ ____  ___
- *   _/        / / __/ -_) __/ __/ _ `/ _ `/ _ \/ _ \
- *  _/________/  \__/\__/\__/_/  \_,_/\_, /\___/_//_/
- *                                   /___/
- * 
- * Tetragon : Game Engine for multi-platform ActionScript projects.
- * http://www.tetragonengine.com/ - Copyright (C) 2012 Sascha Balkau
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+Copyright (c) 2011, Adobe Systems Incorporated
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are
+met:
+
+ * Redistributions of source code must retain the above copyright notice, 
+this list of conditions and the following disclaimer.
+
+ * Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the 
+documentation and/or other materials provided with the distribution.
+
+ * Neither the name of Adobe Systems Incorporated nor the names of its 
+contributors may be used to endorse or promote products derived from 
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package tetragon.util.agal
 {
-	import flash.display3D.Context3D;
-	import flash.display3D.Program3D;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.Endian;
-	import flash.utils.getTimer;
-	
-	
-	/**
-	 * AGAL taken from Starling v1.3.
-	 * TODO Optimize class!
-	 */
+	// ===========================================================================
+	// Imports
+	// ---------------------------------------------------------------------------
+	import flash.display3D.*;
+	import flash.utils.*;
+
+
+	// ===========================================================================
+	// Class
+	// ---------------------------------------------------------------------------
 	public class AGALMiniAssembler
 	{
+		// ======================================================================
+		// Constants
+		// ----------------------------------------------------------------------
 		protected static const REGEXP_OUTER_SPACES:RegExp = /^\s+|\s+$/g;
-		
+		// ======================================================================
+		// Properties
+		// ----------------------------------------------------------------------
+		// AGAL bytes and error buffer
 		private var _agalcode:ByteArray = null;
 		private var _error:String = "";
 		private var debugEnabled:Boolean = false;
 		private static var initialized:Boolean = false;
 		public var verbose:Boolean = false;
-		
-		
+
+
+		// ======================================================================
+		// Getters
+		// ----------------------------------------------------------------------
 		public function get error():String
 		{
 			return _error;
 		}
+
+
 		public function get agalcode():ByteArray
 		{
 			return _agalcode;
 		}
-		
-		
+
+
+		// ======================================================================
+		// Constructor
+		// ----------------------------------------------------------------------
 		public function AGALMiniAssembler(debugging:Boolean = false):void
 		{
 			debugEnabled = debugging;
 			if ( !initialized )
 				init();
 		}
-		
-		
+
+
+		// ======================================================================
+		// Methods
+		// ----------------------------------------------------------------------
 		public function assemble2(ctx3d:Context3D, version:uint, vertexsrc:String, fragmentsrc:String):Program3D
 		{
 			var agalvertex:ByteArray = assemble(VERTEX, vertexsrc, version);
@@ -77,8 +95,8 @@ package tetragon.util.agal
 			prog.upload(agalvertex, agalfragment);
 			return prog;
 		}
-		
-		
+
+
 		public function assemble(mode:String, source:String, version:uint = 1, ignorelimits:Boolean = false):ByteArray
 		{
 			var start:uint = getTimer();
@@ -106,12 +124,11 @@ package tetragon.util.agal
 			initregmap(version, ignorelimits);
 
 			var lines:Array = source.replace(/[\f\n\r\v]+/g, "\n").split("\n");
-			var nest:int = 0;
 			var nops:int = 0;
 			var i:int;
 			var lng:int = lines.length;
 
-			for ( i = 0; i < lng && _error == ""; i++ )
+			for (i = 0; i < lng && _error == ""; i++)
 			{
 				var line:String = new String(lines[i]);
 				line = line.replace(REGEXP_OUTER_SPACES, "");
@@ -198,16 +215,15 @@ package tetragon.util.agal
 				var pad:uint = 64 + 64 + 32;
 				var regLength:uint = regs.length;
 
-				for ( var j:int = 0; j < regLength; j++ )
+				for (var j:int = 0; j < regLength; j++)
 				{
 					var isRelative:Boolean = false;
-					var relreg:Array = (regs[ j ] as String).match(/\[.*\]/ig);
-					if ( relreg && relreg.length > 0 )
+					var relreg:Array = (regs[j] as String).match(/\[.*\]/ig);
+					if (relreg && relreg.length > 0)
 					{
-						regs[ j ] = (regs[ j ] as String).replace(relreg[ 0 ], "0");
+						regs[j] = (regs[j] as String).replace(relreg[ 0 ], "0");
 
-						if ( verbose )
-							trace("IS REL");
+						if (verbose) trace("IS REL");
 						isRelative = true;
 					}
 
@@ -291,7 +307,7 @@ package tetragon.util.agal
 						regmask = 0;
 						var cv:uint;
 						var maskLength:uint = (maskmatch[0] as String).length;
-						for ( var k:int = 1; k < maskLength; k++ )
+						for (var k:int = 1; k < maskLength; k++)
 						{
 							cv = (maskmatch[0] as String).charCodeAt(k) - "x".charCodeAt(0);
 							if ( cv > 2 )
@@ -302,7 +318,7 @@ package tetragon.util.agal
 								regmask |= cv << ( ( k - 1 ) << 1 );
 						}
 						if ( !isDest )
-							for ( ; k <= 4; k++ )
+							for (; k <= 4; k++)
 								regmask |= cv << ( ( k - 1 ) << 1 );
 						// repeat last
 					}
@@ -365,7 +381,7 @@ package tetragon.util.agal
 							// type 5
 							var optsLength:uint = opts == null ? 0 : opts.length;
 							var bias:Number = 0;
-							for ( k = 0; k < optsLength; k++ )
+							for (k = 0; k < optsLength; k++)
 							{
 								if ( verbose )
 									trace("    opt: " + opts[k]);
@@ -414,7 +430,7 @@ package tetragon.util.agal
 				}
 
 				// pad unused regs
-				for ( j = 0; j < pad; j += 8 )
+				for (j = 0; j < pad; j += 8)
 					agalcode.writeByte(0);
 
 				if ( badreg )
@@ -433,14 +449,14 @@ package tetragon.util.agal
 			{
 				var dbgLine:String = "generated bytecode:";
 				var agalLength:uint = agalcode.length;
-				for ( var index:uint = 0; index < agalLength; index++ )
+				for (var index:uint = 0; index < agalLength; index++)
 				{
 					if ( !( index % 16 ) )
 						dbgLine += "\n";
 					if ( !( index % 4 ) )
 						dbgLine += " ";
 
-					var byteStr:String = int(agalcode[ index ]).toString(16);
+					var byteStr:String = agalcode[index]['toString'](16);
 					if ( byteStr.length < 2 )
 						byteStr = "0" + byteStr;
 
@@ -557,7 +573,6 @@ package tetragon.util.agal
 		private static const OPMAP:Dictionary = new Dictionary();
 		private static const REGMAP:Dictionary = new Dictionary();
 		private static const SAMPLEMAP:Dictionary = new Dictionary();
-		// private static const MAX_NESTING:int = 4;
 		private static const MAX_OPCODES:int = 2048;
 		private static const FRAGMENT:String = "fragment";
 		private static const VERTEX:String = "vertex";
@@ -659,32 +674,53 @@ package tetragon.util.agal
 		private static const VIDEO:String = "video";
 	}
 }
-
-
+// ================================================================================
+// Helper Classes
+// --------------------------------------------------------------------------------
+// ===========================================================================
+// Class
+// ---------------------------------------------------------------------------
 class OpCode
 {
+	// ======================================================================
+	// Properties
+	// ----------------------------------------------------------------------
 	private var _emitCode:uint;
 	private var _flags:uint;
 	private var _name:String;
 	private var _numRegister:uint;
-	
+
+
+	// ======================================================================
+	// Getters
+	// ----------------------------------------------------------------------
 	public function get emitCode():uint
 	{
 		return _emitCode;
 	}
+
+
 	public function get flags():uint
 	{
 		return _flags;
 	}
+
+
 	public function get name():String
 	{
 		return _name;
 	}
+
+
 	public function get numRegister():uint
 	{
 		return _numRegister;
 	}
-	
+
+
+	// ======================================================================
+	// Constructor
+	// ----------------------------------------------------------------------
 	public function OpCode(name:String, numRegister:uint, emitCode:uint, flags:uint)
 	{
 		_name = name;
@@ -692,43 +728,68 @@ class OpCode
 		_emitCode = emitCode;
 		_flags = flags;
 	}
-	
+
+
+	// ======================================================================
+	// Methods
+	// ----------------------------------------------------------------------
 	public function toString():String
 	{
 		return "[OpCode name=\"" + _name + "\", numRegister=" + _numRegister + ", emitCode=" + _emitCode + ", flags=" + _flags + "]";
 	}
 }
 
-
+// ===========================================================================
+// Class
+// ---------------------------------------------------------------------------
 class Register
 {
+	// ======================================================================
+	// Properties
+	// ----------------------------------------------------------------------
 	private var _emitCode:uint;
 	private var _name:String;
 	private var _longName:String;
 	private var _flags:uint;
 	private var _range:uint;
-	
+
+
+	// ======================================================================
+	// Getters
+	// ----------------------------------------------------------------------
 	public function get emitCode():uint
 	{
 		return _emitCode;
 	}
+
+
 	public function get longName():String
 	{
 		return _longName;
 	}
+
+
 	public function get name():String
 	{
 		return _name;
 	}
+
+
 	public function get flags():uint
 	{
 		return _flags;
 	}
+
+
 	public function get range():uint
 	{
 		return _range;
 	}
-	
+
+
+	// ======================================================================
+	// Constructor
+	// ----------------------------------------------------------------------
 	public function Register(name:String, longName:String, emitCode:uint, range:uint, flags:uint)
 	{
 		_name = name;
@@ -737,42 +798,68 @@ class Register
 		_range = range;
 		_flags = flags;
 	}
-	
+
+
+	// ======================================================================
+	// Methods
+	// ----------------------------------------------------------------------
 	public function toString():String
 	{
 		return "[Register name=\"" + _name + "\", longName=\"" + _longName + "\", emitCode=" + _emitCode + ", range=" + _range + ", flags=" + _flags + "]";
 	}
 }
 
-
+// ===========================================================================
+// Class
+// ---------------------------------------------------------------------------
 class Sampler
 {
+	// ======================================================================
+	// Properties
+	// ----------------------------------------------------------------------
 	private var _flag:uint;
 	private var _mask:uint;
 	private var _name:String;
-	
+
+
+	// ======================================================================
+	// Getters
+	// ----------------------------------------------------------------------
 	public function get flag():uint
 	{
 		return _flag;
 	}
+
+
 	public function get mask():uint
 	{
 		return _mask;
 	}
+
+
 	public function get name():String
 	{
 		return _name;
 	}
-	
+
+
+	// ======================================================================
+	// Constructor
+	// ----------------------------------------------------------------------
 	public function Sampler(name:String, flag:uint, mask:uint)
 	{
 		_name = name;
 		_flag = flag;
 		_mask = mask;
 	}
-	
+
+
+	// ======================================================================
+	// Methods
+	// ----------------------------------------------------------------------
 	public function toString():String
 	{
 		return "[Sampler name=\"" + _name + "\", flag=\"" + _flag + "\", mask=" + mask + "]";
 	}
 }
+
