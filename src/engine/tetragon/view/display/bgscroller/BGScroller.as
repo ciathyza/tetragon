@@ -28,6 +28,8 @@
  */
 package tetragon.view.display.bgscroller
 {
+	import tetragon.util.display.StageReference;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.PixelSnapping;
@@ -56,9 +58,12 @@ package tetragon.view.display.bgscroller
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function BGScroller(width:int, height:int, transparent:Boolean = false,
+		public function BGScroller(width:int = 0, height:int = 0, transparent:Boolean = false,
 			fillColor:uint = 0x000000, fps:Number = 30, layers:Array = null)
 		{
+			if (width <= 0) width = StageReference.stageWidth;
+			if (height <= 0) height = StageReference.stageHeight;
+			
 			super(new BitmapData(width, height, transparent, _fillColor = fillColor));
 			pixelSnapping = PixelSnapping.NEVER;
 			smoothing = false;
@@ -86,6 +91,15 @@ package tetragon.view.display.bgscroller
 		public function stop():void
 		{
 			_timer.stop();
+		}
+		
+		
+		/**
+		 * Draws a frame of the scroller. Used for manual play.
+		 */
+		public function draw():void
+		{
+			onTimer(null);
 		}
 		
 		
@@ -174,7 +188,7 @@ package tetragon.view.display.bgscroller
 			bitmapData.fillRect(bitmapData.rect, _fillColor);
 			bitmapData.draw(_shape);
 			
-			e.updateAfterEvent();
+			if (e) e.updateAfterEvent();
 		}
 	}
 }

@@ -623,6 +623,18 @@ package tetragon.view.native
 		}
 		
 		
+		public function get stageWidth():int
+		{
+			return main.stage.stageWidth;
+		}
+		
+		
+		public function get stageHeight():int
+		{
+			return main.stage.stageHeight;
+		}
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------

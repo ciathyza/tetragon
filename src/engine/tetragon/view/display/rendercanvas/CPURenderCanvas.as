@@ -32,6 +32,7 @@ package tetragon.view.display.rendercanvas
 	import tetragon.debug.IDrawCallsPollingSource;
 
 	import flash.display.BitmapData;
+	import flash.display.IBitmapDrawable;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -165,11 +166,11 @@ package tetragon.view.display.rendercanvas
 				_ct.redOffset = ((mixColor >> 16) & 0xFF) * mixAlpha;
 				_ct.greenOffset = ((mixColor >> 8) & 0xFF) * mixAlpha;
 				_ct.blueOffset = (mixColor & 0xFF) * mixAlpha;
-				draw(image as BitmapData, _m, _ct, null, _r, false);
+				draw(image as IBitmapDrawable, _m, _ct, null, _r, false);
 				return;
 			}
 			
-			draw(image as BitmapData, _m, null, null, _r, false);
+			draw(image as IBitmapDrawable, _m, null, null, _r, false);
 		}
 		
 		
