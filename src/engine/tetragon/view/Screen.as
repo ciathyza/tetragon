@@ -190,6 +190,19 @@ package tetragon.view
 		
 		
 		/**
+		 * Open delay of the screen, in MS.
+		 * Can be overriden and set to a value higher than 0 to delay the opening
+		 * of the screen.
+		 * 
+		 * @default 0
+		 */
+		public function get openDelay():int
+		{
+			return 0;
+		}
+		
+		
+		/**
 		 * Determines whether the screen will unload all it's loaded resources once it is
 		 * closed. You can override this getter and return false for screens where you don't
 		 * want resources to be unloaded, .e.g. for a dedicated resource preload screen.

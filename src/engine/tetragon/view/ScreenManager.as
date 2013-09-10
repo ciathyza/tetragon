@@ -43,6 +43,7 @@ package tetragon.view
 	import tetragon.util.number.average;
 	import tetragon.util.string.TabularText;
 	import tetragon.util.time.CallLater;
+	import tetragon.util.time.Interval;
 	import tetragon.util.tween.Tween;
 	import tetragon.util.tween.TweenVars;
 	import tetragon.view.display.shape.RectangleShape;
@@ -1438,6 +1439,19 @@ package tetragon.view
 		 * @private
 		 */
 		private function showCurrentScreen():void
+		{
+			if (_currentScreen.openDelay <= 0)
+			{
+				showCurrentScreenDelayed();
+			}
+			else
+			{
+				Interval.setTimeOut(_currentScreen.openDelay, showCurrentScreenDelayed, true);
+			}
+		}
+		
+		
+		private function showCurrentScreenDelayed():void
 		{
 			_switching = false;
 			if (_screenCover && _tweenDuration > 0.0)
