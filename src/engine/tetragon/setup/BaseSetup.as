@@ -183,7 +183,8 @@ package tetragon.setup
 		 */
 		override public function shutdown():void
 		{
-			main.screenManager.dispose();
+			// Disabled because it causes Context3D disposed exception!
+			//main.screenManager.dispose();
 			complete(SHUTDOWN);
 		}
 		
