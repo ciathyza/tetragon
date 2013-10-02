@@ -177,6 +177,27 @@ package tetragon.view.display.rendercanvas
 		/**
 		 * @inheritDoc
 		 */
+		public function drawImageCT(image:*, x:Number, y:Number, w:Number, h:Number,
+			scale:Number = 1.0, ct:ColorTransform = null):void
+		{
+			++_drawCount;
+			
+			_m.setTo(scale, 0, 0, scale, x, y);
+			_r.setTo(x, y, w, h);
+			
+			if (ct)
+			{
+				draw(image as IBitmapDrawable, _m, ct, null, _r, false);
+				return;
+			}
+			
+			draw(image as IBitmapDrawable, _m, null, null, _r, false);
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function blit(displayObject:*, x:Number = 0, y:Number = 0, w:Number = 0, h:Number = 0):void
 		{
 			_r.setTo(0, 0, w, h);

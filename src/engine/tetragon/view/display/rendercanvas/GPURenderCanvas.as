@@ -36,6 +36,7 @@ package tetragon.view.display.rendercanvas
 	import tetragon.view.render2d.textures.RenderTexture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
@@ -178,6 +179,31 @@ package tetragon.view.display.rendercanvas
 			c.mixAlpha = mixAlpha;
 			c.mixColor = mixColor;
 			c.mixThreshold = mixThreshold;
+			
+			++_drawCommandIndex;
+		}
+		
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function drawImageCT(image:*, x:Number, y:Number, w:Number, h:Number,
+			scale:Number = 1.0, ct:ColorTransform = null):void
+		{
+			checkCommandBufferFull();
+			
+			var c:DrawCommand = _drawCommandBuffer[_drawCommandIndex];
+			c.type = 3;
+			c.image = image;
+			c.x = x;
+			c.y = y;
+			c.w = w;
+			c.h = h;
+			c.scale = scale;
+			// TODO
+			c.mixAlpha = 1.0;
+			c.mixColor = 0;
+			c.mixThreshold = 1.0;
 			
 			++_drawCommandIndex;
 		}

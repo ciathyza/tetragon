@@ -28,6 +28,7 @@
  */
 package tetragon.view.display.rendercanvas
 {
+	import flash.geom.ColorTransform;
 	/**
 	 * Interface for render canvas classes that use a render surface to draw
 	 * display objects onto it.
@@ -103,6 +104,22 @@ package tetragon.view.display.rendercanvas
 		 */
 		function drawImage(image:*, x:Number, y:Number, w:Number, h:Number, scale:Number = 1.0,
 			mixColor:uint = 0x000000, mixAlpha:Number = 1.0, mixThreshold:Number = 1.0):void;
+		
+		
+		/**
+		 * Draws a display object onto the render canvas using the draw API of the
+		 * underlying render surface.
+		 * 
+		 * @param image
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 * @param scale
+		 * @param ct
+		 */
+		function drawImageCT(image:*, x:Number, y:Number, w:Number, h:Number,
+			scale:Number = 1.0, ct:ColorTransform = null):void;
 		
 		
 		/**
