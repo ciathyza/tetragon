@@ -60,6 +60,7 @@ package tetragon.util.color
 		private var _preHue:ColorMatrix;
 		private var _postHue:ColorMatrix;
 		private var _hueInitialized:Boolean;
+		private var _saturation:Number;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -152,6 +153,8 @@ package tetragon.util.color
 		 */
 		public function adjustSaturation(s:Number):void
 		{
+			_saturation = s;
+			
 			var sInv:Number = (1 - s);
 			var irlum:Number = (sInv * LUMA_R);
 			var iglum:Number = (sInv * LUMA_G);
@@ -799,6 +802,18 @@ package tetragon.util.color
 		public function get filter():ColorMatrixFilter
 		{
 			return new ColorMatrixFilter(_matrix);
+		}
+		
+		
+		public function get saturation():Number
+		{
+			return _saturation;
+		}
+		public function set saturation(v:Number):void
+		{
+			if (_saturation == v) return;
+			_saturation = v;
+			adjustSaturation(_saturation);
 		}
 		
 		
