@@ -107,6 +107,9 @@ package tetragon.view.native
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
+		public static var globalScaleFactorX:Number = 1.0;
+		public static var globalScaleFactorY:Number = 1.0;
+		
 		/** @private */
 		protected static const EXEC_CREATE:String		= "create";
 		/** @private */
@@ -301,19 +304,22 @@ package tetragon.view.native
 		
 		
 		/**
-		 * Can be used to set the x,y position of the view with one call instead of
-		 * accessors.
+		 * Can be used to set the scaled x,y position of the view with one call instead of
+		 * accessors. This sets the position of the view according to a set scale factor.
+		 * 
+		 * If scaleFactorX or scaleFactorY is NaN, the globalScaleFactorX or 
+		 * globalScaleFactorY is automatically used.
 		 * 
 		 * @param x
 		 * @param y
-		 * @param scaleX
-		 * @param scaleY
+		 * @param scaleFactorX
+		 * @param scaleFactorY
 		 */
-		public function setScaledPosition(x:Number, y:Number, scaleX:Number = 1.0,
-			scaleY:Number = 1.0):void
+		public function setScaledPosition(x:Number, y:Number, scaleFactorX:Number = NaN,
+			scaleFactorY:Number = NaN):void
 		{
-			this.x = x * scaleX;
-			this.y = y * scaleY;
+			this.x = x * (isNaN(scaleFactorX) ? globalScaleFactorX : scaleFactorX);
+			this.y = y * (isNaN(scaleFactorY) ? globalScaleFactorY : scaleFactorY);
 		}
 		
 		
@@ -335,11 +341,15 @@ package tetragon.view.native
 		 * Can be used to set the scale of the view with one call instead of
 		 * accessors.
 		 * 
+		 * If scaleX or scaleY is NaN, the globalScaleFactorX or 
+		 * globalScaleFactorY is automatically used.
+		 * 
 		 * @param scale
 		 */
-		public function setScale(scale:Number):void
+		public function setScale(scaleX:Number = NaN, scaleY:Number = NaN):void
 		{
-			scaleX = scaleY = scale;
+			this.scaleX = isNaN(scaleX) ? globalScaleFactorX : scaleX;
+			this.scaleY = isNaN(scaleY) ? globalScaleFactorY : scaleY;
 		}
 		
 		
