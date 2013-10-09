@@ -56,11 +56,20 @@ package tetragon.util.number
 		}
 		
 		var a:Array = [];
-		if (uniqueValues && !excludedValues) excludedValues = [];
+		var e:Array;
+		
+		/* Make a copy of excluded array! We don't want to push new values to any
+		 * existing array. */
+		if (excludedValues)
+		{
+			e = excludedValues.concat();
+		}
+		
+		if (uniqueValues && !e) e = [];
 		for (var i:uint = 0; i < length; i++)
 		{
-			var r:int = random(min, max, excludedValues);
-			if (uniqueValues) excludedValues.push(r);
+			var r:int = random(min, max, e);
+			if (uniqueValues) e.push(r);
 			a.push(r);
 		}
 		return a;
